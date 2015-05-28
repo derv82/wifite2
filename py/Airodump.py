@@ -53,7 +53,7 @@ class Airodump(object):
         '''
         # Kill the process
         self.pid.interrupt()
-        self.pid.kill()
+
         # Delete temp files
         self.delete_airodump_temp_files()
 

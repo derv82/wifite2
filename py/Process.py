@@ -70,24 +70,30 @@ class Process(object):
         ''' Returns exit code if process is dead, otherwise "None" '''
         return self.pid.poll()
 
-    def kill(self):
-        ''' Kill current process '''
-        if self.pid.poll() == None:
-            # Process is already killed
-            return
-        try:
-            self.pid.kill()
-        except OSError, e:
-            if 'No such process' in e.__str__():
-                return
-            raise e
-
     def interrupt(self):
-        ''' Send interrupt to current process '''
-        from signal import SIGINT
+        '''
+            Send interrupt to current process.
+            If process fails to exit within 1 second, terminates it.
+        '''
+        from signal import SIGINT, SIGTERM
         from os import kill
+        from time import sleep
         try:
-            kill(self.pid.pid, SIGINT)
+            pid = self.pid.pid
+            kill(pid, SIGINT)
+
+            wait_time = 0 # Time since Interrupt was sent
+            while self.pid.poll() == None:
+                # Process is still running
+                wait_time += 0.1
+                sleep(0.1)
+                if wait_time > 1:
+                    # We waited over 1 second for process to die
+                    # Terminate it and move on
+                    kill(pid, SIGTERM)
+                    self.pid.terminate()
+                    break
+                    
         except OSError, e:
             if 'No such process' in e.__str__():
                 return
