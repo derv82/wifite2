@@ -34,15 +34,20 @@ class Process(object):
         return True
 
 
-    def __init__(self, command):
+    def __init__(self, command, devnull=False):
         ''' Starts executing command '''
         if type(command) == str:
             # Commands have to be a list
             command = command.split(' ')
-        self.command = command
         self.out = None
         self.err = None
-        self.pid = Popen(command, stdout=PIPE, stderr=PIPE)
+        if devnull:
+            sout = Process.devnull()
+            serr = Process.devnull()
+        else:
+            sout = PIPE
+            serr = PIPE
+        self.pid = Popen(command, stdout=sout, stderr=serr)
 
     def stdout(self):
         ''' Waits for process to finish, returns stdout output '''

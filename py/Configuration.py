@@ -5,9 +5,10 @@ import os
 class Configuration(object):
     ''' Stores configuration variables for Wifite.  '''
 
+    temp_dir = None
+
     def __init__(self):
         ''' Sets up default initial configuration values '''
-        self.temp_dir = None # Temporary directory
 
         self.version = 2.00 # Program version
         self.tx_power = 0 # Wifi transmit power (0 is default)
@@ -64,13 +65,15 @@ class Configuration(object):
         if args.wordlist:   self.wordlist = args.wordlist
         
 
-    def temp(self):
+    @staticmethod
+    def temp():
         ''' Creates and/or returns the temporary directory '''
-        if self.temp_dir == None:
-            self.temp_dir = self.create_temp()
-        return self.temp_dir
+        if Configuration.temp_dir == None:
+            Configuration.temp_dir = Configuration.create_temp()
+        return Configuration.temp_dir
 
-    def create_temp(self):
+    @staticmethod
+    def create_temp():
         ''' Creates and returns a temporary directory '''
         from tempfile import mkdtemp
         tmp = mkdtemp(prefix='wifite')
@@ -78,13 +81,14 @@ class Configuration(object):
             tmp += os.sep
         return tmp
 
-    def delete_temp(self):
+    @staticmethod
+    def delete_temp():
         ''' Remove temp files and folder '''
-        if self.temp_dir == None: return
-        if os.path.exists(self.temp_dir):
-            for f in os.listdir(self.temp_dir):
-                os.remove(self.temp_dir + f)
-            os.rmdir(self.temp_dir)
+        if Configuration.temp_dir == None: return
+        if os.path.exists(Configuration.temp_dir):
+            for f in os.listdir(Configuration.temp_dir):
+                os.remove(Configuration.temp_dir + f)
+            os.rmdir(Configuration.temp_dir)
 
 
     def exit_gracefully(self, code=0):
