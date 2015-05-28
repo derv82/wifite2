@@ -7,62 +7,64 @@ class Configuration(object):
 
     temp_dir = None
 
-    def __init__(self):
+    @staticmethod
+    def initialize():
         ''' Sets up default initial configuration values '''
 
-        self.version = 2.00 # Program version
-        self.tx_power = 0 # Wifi transmit power (0 is default)
-        self.interface = None
-        self.target_channel = None # User-defined channel to scan
-        self.target_essid = None # User-defined AP name
-        self.target_bssid = None # User-defined AP BSSID
-        self.pillage = False # "Pillage" mode to attack everything
+        Configuration.version = 2.00 # Program version
+        Configuration.tx_power = 0 # Wifi transmit power (0 is default)
+        Configuration.interface = None
+        Configuration.target_channel = None # User-defined channel to scan
+        Configuration.target_essid = None # User-defined AP name
+        Configuration.target_bssid = None # User-defined AP BSSID
+        Configuration.pillage = False # "All" mode to attack everything
 
         # WEP variables
-        self.wep_only = False # Only attack WEP networks
-        self.wep_pps = 6000 # Packets per second
-        self.wep_timeout = 600 # Seconds to wait before failing
+        Configuration.wep_only = False # Only attack WEP networks
+        Configuration.wep_pps = 6000 # Packets per second
+        Configuration.wep_timeout = 600 # Seconds to wait before failing
         # WEP-specific attacks
-        self.wep_fragment = True 
-        self.wep_caffelatte = True 
-        self.wep_p0841 = True
-        self.wep_hirte = True
+        Configuration.wep_fragment = True 
+        Configuration.wep_caffelatte = True 
+        Configuration.wep_p0841 = True
+        Configuration.wep_hirte = True
         # Number of IVS at which we start cracking
-        self.wep_crack_at_ivs = 10000
+        Configuration.wep_crack_at_ivs = 10000
 
         # WPA variables
-        self.wpa_only = False # Only attack WPA networks
-        self.wpa_deauth_timeout = 10 # Seconds to wait between deauths
-        self.wpa_attack_timeout = 500 # Seconds to wait before failing
-        self.wpa_handshake_dir = "hs" # Directory to store handshakes
+        Configuration.wpa_only = False # Only attack WPA networks
+        Configuration.wpa_deauth_timeout = 10 # Wait time between deauths
+        Configuration.wpa_attack_timeout = 500 # Wait time before failing
+        Configuration.wpa_handshake_dir = "hs" # Dir to store handshakes
 
         # Default dictionary for cracking
-        self.wordlist = None
+        Configuration.wordlist = None
         wordlists = [
             '/usr/share/wfuzz/wordlist/fuzzdb/wordlists-user-passwd/passwds/phpbb.txt',
             '/usr/share/fuzzdb/wordlists-user-passwd/passwds/phpbb.txt'
         ]
         for wlist in wordlists:
             if os.path.exists(wlist):
-                self.wordlist = wlist
+                Configuration.wordlist = wlist
                 break
 
         # WPS variables
-        self.wps_only = False # Only attack WPS networks
-        self.pixie_only = False # Only use Pixie attack on WPS
-        self.wps_timeout = 600 # Seconds to wait before failing
-        self.wps_max_retries = 20 # Retries before failing
+        Configuration.wps_only = False # Only attack WPS networks
+        Configuration.pixie_only = False # Only use Pixie attack on WPS
+        Configuration.wps_timeout = 600 # Seconds to wait before failing
+        Configuration.wps_max_retries = 20 # Retries before failing
 
 
-    def load_from_arguments(self, args):
+    @staticmethod
+    def load_from_arguments(args):
         ''' Sets configuration values based on Argument.args object '''
-        if args.channel:    self.target_channel = args.channel
-        if args.interface:  self.interface = args.interface
-        if args.wep_only:   self.wep_only = args.wep_only
-        if args.wpa_only:   self.wpa_only = args.wpa_only
-        if args.wps_only:   self.wps_only = args.wps_only
-        if args.pixie_only: self.pixie_only = args.pixie_only
-        if args.wordlist:   self.wordlist = args.wordlist
+        if args.channel:    Configuration.target_channel = args.channel
+        if args.interface:  Configuration.interface  = args.interface
+        if args.wep_only:   Configuration.wep_only   = args.wep_only
+        if args.wpa_only:   Configuration.wpa_only   = args.wpa_only
+        if args.wps_only:   Configuration.wps_only   = args.wps_only
+        if args.pixie_only: Configuration.pixie_only = args.pixie_only
+        if args.wordlist:   Configuration.wordlist   = args.wordlist
         
 
     @staticmethod
@@ -91,24 +93,35 @@ class Configuration(object):
             os.rmdir(Configuration.temp_dir)
 
 
-    def exit_gracefully(self, code=0):
+    @staticmethod
+    def exit_gracefully(code=0):
         ''' Deletes temp and exist with the given code '''
-        self.delete_temp()
+        Configuration.delete_temp()
         exit(code)
 
-    def __str__(self):
+    @staticmethod
+    def dump():
         ''' (Colorful) string representation of the configuration '''
         from Color import Color
-        result  = Color.s('{W}Wifite Configuration{W}\n')
-        result += Color.s('{W}--------------------{W}\n')
-        for (key,val) in sorted(c.__dict__.iteritems()):
-            result += Color.s("{G}%s{W}:\t{C}%s{W}\n" % (key,val))
+
+        max_len = 0
+        for key in Configuration.__dict__.keys():
+            max_len = max(max_len, len(key))
+
+        result  = Color.s('{W}%s  Value{W}\n' % 'Configuration Key'.ljust(max_len))
+        result += Color.s('{W}%s------------------{W}\n' % ('-' * max_len))
+
+        for (key,val) in sorted(Configuration.__dict__.iteritems()):
+            if key.startswith('__'): continue
+            if type(val) == staticmethod: continue
+            if val == None: continue
+            result += Color.s("{G}%s {W} {C}%s{W}\n" % (key.ljust(max_len),val))
         return result
 
 if __name__ == '__main__':
-    c = Configuration()
+    Configuration.initialize()
     from Arguments import Arguments
     a = Arguments()
-    c.load_from_arguments(a.args)
-    print c
+    Configuration.load_from_arguments(a.args)
+    print Configuration.dump()
 

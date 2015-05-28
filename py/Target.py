@@ -61,7 +61,10 @@ class Target(object):
 
 
     def __str__(self):
-        ''' *Colored* string representation of this Target '''
+        '''
+            *Colored* string representation of this Target.
+            Specifically formatted for the "scanning" table view.
+        '''
 
         max_essid_len = 25
         essid = self.essid
@@ -114,6 +117,7 @@ class Target(object):
 
     @staticmethod
     def print_header():
+        ''' Prints header rows for "scanning" table view '''
         print '   NUM                     ESSID  CH  ENCR  POWER  WPS?  CLIENT'
         print '   --- -------------------------  --  ----  -----  ----  ------'
 
