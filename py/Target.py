@@ -1,5 +1,7 @@
 #!/usr/bin/python
 
+from Color import Color
+
 class Target(object):
     '''
         Holds details for a "Target" aka Access Point (e.g. router).
@@ -45,32 +47,82 @@ class Target(object):
         self.beacons    = int(fields[9].strip())
         self.ivs        = int(fields[10].strip())
 
+        self.essid_known = True
         self.essid_len  = int(fields[12].strip())
         self.essid      =     fields[13].strip()
         if self.essid == '\\x00' * self.essid_len:
             # Don't display "\x00..." for hidden ESSIDs
-            self.essid = '(hidden, length: %s)' % self.essid_len
+            self.essid = '(%s)' % self.bssid
+            self.essid_known = False
+
+        self.wps = False
 
         self.clients = []
 
 
     def __str__(self):
-        ''' String representation of this Target '''
-        result = ''
-        for (key,value) in self.__dict__.iteritems():
-            if key == 'clients': continue
-            result += key + ': ' + str(value)
-            result += ', '
-        for client in self.clients:
-            result += 'client: %s' % client.station
-            result += ','
-        if result.endswith(', '):
-            result = result[:-2]
+        ''' *Colored* string representation of this Target '''
+
+        max_essid_len = 25
+        essid = self.essid
+        # Trim ESSID (router name) if needed
+        if len(essid) > max_essid_len:
+            essid = essid[0:max_essid_len-3] + '...'
+        else:
+            essid = essid.rjust(max_essid_len)
+
+        if self.essid_known:
+            # Known ESSID
+            essid = Color.s("{C}%s" % essid)
+        else:
+            # Unknown ESSID
+            essid = Color.s("{O}%s" % essid)
+
+        channel = str(self.channel)
+        if len(channel) == 1:
+            channel = Color.s("{G} %s" % channel)
+
+        encryption = self.encryption.rjust(4)
+        if 'WEP' in encryption:
+            encryption = Color.s("{G}%s" % encryption)
+        elif 'WPA' in encryption:
+            encryption = Color.s("{O}%s" % encryption)
+
+        power = '%sdb' % str(self.power).rjust(3)
+        if self.power > 50:
+            color ='G'
+        elif self.power > 35:
+            color = 'O'
+        else:
+            color = 'R'
+        power = Color.s('{%s}%s' % (color, power))
+
+        wps = Color.s('{R}  no')
+        if self.wps:
+            wps = Color.s('{G} yes')
+
+        clients = '       '
+        if len(self.clients) == 1:
+            clients = Color.s('{G}client ')
+        elif len(self.clients) > 1:
+            clients = Color.s('{G}clients')
+
+        result = '%s  %s  %s  %s  %s  %s' % (essid, channel,
+                                        encryption, power,
+                                        wps, clients)
         return result
+
+    @staticmethod
+    def print_header():
+        print '   NUM                     ESSID  CH  ENCR  POWER  WPS?  CLIENT'
+        print '   --- -------------------------  --  ----  -----  ----  ------'
 
 
 if __name__ == '__main__':
-    fields = '00:AC:E0:71:74:E0, 2015-05-27 19:28:44, 2015-05-27 19:28:46,  1,  54, WPA2, CCMP TKIP,PSK, -58,        2,        0,   0.  0.  0.  0,   9, HOME-74E2, '.split(',')
+    fields = 'AA:BB:CC:DD:EE:FF, 2015-05-27 19:28:44, 2015-05-27 19:28:46,  1,  54, WPA2, CCMP TKIP,PSK, -58,        2,        0,   0.  0.  0.  0,   9, HOME-ABCD, '.split(',')
     t = Target(fields)
-    print t
+    t.clients.append("asdf")
+    t.clients.append("asdf")
+    Target.print_header()
+    Color.pl('   {G}%s %s' % ('1'.rjust(3), t))
 

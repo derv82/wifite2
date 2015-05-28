@@ -31,11 +31,11 @@ class Client(object):
         result = ''
         for (key,value) in self.__dict__.iteritems():
             result += key + ': ' + str(value)
-            result += ','
+            result += ', '
         return result
 
 
 if __name__ == '__main__':
-    fields = '54:35:30:23:62:8E, 2015-05-27 19:43:47, 2015-05-27 19:43:47, -67,        2, (not associated) ,HOME-1102'.split(',')
+    fields = 'AA:BB:CC:DD:EE:FF, 2015-05-27 19:43:47, 2015-05-27 19:43:47, -67,        2, (not associated) ,HOME-ABCD'.split(',')
     c = Client(fields)
     print c

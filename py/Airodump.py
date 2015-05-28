@@ -4,6 +4,7 @@ from Process import Process
 from Configuration import Configuration
 from Target import Target
 from Client import Client
+from Wash import Wash
 
 import os
 
@@ -129,6 +130,10 @@ class Airodump(object):
 
                     targets.append(target)
 
+        # Check targets for WPS
+        capfile = csv_filename[:-3] + 'cap'
+        Wash.check_for_wps_and_update_targets(capfile, targets)
+
         # Sort by power
         targets.sort(key=lambda x: x.power, reverse=True)
 
@@ -140,13 +145,17 @@ class Airodump(object):
 if __name__ == '__main__':
     ''' Example usage. wlan0mon should be in Monitor Mode '''
     with Airodump('wlan0mon', channel=6) as airodump:
-        from time import sleep
 
+        from time import sleep
         sleep(7)
 
+        from Color import Color
+
         targets = airodump.get_targets()
-        for t in targets:
-            print 'Target>', t
+        Target.print_header()
+        for (index, target) in enumerate(targets):
+            index += 1
+            Color.pl('   {G}%s %s' % (str(index).rjust(3), target))
 
     Configuration.delete_temp()
 
