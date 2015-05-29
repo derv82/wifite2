@@ -55,7 +55,7 @@ class Target(object):
             self.essid = '(%s)' % self.bssid
             self.essid_known = False
 
-        self.wps = False
+        self.wps = None
 
         self.clients = []
 
@@ -100,9 +100,11 @@ class Target(object):
             color = 'R'
         power = Color.s('{%s}%s' % (color, power))
 
-        wps = Color.s('{R}  no')
+        wps = Color.s('{O} n/a')
         if self.wps:
             wps = Color.s('{G} yes')
+        else:
+            wps = Color.s('{R}  no')
 
         clients = '       '
         if len(self.clients) == 1:

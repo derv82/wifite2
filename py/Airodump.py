@@ -11,11 +11,23 @@ import os
 class Airodump(object):
     ''' Wrapper around airodump-ng program '''
 
-    def __init__(self, interface, channel=None, encryption=None, wps=False):
+    def __init__(self, interface=None, channel=None, encryption=None, wps=False):
         ''' Constructor, sets things up '''
-        self.targets = []
+
+        Configuration.initialize()
+
+        if interface == None:
+            interface = Configuration.interface
+        if interface == None:
+            raise Exception("Interface must be defined")
         self.interface = interface
+
+        self.targets = []
+
+        if channel == None:
+            channel = Configuration.target_channel
         self.channel = channel
+
         self.encryption = encryption
         self.wps = wps
 
@@ -144,7 +156,7 @@ class Airodump(object):
 
 if __name__ == '__main__':
     ''' Example usage. wlan0mon should be in Monitor Mode '''
-    with Airodump('wlan0mon', channel=6) as airodump:
+    with Airodump() as airodump:
 
         from time import sleep
         sleep(7)

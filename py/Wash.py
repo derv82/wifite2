@@ -43,6 +43,11 @@ class Wash(object):
                     # Update the WPS flag
                     t.wps = True
 
+        # Mark other targets as "no" wps support
+        for t in targets:
+            if t.wps: continue
+            t.wps = False
+
 
 if __name__ == '__main__':
     from Target import Target

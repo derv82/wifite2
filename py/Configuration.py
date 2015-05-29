@@ -5,11 +5,20 @@ import os
 class Configuration(object):
     ''' Stores configuration variables for Wifite.  '''
 
-    temp_dir = None
+    initialized = False # Flag indicating config has been initialized
+    temp_dir = None     # Temporary directory
 
     @staticmethod
     def initialize():
-        ''' Sets up default initial configuration values '''
+        '''
+            Sets up default initial configuration values.
+            Also sets config values based on command-line arguments.
+        '''
+
+        # Only initialize this class once
+        if Configuration.initialized:
+            return
+        Configuration.initialized = True
 
         Configuration.version = 2.00 # Program version
         Configuration.tx_power = 0 # Wifi transmit power (0 is default)
@@ -54,9 +63,14 @@ class Configuration(object):
         Configuration.wps_timeout = 600 # Seconds to wait before failing
         Configuration.wps_max_retries = 20 # Retries before failing
 
+        # Overwrite config values with arguments (if defined)
+        Configuration.load_from_arguments()
+
 
     @staticmethod
-    def load_from_arguments(args):
+    def load_from_arguments():
+        from Arguments import Arguments
+        args = Arguments().args
         ''' Sets configuration values based on Argument.args object '''
         if args.channel:    Configuration.target_channel = args.channel
         if args.interface:  Configuration.interface  = args.interface
@@ -104,7 +118,7 @@ class Configuration(object):
         ''' (Colorful) string representation of the configuration '''
         from Color import Color
 
-        max_len = 0
+        max_len = 20
         for key in Configuration.__dict__.keys():
             max_len = max(max_len, len(key))
 
@@ -120,8 +134,5 @@ class Configuration(object):
 
 if __name__ == '__main__':
     Configuration.initialize()
-    from Arguments import Arguments
-    a = Arguments()
-    Configuration.load_from_arguments(a.args)
     print Configuration.dump()
 
