@@ -1,0 +1,8 @@
+No interfering processes found
+PHY	Interface	Driver		Chipset
+
+phy2	wlan0		rtl8187		Realtek Semiconductor Corp. RTL8187
+		(mac80211 monitor mode vif enabled for [phy2]wlan0 on [phy2]wlan0mon)
+		(mac80211 station mode vif disabled for [phy2]wlan0)
+
+

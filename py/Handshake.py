@@ -273,22 +273,22 @@ class Handshake(object):
             return []
 
     def analyze(self):
-        hs.divine_bssid_and_essid()
+        self.divine_bssid_and_essid()
 
-        pairs = hs.tshark_handshakes()
-        Handshake.print_pairs(pairs, 'tshark')
+        pairs = self.tshark_handshakes()
+        Handshake.print_pairs(pairs, self.capfile, 'tshark')
 
-        pairs = hs.pyrit_handshakes()
-        Handshake.print_pairs(pairs, 'pyrit')
+        pairs = self.pyrit_handshakes()
+        Handshake.print_pairs(pairs, self.capfile, 'pyrit')
 
-        pairs = hs.cowpatty_handshakes()
-        Handshake.print_pairs(pairs, 'cowpatty')
+        pairs = self.cowpatty_handshakes()
+        Handshake.print_pairs(pairs, self.capfile, 'cowpatty')
 
-        pairs = hs.aircrack_handshakes()
-        Handshake.print_pairs(pairs, 'aircrack')
+        pairs = self.aircrack_handshakes()
+        Handshake.print_pairs(pairs, self.capfile, 'aircrack')
 
     @staticmethod
-    def print_pairs(pairs, tool=None):
+    def print_pairs(pairs, capfile, tool=None):
         '''
             Prints out BSSID and/or ESSID given a list of tuples (bssid,essid)
         '''
@@ -298,19 +298,19 @@ class Handshake(object):
 
         if len(pairs) == 0:
             Color.pl("{!} %s%s {R}does not{O} contain a handshake{W}"
-                % (tool_str,hs.capfile))
+                % (tool_str, capfile))
             return
 
         for (bssid, essid) in pairs:
             if bssid and essid:
                 Color.pl("{+} %s%s {G}contains a handshake{W} for {G}%s{W} ({G}%s{W})"
-                    % (tool_str, hs.capfile, bssid, essid))
+                    % (tool_str, capfile, bssid, essid))
             elif bssid:
                 Color.pl("{+} %s%s {G}contains a handshake{W} for {G}%s{W}"
-                    % (tool_str, hs.capfile, bssid))
+                    % (tool_str, capfile, bssid))
             elif essid:
                 Color.pl("{+} %s%s {G}contains a handshake{W} for ({G}%s{W})"
-                    % (tool_str, hs.capfile, essid))
+                    % (tool_str, capfile, essid))
 
 
 
