@@ -81,7 +81,7 @@ class Airodump(object):
             if fil.startswith(self.output_file_prefix):
                 os.remove(Configuration.temp() + fil)
 
-    def get_targets(self, wpa_wep_only=True):
+    def get_targets(self):
         ''' Parses airodump's CSV file, returns list of Targets '''
         # Find the .CSV file
         csv_filename = None
@@ -94,9 +94,28 @@ class Airodump(object):
             # No file found
             return self.targets
 
-        targets = []
-
         # Parse the .CSV file
+        targets = Airodump.get_targets_from_csv(csv_filename)
+        targets = Airodump.filter_targets(targets, wep=True, wpa=True, opn=False)
+
+        # Check targets for WPS
+        capfile = csv_filename[:-3] + 'cap'
+        Wash.check_for_wps_and_update_targets(capfile, targets)
+
+        # Sort by power
+        targets.sort(key=lambda x: x.power, reverse=True)
+
+        self.targets = targets
+
+        return self.targets
+
+
+    @staticmethod
+    def get_targets_from_csv(csv_filename):
+        '''
+            Returns list of Target objects parsed from CSV file
+        '''
+        targets = []
         import csv
         with open(csv_filename, 'rb') as csvopen:
             csv_reader = csv.reader(csvopen, delimiter=',')
@@ -138,26 +157,21 @@ class Airodump(object):
                         # Ignore empty/blank ESSIDs
                         continue
 
-                    if wpa_wep_only and 'WPA' not in target.encryption and 'WEP' not in target.encryption:
-                        # Ignore non-WPA and non-WEP encrypted networks
-                        continue
-
-                    if self.encryption and self.encryption not in target.encryption:
-                        # We're looking for a specific type of encryption
-                        continue
-
                     targets.append(target)
+        return targets
 
-        # Check targets for WPS
-        capfile = csv_filename[:-3] + 'cap'
-        Wash.check_for_wps_and_update_targets(capfile, targets)
-
-        # Sort by power
-        targets.sort(key=lambda x: x.power, reverse=True)
-
-        self.targets = targets
-
-        return self.targets
+    @staticmethod
+    def filter_targets(targets, wep=True, wpa=True, opn=False):
+        ''' Filters targets based on encryption '''
+        result = []
+        for target in targets:
+            if wep and 'WEP' in target.encryption:
+                result.append(target)
+            elif wpa and 'WPA' in target.encryption:
+                result.append(target)
+            elif opn and 'OPN' in target.encryption:
+                result.append(target)
+        return result
 
 
 if __name__ == '__main__':
