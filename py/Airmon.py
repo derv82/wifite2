@@ -68,7 +68,7 @@ class Airmon(object):
 
         # Call airmon-ng
         Color.p("{+} enabling {G}monitor mode{W} on {C}%s{W}... " % iface)
-        (out,err) = Process.call(['airmon-ng', 'start', iface])
+        (out,err) = Process.call('airmon-ng start %s' % iface)
 
         # Find the interface put into monitor mode (if any)
         mon_iface = None
@@ -129,16 +129,19 @@ class Airmon(object):
 
 
 if __name__ == '__main__':
-    print "Interfaces in monitor mode:",
-    print ','.join(Airmon.get_interfaces_in_monitor_mode())
-    print ''
+    mon_ifaces = Airmon.get_interfaces_in_monitor_mode()
 
     a = Airmon()
     a.print_menu()
     count = len(a.interfaces)
     question = Color.s("Select interface ({G}1-%d{W}): " % (count))
     choice = raw_input(question)
-    Color.pl("You chose: {G}%s{W}" % a.get(choice).name)
+    iface = a.get(choice)
+    Color.pl("You chose: {G}%s{W}" % iface.name)
     
+    if a.get(choice).name in mon_ifaces:
+        Color.pl('{+} {G}%s{W} is already in monitor mode' % iface.name)
+    else:
+        Airmon.start(iface)
     #a.start(a.interfaces[0])
 
