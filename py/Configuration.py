@@ -32,6 +32,7 @@ class Configuration(object):
         Configuration.wep_only = False # Only attack WEP networks
         Configuration.wep_pps = 6000 # Packets per second
         Configuration.wep_timeout = 600 # Seconds to wait before failing
+        Configuration.require_fakeauth = False
         # WEP-specific attacks
         Configuration.wep_fragment = True 
         Configuration.wep_caffelatte = True 
@@ -79,6 +80,7 @@ class Configuration(object):
         if args.wps_only:   Configuration.wps_only   = args.wps_only
         if args.pixie_only: Configuration.pixie_only = args.pixie_only
         if args.wordlist:   Configuration.wordlist   = args.wordlist
+        if args.require_fakeauth: Configuration.require_fakeauth = False
         
 
     @staticmethod

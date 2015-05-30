@@ -33,21 +33,25 @@ class Arguments(object):
             action='store_true',
             dest='wep_only',
             help='Only target WEP-encrypted networks (ignores WPA)')
+        wep.add_argument('--require-fakeauth',
+            action='store_true',
+            dest='require_fakeauth',
+            help='Fails attacks if fake-authentication fails')
 
         # WPA
-        wep = parser.add_argument_group('WPA-RELATED')
-        wep.add_argument('--wpa',
+        wpa = parser.add_argument_group('WPA-RELATED')
+        wpa.add_argument('--wpa',
             action='store_true',
             dest='wpa_only',
             help='Only target WPA-encrypted networks (ignores WEP)')
 
         # WPS
-        wep = parser.add_argument_group('WPS-RELATED')
-        wep.add_argument('--wps',
+        wps = parser.add_argument_group('WPS-RELATED')
+        wps.add_argument('--wps',
             action='store_true',
             dest='wps_only',
             help='Only target WPS-encrypted networks (ignores WEP/nonWPS)')
-        wep.add_argument('--pixie',
+        wps.add_argument('--pixie',
             action='store_true',
             dest='pixie_only',
             help='Only use the WPS Pixie-Dust attack (do not crack PINs)')

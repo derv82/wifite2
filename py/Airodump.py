@@ -19,7 +19,7 @@ class Airodump(object):
         if interface == None:
             interface = Configuration.interface
         if interface == None:
-            raise Exception("Interface must be defined")
+            raise Exception("Wireless interface must be defined (-i)")
         self.interface = interface
 
         self.targets = []
@@ -86,7 +86,7 @@ class Airodump(object):
         # Find the .CSV file
         csv_filename = None
         for fil in os.listdir(Configuration.temp()):
-            if fil.startswith(self.output_file_prefix) and fil.endswith('csv'):
+            if fil.startswith(self.output_file_prefix) and fil.endswith('-01.csv'):
                 # Found the file
                 csv_filename = Configuration.temp() + fil
                 break
@@ -100,6 +100,7 @@ class Airodump(object):
         import csv
         with open(csv_filename, 'rb') as csvopen:
             csv_reader = csv.reader(csvopen, delimiter=',')
+            hit_clients = False
             for row in csv_reader:
                 # Each "row" is a list of fields for a target/client
 
