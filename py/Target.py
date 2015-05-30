@@ -115,6 +115,7 @@ class Target(object):
         result = '%s  %s  %s  %s  %s  %s' % (essid, channel,
                                         encryption, power,
                                         wps, clients)
+        result += Color.s("{W}")
         return result
 
     @staticmethod

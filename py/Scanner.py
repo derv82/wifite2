@@ -20,12 +20,29 @@ class Scanner(object):
         '''
         self.previous_target_count = 0
         self.targets = []
+
         # Loads airodump with interface/channel/etc from Configuration
         with Airodump() as airodump:
             try:
+                # Loop until interrupted (Ctrl+C)
                 while True:
-                    client_count = sum([len(t.clients) for t in self.targets])
-                    Color.p("\r {+} Scanning, found {G}%d{W} target(s), {G}%d{W} clients" % (len(self.targets), client_count))
+
+                    if airodump.pid.poll() != None:
+                        # Airodump process died!
+                        raise Exception(
+                            "Airodump exited unexpectedly! " +
+                            "Command ran: %s"
+                                % ' '.join(airodump.pid.command))
+
+                    target_count = len(self.targets)
+                    client_count = sum(
+                                       [len(t.clients)
+                                           for t in self.targets])
+                    Color.p(
+                        "\r {+} Scanning, " +
+                        "found {G}%d{W} target(s)," % target_count +
+                        " {G}%d{W} clients" % client_count +
+                        ". {O}Ctrl+C{W} when ready")
                     sleep(1)
                     self.targets = airodump.get_targets()
                     self.print_targets()
@@ -38,6 +55,7 @@ class Scanner(object):
             Prints targets to console
         '''
         if len(self.targets) == 0:
+            Color.p('\r')
             return
 
         if self.previous_target_count > 0:
@@ -56,10 +74,21 @@ class Scanner(object):
 
     def select_targets(self):
         ''' Asks user to select target(s) '''
+
+        if len(self.targets) == 0:
+            # TODO Print a more-helpful reason for failure.
+            # 1. Link to wireless drivers wiki,
+            # 2. How to check if your device supporst monitor mode,
+            # 3. Provide airodump-ng command being executed.
+            raise Exception("No targets found."
+                + " You may need to wait longer,"
+                + " or you may have issues with your wifi card")
+
         self.print_targets()
         input_str  = '{+} Select target(s)'
         input_str += ' ({G}1-%d{W})' % len(self.targets)
-        input_str += ' separated by commas, or {G}all{W}: '
+        input_str += ' separated by commas, dashes'
+        input_str += ' or {G}all{W}: '
 
         chosen_targets = []
         for choice in raw_input(Color.s(input_str)).split(','):
@@ -75,9 +104,15 @@ class Scanner(object):
 
 
 if __name__ == '__main__':
+    Configuration.initialize()
     # Example displays targets and selects the appropriate one
-    s = Scanner()
-    targets = s.select_targets()
+    try:
+        s = Scanner()
+        targets = s.select_targets()
+    except Exception, e:
+        Color.pl('\r {!} {R}Error{W}: %s' % str(e))
+        Configuration.exit_gracefully(0)
     for t in targets:
         Color.p("{W}Selected: ")
         print t
+    Configuration.exit_gracefully(0)

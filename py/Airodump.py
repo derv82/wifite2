@@ -11,7 +11,7 @@ import os
 class Airodump(object):
     ''' Wrapper around airodump-ng program '''
 
-    def __init__(self, interface=None, channel=None, encryption=None, wps=False):
+    def __init__(self, interface=None, channel=None, encryption=None, wps=False, target_bssid=None, output_file_prefix='airodump'):
         ''' Constructor, sets things up '''
 
         Configuration.initialize()
@@ -31,6 +31,9 @@ class Airodump(object):
         self.encryption = encryption
         self.wps = wps
 
+        self.target_bssid = target_bssid
+        self.output_file_prefix = output_file_prefix
+
     def __enter__(self):
         '''
             Setting things up for this context.
@@ -38,7 +41,7 @@ class Airodump(object):
         '''
         self.delete_airodump_temp_files()
 
-        self.csv_file_prefix = Configuration.temp() + "airodump";
+        self.csv_file_prefix = Configuration.temp() + self.output_file_prefix
 
         # Build the command
         command = [
@@ -53,6 +56,8 @@ class Airodump(object):
             command.extend(['--enc', self.encryption])
         if self.wps:
             command.extend(['--wps'])
+        if self.target_bssid:
+            command.extend(['--bssid', self.target_bssid])
 
         # Start the process
         self.pid = Process(command, devnull=True)
@@ -73,7 +78,7 @@ class Airodump(object):
     def delete_airodump_temp_files(self):
         ''' Deletes airodump* files in the temp directory '''
         for fil in os.listdir(Configuration.temp()):
-            if fil.startswith('airodump'):
+            if fil.startswith(self.output_file_prefix):
                 os.remove(Configuration.temp() + fil)
 
     def get_targets(self, wpa_wep_only=True):
@@ -81,7 +86,7 @@ class Airodump(object):
         # Find the .CSV file
         csv_filename = None
         for fil in os.listdir(Configuration.temp()):
-            if fil.startswith('airodump') and fil.endswith('csv'):
+            if fil.startswith(self.output_file_prefix) and fil.endswith('csv'):
                 # Found the file
                 csv_filename = Configuration.temp() + fil
                 break

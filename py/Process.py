@@ -36,9 +36,13 @@ class Process(object):
 
     def __init__(self, command, devnull=False):
         ''' Starts executing command '''
+
         if type(command) == str:
             # Commands have to be a list
             command = command.split(' ')
+
+        self.command = command
+
         self.out = None
         self.err = None
         if devnull:
@@ -48,6 +52,14 @@ class Process(object):
             sout = PIPE
             serr = PIPE
         self.pid = Popen(command, stdout=sout, stderr=serr)
+
+    def __del__(self):
+        '''
+            Ran when object is GC'd.
+            If process is still running at this point, it should die.
+        '''
+        if self.pid and self.pid.poll() == None:
+            self.interrupt()
 
     def stdout(self):
         ''' Waits for process to finish, returns stdout output '''
@@ -60,7 +72,7 @@ class Process(object):
         return self.err
 
     def get_output(self):
-        ''' Waits for process to finish, returns stdout & stderr '''
+        ''' Waits for process to finish, sets stdout & stderr '''
         if self.pid.poll() == None:
             self.pid.wait()
         if self.out == None:
@@ -115,4 +127,8 @@ if __name__ == '__main__':
     print out,err
 
     print '"reaver" exists:', Process.exists('reaver')
+
+    # Test on never-ending process
+    p = Process('yes')
+    # After program loses reference to instance in 'p', process dies.
 
