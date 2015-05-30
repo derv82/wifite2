@@ -59,8 +59,19 @@ class Scanner(object):
             return
 
         if self.previous_target_count > 0:
-            # "Move" cursor up so we will print over the previous list
-            print Scanner.UP_CHAR * (3 + self.previous_target_count)
+            # We need to "overwrite" the previous list of targets.
+            if self.previous_target_count > len(self.targets) or \
+               Scanner.get_terminal_height() < self.previous_target_count + 3:
+                # Either:
+                # 1) We have less targets than before, so we can't overwrite the previous list
+                # 2) The terminal can't display the targets without scrolling.
+                # Clear the screen.
+                from Process import Process
+                Process.call('clear')
+            else:
+                # We can fit the targets in the terminal without scrolling
+                # "Move" cursor up so we will print over the previous list
+                print Scanner.UP_CHAR * (3 + self.previous_target_count)
 
         self.previous_target_count = len(self.targets)
 
@@ -71,6 +82,12 @@ class Scanner(object):
         for (index, target) in enumerate(self.targets):
             index += 1
             Color.pl('   {G}%s %s' % (str(index).rjust(3), target))
+
+    @staticmethod
+    def get_terminal_height():
+        import os
+        (rows, columns) = os.popen('stty size', 'r').read().split()
+        return int(rows)
 
     def select_targets(self):
         ''' Asks user to select target(s) '''
