@@ -49,14 +49,15 @@ class WEPAttackType(object):
 
 
 class Aireplay(object):
-    def __init__(self, target, attack_type):
+    def __init__(self, target, attack_type, client_mac=None):
         '''
             Starts aireplay process.
             Args:
                 target - Instance of Target object, AP to attack.
                 attack_type - int, str, or WEPAttackType instance.
+                client_mac - MAC address of an associated client.
         '''
-        cmd = Aireplay.get_aireplay_command(target, attack_type)
+        cmd = Aireplay.get_aireplay_command(target, attack_type, client_mac)
         self.pid = Process(cmd, devnull=False)
 
     def is_running(self):
@@ -72,12 +73,13 @@ class Aireplay(object):
         return self.pid.stdout()
 
     @staticmethod
-    def get_aireplay_command(target, attack_type):
+    def get_aireplay_command(target, attack_type, client_mac=None):
         '''
             Generates aireplay command based on target and attack type
             Args:
                 target - Instance of Target object, AP to attack.
                 attack_type - int, str, or WEPAttackType instance.
+                client_mac - MAC address of an associated client.
         '''
 
         # Interface is required at this point
@@ -87,8 +89,9 @@ class Aireplay(object):
             
         cmd = ['aireplay-ng']
         cmd.append('--ignore-negative-one')
-        client_mac = None
-        if len(target.clients) > 0:
+
+        if not client_mac and len(target.clients) > 0:
+            # Client MAC wasn't specified, but there's an associated client. Use that.
             client_mac = target.clients[0].station
 
         # type(attack_type) might be str, int, or WEPAttackType.
@@ -101,10 +104,8 @@ class Aireplay(object):
             cmd.extend(['-T', '1']) # Make 1 attemp
             if target.essid_known:
                 cmd.extend(['-e', target.essid])
-
-            # TODO Should we specify the source MAC as a client station?
-            #if client_mac:
-            #    cmd.extend(['-h', client_mac])
+            # Do not specify client MAC address,
+            # we're trying to fake-authenticate using *our* MAC
 
         elif attack_type == WEPAttackType.replay:
             cmd.append('--arpreplay')
@@ -173,9 +174,17 @@ if __name__ == '__main__':
     print t.name, type(t.name), t.value
 
     from Target import Target
-    fields = 'AA:BB:CC:DD:EE:FF, 2015-05-27 19:28:44, 2015-05-27 19:28:46,  1,  54, WPA2, CCMP TKIP,PSK, -58,        2,        0,   0.  0.  0.  0,   9, HOME-ABCD, '.split(',')
+    fields = 'A4:2B:8C:16:6B:3A, 2015-05-27 19:28:44, 2015-05-27 19:28:46,  6,  54e, WEP, WEP, , -58,        2,        0,   0.  0.  0.  0,   9, Test Router Please Ignore, '.split(',')
     t = Target(fields)
 
     cmd = Aireplay.get_aireplay_command(t, 'fakeauth')
     print ' '.join(['"%s"' % a for a in cmd])
+
+    '''
+    aireplay = Aireplay(t, 'replay')
+    while aireplay.is_running():
+        from time import sleep
+        sleep(0.1)
+    print aireplay.get_output()
+    '''
 

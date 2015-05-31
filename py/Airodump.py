@@ -11,7 +11,9 @@ import os
 class Airodump(object):
     ''' Wrapper around airodump-ng program '''
 
-    def __init__(self, interface=None, channel=None, encryption=None, wps=False, target_bssid=None, output_file_prefix='airodump'):
+    def __init__(self, interface=None,       channel=None,         encryption=None, \
+                             wps=False, target_bssid=None, output_file_prefix='airodump', \
+                        ivs_only=False):
         ''' Constructor, sets things up '''
 
         Configuration.initialize()
@@ -33,6 +35,8 @@ class Airodump(object):
 
         self.target_bssid = target_bssid
         self.output_file_prefix = output_file_prefix
+        self.ivs_only = ivs_only
+
 
     def __enter__(self):
         '''
@@ -59,6 +63,11 @@ class Airodump(object):
         if self.target_bssid:
             command.extend(['--bssid', self.target_bssid])
 
+        if self.ivs_only:
+            command.extend(['--output-format', 'ivs,csv'])
+        else:
+            command.extend(['--output-format', 'pcap,csv'])
+
         # Start the process
         self.pid = Process(command, devnull=True)
         return self
@@ -75,21 +84,29 @@ class Airodump(object):
         # Delete temp files
         self.delete_airodump_temp_files()
 
-    def delete_airodump_temp_files(self):
-        ''' Deletes airodump* files in the temp directory '''
+
+    def find_files(self, endswith=None):
+        ''' Finds all files in the temp directory that start with the output_file_prefix '''
+        result = []
         for fil in os.listdir(Configuration.temp()):
             if fil.startswith(self.output_file_prefix):
-                os.remove(Configuration.temp() + fil)
+                if not endswith or fil.endswith(endswith):
+                    result.append(Configuration.temp() + fil)
+        return result
+
+    def delete_airodump_temp_files(self):
+        ''' Deletes airodump* files in the temp directory '''
+        for fil in self.find_files():
+            os.remove(fil)
 
     def get_targets(self):
         ''' Parses airodump's CSV file, returns list of Targets '''
         # Find the .CSV file
         csv_filename = None
-        for fil in os.listdir(Configuration.temp()):
-            if fil.startswith(self.output_file_prefix) and fil.endswith('-01.csv'):
-                # Found the file
-                csv_filename = Configuration.temp() + fil
-                break
+        for fil in self.find_files(endswith='-01.csv'):
+            # Found the file
+            csv_filename = fil
+            break
         if csv_filename == None or not os.path.exists(csv_filename):
             # No file found
             return self.targets

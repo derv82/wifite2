@@ -121,8 +121,8 @@ class Scanner(object):
 
 
 if __name__ == '__main__':
-    Configuration.initialize()
     # Example displays targets and selects the appropriate one
+    Configuration.initialize()
     try:
         s = Scanner()
         targets = s.select_targets()
@@ -133,3 +133,4 @@ if __name__ == '__main__':
         Color.p("{W}Selected: ")
         print t
     Configuration.exit_gracefully(0)
+

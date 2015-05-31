@@ -1,5 +1,7 @@
 #!/usr/bin/python
 
+import time
+
 class Attack(object):
     '''
         Contains functionality common to all attacks

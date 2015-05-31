@@ -19,8 +19,8 @@ class Color(object):
 
     # Helper string replacements
     replacements = {
-        '{+}': '{W}[{G}+{W}]',
-        '{!}': '{W}[{R}!{W}]'
+        '{+}': ' {W}[{G}+{W}]',
+        '{!}': ' {W}[{R}!{W}]'
     }
 
     @staticmethod

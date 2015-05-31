@@ -68,3 +68,26 @@ class Interface(object):
         s += '-' * (Interface.PHY_LEN + Interface.NAME_LEN + Interface.DRIVER_LEN + Interface.CHIPSET_LEN)
         return s
 
+    @staticmethod
+    def get_mac(iface=None):
+        from Configuration import Configuration
+        from Process import Process
+        import re
+
+        if iface == None:
+            Configuration.initialize()
+            iface = Configuration.interface
+        if iface == None:
+            raise Exception('Interface must be defined (-i)')
+
+        output = Process(['ifconfig', iface]).stdout()
+        mac_regex = ('[a-zA-Z0-9]{2}-' * 6)[:-1]
+        match = re.search('HWaddr (%s)' % mac_regex, output)
+        if not match:
+            raise Exception('Could not find the mac address for %s' % iface)
+        return match.groups()[0].replace('-', ':')
+
+if __name__ == '__main__':
+    mac = Interface.get_mac()
+    print 'wlan0mon mac address:', mac
+

@@ -30,8 +30,9 @@ class Configuration(object):
 
         # WEP variables
         Configuration.wep_only = False # Only attack WEP networks
-        Configuration.wep_pps = 6000 # Packets per second
+        Configuration.wep_pps = 600 # Packets per second
         Configuration.wep_timeout = 600 # Seconds to wait before failing
+        Configuration.wep_crack_at_ivs = 10000 # Minimum IVs to start cracking
         Configuration.require_fakeauth = False
         # WEP-specific attacks
         Configuration.wep_fragment = True 
@@ -81,6 +82,11 @@ class Configuration(object):
         if args.pixie_only: Configuration.pixie_only = args.pixie_only
         if args.wordlist:   Configuration.wordlist   = args.wordlist
         if args.require_fakeauth: Configuration.require_fakeauth = False
+
+        if Configuration.interface == None:
+            # Interface wasn't defined, select it!
+            from Airmon import Airmon
+            Configuration.interface = Airmon.ask()
         
 
     @staticmethod

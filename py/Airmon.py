@@ -104,7 +104,7 @@ class Airmon(object):
 
     @staticmethod
     def stop(iface):
-        # TODO (this)
+        # TODO airmon-ng stop iface
         pass
 
 
@@ -127,21 +127,40 @@ class Airmon(object):
                 interfaces.append(iface)
         return interfaces
 
+    @staticmethod
+    def ask():
+        ''' Asks user to define which wireless interface to use '''
+        mon_ifaces = Airmon.get_interfaces_in_monitor_mode()
+        mon_count = len(mon_ifaces)
+        if mon_count == 1:
+            # Assume we're using the device already in montior mode
+            iface = mon_ifaces[0]
+            Color.pl('{+} using interface {G}%s{W} which is already in monitor mode'
+                % iface);
+            return iface
+
+        a = Airmon()
+        a.print_menu()
+        count = len(a.interfaces)
+        if count == 0:
+            # No interfaces found
+            Color.pl('{!} {O}airmon-ng did not find {R}any{O} wireless interfaces')
+            raise Exception('airmon-ng did not find any wireless interfaces')
+        elif count == 1:
+            # Only one interface, assume this is the one to use
+            iface = a.get(1)
+        else:
+            # Multiple interfaces found
+            question = Color.s("{+} select interface ({G}1-%d{W}): " % (count))
+            choice = raw_input(question)
+            iface = a.get(choice)
+        
+        if a.get(choice).name in mon_ifaces:
+            Color.pl('{+} {G}%s{W} is already in monitor mode' % iface.name)
+        else:
+            Airmon.start(iface)
+        return iface.name
+
 
 if __name__ == '__main__':
-    mon_ifaces = Airmon.get_interfaces_in_monitor_mode()
-
-    a = Airmon()
-    a.print_menu()
-    count = len(a.interfaces)
-    question = Color.s("Select interface ({G}1-%d{W}): " % (count))
-    choice = raw_input(question)
-    iface = a.get(choice)
-    Color.pl("You chose: {G}%s{W}" % iface.name)
-    
-    if a.get(choice).name in mon_ifaces:
-        Color.pl('{+} {G}%s{W} is already in monitor mode' % iface.name)
-    else:
-        Airmon.start(iface)
-    #a.start(a.interfaces[0])
-
+    Airmon.ask()
