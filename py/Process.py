@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 from subprocess import Popen, call, PIPE
+import time
 
 class Process(object):
     ''' Represents a running/ran process '''
@@ -51,6 +52,9 @@ class Process(object):
         else:
             sout = PIPE
             serr = PIPE
+
+        self.start_time = time.time()
+
         self.pid = Popen(command, stdout=sout, stderr=serr)
 
     def __del__(self):
@@ -81,6 +85,10 @@ class Process(object):
     def poll(self):
         ''' Returns exit code if process is dead, otherwise "None" '''
         return self.pid.poll()
+
+    def time_running(self):
+        ''' Returns number of seconds since process was started '''
+        return int(time.time() - self.start_time)
 
     def interrupt(self):
         '''

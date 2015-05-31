@@ -148,12 +148,13 @@ class Airmon(object):
             raise Exception('airmon-ng did not find any wireless interfaces')
         elif count == 1:
             # Only one interface, assume this is the one to use
-            iface = a.get(1)
+            choice = 1
         else:
             # Multiple interfaces found
             question = Color.s("{+} select interface ({G}1-%d{W}): " % (count))
             choice = raw_input(question)
-            iface = a.get(choice)
+
+        iface = a.get(choice)
         
         if a.get(choice).name in mon_ifaces:
             Color.pl('{+} {G}%s{W} is already in monitor mode' % iface.name)

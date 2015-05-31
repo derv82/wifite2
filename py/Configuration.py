@@ -34,6 +34,9 @@ class Configuration(object):
         Configuration.wep_timeout = 600 # Seconds to wait before failing
         Configuration.wep_crack_at_ivs = 10000 # Minimum IVs to start cracking
         Configuration.require_fakeauth = False
+        Configuration.wep_restart_stale_ivs = 30 # Seconds to wait before restarting
+                                                 # Aireplay if IVs don't increaes.
+                                                 # "0" means never restart.
         # WEP-specific attacks
         Configuration.wep_fragment = True 
         Configuration.wep_caffelatte = True 
