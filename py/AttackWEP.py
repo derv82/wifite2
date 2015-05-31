@@ -105,37 +105,30 @@ class AttackWEP(Attack):
                     # Check number of IVs, crack if necessary
                     if airodump_target.ivs > Configuration.wep_crack_at_ivs:
                         if not aircrack:
-                            # Aircrack hasn't started yet.
-                            # Find the .ivs file.
-                            ivs_file = None
-                            for fil in airodump.find_files(endswith='.ivs'):
-                                ivs_file = fil
-                                break
-                            if not ivs_file:
-                                Color.pl('{!} {O}no .ivs file found, stopping{W}')
-                                break
-                            else:
-                                Color.pl('\n{+} started {C}cracking{W}')
-                                aircrack = Aircrack(ivs_file)
+                            # Aircrack hasn't started yet. Start it.
+                            ivs_file = airodump.find_files(endswith='.ivs')[0]
+                            Color.pl('\n{+} started {C}cracking{W}')
+                            aircrack = Aircrack(ivs_file)
 
                         elif not aircrack.is_running():
                             # Aircrack stopped running.
                             Color.pl('\n{!} {O}aircrack stopped running!{W}')
-                            ivs_file = None
-                            for fil in airodump.find_files(endswith='.ivs'):
-                                ivs_file = fil
-                                break
-                            if ivs_file:
-                                Color.pl('{+} restarting {C}aircrack{W}')
+                            ivs_file = airodump.find_files(endswith='.ivs')[0]
+                            Color.pl('{+} {C}aircrack{W} stopped,' +
+                                     ' restarting {C}aircrack{W}')
+                            aircrack = Aircrack(ivs_file)
+
+                        elif aircrack.is_running() and \
+                             Configuration.wep_restart_aircrack > 0:
+                            # Restart aircrack after X seconds
+                            if aircrack.pid.running_time() > Configuration.wep_restart_aircrack:
+                                aircrack.stop()
+                                ivs_file = airodump.find_files(endswith='.ivs')[0]
+                                Color.pl('{+} {C}aircrack{W} running more than' +
+                                         ' {C}%d{W} seconds, restarting'
+                                             % Configuration.wep_restart_aircrack)
                                 aircrack = Aircrack(ivs_file)
-                            else:
-                                # No .ivs file and aircrack stopped, error?
-                                Color.pl('{!} {O}no .ivs file found, stopping{W}')
-                                break
-                        elif aircrack.is_running():
-                            # TODO: Restart aircrack after X seconds
-                            pass
-                            
+
 
                     if not aireplay.is_running():
                         # Some Aireplay attacks loop infinitely
@@ -168,6 +161,9 @@ class AttackWEP(Attack):
                         if stale_seconds > Configuration.wep_restart_stale_ivs:
                             # No new IVs within threshold, restart aireplay
                             aireplay.stop()
+                            Color.pl('{!} restarting {C}aireplay{W} after' +
+                                     ' {C}%d{W} seconds of no new IVs'
+                                         % stale_seconds)
                             aireplay = Aireplay(self.target, \
                                                 wep_attack_type, \
                                                 client_mac=client_mac)

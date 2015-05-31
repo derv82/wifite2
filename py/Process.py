@@ -86,7 +86,7 @@ class Process(object):
         ''' Returns exit code if process is dead, otherwise "None" '''
         return self.pid.poll()
 
-    def time_running(self):
+    def running_time(self):
         ''' Returns number of seconds since process was started '''
         return int(time.time() - self.start_time)
 

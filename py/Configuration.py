@@ -37,6 +37,8 @@ class Configuration(object):
         Configuration.wep_restart_stale_ivs = 30 # Seconds to wait before restarting
                                                  # Aireplay if IVs don't increaes.
                                                  # "0" means never restart.
+        Configuration.wep_restart_aircrack = 180 # Seconds to give aircrack to crack
+                                                 # before restarting the process.
         # WEP-specific attacks
         Configuration.wep_fragment = True 
         Configuration.wep_caffelatte = True 

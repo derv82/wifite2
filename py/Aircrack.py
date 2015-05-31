@@ -6,7 +6,8 @@ from Configuration import Configuration
 import os
 
 class Aircrack(object):
-    def __init__(self, ivs_file):
+    def __init__(self, ivs_file=None):
+        
         self.cracked_file = Configuration.temp() + 'wepkey.txt'
 
         # Delete previous cracked files
@@ -26,10 +27,13 @@ class Aircrack(object):
     def is_running(self):
         return self.pid.poll() == None
 
-
     def is_cracked(self):
         return os.path.exists(self.cracked_file)
 
+    def stop(self):
+        ''' Stops aircrack process '''
+        if self.pid.poll() == None:
+            self.pid.interrupt()
 
     def get_key_hex_ascii(self):
         if not self.is_cracked():
