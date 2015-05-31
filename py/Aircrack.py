@@ -45,9 +45,12 @@ class Aircrack(object):
         hex_key = ''
         ascii_key = ''
         while len(hex_raw) > 0:
+            # HEX
             if hex_key != '':
                 hex_key += ':'
             hex_key += hex_raw[0:2]
+
+            # ASCII
             # Convert hex to decimal
             code = int(hex_raw[0:2], 16)
             if code < 32 or code > 127:
@@ -55,10 +58,15 @@ class Aircrack(object):
                 ascii_key = None
                 continue
             elif ascii_key == None:
+                # We can't generate an Ascii key
                 continue
             # Convert decimal to char
             ascii_key += chr(code)
+
+            # Trim first two characters
             hex_raw = hex_raw[2:]
+            continue
+
         return (hex_key, ascii_key)
 
 if __name__ == '__main__':

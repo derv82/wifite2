@@ -33,6 +33,7 @@ class AttackWEP(Attack):
                       ivs_only=True, # Only capture IVs packets
                       output_file_prefix='wep') as airodump:
 
+            Color.p('\r{+} {O}waiting{W} for target to appear...')
             airodump_target = self.wait_for_target(airodump)
 
             if self.fake_auth():
@@ -88,26 +89,24 @@ class AttackWEP(Attack):
                         Color.pl('{+} {C}%s{W} WEP attack {G}successful{W}'
                             % attack_name)
                         print ''
-                        if essid:
-                            Color.pl('{+}     ESSID: {C}%s{W}' % essid)
-                        Color.pl('{+}     BSSID: {C}%s{W}' % bssid)
-                        Color.pl('{+}   Hex Key: {G}%s{W}' % hex_key)
-                        if ascii_key:
-                            Color.pl('{+} Ascii Key: {G}%s{W}' % ascii_key)
                         if aireplay:
                             aireplay.stop()
                         self.crack_result = CrackResultWEP(bssid, \
                                                            essid, \
                                                            hex_key, \
                                                            ascii_key)
+                        self.crack_result.dump()
                         return True
+
+                    if aircrack and aircrack.is_running():
+                        # Aircrack is running in the background.
+                        Color.p('and {C}cracking{W}')
 
                     # Check number of IVs, crack if necessary
                     if airodump_target.ivs > Configuration.wep_crack_at_ivs:
                         if not aircrack:
                             # Aircrack hasn't started yet. Start it.
                             ivs_file = airodump.find_files(endswith='.ivs')[0]
-                            Color.pl('\n{+} started {C}cracking{W}')
                             aircrack = Aircrack(ivs_file)
 
                         elif not aircrack.is_running():
@@ -124,7 +123,7 @@ class AttackWEP(Attack):
                             if aircrack.pid.running_time() > Configuration.wep_restart_aircrack:
                                 aircrack.stop()
                                 ivs_file = airodump.find_files(endswith='.ivs')[0]
-                                Color.pl('{+} {C}aircrack{W} running more than' +
+                                Color.pl('\n{+} {C}aircrack{W} ran for more than' +
                                          ' {C}%d{W} seconds, restarting'
                                              % Configuration.wep_restart_aircrack)
                                 aircrack = Aircrack(ivs_file)
@@ -153,7 +152,7 @@ class AttackWEP(Attack):
                             print aireplay.get_output()
                             break
 
-                    # Check if IVS stopped flowing (same for > N seconds)
+                    # Check if IVs stopped flowing (same for > N seconds)
                     if airodump_target.ivs > previous_ivs:
                         time_unchanged_ivs = time.time()
                     elif Configuration.wep_restart_stale_ivs > 0:
@@ -161,12 +160,13 @@ class AttackWEP(Attack):
                         if stale_seconds > Configuration.wep_restart_stale_ivs:
                             # No new IVs within threshold, restart aireplay
                             aireplay.stop()
-                            Color.pl('{!} restarting {C}aireplay{W} after' +
+                            Color.pl('\n{!} restarting {C}aireplay{W} after' +
                                      ' {C}%d{W} seconds of no new IVs'
                                          % stale_seconds)
                             aireplay = Aireplay(self.target, \
                                                 wep_attack_type, \
                                                 client_mac=client_mac)
+                            time_unchanged_ivs = time.time()
                     previous_ivs = airodump_target.ivs
 
                     time.sleep(1)
@@ -179,7 +179,7 @@ class AttackWEP(Attack):
             Returns: True if successful,
                      False is unsuccesful.
         '''
-        Color.p('{+} attempting {G}fake-authentication{W} with {C}%s{W}...'
+        Color.p('\r{+} attempting {G}fake-authentication{W} with {C}%s{W}...'
             % self.target.bssid)
         start_time = time.time()
         aireplay = Aireplay(self.target, 'fakeauth')

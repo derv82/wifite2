@@ -95,9 +95,20 @@ class Airodump(object):
         return result
 
     def delete_airodump_temp_files(self):
-        ''' Deletes airodump* files in the temp directory '''
+        '''
+            Deletes airodump* files in the temp directory.
+            Also deletes replay_*.cap and *.xor files in pwd.
+        '''
+        # Remove all temp files
         for fil in self.find_files():
             os.remove(fil)
+
+        # Remove .cap and .xor files from pwd
+        for fil in os.listdir('.'):
+            if fil.startswith('replay_') and fil.endswith('.cap'):
+                os.remove(fil)
+            if fil.endswith('.xor'):
+                os.remove(fil)
 
     def get_targets(self):
         ''' Parses airodump's CSV file, returns list of Targets '''
