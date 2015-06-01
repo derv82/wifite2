@@ -34,7 +34,11 @@ class Color(object):
         '''
         sys.stdout.write(Color.s(text))
         sys.stdout.flush()
-        Color.last_sameline_length += len(text)
+        if '\r' in text:
+            text = text[text.rfind('\r')+1:]
+            Color.last_sameline_length = len(text)
+        else:
+            Color.last_sameline_length += len(text)
 
     @staticmethod
     def pl(text):

@@ -4,6 +4,7 @@ from Process import Process
 from Color import Color
 
 import re
+import os
 
 class Handshake(object):
     def __init__(self, capfile, bssid=None, essid=None):
@@ -22,7 +23,7 @@ class Handshake(object):
             # Find bssid/essid pairs that have handshakes in Pyrit
             pairs = self.pyrit_handshakes()
 
-        if len(pairs) == 0:
+        if len(pairs) == 0 and not self.bssid and not self.essid:
             # Tshark and Pyrit failed us, nothing else we can do.
             raise Exception("Cannot find BSSID or ESSID in cap file")
 
@@ -57,19 +58,19 @@ class Handshake(object):
 
     def has_handshake(self):
         if not self.bssid or not self.essid:
-            self.divine_essid_and_bssid()
+            self.divine_bssid_and_essid()
 
         if len(self.tshark_handshakes()) > 0:
-            return True
-
-        if len(self.cowpatty_handshakes()) > 0:
             return True
 
         if len(self.pyrit_handshakes()) > 0:
             return True
 
-        # XXX: Disabling aircrack check since I don't think it's reliable.
+
+        # XXX: Disabling these checks since I don't think they are reliable.
         '''
+        if len(self.cowpatty_handshakes()) > 0:
+            return True
         if len(self.aircrack_handshakes()) > 0:
             return True
         '''
@@ -294,6 +295,37 @@ class Handshake(object):
         pairs = self.aircrack_handshakes()
         Handshake.print_pairs(pairs, self.capfile, 'aircrack')
 
+
+    def strip(self, outfile=None):
+        # XXX: This method might break aircrack-ng, use at own risk.
+        '''
+            Strips out packets from handshake that aren't necessary to crack.
+            Leaves only handshake packets and SSID broadcast (for discovery).
+            Args:
+                outfile - Filename to save stripped handshake to.
+                          If outfile==None, overwrite existing self.capfile.
+        '''
+        if not outfile:
+            outfile = self.capfile + '.temp'
+            replace_existing_file = True
+        else:
+            replace_existing_file = False
+
+        cmd = [
+            'tshark',
+            '-r', self.capfile, # input file
+            '-R', 'wlan.fc.type_subtype == 0x08 || eapol', # filter
+            '-w', outfile # output file
+        ]
+        proc = Process(cmd)
+        proc.wait()
+        if replace_existing_file:
+            from shutil import copy
+            copy(outfile, self.capfile)
+            os.remove(outfile)
+            pass
+
+
     @staticmethod
     def print_pairs(pairs, capfile, tool=None):
         '''
@@ -304,28 +336,27 @@ class Handshake(object):
             tool_str = '{C}%s{W}: ' % tool.rjust(8)
 
         if len(pairs) == 0:
-            Color.pl("{!} %s%s {R}does not{O} contain a handshake{W}"
-                % (tool_str, capfile))
+            Color.pl("{!} %s.cap file {R}does not{O} contain a valid handshake{W}"
+                % (tool_str))
             return
 
         for (bssid, essid) in pairs:
             if bssid and essid:
-                Color.pl("{+} %s%s {G}contains a handshake{W} for {G}%s{W} ({G}%s{W})"
-                    % (tool_str, capfile, bssid, essid))
+                Color.pl('{+} %s.cap file' % tool_str +
+                         ' {G}contains a valid handshake{W}' +
+                         ' for {G}%s{W} ({G}%s{W})' % (bssid, essid))
             elif bssid:
-                Color.pl("{+} %s%s {G}contains a handshake{W} for {G}%s{W}"
-                    % (tool_str, capfile, bssid))
+                Color.pl('{+} %s.cap file' % tool_str +
+                         ' {G}contains a valid handshake{W}' +
+                         ' for {G}%s{W}' % bssid)
             elif essid:
-                Color.pl("{+} %s%s {G}contains a handshake{W} for ({G}%s{W})"
-                    % (tool_str, capfile, essid))
-
+                Color.pl('{+} %s.cap file' % tool_str +
+                         ' {G}contains a valid handshake{W}' +
+                         ' for ({G}%s{W})' % essid)
 
 
 if __name__ == '__main__':
-    #hs = Handshake('/tmp/test.cap')
-    hs = Handshake('/tmp/test.cap', bssid='30:85:a9:39:d2:18')
-    #hs = Handshake('/tmp/test.cap', bssid='30:85:a9:39:d2:18', essid="Uncle Router's Gigabit LAN Party")
-    #hs = Handshake('/tmp/test.cap.stripped.tshark')
+    hs = Handshake('./tests/files/handshake_exists.cap', bssid='A4:2B:8C:16:6B:3A')
 
     hs.analyze()
     print "has_hanshake() =", hs.has_handshake()
