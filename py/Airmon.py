@@ -3,6 +3,7 @@
 from Interface import Interface
 from Process import Process
 from Color import Color
+from Configuration import Configuration
 
 class Airmon(object):
     ''' Wrapper around the 'airmon-ng' program '''
@@ -99,6 +100,9 @@ class Airmon(object):
 
         # No errors found; the device 'mon_iface' was put into MM.
         Color.pl("{G}enabled {C}%s{W}" % mon_iface)
+
+        Configuration.interface = mon_iface
+
         return mon_iface
 
 
@@ -159,7 +163,7 @@ class Airmon(object):
         if a.get(choice).name in mon_ifaces:
             Color.pl('{+} {G}%s{W} is already in monitor mode' % iface.name)
         else:
-            Airmon.start(iface)
+            iface.name = Airmon.start(iface)
         return iface.name
 
 

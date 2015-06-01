@@ -39,10 +39,10 @@ class Scanner(object):
                                        [len(t.clients)
                                            for t in self.targets])
                     Color.p(
-                        "\r{+} scanning, " +
-                        "found {G}%d{W} target(s)," % target_count +
-                        " {G}%d{W} clients" % client_count +
-                        ". {O}Ctrl+C{W} when ready")
+                        '\r{+} scanning, found' +
+                        ' {G}%d{W} target(s),' % target_count +
+                        ' {G}%d{W} clients.' % client_count +
+                        ' {O}Ctrl+C{W} when ready')
                     sleep(1)
                     self.targets = airodump.get_targets()
                     self.print_targets()
