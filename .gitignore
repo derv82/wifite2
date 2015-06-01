@@ -1,2 +1,4 @@
 *.swp
 *.pyc
+py/hs/
+*.bak

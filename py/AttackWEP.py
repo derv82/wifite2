@@ -33,6 +33,7 @@ class AttackWEP(Attack):
                       ivs_only=True, # Only capture IVs packets
                       output_file_prefix='wep') as airodump:
 
+            Color.clear_line()
             Color.p('\r{+} {O}waiting{W} for target to appear...')
             airodump_target = self.wait_for_target(airodump)
 

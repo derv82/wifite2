@@ -39,7 +39,7 @@ class Scanner(object):
                                        [len(t.clients)
                                            for t in self.targets])
                     Color.p(
-                        "\r{+} Scanning, " +
+                        "\r{+} scanning, " +
                         "found {G}%d{W} target(s)," % target_count +
                         " {G}%d{W} clients" % client_count +
                         ". {O}Ctrl+C{W} when ready")
@@ -102,7 +102,7 @@ class Scanner(object):
                 + " or you may have issues with your wifi card")
 
         self.print_targets()
-        input_str  = '{+} Select target(s)'
+        input_str  = '{+} select target(s)'
         input_str += ' ({G}1-%d{W})' % len(self.targets)
         input_str += ' separated by commas, dashes'
         input_str += ' or {G}all{W}: '
