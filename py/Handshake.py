@@ -59,14 +59,21 @@ class Handshake(object):
         if not self.bssid or not self.essid:
             self.divine_essid_and_bssid()
 
-        if self.tshark_handshakes():
+        if len(self.tshark_handshakes()) > 0:
             return True
 
-        if self.cowpatty_handshakes():
+        if len(self.cowpatty_handshakes()) > 0:
             return True
 
-        if self.pyrit_handshakes():
+        if len(self.pyrit_handshakes()) > 0:
             return True
+
+        # XXX: Disabling aircrack check since I don't think it's reliable.
+        '''
+        if len(self.aircrack_handshakes()) > 0:
+            return True
+        '''
+        return False
 
 
     def tshark_bssid_essid_pairs(self):

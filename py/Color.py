@@ -23,6 +23,8 @@ class Color(object):
         '{!}': ' {W}[{R}!{W}]'
     }
 
+    last_sameline_length = 0
+
     @staticmethod
     def p(text):
         '''
@@ -32,6 +34,7 @@ class Color(object):
         '''
         sys.stdout.write(Color.s(text))
         sys.stdout.flush()
+        Color.last_sameline_length += len(text)
 
     @staticmethod
     def pl(text):
@@ -39,6 +42,7 @@ class Color(object):
             Prints text using colored format with trailing new line.
         '''
         Color.p('%s\n' % text)
+        Color.last_sameline_length = 0
 
     @staticmethod
     def s(text):
@@ -49,6 +53,12 @@ class Color(object):
         for (key,value) in Color.colors.iteritems():
             output = output.replace("{%s}" % key, value)
         return output
+
+    @staticmethod
+    def clear_line():
+        spaces = ' ' * Color.last_sameline_length
+        sys.stdout.write('\r%s\r' % spaces)
+        sys.stdout.flush()
 
 if __name__ == '__main__':
     Color.pl("{R}Testing{G}One{C}Two{P}Three{W}Done")

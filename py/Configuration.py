@@ -95,11 +95,11 @@ class Configuration(object):
         
 
     @staticmethod
-    def temp():
+    def temp(subfile=''):
         ''' Creates and/or returns the temporary directory '''
         if Configuration.temp_dir == None:
             Configuration.temp_dir = Configuration.create_temp()
-        return Configuration.temp_dir
+        return Configuration.temp_dir + subfile
 
     @staticmethod
     def create_temp():

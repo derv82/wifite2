@@ -39,7 +39,7 @@ class Scanner(object):
                                        [len(t.clients)
                                            for t in self.targets])
                     Color.p(
-                        "\r {+} Scanning, " +
+                        "\r{+} Scanning, " +
                         "found {G}%d{W} target(s)," % target_count +
                         " {G}%d{W} clients" % client_count +
                         ". {O}Ctrl+C{W} when ready")
@@ -71,7 +71,7 @@ class Scanner(object):
             else:
                 # We can fit the targets in the terminal without scrolling
                 # "Move" cursor up so we will print over the previous list
-                print Scanner.UP_CHAR * (3 + self.previous_target_count)
+                Color.pl(Scanner.UP_CHAR * (3 + self.previous_target_count))
 
         self.previous_target_count = len(self.targets)
 
@@ -109,6 +109,9 @@ class Scanner(object):
 
         chosen_targets = []
         for choice in raw_input(Color.s(input_str)).split(','):
+            if choice == 'all':
+                chosen_targets = self.targets
+                break
             if '-' in choice:
                 # User selected a range
                 (lower,upper) = [int(x) - 1 for x in choice.split('-')]
@@ -130,7 +133,6 @@ if __name__ == '__main__':
         Color.pl('\r {!} {R}Error{W}: %s' % str(e))
         Configuration.exit_gracefully(0)
     for t in targets:
-        Color.p("{W}Selected: ")
-        print t
+        Color.pl("    {W}Selected: %s" % t)
     Configuration.exit_gracefully(0)
 

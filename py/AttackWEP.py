@@ -85,10 +85,8 @@ class AttackWEP(Attack):
                             essid = airodump_target.essid
                         else:
                             essid = None
-                        print '\n'
-                        Color.pl('{+} {C}%s{W} WEP attack {G}successful{W}'
+                        Color.pl('\n{+} {C}%s{W} WEP attack {G}successful{W}\n'
                             % attack_name)
-                        print ''
                         if aireplay:
                             aireplay.stop()
                         self.crack_result = CrackResultWEP(bssid, \
@@ -138,8 +136,8 @@ class AttackWEP(Attack):
                             # TODO: Check for .xor file.
                             # If .xor is not there, the process failed. Check stdout.
                             # XXX: For debugging
-                            print '\n%s stopped, output:' % attack_name
-                            print aireplay.get_output()
+                            Color.pl('\n%s stopped, output:' % attack_name)
+                            Color.pl(aireplay.get_output())
                             break
 
                             # If .xor exists, run packetforge-ng to create .cap
@@ -148,8 +146,8 @@ class AttackWEP(Attack):
                             #   2. Start Aireplay to replay the .cap file
                         else:
                             Color.pl('\n{!} {O}aireplay-ng exited unexpectedly{W}')
-                            print '\naireplay.get_output():'
-                            print aireplay.get_output()
+                            Color.pl('\naireplay.get_output():')
+                            Color.pl(aireplay.get_output())
                             break
 
                     # Check if IVs stopped flowing (same for > N seconds)
