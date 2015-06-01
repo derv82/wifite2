@@ -63,6 +63,7 @@ class Color(object):
         spaces = ' ' * Color.last_sameline_length
         sys.stdout.write('\r%s\r' % spaces)
         sys.stdout.flush()
+        Color.last_sameline_length = 0
 
 if __name__ == '__main__':
     Color.pl("{R}Testing{G}One{C}Two{P}Three{W}Done")

