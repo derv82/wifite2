@@ -182,6 +182,7 @@ class AttackWPA(Attack):
                 station_bssid - Client BSSID to deauth
                                 Deauths 'broadcast' if no client is specified.
         '''
+        # TODO: Print that we are deauthing and who we are deauthing!
         command = [
             'aireplay-ng',
             '--ignore-negative-one',
