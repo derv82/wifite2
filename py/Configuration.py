@@ -82,8 +82,9 @@ class Configuration(object):
         Configuration.pixie_only  = False  # ONLY use Pixie-Dust attack on WPS
         Configuration.wps_timeout = 600    # Seconds to wait before failing
         Configuration.wps_max_retries = 20 # Retries before failing
-        Configuration.fail_threshold = 30  # Max number of failures
-        Configuration.timeout_threshold = 30  # Max number of timeouts
+        Configuration.wps_fail_threshold = 30  # Max number of failures
+        Configuration.wps_timeout_threshold = 30  # Max number of timeouts
+        Configuration.wps_skip_rate_limit = True # Skip rate-limited WPS APs
 
         # Overwrite config values with arguments (if defined)
         Configuration.load_from_arguments()
@@ -96,14 +97,17 @@ class Configuration(object):
         ''' Sets configuration values based on Argument.args object '''
         if args.channel:     Configuration.target_channel = args.channel
         if args.interface:   Configuration.interface   = args.interface
+
         if args.wep_filter:  Configuration.wep_filter  = args.wep_filter
+        if args.require_fakeauth: Configuration.require_fakeauth = False
+
         if args.wpa_filter:  Configuration.wpa_filter  = args.wpa_filter
+        if args.wordlist:    Configuration.wordlist    = args.wordlist
+
         if args.wps_filter:  Configuration.wps_filter  = args.wps_filter
         if args.no_reaver:   Configuration.no_reaver   = args.no_reaver
         if args.reaver_only: Configuration.reaver_only = args.reaver_only
         if args.pixie_only:  Configuration.pixie_only  = args.pixie_only
-        if args.wordlist:    Configuration.wordlist    = args.wordlist
-        if args.require_fakeauth: Configuration.require_fakeauth = False
 
         # Adjust encryption filter
         if Configuration.wep_filter or \
@@ -111,7 +115,6 @@ class Configuration(object):
            Configuration.wps_filter:
             # Reset filter
             Configuration.encryption_filter = []
-
         if Configuration.wep_filter: Configuration.encryption_filter.append('WEP')
         if Configuration.wpa_filter: Configuration.encryption_filter.append('WPA')
         if Configuration.wps_filter: Configuration.encryption_filter.append('WPS')
