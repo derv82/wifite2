@@ -34,6 +34,9 @@ class Scanner(object):
                             "Command ran: %s"
                                 % ' '.join(airodump.pid.command))
 
+                    self.targets = airodump.get_targets()
+                    self.print_targets()
+
                     target_count = len(self.targets)
                     client_count = sum(
                                        [len(t.clients)
@@ -44,8 +47,6 @@ class Scanner(object):
                         ' {G}%d{W} clients.' % client_count +
                         ' {O}Ctrl+C{W} when ready')
                     sleep(1)
-                    self.targets = airodump.get_targets()
-                    self.print_targets()
             except KeyboardInterrupt:
                 pass
 

@@ -35,7 +35,7 @@ class Process(object):
         return True
 
 
-    def __init__(self, command, devnull=False):
+    def __init__(self, command, devnull=False, stdout=PIPE, stderr=PIPE):
         ''' Starts executing command '''
 
         if type(command) == str:
@@ -50,8 +50,8 @@ class Process(object):
             sout = Process.devnull()
             serr = Process.devnull()
         else:
-            sout = PIPE
-            serr = PIPE
+            sout = stdout
+            serr = stderr
 
         self.start_time = time.time()
 

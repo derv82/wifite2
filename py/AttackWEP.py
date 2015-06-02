@@ -21,11 +21,13 @@ class AttackWEP(Attack):
     def __init__(self, target):
         super(AttackWEP, self).__init__(target)
         self.crack_result = None
+        self.success = False
 
     def run(self):
         '''
             Initiates full WEP attack.
             Including airodump-ng starting, cracking, etc.
+            Returns: True if attack is succesful, false otherwise
         '''
         # First, start Airodump process
         with Airodump(channel=self.target.channel,
@@ -95,7 +97,8 @@ class AttackWEP(Attack):
                                                            hex_key, \
                                                            ascii_key)
                         self.crack_result.dump()
-                        return True
+                        self.success = True
+                        return self.success
 
                     if aircrack and aircrack.is_running():
                         # Aircrack is running in the background.
@@ -139,9 +142,9 @@ class AttackWEP(Attack):
                             # XXX: For debugging
                             Color.pl('\n%s stopped, output:' % attack_name)
                             Color.pl(aireplay.get_output())
-                            break
+                            continue # Continue to other attacks
 
-                            # If .xor exists, run packetforge-ng to create .cap
+                            # TODO: If .xor exists, run packetforge-ng to create .cap
                             # If packetforge created the replay .cap file,
                             #   1. Change attack_name to 'forged arp replay'
                             #   2. Start Aireplay to replay the .cap file
@@ -149,7 +152,7 @@ class AttackWEP(Attack):
                             Color.pl('\n{!} {O}aireplay-ng exited unexpectedly{W}')
                             Color.pl('\naireplay.get_output():')
                             Color.pl(aireplay.get_output())
-                            break
+                            continue # Continue to other attacks
 
                     # Check if IVs stopped flowing (same for > N seconds)
                     if airodump_target.ivs > previous_ivs:
@@ -170,6 +173,12 @@ class AttackWEP(Attack):
 
                     time.sleep(1)
                     continue
+                # End of big while loop
+            # End of for-each-attack-type loop
+        # End of with-airodump
+
+        self.success = False
+        return self.success
 
 
     def fake_auth(self):

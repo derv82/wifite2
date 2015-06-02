@@ -124,11 +124,13 @@ class Airodump(object):
 
         # Parse the .CSV file
         targets = Airodump.get_targets_from_csv(csv_filename)
-        targets = Airodump.filter_targets(targets, wep=True, wpa=True, opn=False)
 
         # Check targets for WPS
         capfile = csv_filename[:-3] + 'cap'
         Wash.check_for_wps_and_update_targets(capfile, targets)
+
+        # Filter targets based on encryption
+        targets = Airodump.filter_targets(targets)
 
         # Sort by power
         targets.sort(key=lambda x: x.power, reverse=True)
@@ -189,15 +191,18 @@ class Airodump(object):
         return targets
 
     @staticmethod
-    def filter_targets(targets, wep=True, wpa=True, opn=False):
-        ''' Filters targets based on encryption '''
+    def filter_targets(targets):
+        ''' Filters targets based on encryption defined in Configuration '''
         result = []
         for target in targets:
-            if wep and 'WEP' in target.encryption:
+            if 'WEP' in Configuration.encryption_filter and \
+               'WEP' in target.encryption:
                 result.append(target)
-            elif wpa and 'WPA' in target.encryption:
-                result.append(target)
-            elif opn and 'OPN' in target.encryption:
+            elif 'WPA' in Configuration.encryption_filter and \
+                 'WPA' in target.encryption:
+                    result.append(target)
+            elif 'WPS' in Configuration.encryption_filter and \
+                 target.wps:
                 result.append(target)
         return result
 

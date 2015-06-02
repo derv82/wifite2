@@ -2,6 +2,16 @@
 
 import os
 
+'''
+--wep : Target WEP networks
+--wpa : Target WPA networks
+--wps : Target WPS networks
+ ^ Can be combined
+
+--no-reaver : Do not use reaver on WPS networks
+--reaver : Only use reaver on WPS networks
+'''
+
 class Configuration(object):
     ''' Stores configuration variables for Wifite.  '''
 
@@ -28,8 +38,10 @@ class Configuration(object):
         Configuration.target_bssid = None # User-defined AP BSSID
         Configuration.pillage = False # "All" mode to attack everything
 
+        Configuration.encryption_filter = ['WEP', 'WPA', 'WPS']
+
         # WEP variables
-        Configuration.wep_only = False # Only attack WEP networks
+        Configuration.wep_filter = False # Only attack WEP networks
         Configuration.wep_pps = 600 # Packets per second
         Configuration.wep_timeout = 600 # Seconds to wait before failing
         Configuration.wep_crack_at_ivs = 10000 # Minimum IVs to start cracking
@@ -44,11 +56,10 @@ class Configuration(object):
         Configuration.wep_caffelatte = True 
         Configuration.wep_p0841 = True
         Configuration.wep_hirte = True
-        # Number of IVS at which we start cracking
-        Configuration.wep_crack_at_ivs = 10000
+        Configuration.wep_crack_at_ivs = 10000 # Number of IVS to start cracking
 
         # WPA variables
-        Configuration.wpa_only = False # Only attack WPA networks
+        Configuration.wpa_filter = False # Only attack WPA networks
         Configuration.wpa_deauth_timeout = 10 # Wait time between deauths
         Configuration.wpa_attack_timeout = 500 # Wait time before failing
         Configuration.wpa_handshake_dir = "hs" # Dir to store handshakes
@@ -65,10 +76,14 @@ class Configuration(object):
                 break
 
         # WPS variables
-        Configuration.wps_only = False # Only attack WPS networks
-        Configuration.pixie_only = False # Only use Pixie attack on WPS
-        Configuration.wps_timeout = 600 # Seconds to wait before failing
+        Configuration.wps_filter  = False  # Only attack WPS networks
+        Configuration.no_reaver   = False  # Do not use Reaver on WPS networks
+        Configuration.reaver      = False  # ONLY use Reaver on WPS networks
+        Configuration.pixie_only  = False  # ONLY use Pixie-Dust attack on WPS
+        Configuration.wps_timeout = 600    # Seconds to wait before failing
         Configuration.wps_max_retries = 20 # Retries before failing
+        Configuration.fail_threshold = 30  # Max number of failures
+        Configuration.timeout_threshold = 30  # Max number of timeouts
 
         # Overwrite config values with arguments (if defined)
         Configuration.load_from_arguments()
@@ -79,14 +94,27 @@ class Configuration(object):
         from Arguments import Arguments
         args = Arguments().args
         ''' Sets configuration values based on Argument.args object '''
-        if args.channel:    Configuration.target_channel = args.channel
-        if args.interface:  Configuration.interface  = args.interface
-        if args.wep_only:   Configuration.wep_only   = args.wep_only
-        if args.wpa_only:   Configuration.wpa_only   = args.wpa_only
-        if args.wps_only:   Configuration.wps_only   = args.wps_only
-        if args.pixie_only: Configuration.pixie_only = args.pixie_only
-        if args.wordlist:   Configuration.wordlist   = args.wordlist
+        if args.channel:     Configuration.target_channel = args.channel
+        if args.interface:   Configuration.interface   = args.interface
+        if args.wep_filter:  Configuration.wep_filter  = args.wep_filter
+        if args.wpa_filter:  Configuration.wpa_filter  = args.wpa_filter
+        if args.wps_filter:  Configuration.wps_filter  = args.wps_filter
+        if args.no_reaver:   Configuration.no_reaver   = args.no_reaver
+        if args.reaver_only: Configuration.reaver_only = args.reaver_only
+        if args.pixie_only:  Configuration.pixie_only  = args.pixie_only
+        if args.wordlist:    Configuration.wordlist    = args.wordlist
         if args.require_fakeauth: Configuration.require_fakeauth = False
+
+        # Adjust encryption filter
+        if Configuration.wep_filter or \
+           Configuration.wpa_filter or \
+           Configuration.wps_filter:
+            # Reset filter
+            Configuration.encryption_filter = []
+
+        if Configuration.wep_filter: Configuration.encryption_filter.append('WEP')
+        if Configuration.wpa_filter: Configuration.encryption_filter.append('WPA')
+        if Configuration.wps_filter: Configuration.encryption_filter.append('WPS')
 
         if Configuration.interface == None:
             # Interface wasn't defined, select it!

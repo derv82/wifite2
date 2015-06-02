@@ -17,6 +17,7 @@ class AttackWPA(Attack):
     def __init__(self, target):
         super(AttackWPA, self).__init__(target)
         self.crack_result = None
+        self.success = False
 
     def run(self):
         '''
@@ -104,8 +105,8 @@ class AttackWPA(Attack):
 
             if not handshake:
                 # No handshake, attack failed.
-                raise Exception('Handshake not captured')
-                return False
+                self.success = False
+                return self.success
 
             key = None
 
@@ -158,7 +159,8 @@ class AttackWPA(Attack):
 
             self.crack_result = WPAResult(bssid, essid, handshake.capfile, key)
             self.crack_result.dump()
-            return True
+            self.success = True
+            return self.success
 
 
     def save_handshake(self, handshake):

@@ -31,8 +31,8 @@ class Arguments(object):
         wep = parser.add_argument_group('WEP-RELATED')
         wep.add_argument('--wep',
             action='store_true',
-            dest='wep_only',
-            help='Only target WEP-encrypted networks (ignores WPA)')
+            dest='wep_filter',
+            help='Only show WEP-encrypted networks')
         wep.add_argument('--require-fakeauth',
             action='store_true',
             dest='require_fakeauth',
@@ -42,15 +42,23 @@ class Arguments(object):
         wpa = parser.add_argument_group('WPA-RELATED')
         wpa.add_argument('--wpa',
             action='store_true',
-            dest='wpa_only',
-            help='Only target WPA-encrypted networks (ignores WEP)')
+            dest='wpa_filter',
+            help='Only show WPA-encrypted networks')
 
         # WPS
         wps = parser.add_argument_group('WPS-RELATED')
         wps.add_argument('--wps',
             action='store_true',
-            dest='wps_only',
-            help='Only target WPS-encrypted networks (ignores WEP/nonWPS)')
+            dest='wps_filter',
+            help='Only show WPA networks with WPS enabled')
+        wps.add_argument('--reaver',
+            action='store_true',
+            dest='reaver_only',
+            help='Only use Reaver on WPS networks (no handshake attack)')
+        wps.add_argument('--no-reaver',
+            action='store_true',
+            dest='no_reaver',
+            help='Do NOT use Reaver on WPS networks (handshake only)')
         wps.add_argument('--pixie',
             action='store_true',
             dest='pixie_only',
