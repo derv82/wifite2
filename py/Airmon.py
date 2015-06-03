@@ -134,6 +134,7 @@ class Airmon(object):
     @staticmethod
     def ask():
         ''' Asks user to define which wireless interface to use '''
+        Color.pl('\n{+} looking for {C}wireless interfaces{W}')
         mon_ifaces = Airmon.get_interfaces_in_monitor_mode()
         mon_count = len(mon_ifaces)
         if mon_count == 1:
@@ -143,8 +144,13 @@ class Airmon(object):
                 % iface);
             return iface
 
+        Color.pl('')
+
         a = Airmon()
         a.print_menu()
+
+        Color.pl('')
+
         count = len(a.interfaces)
         if count == 0:
             # No interfaces found

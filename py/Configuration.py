@@ -2,18 +2,8 @@
 
 import os
 
-'''
---wep : Target WEP networks
---wpa : Target WPA networks
---wps : Target WPS networks
- ^ Can be combined
-
---no-reaver : Do not use reaver on WPS networks
---reaver : Only use reaver on WPS networks
-'''
-
 class Configuration(object):
-    ''' Stores configuration variables for Wifite.  '''
+    ''' Stores configuration variables and functions for Wifite. '''
 
     initialized = False # Flag indicating config has been initialized
     temp_dir = None     # Temporary directory
@@ -80,11 +70,19 @@ class Configuration(object):
         Configuration.no_reaver   = False  # Do not use Reaver on WPS networks
         Configuration.reaver      = False  # ONLY use Reaver on WPS networks
         Configuration.pixie_only  = False  # ONLY use Pixie-Dust attack on WPS
-        Configuration.wps_timeout = 600    # Seconds to wait before failing
+        Configuration.wps_pin_timeout = 600   # Seconds to wait before reaver fails
+        Configuration.wps_pixie_timeout = 600 # Seconds to wait before pixie fails
         Configuration.wps_max_retries = 20 # Retries before failing
         Configuration.wps_fail_threshold = 30  # Max number of failures
         Configuration.wps_timeout_threshold = 30  # Max number of timeouts
         Configuration.wps_skip_rate_limit = True # Skip rate-limited WPS APs
+
+        # Commands
+        Configuration.cracked = False
+        Configuration.check_handshake = None
+        Configuration.crack_wpa = None
+        Configuration.crack_wep = None
+        Configuration.update = False
 
         # Overwrite config values with arguments (if defined)
         Configuration.load_from_arguments()
@@ -92,22 +90,54 @@ class Configuration(object):
 
     @staticmethod
     def load_from_arguments():
-        from Arguments import Arguments
-        args = Arguments().args
         ''' Sets configuration values based on Argument.args object '''
-        if args.channel:     Configuration.target_channel = args.channel
-        if args.interface:   Configuration.interface   = args.interface
+        from Arguments import Arguments
 
+        args = Arguments(Configuration).args
+        if args.channel:      Configuration.target_channel = args.channel
+        if args.interface:    Configuration.interface    = args.interface
+        if args.target_bssid: Configuration.target_bssid = args.target_bssid
+        if args.target_essid: Configuration.target_essid = args.target_essid
+
+        # WEP
         if args.wep_filter:  Configuration.wep_filter  = args.wep_filter
+        if args.wep_pps:     Configuration.wep_pps     = args.wep_pps
+        if args.wep_timeout: Configuration.wep_timeout = args.wep_timeout
         if args.require_fakeauth: Configuration.require_fakeauth = False
+        if args.wep_crack_at_ivs:
+            Configuration.wep_crack_at_ivs = args.wep_crack_at_ivs
+        if args.wep_restart_stale_ivs:
+            Configuration.wep_restart_stale_ivs = args.wep_restart_stale_ivs
+        if args.wep_restart_aircrack:
+            Configuration.wep_restart_aircrack = args.wep_restart_aircrack
 
+        # WPA
         if args.wpa_filter:  Configuration.wpa_filter  = args.wpa_filter
         if args.wordlist:    Configuration.wordlist    = args.wordlist
+        if args.wpa_deauth_timeout:
+            Configuration.wpa_deauth_timeout = args.wpa_deauth_timeout
+        if args.wpa_attack_timeout:
+            Configuration.wpa_attack_timeout = args.wpa_attack_timeout
+        if args.wpa_handshake_dir:
+            Configuration.wpa_handshake_dir = args.wpa_handshake_dir
 
+        # WPS
         if args.wps_filter:  Configuration.wps_filter  = args.wps_filter
-        if args.no_reaver:   Configuration.no_reaver   = args.no_reaver
         if args.reaver_only: Configuration.reaver_only = args.reaver_only
+        if args.no_reaver:   Configuration.no_reaver   = args.no_reaver
         if args.pixie_only:  Configuration.pixie_only  = args.pixie_only
+        if args.wps_pixie_timeout:
+            Configuration.wps_pixie_timeout = args.wps_pixie_timeout
+        if args.wps_pin_timeout:
+            Configuration.wps_pin_timeout = args.wps_pin_timeout
+        if args.wps_max_retries:
+            Configuration.wps_max_retries = args.wps_max_retries
+        if args.wps_fail_threshold:
+            Configuration.wps_fail_threshold = args.wps_fail_threshold
+        if args.wps_timeout_threshold:
+            Configuration.wps_timeout_threshold = args.wps_timeout_threshold
+        if args.wps_ignore_rate_limit:
+            Configuration.wps_skip_rate_limit = not args.wps_ignore_rate_limit
 
         # Adjust encryption filter
         if Configuration.wep_filter or \
@@ -118,6 +148,13 @@ class Configuration(object):
         if Configuration.wep_filter: Configuration.encryption_filter.append('WEP')
         if Configuration.wpa_filter: Configuration.encryption_filter.append('WPA')
         if Configuration.wps_filter: Configuration.encryption_filter.append('WPS')
+
+        # Commands
+        if args.cracked:   Configuration.show_cracked = True
+        if args.crack_wpa: Configuration.crack_wpa = args.crack_wpa
+        if args.crack_wep: Configuration.crack_wep = args.crack_wep
+        if args.update:    Configuration.update = True
+        if args.check_handshake: Configuration.check_handshake = args.check_handshake
 
         if Configuration.interface == None:
             # Interface wasn't defined, select it!

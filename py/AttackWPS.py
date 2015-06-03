@@ -35,7 +35,7 @@ class AttackWPS(Attack):
                 ' support the {O}WPS pixie-dust attack{W}')
 
         if Configuration.pixie_only:
-            Color.pl('{!} {O}--pixie-only{R} set, ignoring WPS-PIN attack{W}')
+            Color.pl('{!} {O}--pixie{R} set, ignoring WPS-PIN attack{W}')
             self.success = False
         else:
             # Run WPS-PIN attack
@@ -136,7 +136,7 @@ class AttackWPS(Attack):
                 break
 
             # TODO: Timeout check
-            if reaver.running_time() > Configuration.wps_timeout:
+            if reaver.running_time() > Configuration.wps_pixie_timeout:
                 Color.pl('{R}failed: {O}timeout after %d seconds{W}' % Configuration.wps_timeout)
                 break
 

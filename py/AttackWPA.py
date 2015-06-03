@@ -23,6 +23,13 @@ class AttackWPA(Attack):
         '''
             Initiates full WPA hanshake capture attack.
         '''
+
+        # Check if user only wants to run PixieDust attack
+        if Configuration.pixie_only and self.target.wps:
+            Color.pl('{!} {O}--pixie{R} set, ignoring WPA-handshake attack')
+            self.success = False
+            return self.success
+
         # First, start Airodump process
         with Airodump(channel=self.target.channel,
                       target_bssid=self.target.bssid,
