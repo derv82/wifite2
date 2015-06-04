@@ -18,7 +18,12 @@ class Wifite(object):
             2) Attacks each target
         '''
         s = Scanner()
-        targets = s.select_targets()
+        if s.target:
+            # We found the target we want
+            targets = [s.target]
+        else:
+            targets = s.select_targets()
+
         for t in targets:
             Color.pl('{+} starting attacks against {C}%s{W} ({C}%s{W})'
                 % (t.bssid, t.essid))
@@ -47,10 +52,27 @@ class Wifite(object):
             # TODO: Save attack.crack_result
         pass
 
+    def print_banner(self):
+        """ Displays ASCII art of the highest caliber.  """
+        Color.pl("")
+        Color.pl("{G}  .;'                     `;,    ")
+        Color.pl("{G} .;'  ,;'             `;,  `;,  " +
+            "{W}WiFite v%.2f" % Configuration.version)
+        Color.pl("{G}.;'  ,;'  ,;'     `;,  `;,  `;,  ")
+        Color.pl("{G}::   ::   :   {GR}( ){G}   :   ::   ::  " +
+            "{W}automated wireless auditor")
+        Color.pl("{G}':.  ':.  ':. {GR}/_\\{G} ,:'  ,:'  ,:'  ")
+        Color.pl("{G} ':.  ':.    {GR}/___\\{G}   ,:'  ,:'   " +
+            "{W}designed for Linux")
+        Color.pl("{G}  ':.       {GR}/_____\\{G}     ,:'     ")
+        Color.pl("{G}           {GR}/       \\{G}            ")
+        Color.pl("{W}")
+
 
 if __name__ == '__main__':
     w = Wifite()
     try:
+        w.print_banner()
         w.run()
     except Exception, e:
         Color.pl('\n{!} {R}Error:{O} %s{W}' % str(e))

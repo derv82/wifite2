@@ -192,8 +192,9 @@ class Airodump(object):
 
     @staticmethod
     def filter_targets(targets):
-        ''' Filters targets based on encryption defined in Configuration '''
+        ''' Filters targets based on Configuration '''
         result = []
+        # Filter based on Encryption
         for target in targets:
             if 'WEP' in Configuration.encryption_filter and \
                'WEP' in target.encryption:
@@ -204,6 +205,19 @@ class Airodump(object):
             elif 'WPS' in Configuration.encryption_filter and \
                  target.wps:
                 result.append(target)
+
+        # Filter based on BSSID/ESSID
+        bssid = Configuration.target_bssid
+        essid = Configuration.target_essid
+        i = 0
+        while i < len(result):
+            if bssid and result[i].bssid.lower() != bssid.lower():
+                result.pop(i)
+                continue
+            if essid and result[i].essid.lower() != essid.lower():
+                result.pop(i)
+                continue
+            i += 1
         return result
 
 

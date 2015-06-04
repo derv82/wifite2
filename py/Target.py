@@ -126,7 +126,7 @@ class Target(object):
 
 
 if __name__ == '__main__':
-    fields = 'AA:BB:CC:DD:EE:FF, 2015-05-27 19:28:44, 2015-05-27 19:28:46,  1,  54, WPA2, CCMP TKIP,PSK, -58,        2,        0,   0.  0.  0.  0,   9, HOME-ABCD, '.split(',')
+    fields = 'AA:BB:CC:DD:EE:FF,2015-05-27 19:28:44,2015-05-27 19:28:46,1,54,WPA2,CCMP TKIP,PSK,-58,2,0,0.0.0.0,9,HOME-ABCD,'.split(',')
     t = Target(fields)
     t.clients.append("asdf")
     t.clients.append("asdf")

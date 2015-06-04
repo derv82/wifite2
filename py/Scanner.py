@@ -20,6 +20,7 @@ class Scanner(object):
         '''
         self.previous_target_count = 0
         self.targets = []
+        self.target = None # Specific target (based on ESSID/BSSID)
 
         # Loads airodump with interface/channel/etc from Configuration
         with Airodump() as airodump:
@@ -35,6 +36,11 @@ class Scanner(object):
                                 % ' '.join(airodump.pid.command))
 
                     self.targets = airodump.get_targets()
+
+                    if self.found_target():
+                        # We found the target we want
+                        return
+
                     self.print_targets()
 
                     target_count = len(self.targets)
@@ -50,6 +56,32 @@ class Scanner(object):
             except KeyboardInterrupt:
                 pass
 
+    def found_target(self):
+        '''
+            Check if we discovered the target AP
+            Returns: the Target if found,
+                     Otherwise None.
+        '''
+        bssid = Configuration.target_bssid
+        essid = Configuration.target_essid
+
+        if bssid == None and essid == None:
+            return False
+
+        for target in self.targets:
+            if bssid and bssid.lower() == target.bssid.lower():
+                self.target = target
+                break
+            if essid and essid.lower() == target.essid.lower():
+                self.target = target
+                break
+
+        if self.target:
+            Color.pl('\n{+} {C}found target{G} %s {W}({G}%s{W})'
+                % (self.target.bssid, self.target.essid))
+            return True
+
+        return False
 
     def print_targets(self):
         '''

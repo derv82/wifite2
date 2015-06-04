@@ -52,9 +52,9 @@ class Wash(object):
 if __name__ == '__main__':
     from Target import Target
     # Test target within range
-    fields = 'CC:A4:62:E8:E5:F0, 2015-05-27 19:28:44, 2015-05-27 19:28:46,  6,  54, WPA2, CCMP TKIP,PSK, -58,        2,        0,   0.  0.  0.  0,   9, HOME-E5F2, '.split(',')
+    fields = 'A4:2B:8C:16:6B:3A,2015-05-27 19:28:44,2015-05-27 19:28:46,11,54,WPA2,CCMP TKIP,PSK,-58,2,0,0.0.0.0,9,Test Router Please Ignore,'.split(',')
     t = Target(fields)
     targets = [t]
-    Wash.check_for_wps_and_update_targets('/tmp/airodump-01.cap', targets)
+    Wash.check_for_wps_and_update_targets('./tests/files/handshake_exists.cap', targets)
     print targets[0].bssid, 'WPS =', targets[0].wps
 

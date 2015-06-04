@@ -7,6 +7,7 @@ class Configuration(object):
 
     initialized = False # Flag indicating config has been initialized
     temp_dir = None     # Temporary directory
+    version = 2.00
 
     @staticmethod
     def initialize():
@@ -20,7 +21,6 @@ class Configuration(object):
             return
         Configuration.initialized = True
 
-        Configuration.version = 2.00 # Program version
         Configuration.tx_power = 0 # Wifi transmit power (0 is default)
         Configuration.interface = None
         Configuration.target_channel = None # User-defined channel to scan

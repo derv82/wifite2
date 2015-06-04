@@ -7,7 +7,7 @@ class Attack(object):
         Contains functionality common to all attacks
     '''
 
-    target_wait = 10
+    target_wait = 20
 
     def __init__(self, target):
         self.target = target

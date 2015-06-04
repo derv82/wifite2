@@ -12,7 +12,9 @@ class Arguments(object):
 
         description = 'Wrapper script around aircrack-ng and reaver'
         description += ' https://github.com/derv82/wifite2'
-        parser = argparse.ArgumentParser(description=description)
+        parser = argparse.ArgumentParser(
+            description=description,
+            usage=argparse.SUPPRESS)
 
         # Global variables
         glob = parser.add_argument_group('SETTINGS')

@@ -6,7 +6,7 @@ from Color import Color
 from Configuration import Configuration
 from Handshake import Handshake
 from Process import Process
-from WPAResult import WPAResult
+from CrackResultWPA import CrackResultWPA
 
 import time
 import os
@@ -165,7 +165,7 @@ class AttackWPA(Attack):
                                  ' {O}%s did not contain password{W}'
                                      % wordlist.split(os.sep)[-1])
 
-            self.crack_result = WPAResult(bssid, essid, handshake.capfile, key)
+            self.crack_result = CrackResultWPA(bssid, essid, handshake.capfile, key)
             self.crack_result.dump()
             self.success = True
             return self.success
