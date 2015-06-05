@@ -84,7 +84,13 @@ class Configuration(object):
         # Overwrite config values with arguments (if defined)
         Configuration.load_from_arguments()
 
-        if load_interface and Configuration.interface == None:
+        if load_interface:
+            Configuration.get_interface()
+
+
+    @staticmethod
+    def get_interface():
+        if Configuration.interface == None:
             # Interface wasn't defined, select it!
             from Airmon import Airmon
             Configuration.interface = Airmon.ask()
@@ -285,6 +291,6 @@ class Configuration(object):
         return result
 
 if __name__ == '__main__':
-    Configuration.initialize()
+    Configuration.initialize(False)
     print Configuration.dump()
 

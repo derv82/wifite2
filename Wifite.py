@@ -37,6 +37,7 @@ class Wifite(object):
             Color.pl('{!} Unimplemented method: update')
             pass
         else:
+            Configuration.get_interface()
             self.run()
 
     def display_cracked(self):

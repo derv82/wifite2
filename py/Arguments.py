@@ -241,9 +241,7 @@ if __name__ == '__main__':
     from Configuration import Configuration
     Configuration.initialize(False)
     a = Arguments(Configuration)
-    '''
     args = a.args
     for (key,value) in sorted(args.__dict__.iteritems()):
         Color.pl('{C}%s: {G}%s{W}' % (key.ljust(21),value))
-    '''
 
