@@ -1,5 +1,7 @@
 #!/usr/bin/python
 
+from Color import Color
+
 import os
 
 class Configuration(object):
@@ -10,7 +12,7 @@ class Configuration(object):
     version = 2.00
 
     @staticmethod
-    def initialize():
+    def initialize(load_interface=True):
         '''
             Sets up default initial configuration values.
             Also sets config values based on command-line arguments.
@@ -78,7 +80,7 @@ class Configuration(object):
         Configuration.wps_skip_rate_limit = True # Skip rate-limited WPS APs
 
         # Commands
-        Configuration.cracked = False
+        Configuration.show_cracked = False
         Configuration.check_handshake = None
         Configuration.crack_wpa = None
         Configuration.crack_wep = None
@@ -87,6 +89,11 @@ class Configuration(object):
         # Overwrite config values with arguments (if defined)
         Configuration.load_from_arguments()
 
+        if load_interface and Configuration.interface == None:
+            # Interface wasn't defined, select it!
+            from Airmon import Airmon
+            Configuration.interface = Airmon.ask()
+
 
     @staticmethod
     def load_from_arguments():
@@ -94,50 +101,92 @@ class Configuration(object):
         from Arguments import Arguments
 
         args = Arguments(Configuration).args
-        if args.channel:      Configuration.target_channel = args.channel
-        if args.interface:    Configuration.interface    = args.interface
-        if args.target_bssid: Configuration.target_bssid = args.target_bssid
-        if args.target_essid: Configuration.target_essid = args.target_essid
+        if args.channel:
+            Configuration.target_channel = args.channel
+            Color.pl('{+} {C}option:{W} scanning for targets on channel {G}%s{W}' % args.channel)
+        if args.interface:
+            Configuration.interface = args.interface
+            Color.pl('{+} {C}option:{W} using wireless interface {G}%s{W}' % args.interface)
+        if args.target_bssid:
+            Configuration.target_bssid = args.target_bssid
+            Color.pl('{+} {C}option:{W} targeting BSSID {G}%s{W}' % args.target_bssid)
+        if args.target_essid:
+            Configuration.target_essid = args.target_essid
+            Color.pl('{+} {C}option:{W} targeting ESSID {G}%s{W}' % args.target_essid)
+
 
         # WEP
-        if args.wep_filter:  Configuration.wep_filter  = args.wep_filter
-        if args.wep_pps:     Configuration.wep_pps     = args.wep_pps
-        if args.wep_timeout: Configuration.wep_timeout = args.wep_timeout
-        if args.require_fakeauth: Configuration.require_fakeauth = False
+        if args.wep_filter:
+            Configuration.wep_filter = args.wep_filter
+        if args.wep_pps:
+            Configuration.wep_pps = args.wep_pps
+            Color.pl('{+} {C}option:{W} using {G}%d{W} packets-per-second on WEP attacks' % args.wep_pps)
+        if args.wep_timeout:
+            Configuration.wep_timeout = args.wep_timeout
+            Color.pl('{+} {C}option:{W} WEP attack timeout set to {G}%d seconds{W}' % args.wep_timeout)
+        if args.require_fakeauth:
+            Configuration.require_fakeauth = False
+            Color.pl('{+} {C}option:{W} fake-authentication is {G}required{W} for WEP attacks')
         if args.wep_crack_at_ivs:
             Configuration.wep_crack_at_ivs = args.wep_crack_at_ivs
+            Color.pl('{+} {C}option:{W} will start cracking WEP keys at {G}%d IVs{W}' % args.wep_crack_at_ivs)
         if args.wep_restart_stale_ivs:
             Configuration.wep_restart_stale_ivs = args.wep_restart_stale_ivs
+            Color.pl('{+} {C}option:{W} will restart aireplay after {G}%d seconds{W} of no new IVs' % args.wep_restart_stale_ivs)
         if args.wep_restart_aircrack:
             Configuration.wep_restart_aircrack = args.wep_restart_aircrack
+            Color.pl('{+} {C}option:{W} will restart aircrack every {G}%d seconds{W}' % args.wep_restart_aircrack)
 
         # WPA
-        if args.wpa_filter:  Configuration.wpa_filter  = args.wpa_filter
-        if args.wordlist:    Configuration.wordlist    = args.wordlist
+        if args.wpa_filter:
+            Configuration.wpa_filter = args.wpa_filter
+        if args.wordlist:
+            if os.path.exists(args.wordlist):
+                Configuration.wordlist = args.wordlist
+                Color.pl('{+} {C}option:{W} using wordlist {G}%s{W} to crack WPA handshakes' % args.wordlist)
+            else:
+                Color.pl('{+} {C}option:{O} wordlist {R}%s{O} was not found, using {R}%s{W}' % (args.wordlist, Configuration.wordlist))
         if args.wpa_deauth_timeout:
             Configuration.wpa_deauth_timeout = args.wpa_deauth_timeout
+            Color.pl('{+} {C}option:{W} will timeout WPA deauth tries after {G}%d seconds{W}' % args.wpa_deauth_timeout)
         if args.wpa_attack_timeout:
             Configuration.wpa_attack_timeout = args.wpa_attack_timeout
+            Color.pl('{+} {C}option:{W} will timeout WPA attacks after {G}%d seconds{W}' % args.wpa_attack_timeout)
         if args.wpa_handshake_dir:
             Configuration.wpa_handshake_dir = args.wpa_handshake_dir
+            Color.pl('{+} {C}option:{W} will store handshakes to {G}%s{W}' % args.wpa_handshake_dir)
 
         # WPS
-        if args.wps_filter:  Configuration.wps_filter  = args.wps_filter
-        if args.reaver_only: Configuration.reaver_only = args.reaver_only
-        if args.no_reaver:   Configuration.no_reaver   = args.no_reaver
-        if args.pixie_only:  Configuration.pixie_only  = args.pixie_only
+        if args.wps_filter:
+            Configuration.wps_filter  = args.wps_filter
+        if args.reaver_only:
+            Configuration.reaver_only = args.reaver_only
+            Color.pl('{+} {C}option:{W} will *only* use {G}reaver{W} to attack WPA targets' % args.reaver_only)
+        if args.no_reaver:
+            Configuration.no_reaver   = args.no_reaver
+            Color.pl('{+} {C}option:{W} will *never* use {G}reaver{W} to attack WPA targets' % args.no_reaver)
+        if args.pixie_only:
+            Configuration.pixie_only  = args.pixie_only
+            Color.pl('{+} {C}option:{W} will only use {G}WPS pixie-dust attack{W} on WPS targets' % args.pixie_only)
         if args.wps_pixie_timeout:
             Configuration.wps_pixie_timeout = args.wps_pixie_timeout
+            Color.pl('{+} {C}option:{W} WPS pixie-dust attack will timeout after {G}%d seconds{W}' % args.wps_pixie_timeout)
         if args.wps_pin_timeout:
             Configuration.wps_pin_timeout = args.wps_pin_timeout
+            Color.pl('{+} {C}option:{W} WPS PIN attack will timeout after {G}%d seconds{W}' % args.wps_pin_timeout)
         if args.wps_max_retries:
             Configuration.wps_max_retries = args.wps_max_retries
+            Color.pl('{+} {C}option:{W} will stop WPS attack after {G}%d retries{W}' % args.wps_max_retries)
         if args.wps_fail_threshold:
             Configuration.wps_fail_threshold = args.wps_fail_threshold
+            Color.pl('{+} {C}option:{W} will stop WPS attack after {G}%d failures{W}' % args.wps_fail_threshold)
         if args.wps_timeout_threshold:
             Configuration.wps_timeout_threshold = args.wps_timeout_threshold
+            Color.pl('{+} {C}option:{W} will stop WPS attack after {G}%d timeouts{W}' % args.wps_timeout_threshold)
         if args.wps_ignore_rate_limit:
             Configuration.wps_skip_rate_limit = not args.wps_ignore_rate_limit
+        else:
+            Color.pl('{+} {C}option:{W} will {G}NOT{W} ignore WPS rate limits')
 
         # Adjust encryption filter
         if Configuration.wep_filter or \
@@ -149,17 +198,18 @@ class Configuration(object):
         if Configuration.wpa_filter: Configuration.encryption_filter.append('WPA')
         if Configuration.wps_filter: Configuration.encryption_filter.append('WPS')
 
+        if len(Configuration.encryption_filter) == 3:
+            Color.pl('{+} {C}option:{W} targeting {G}all encrypted networks{W}')
+        else:
+            Color.pl('{+} {C}option:{W} targeting networks with encryption: {G}%s{W}'
+                % ' or '.join(Configuration.encryption_filter))
+
         # Commands
         if args.cracked:   Configuration.show_cracked = True
         if args.crack_wpa: Configuration.crack_wpa = args.crack_wpa
         if args.crack_wep: Configuration.crack_wep = args.crack_wep
         if args.update:    Configuration.update = True
         if args.check_handshake: Configuration.check_handshake = args.check_handshake
-
-        if Configuration.interface == None:
-            # Interface wasn't defined, select it!
-            from Airmon import Airmon
-            Configuration.interface = Airmon.ask()
         
 
     @staticmethod

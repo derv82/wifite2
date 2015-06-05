@@ -11,10 +11,12 @@ import os
 class Airodump(object):
     ''' Wrapper around airodump-ng program '''
 
-    def __init__(self, interface=None,       channel=None,         encryption=None, \
-                             wps=False, target_bssid=None, output_file_prefix='airodump', \
-                        ivs_only=False):
-        ''' Constructor, sets things up '''
+    def __init__(self, interface=None, channel=None, encryption=None,\
+                       wps=False, target_bssid=None, output_file_prefix='airodump',\
+                       ivs_only=False):
+        '''
+            Sets up airodump arguments, doesn't start process yet
+        '''
 
         Configuration.initialize()
 
@@ -42,6 +44,7 @@ class Airodump(object):
         '''
             Setting things up for this context.
             Called at start of 'with Airodump(...) as x:'
+            Actually starts the airodump process.
         '''
         self.delete_airodump_temp_files()
 

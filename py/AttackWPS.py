@@ -14,6 +14,7 @@ class AttackWPS(Attack):
     def __init__(self, target):
         super(AttackWPS, self).__init__(target)
         self.success = False
+        self.crack_result = None
 
     def run(self):
         ''' Run all WPS-related attacks '''

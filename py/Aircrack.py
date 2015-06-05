@@ -71,7 +71,7 @@ class Aircrack(object):
 
 if __name__ == '__main__':
     from time import sleep
-    Configuration.initialize()
+    Configuration.initialize(False)
     a = Aircrack('tests/files/wep-crackable.ivs')
     while a.is_running():
         sleep(1)

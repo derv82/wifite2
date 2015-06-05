@@ -215,9 +215,11 @@ class Arguments(object):
 if __name__ == '__main__':
     from Color import Color
     from Configuration import Configuration
-    Configuration.initialize()
+    Configuration.initialize(False)
     a = Arguments(Configuration)
+    '''
     args = a.args
     for (key,value) in sorted(args.__dict__.iteritems()):
         Color.pl('{C}%s: {G}%s{W}' % (key.ljust(21),value))
+    '''
 

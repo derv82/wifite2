@@ -6,10 +6,63 @@ from py.Color import Color
 from py.AttackWEP import AttackWEP
 from py.AttackWPA import AttackWPA
 from py.AttackWPS import AttackWPS
+from py.CrackResult import CrackResult
+from py.Handshake import Handshake
+
+from json import loads
+import os
 
 class Wifite(object):
-    def __init__(self):
-        pass
+
+    def main(self):
+        ''' Either performs action based on arguments, or starts attack scanning '''
+        Configuration.initialize(load_interface=False)
+
+        if Configuration.show_cracked:
+            self.display_cracked()
+
+        elif Configuration.check_handshake:
+            self.check_handshake(Configuration.check_handshake)
+
+        elif Configuration.crack_wpa:
+            # TODO: Crack .cap file at crack_wpa
+            Color.pl('{!} Unimplemented method: crack_wpa')
+            pass
+        elif Configuration.crack_wep:
+            # TODO: Crack .cap file at crack_wep
+            Color.pl('{!} Unimplemented method: crack_wep')
+            pass
+        elif Configuration.update:
+            # TODO: Get latest version from github
+            Color.pl('{!} Unimplemented method: update')
+            pass
+        else:
+            self.run()
+
+    def display_cracked(self):
+        ''' Show cracked targets from cracked.txt '''
+        Color.pl('{+} displaying {C}cracked target(s){W}')
+        name = CrackResult.cracked_file
+        if not os.path.exists(name):
+            Color.pl('{!} {O}file {C}%s{O} not found{W}' % name)
+            return
+        f = open(name, 'r')
+        json = loads(f.read())
+        f.close()
+        for (index, item) in enumerate(json):
+            Color.pl('\n{+} Cracked target #%d:' % (index + 1))
+            cr = CrackResult.load(item)
+            cr.dump()
+        
+    def check_handshake(self, capfile):
+        ''' Analyzes .cap file for handshake '''
+        Color.pl('{+} checking for handshake in .cap file {C}%s{W}' % capfile)
+        if not os.path.exists(capfile):
+            Color.pl('{!} {O}.cap file {C}%s{O} not found{W}' % capfile)
+            return
+        hs = Handshake(capfile)
+        hs.analyze()
+
 
     def run(self):
         '''
@@ -27,29 +80,30 @@ class Wifite(object):
         for t in targets:
             Color.pl('{+} starting attacks against {C}%s{W} ({C}%s{W})'
                 % (t.bssid, t.essid))
-            if 'WEP' in t.encryption: # TODO: and configuration.use_wep
+            if 'WEP' in t.encryption:
                 attack = AttackWEP(t)
                 attack.run()
             elif 'WPA' in t.encryption:
-                if t.wps: # TODO: and Configuration.use_wps
+                if t.wps:
                     attack = AttackWPS(t)
                     if attack.run():
                         # We cracked it.
                         break
-                    else: # TODO: and Configuration.use_wpa
+                    else:
                         # WPS failed, try WPA handshake.
                         attack = AttackWPA(t)
                         attack.run()
-                else: # TODO: and Configuration.use_wpa
+                else:
                     # Not using WPS, try WPA handshake.
                     attack = AttackWPA(t)
                     attack.run()
             else:
-                # TODO: Error: Can't attack - encryption not WEP or WPA
+                Color.pl("{!} {R}Error: {O}unable to attack: encryption not WEP or WPA")
+                continue
                 pass
 
-            # TODO: if attack.successful:
-            # TODO: Save attack.crack_result
+            if attack.success:
+                attack.crack_result.save()
         pass
 
     def print_banner(self):
@@ -73,7 +127,7 @@ if __name__ == '__main__':
     w = Wifite()
     try:
         w.print_banner()
-        w.run()
+        w.main()
     except Exception, e:
         Color.pl('\n{!} {R}Error:{O} %s{W}' % str(e))
         from traceback import format_exc
