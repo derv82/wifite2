@@ -54,15 +54,7 @@ class AttackWEP(Attack):
 
             aircrack = None # Aircrack process, not started yet
 
-            wep_attack_types = [
-                'replay',
-                'chopchop',
-                'fragment',
-                'caffelatte',
-                'p0841',
-                'hirte'
-            ]
-            for attack_name in wep_attack_types:
+            for attack_name in Configuration.wep_attacks:
                 # Convert to WEPAttackType.
                 wep_attack_type = WEPAttackType(attack_name)
 

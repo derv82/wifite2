@@ -43,12 +43,7 @@ class Configuration(object):
                                                  # "0" means never restart.
         Configuration.wep_restart_aircrack = 30  # Seconds to give aircrack to crack
                                                  # before restarting the process.
-        # WEP-specific attacks
-        Configuration.wep_fragment = True 
-        Configuration.wep_caffelatte = True 
-        Configuration.wep_p0841 = True
-        Configuration.wep_hirte = True
-        Configuration.wep_crack_at_ivs = 10000 # Number of IVS to start cracking
+        Configuration.wep_crack_at_ivs = 10000   # Number of IVS to start cracking
 
         # WPA variables
         Configuration.wpa_filter = False # Only attack WPA networks
@@ -189,20 +184,46 @@ class Configuration(object):
             Color.pl('{+} {C}option:{W} will {G}NOT{W} ignore WPS rate limits')
 
         # Adjust encryption filter
-        if Configuration.wep_filter or \
-           Configuration.wpa_filter or \
-           Configuration.wps_filter:
-            # Reset filter
-            Configuration.encryption_filter = []
+        Configuration.encryption_filter = []
         if Configuration.wep_filter: Configuration.encryption_filter.append('WEP')
         if Configuration.wpa_filter: Configuration.encryption_filter.append('WPA')
         if Configuration.wps_filter: Configuration.encryption_filter.append('WPS')
 
         if len(Configuration.encryption_filter) == 3:
             Color.pl('{+} {C}option:{W} targeting {G}all encrypted networks{W}')
+        elif len(Configuration.encryption_filter) == 0:
+            # Default to scan all types
+            Configuration.encryption_filter = ['WEP', 'WPA', 'WPS']
         else:
-            Color.pl('{+} {C}option:{W} targeting networks with encryption: {G}%s{W}'
-                % ' or '.join(Configuration.encryption_filter))
+            Color.pl('{+} {C}option:{W} ' +
+                     'targeting {G}%s-encrypted{W} networks'
+                        % '/'.join(Configuration.encryption_filter))
+
+        # Adjust WEP attack list
+        Configuration.wep_attacks = []
+        import sys
+        seen = set()
+        for arg in sys.argv:
+            if arg in seen: continue
+            seen.add(arg)
+            if arg == '-arpreplay':  Configuration.wep_attacks.append('replay')
+            if arg == '-fragment':   Configuration.wep_attacks.append('fragment')
+            if arg == '-chopchop':   Configuration.wep_attacks.append('chopchop')
+            if arg == '-caffelatte': Configuration.wep_attacks.append('caffelatte')
+            if arg == '-p0841':      Configuration.wep_attacks.append('p0841')
+            if arg == '-hirte':      Configuration.wep_attacks.append('hirte')
+
+        if len(Configuration.wep_attacks) == 0:
+            # Use all attacks
+            Configuration.wep_attacks = ['replay',
+                                         'fragment',
+                                         'chopchop',
+                                         'caffelatte',
+                                         'p0841',
+                                         'hirte']
+        elif len(Configuration.wep_attacks) > 0:
+            Color.pl('{+} {C}option:{W} using {G}%s{W} WEP attacks'
+                % '{W}, {G}'.join(Configuration.wep_attacks))
 
         # Commands
         if args.cracked:   Configuration.show_cracked = True

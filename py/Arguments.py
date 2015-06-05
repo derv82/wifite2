@@ -88,6 +88,30 @@ class Arguments(object):
             type=int,
             help='Restart aircrack after this delay (default: %ds)'
                 % Configuration.wep_restart_aircrack)
+        wep.add_argument('-arpreplay',
+            action='store_true',
+            dest='wep_attack_replay',
+            help='use ARP-replay WEP attack (default: on)')
+        wep.add_argument('-fragment',
+            action='store_true',
+            dest='wep_attack_fragment',
+            help='use fragmentation WEP attack (default: on)')
+        wep.add_argument('-chopchop',
+            action='store_true',
+            dest='wep_attack_chopchop',
+            help='use chop-chop WEP attack (default: on)')
+        wep.add_argument('-caffelatte',
+            action='store_true',
+            dest='wep_attack_caffe',
+            help='use caffe-latte WEP attack (default: on)')
+        wep.add_argument('-p0841',
+            action='store_true',
+            dest='wep_attack_p0841',
+            help='use p0841 WEP attack (default: on)')
+        wep.add_argument('-hirte',
+            action='store_true',
+            dest='wep_attack_hirte',
+            help='use ARP-replay WEP attack (default: on)')
 
         # WPA
         wpa = parser.add_argument_group('WPA-RELATED')
