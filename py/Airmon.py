@@ -108,8 +108,21 @@ class Airmon(object):
 
     @staticmethod
     def stop(iface):
-        # TODO airmon-ng stop iface
-        pass
+        Color.p("{+} {R}disabling {O}monitor mode{R} on {O}%s{W}... " % iface)
+        (out,err) = Process.call('airmon-ng stop %s' % iface)
+        mon_iface = None
+        for line in out.split('\n'):
+            if 'monitor mode' in line and 'disabled' in line and ' for ' in line:
+                mon_iface = line.split(' for ')[1]
+                if ']' in mon_iface:
+                    mon_iface = mon_iface.split(']')[1]
+                if ')' in mon_iface:
+                    mon_iface = mon_iface.split(')')[0]
+                break
+        if mon_iface:
+            Color.pl('{R}disabled {O}%s{W}' % mon_iface)
+        else:
+            Color.pl('{O}could not disable on {R}%s{W}' % iface)
 
 
     @staticmethod
@@ -174,4 +187,5 @@ class Airmon(object):
 
 
 if __name__ == '__main__':
-    Airmon.ask()
+    iface = Airmon.ask()
+    Airmon.stop(iface)
