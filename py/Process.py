@@ -12,17 +12,17 @@ class Process(object):
         return open('/dev/null', 'w')
 
     @staticmethod
-    def call(command):
+    def call(command, cwd=None,shell=False):
         '''
             Calls a command (either string or list of args).
             Returns tuple:
                 (stdout, stderr)
         '''
-        if type(command) != str or ' ' in command:
+        if type(command) != str or ' ' in command or shell:
             shell = True
         else:
             shell = False
-        pid = Popen(command, stdout=PIPE, stderr=PIPE, shell=shell)
+        pid = Popen(command, cwd=cwd, stdout=PIPE, stderr=PIPE, shell=shell)
         pid.wait()
         return pid.communicate()
 
@@ -35,7 +35,7 @@ class Process(object):
         return True
 
 
-    def __init__(self, command, devnull=False, stdout=PIPE, stderr=PIPE):
+    def __init__(self, command, devnull=False, stdout=PIPE, stderr=PIPE, cwd=None):
         ''' Starts executing command '''
 
         if type(command) == str:
@@ -55,7 +55,7 @@ class Process(object):
 
         self.start_time = time.time()
 
-        self.pid = Popen(command, stdout=sout, stderr=serr)
+        self.pid = Popen(command, stdout=sout, stderr=serr, cwd=cwd)
 
     def __del__(self):
         '''

