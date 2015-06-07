@@ -190,8 +190,8 @@ class AttackWPS(Attack):
             time.sleep(1)
             Color.clear_line()
             Color.p('\r{+} {C}WPS PIN attack{W} ')
-            Color.p('({G}%d{W}/{G}%d{W}, ' % (pin_current, pin_total))
-            Color.p('{R}%d/%d failed{W}) ' % (failures, \
+            Color.p('({G}%d{W}/{G}%d pins{W}, ' % (pin_current, pin_total))
+            Color.p('{R}%d/%d failures{W}) ' % (failures, \
                                             Configuration.wps_fail_threshold))
 
             # Get output

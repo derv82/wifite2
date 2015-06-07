@@ -72,7 +72,7 @@ class Configuration(object):
         Configuration.wps_max_retries = 20 # Retries before failing
         Configuration.wps_fail_threshold = 30  # Max number of failures
         Configuration.wps_timeout_threshold = 30  # Max number of timeouts
-        Configuration.wps_skip_rate_limit = False # Skip rate-limited WPS APs
+        Configuration.wps_skip_rate_limit = True # Skip rate-limited WPS APs
 
         # Commands
         Configuration.show_cracked = False
@@ -184,9 +184,9 @@ class Configuration(object):
         if args.wps_timeout_threshold:
             Configuration.wps_timeout_threshold = args.wps_timeout_threshold
             Color.pl('{+} {C}option:{W} will stop WPS attack after {G}%d timeouts{W}' % args.wps_timeout_threshold)
-        if args.wps_ignore_rate_limit:
-            Configuration.wps_skip_rate_limit = True
-            Color.pl('{+} {C}option:{W} will {G}NOT{W} ignore WPS rate limits')
+        if args.wps_ignore_rate_limit == False:
+            Configuration.wps_skip_rate_limit = False
+            Color.pl('{+} {C}option:{W} will {G}continue{W} WPS attacks when rate-limited')
 
         # Adjust encryption filter
         Configuration.encryption_filter = []
