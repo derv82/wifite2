@@ -72,7 +72,7 @@ class Configuration(object):
         Configuration.wps_max_retries = 20 # Retries before failing
         Configuration.wps_fail_threshold = 30  # Max number of failures
         Configuration.wps_timeout_threshold = 30  # Max number of timeouts
-        Configuration.wps_skip_rate_limit = True # Skip rate-limited WPS APs
+        Configuration.wps_skip_rate_limit = False # Skip rate-limited WPS APs
 
         # Commands
         Configuration.show_cracked = False
@@ -162,13 +162,13 @@ class Configuration(object):
             Configuration.wps_filter  = args.wps_filter
         if args.reaver_only:
             Configuration.reaver_only = args.reaver_only
-            Color.pl('{+} {C}option:{W} will *only* use {G}reaver{W} to attack WPA targets' % args.reaver_only)
+            Color.pl('{+} {C}option:{W} will *only* use {G}reaver{W} to attack WPA targets')
         if args.no_reaver:
             Configuration.no_reaver   = args.no_reaver
-            Color.pl('{+} {C}option:{W} will *never* use {G}reaver{W} to attack WPA targets' % args.no_reaver)
+            Color.pl('{+} {C}option:{W} will *never* use {G}reaver{W} to attack WPA targets')
         if args.pixie_only:
             Configuration.pixie_only  = args.pixie_only
-            Color.pl('{+} {C}option:{W} will only use {G}WPS pixie-dust attack{W} on WPS targets' % args.pixie_only)
+            Color.pl('{+} {C}option:{W} will only use {G}WPS pixie-dust attack{W} on WPS targets')
         if args.wps_pixie_timeout:
             Configuration.wps_pixie_timeout = args.wps_pixie_timeout
             Color.pl('{+} {C}option:{W} WPS pixie-dust attack will timeout after {G}%d seconds{W}' % args.wps_pixie_timeout)
@@ -185,8 +185,7 @@ class Configuration(object):
             Configuration.wps_timeout_threshold = args.wps_timeout_threshold
             Color.pl('{+} {C}option:{W} will stop WPS attack after {G}%d timeouts{W}' % args.wps_timeout_threshold)
         if args.wps_ignore_rate_limit:
-            Configuration.wps_skip_rate_limit = not args.wps_ignore_rate_limit
-        else:
+            Configuration.wps_skip_rate_limit = True
             Color.pl('{+} {C}option:{W} will {G}NOT{W} ignore WPS rate limits')
 
         # Adjust encryption filter
