@@ -188,9 +188,11 @@ class AttackWPS(Attack):
 
         while True:
             time.sleep(1)
+            percent = 100 * float(pin_current) / float(pin_total)
             Color.clear_line()
-            Color.p('\r{+} {C}WPS PIN attack{W} ')
-            Color.p('({G}%d{W}/{G}%d pins{W}, ' % (pin_current, pin_total))
+            Color.p('\r{+} {C}WPS PIN attack{W} (')
+            Color.p('{G}%.2f%% done{W}, ' % percent)
+            Color.p('{G}%d{W}/{G}%d pins{W}, ' % (pin_current, pin_total))
             Color.p('{R}%d/%d failures{W}) ' % (failures, \
                                             Configuration.wps_fail_threshold))
 
@@ -258,6 +260,7 @@ class AttackWPS(Attack):
             [!] WARNING: Failed to associate with 00:24:7B:AB:5C:EE (ESSID: myqwest0445)
             [!] WARNING: Detected AP rate limiting, waiting 60 seconds before re-checking
             [!] WARNING: 25 successive start failures
+            [!] WARNING: Failed to associate with B2:B2:DC:A1:35:94 (ESSID: CenturyLink2217)
             [+] 0.55% complete. Elapsed time: 0d0h2m21s.
             [+] Estimated Remaining time: 0d15h11m35s
             '''
