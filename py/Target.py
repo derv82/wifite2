@@ -50,7 +50,7 @@ class Target(object):
         self.essid_known = True
         self.essid_len  = int(fields[12].strip())
         self.essid      =     fields[13].strip()
-        if self.essid == '\\x00' * self.essid_len:
+        if self.essid == '\\x00' * self.essid_len or self.essid.strip() == '':
             # Don't display "\x00..." for hidden ESSIDs
             self.essid = '(%s)' % self.bssid
             self.essid_known = False

@@ -151,7 +151,8 @@ class Airodump(object):
         targets = []
         import csv
         with open(csv_filename, 'rb') as csvopen:
-            csv_reader = csv.reader(csvopen, delimiter=',')
+            lines = (line.replace('\0', '') for line in csvopen)
+            csv_reader = csv.reader(lines, delimiter=',')
             hit_clients = False
             for row in csv_reader:
                 # Each "row" is a list of fields for a target/client

@@ -176,7 +176,7 @@ class AttackWPS(Attack):
             '-b', self.target.bssid,
             '-c', self.target.channel,
             '-a', # Automatically restart session
-            '-v'  # verbose
+            '-vv'  # verbose
         ]
         reaver = Process(command, stdout=stdout_write, stderr=Process.devnull())
 
@@ -241,17 +241,30 @@ class AttackWPS(Attack):
                         pin_current = len(pins)
 
             # Failures
-            failures += out.count('WPS transaction failed')
+            if 'WPS transaction failed' in out:
+                failures += out.count('WPS transaction failed')
+            elif 'Receive timeout occurred' in out:
+                # Reaver 1.4
+                failures += out.count('Receive timeout occurred')
 
             # Status
             if 'Waiting for beacon from'   in out: state = '{O}waiting for beacon{W}'
             if 'Starting Cracking Session' in out: state = '{C}cracking{W}'
+
+            # Reaver 1.4
+            if 'Trying pin' in out: state = '{C}cracking{W}'
+
             if 'Detected AP rate limiting' in out:
                 state = '{R}rate-limited{W}'
                 if not Configuration.wps_skip_rate_limit:
                     Color.pl(state)
                     Color.pl('{!} {R}hit rate limit, stopping{W}\n')
                     break
+
+            if 'WARNING: Failed to associate with' in out:
+                # TODO: Fail after X association failures (instead of just one)
+                Color.pl('\n{!} {R}failed to associate with target, {O}stopping{W}')
+                break
 
             match = re.search('Estimated Remaining time: ([a-zA-Z0-9]+)', out)
             if match:
@@ -287,6 +300,11 @@ class AttackWPS(Attack):
             [+] WPS PIN: '12345678'
             [+] WPA PSK: 'abcdefgh'
             [+] AP SSID: 'Test Router'
+
+            Reaver 1.4:
+            [+] Max time remaining at this rate: 18:19:36 (10996 pins left to try)
+            [!] WARNING: Receive timeout occurred
+
             '''
 
         reaver.interrupt()
