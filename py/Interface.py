@@ -2,6 +2,8 @@
 
 from Color import Color
 
+import re
+
 class Interface(object):
     '''
         Represents an 'interface' known by airmon-ng
@@ -11,7 +13,7 @@ class Interface(object):
     # Used for printing a table of interfaces.
     PHY_LEN = 6
     NAME_LEN = 12
-    DRIVER_LEN = 12
+    DRIVER_LEN = 20
     CHIPSET_LEN = 30
 
     def __init__(self, fields):
@@ -26,7 +28,12 @@ class Interface(object):
                         3: CHIPSET
         '''
         if len(fields) == 3:
-            fields.insert(0, 'phyX')
+            phy = 'phyX'
+            match = re.search(' - \[(phy\d+)\]', fields[2])
+            if match:
+                phy = match.groups()[0]
+                fields[2] = fields[2][:fields[2].rfind(' - [')]
+            fields.insert(0, phy)
         if len(fields) != 4:
             raise Exception("Expected 4, got %d in %s" % (len(fields), fields))
         self.phy = fields[0].strip()

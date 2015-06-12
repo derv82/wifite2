@@ -5,6 +5,10 @@ from Process import Process
 from Color import Color
 from Configuration import Configuration
 
+import re
+import os
+import signal
+
 class Airmon(object):
     ''' Wrapper around the 'airmon-ng' program '''
 
@@ -112,6 +116,7 @@ class Airmon(object):
         (out,err) = Process.call('airmon-ng stop %s' % iface)
         mon_iface = None
         for line in out.split('\n'):
+            # aircrack-ng 1.2 rc2
             if 'monitor mode' in line and 'disabled' in line and ' for ' in line:
                 mon_iface = line.split(' for ')[1]
                 if ']' in mon_iface:
@@ -119,6 +124,13 @@ class Airmon(object):
                 if ')' in mon_iface:
                     mon_iface = mon_iface.split(')')[0]
                 break
+
+            # aircrack-ng 1.2 rc1
+            match = re.search('([a-zA-Z0-9]+).*\(removed\)', line)
+            if match:
+                mon_iface = match.groups()[0]
+                break
+
         if mon_iface:
             Color.pl('{R}disabled {O}%s{W}' % mon_iface)
         else:
@@ -184,8 +196,41 @@ class Airmon(object):
         else:
             iface.name = Airmon.start(iface)
         return iface.name
+    
+    @staticmethod
+    def terminate_conflicting_processes():
+        ''' Deletes conflicting processes reported by airmon-ng '''
+
+        '''
+        % airmon-ng check
+
+        Found 3 processes that could cause trouble.
+        If airodump-ng, aireplay-ng or airtun-ng stops working after
+        a short period of time, you may want to kill (some of) them!
+        -e 
+        PID Name
+        2272    dhclient
+        2293    NetworkManager
+        3302    wpa_supplicant
+        '''
+
+        out = Process(['airmon-ng', 'check']).stdout()
+        if 'processes that could cause trouble' not in out:
+            # No proceses to kill
+            return
+
+        for line in out.split('\n'):
+            match = re.search('^(\d+)\t(.+)$', line)
+            if match:
+                # Found process to kill
+                pid = match.groups()[0]
+                pname = match.groups()[1]
+                Color.pl('{!} {R}terminating {O}conflicting process' +
+                         ' {R}%s{O} ({R}%s{O})' % (pname, pid))
+                os.kill(int(pid), signal.SIGTERM)
 
 
 if __name__ == '__main__':
+    Airmon.terminate_conflicting_processes()
     iface = Airmon.ask()
     Airmon.stop(iface)

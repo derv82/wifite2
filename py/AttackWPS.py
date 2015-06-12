@@ -238,7 +238,8 @@ class AttackWPS(Attack):
                         # Reset failures on successful try
                         failures = 0
                         pins.add(pin)
-                        pin_current = len(pins)
+                        #pin_current = len(pins)
+                        pin_current += 1
 
             # Failures
             if 'WPS transaction failed' in out:
@@ -270,6 +271,21 @@ class AttackWPS(Attack):
             if match:
                 eta = match.groups()[0]
                 state = '{C}cracking, ETA: {G}%s{W}' % eta
+
+            match = re.search('Max time remaining at this rate: ([a-zA-Z0-9:]+)..([0-9]+) pins left to try', out)
+            if match:
+                eta = match.groups()[0]
+                state = '{C}cracking, ETA: {G}%s{W}' % eta
+                pins_left = match.groups()[1]
+
+                # TODO: Divine pin_current & pin_total from this:
+                # pin_current = 11000 - pins_left
+
+                # NOTE: Need to update set of "pins" to match pin_current
+                #while len(pins) < pin_current:
+                #    set.add('unique string here')
+                #while pin_current < len(pins):
+                #    set.remove('untried entry here')
 
             # Check if process is still running
             if reaver.pid.poll() != None:
