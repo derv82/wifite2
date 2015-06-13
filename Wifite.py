@@ -13,9 +13,15 @@ from json import loads
 import os
 
 class Wifite(object):
-
+    
     def main(self):
         ''' Either performs action based on arguments, or starts attack scanning '''
+
+        if os.getuid() != 0:
+            Color.pl('{!} {R}error: {O}wifite{R} must be run as {O}root{W}')
+            Color.pl('{!} {O}re-run as: sudo ./Wifite.py{W}')
+            return
+
         Configuration.initialize(load_interface=False)
 
         if Configuration.show_cracked:
@@ -78,34 +84,48 @@ class Wifite(object):
         else:
             targets = s.select_targets()
 
-        for t in targets:
-            Color.pl('{+} starting attacks against {C}%s{W} ({C}%s{W})'
+        targets_remaining = len(targets)
+        for index, t in enumerate(targets):
+            targets_remaining -= 1
+
+            Color.pl('\n{+} ({G}%d{W}/{G}%d{W})' % (index + 1, len(targets)) +
+                     ' starting attacks against {C}%s{W} ({C}%s{W})'
                 % (t.bssid, t.essid))
             if 'WEP' in t.encryption:
                 attack = AttackWEP(t)
-                attack.run()
             elif 'WPA' in t.encryption:
                 if t.wps:
                     attack = AttackWPS(t)
-                    if attack.run():
+                    result = False
+                    try:
+                        result = attack.run()
+                    except KeyboardInterrupt:
+                        if not self.user_wants_to_continue(targets_remaining, 1):
+                            break
+
+                    if result and attack.success:
                         # We cracked it.
-                        break
+                        attack.crack_result.save()
+                        continue
                     else:
                         # WPS failed, try WPA handshake.
                         attack = AttackWPA(t)
-                        attack.run()
                 else:
                     # Not using WPS, try WPA handshake.
                     attack = AttackWPA(t)
-                    attack.run()
             else:
                 Color.pl("{!} {R}Error: {O}unable to attack: encryption not WEP or WPA")
                 continue
-                pass
+
+            try:
+                attack.run()
+            except KeyboardInterrupt:
+                if not self.user_wants_to_continue(targets_remaining):
+                    break
 
             if attack.success:
                 attack.crack_result.save()
-        pass
+
 
     def print_banner(self):
         """ Displays ASCII art of the highest caliber.  """
@@ -122,6 +142,30 @@ class Wifite(object):
         Color.pl("{G}  ':.       {GR}/_____\\{G}     ,:'     ")
         Color.pl("{G}           {GR}/       \\{G}            ")
         Color.pl("{W}")
+
+
+    def user_wants_to_continue(self, targets_remaining, attacks_remaining=0):
+        ''' Asks user if attacks should continue onto other targets '''
+        Color.pl('\n{!} {O}interrupted{W}\n')
+        if attacks_remaining == 0 and targets_remaining == 0:
+            # No targets or attacksleft, drop out
+            return
+
+        prompt_list = []
+        if attacks_remaining > 0:
+            prompt_list.append(Color.s('{C}%d{W} attack(s)' % attacks_remaining))
+        if targets_remaining > 0:
+            prompt_list.append(Color.s('{C}%d{W} target(s)' % targets_remaining))
+        prompt = ' and '.join(prompt_list)
+        Color.pl('{+} %s remain, do you want to continue?' % prompt)
+
+        prompt = Color.s('{+} type {G}c{W} to {G}continue{W}' +
+                         ' or {R}s{W} to {R}stop{W}: ')
+
+        if raw_input(prompt).lower().startswith('s'):
+            return False
+        else:
+            return True
 
 
 if __name__ == '__main__':
