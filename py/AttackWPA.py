@@ -65,20 +65,26 @@ class AttackWPA(Attack):
                     # No cap files yet
                     continue
                 cap_file = cap_files[0]
-                # TODO: Copy .cap file to temp for consistency
 
-                # Check for Handshake
+                # Copy .cap file to temp for consistency
+                temp_file = Configuration.temp('handshake.cap.bak')
+                copy(cap_file, temp_file)
+
+                # Check cap file in temp for Handshake
                 bssid = airodump_target.bssid
                 essid = None
                 if airodump_target.essid_known:
                     essid = airodump_target.essid
-                handshake = Handshake(cap_file, bssid=bssid, essid=essid)
+                handshake = Handshake(temp_file, bssid=bssid, essid=essid)
                 if handshake.has_handshake():
                     # We got a handshake
                     Color.pl('\n\n{+} {G}successfully captured handshake{W}')
                     break
 
-                # TODO: Delete copied .cap file in temp to save space
+                # There is no handshake
+                handshake = None
+                # Delete copied .cap file in temp to save space
+                os.remove(temp_file)
 
                 # Check status of deauth process
                 if deauth_proc and deauth_proc.poll() == None:

@@ -197,6 +197,10 @@ class AttackWPS(Attack):
             Color.p('{R}%d/%d failures{W}) ' % (failures, \
                                             Configuration.wps_fail_threshold))
 
+            if failures >= Configuration.wps_fail_threshold:
+                Color.pl('{R}failed: {O}too many failures{W}' % failures)
+                break
+                
             # Get output
             out = self.get_stdout()
 
