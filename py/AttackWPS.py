@@ -257,7 +257,7 @@ class AttackWPS(Attack):
             if 'Starting Cracking Session' in out: state = '{C}cracking{W}'
 
             # Reaver 1.4
-            if 'Trying pin' in out: state = '{C}cracking{W}'
+            if 'Trying pin' in out and 'cracking' not in state: state = '{C}cracking{W}'
 
             if 'Detected AP rate limiting' in out:
                 state = '{R}rate-limited{W}'
@@ -280,16 +280,10 @@ class AttackWPS(Attack):
             if match:
                 eta = match.groups()[0]
                 state = '{C}cracking, ETA: {G}%s{W}' % eta
-                pins_left = match.groups()[1]
+                pins_left = int(match.groups()[1])
 
-                # TODO: Divine pin_current & pin_total from this:
-                # pin_current = 11000 - pins_left
-
-                # NOTE: Need to update set of "pins" to match pin_current
-                #while len(pins) < pin_current:
-                #    set.add('unique string here')
-                #while pin_current < len(pins):
-                #    set.remove('untried entry here')
+                # Divine pin_current & pin_total from this:
+                pin_current = 11000 - pins_left
 
             # Check if process is still running
             if reaver.pid.poll() != None:
