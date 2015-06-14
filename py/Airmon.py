@@ -156,9 +156,19 @@ class Airmon(object):
                 interfaces.append(iface)
         return interfaces
 
+
     @staticmethod
     def ask():
-        ''' Asks user to define which wireless interface to use '''
+        '''
+            Asks user to define which wireless interface to use.
+            Does not ask if:
+                1. There is already an interface in monitor mode, or
+                2. There is only one wireles interface (automatically selected).
+            Puts selected device into Monitor Mode.
+        '''
+
+        Airmon.terminate_conflicting_processes()
+
         Color.pl('\n{+} looking for {C}wireless interfaces{W}')
         mon_ifaces = Airmon.get_interfaces_in_monitor_mode()
         mon_count = len(mon_ifaces)
@@ -197,6 +207,7 @@ class Airmon(object):
             iface.name = Airmon.start(iface)
         return iface.name
     
+
     @staticmethod
     def terminate_conflicting_processes():
         ''' Deletes conflicting processes reported by airmon-ng '''
@@ -219,8 +230,14 @@ class Airmon(object):
             # No proceses to kill
             return
 
+        hit_pids = False
         for line in out.split('\n'):
-            match = re.search('^(\d+)\t(.+)$', line)
+            if re.search('^ *PID', line):
+                hit_pids = True
+                continue
+            if not hit_pids: continue
+            if line.strip() == '': continue
+            match = re.search('^[ \t]*(\d+)[ \t]*([a-zA-Z0-9_\-]+)[ \t]*$', line)
             if match:
                 # Found process to kill
                 pid = match.groups()[0]
