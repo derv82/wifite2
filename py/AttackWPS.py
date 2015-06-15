@@ -215,6 +215,7 @@ class AttackWPS(Attack):
             if pin and psk and ssid:
                 # We cracked it.
                 self.success = True
+                Color.pl('\n{+} {G}successly cracked WPS PIN and PSK{W}\n')
                 self.crack_result = CrackResultWPS(self.target.bssid, ssid, pin, psk)
                 self.crack_result.dump()
                 break
@@ -225,13 +226,14 @@ class AttackWPS(Attack):
             # Reaver 1.5.*
             match = None
             for match in re.finditer('Pin count advanced: (\d+)\\. Max pin attempts: (\d+)', out):
+                # Look at last entry for "Pin count advanced" to get latest pin count
                 pass
             if match:
-                # Look at last entry for "Pin count advanced" to get latest pin count
+                # Reset failures on successful try
+                failures = 0
                 groups = match.groups()
                 pin_current = int(groups[0])
                 pin_total = int(groups[1])
-                failures = 0
 
             # Reaver 1.3, 1.4
             match = None
@@ -242,7 +244,6 @@ class AttackWPS(Attack):
                         # Reset failures on successful try
                         failures = 0
                         pins.add(pin)
-                        #pin_current = len(pins)
                         pin_current += 1
 
             # Failures
@@ -255,7 +256,6 @@ class AttackWPS(Attack):
             # Status
             if 'Waiting for beacon from'   in out: state = '{O}waiting for beacon{W}'
             if 'Starting Cracking Session' in out: state = '{C}cracking{W}'
-
             # Reaver 1.4
             if 'Trying pin' in out and 'cracking' not in state: state = '{C}cracking{W}'
 
