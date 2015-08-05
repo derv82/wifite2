@@ -23,6 +23,8 @@ class Configuration(object):
             return
         Configuration.initialized = True
 
+        Configuration.verbose = 0 # Verbosity level.
+
         Configuration.tx_power = 0 # Wifi transmit power (0 is default)
         Configuration.interface = None
         Configuration.target_channel = None # User-defined channel to scan
@@ -114,6 +116,9 @@ class Configuration(object):
         if args.target_essid:
             Configuration.target_essid = args.target_essid
             Color.pl('{+} {C}option:{W} targeting ESSID {G}%s{W}' % args.target_essid)
+        if args.verbose:
+            Configuration.verbose = args.verbose
+            Color.pl('{+} {C}option:{W} verbosity level {G}%d{W}' % args.verbose)
 
 
         # WEP

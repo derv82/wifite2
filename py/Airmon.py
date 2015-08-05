@@ -179,19 +179,22 @@ class Airmon(object):
                 % iface);
             return iface
 
+        a = Airmon()
+        count = len(a.interfaces)
+        if count == 0:
+            # No interfaces found
+            Color.pl('\n{!} {O}airmon-ng did not find {R}any{O} wireless interfaces')
+            Color.pl('{!} {O}make sure your wireless device is connected')
+            Color.pl('{!} {O}see {C}http://www.aircrack-ng.org/doku.php?id=airmon-ng{O} for more info{W}')
+            raise Exception('airmon-ng did not find any wireless interfaces')
+
         Color.pl('')
 
-        a = Airmon()
         a.print_menu()
 
         Color.pl('')
 
-        count = len(a.interfaces)
-        if count == 0:
-            # No interfaces found
-            Color.pl('{!} {O}airmon-ng did not find {R}any{O} wireless interfaces')
-            raise Exception('airmon-ng did not find any wireless interfaces')
-        elif count == 1:
+        if count == 1:
             # Only one interface, assume this is the one to use
             choice = 1
         else:

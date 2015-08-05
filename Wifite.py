@@ -131,16 +131,13 @@ class Wifite(object):
         """ Displays ASCII art of the highest caliber.  """
         Color.pl("")
         Color.pl("{G}  .;'                     `;,    ")
-        Color.pl("{G} .;'  ,;'             `;,  `;,  " +
-            "{W}WiFite v%.2f" % Configuration.version)
+        Color.pl("{G} .;'  ,;'             `;,  `;,  {W}WiFite v%.2f" % Configuration.version)
         Color.pl("{G}.;'  ,;'  ,;'     `;,  `;,  `;,  ")
-        Color.pl("{G}::   ::   :   {GR}( ){G}   :   ::   ::  " +
-            "{W}automated wireless auditor")
+        Color.pl("{G}::   ::   :   {GR}( ){G}   :   ::   ::  {W}Automated Wireless Auditor")
         Color.pl("{G}':.  ':.  ':. {GR}/_\\{G} ,:'  ,:'  ,:'  ")
-        Color.pl("{G} ':.  ':.    {GR}/___\\{G}   ,:'  ,:'   " +
-            "{W}designed for Linux")
+        Color.pl("{G} ':.  ':.    {GR}/___\\{G}   ,:'  ,:'   {C}https://github.com/derv82/wifite2{W}")
         Color.pl("{G}  ':.       {GR}/_____\\{G}     ,:'     ")
-        Color.pl("{G}           {GR}/       \\{G}            ")
+        Color.pl("{G}           {GR}/       \\{G}         ")
         Color.pl("{W}")
 
 
@@ -175,9 +172,16 @@ if __name__ == '__main__':
         w.main()
     except Exception, e:
         Color.pl('\n{!} {R}Error:{O} %s{W}' % str(e))
-        from traceback import format_exc
-        print '\n    '
-        print format_exc().replace('\n', '\n    ')
+        if Configuration.verbose > 0:
+            Color.pl('\n{!} {O}Full stack trace below')
+            from traceback import format_exc
+            Color.p('\n{!}    ')
+            err = format_exc().strip()
+            err = err.replace('\n', '\n{!} {C}   ')
+            err = err.replace('  File', '{W}File')
+            err = err.replace('  Exception: ', '{R}Exception: {O}')
+            Color.pl(err)
+        Color.pl('\n{!} {R}Exiting{W}\n')
     except KeyboardInterrupt:
         Color.pl('\n{!} {O}interrupted{W}')
     Configuration.exit_gracefully(0)
