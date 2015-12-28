@@ -31,6 +31,7 @@ class Airodump(object):
         if channel == None:
             channel = Configuration.target_channel
         self.channel = channel
+        self.five_ghz = Configuration.five_ghz
 
         self.encryption = encryption
         self.wps = wps
@@ -59,6 +60,9 @@ class Airodump(object):
         ]
         if self.channel:
             command.extend(['-c', str(self.channel)])
+        elif self.five_ghz:
+            command.extend(['--band', 'abg'])
+
         if self.encryption:
             command.extend(['--enc', self.encryption])
         if self.wps:

@@ -19,7 +19,7 @@ class AttackWPS(Attack):
     def run(self):
         ''' Run all WPS-related attacks '''
 
-        # Drop out if user specified to not user Reaver
+        # Drop out if user specified to not use Reaver
         if Configuration.no_reaver:
             self.success = False
             return self.success

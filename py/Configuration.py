@@ -30,6 +30,7 @@ class Configuration(object):
         Configuration.target_channel = None # User-defined channel to scan
         Configuration.target_essid = None # User-defined AP name
         Configuration.target_bssid = None # User-defined AP BSSID
+        Configuration.five_ghz = False # Scan 5Ghz channels
         Configuration.pillage = False # "All" mode to attack everything
 
         Configuration.encryption_filter = ['WEP', 'WPA', 'WPS']
@@ -113,6 +114,9 @@ class Configuration(object):
         if args.target_bssid:
             Configuration.target_bssid = args.target_bssid
             Color.pl('{+} {C}option:{W} targeting BSSID {G}%s{W}' % args.target_bssid)
+        if args.five_ghz == True:
+            Configuration.five_ghz = True
+            Color.pl('{+} {C}option:{W} including {G}5Ghz networks{W} in scans')
         if args.target_essid:
             Configuration.target_essid = args.target_essid
             Color.pl('{+} {C}option:{W} targeting ESSID {G}%s{W}' % args.target_essid)

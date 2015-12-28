@@ -28,6 +28,11 @@ class Arguments(object):
             metavar='[channel]',
             type=int,
             help=Color.s('Wireless channel to scan (default: {G}all channels{W})'))
+        glob.add_argument('-5',
+            '--5ghz',
+            action='store_true',
+            dest='five_ghz',
+            help=Color.s('Include 5Ghz channels (default: {G}off{W})'))
         glob.add_argument('-b',
             action='store',
             dest='target_bssid',

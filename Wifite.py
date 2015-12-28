@@ -67,7 +67,7 @@ class Wifite(object):
         if not os.path.exists(capfile):
             Color.pl('{!} {O}.cap file {C}%s{O} not found{W}' % capfile)
             return
-        hs = Handshake(capfile)
+        hs = Handshake(capfile, bssid=Configuration.target_bssid, essid=Configuration.target_essid)
         hs.analyze()
 
 

@@ -81,9 +81,10 @@ class Target(object):
             # Unknown ESSID
             essid = Color.s("{O}%s" % essid)
 
-        channel = str(self.channel)
-        if len(channel) == 1:
-            channel = Color.s("{G} %s" % channel)
+        channel_color = "{G}"
+        if int(self.channel) > 14:
+            channel_color = "{C}"
+        channel = Color.s("%s%s" % (channel_color, str(self.channel).rjust(3)))
 
         encryption = self.encryption.rjust(4)
         if 'WEP' in encryption:
@@ -121,8 +122,8 @@ class Target(object):
     @staticmethod
     def print_header():
         ''' Prints header rows for "scanning" table view '''
-        print '   NUM                     ESSID  CH  ENCR  POWER  WPS?  CLIENT'
-        print '   --- -------------------------  --  ----  -----  ----  ------'
+        print '   NUM                     ESSID   CH  ENCR  POWER  WPS?  CLIENT'
+        print '   --- -------------------------  ---  ----  -----  ----  ------'
 
 
 if __name__ == '__main__':
