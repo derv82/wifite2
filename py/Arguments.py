@@ -74,7 +74,7 @@ class Arguments(object):
             dest='wep_timeout',
             metavar='[seconds]',
             type=int,
-            help=Color.s('Seconds to wait before failing (default: {G}%d ivs{W})')
+            help=Color.s('Seconds to wait before failing (default: {G}%d sec{W})')
                 % Configuration.wep_timeout)
         wep.add_argument('-wepc',
             action='store',

@@ -120,7 +120,8 @@ class Handshake(object):
             'tshark',
             '-r', self.capfile,
             '-R', 'eapol',
-            '-n'
+            '-n',
+            '-2' # 2-pass filtering, required when using -R in newer versions of tshark
         ]
 
     def tshark_handshakes(self):

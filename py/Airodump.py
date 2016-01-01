@@ -195,6 +195,10 @@ class Airodump(object):
                         # Ignore empty/blank ESSIDs
                         continue
 
+                    if target.channel == "-1":
+                        # Ignore -1 channel
+                        continue
+
                     targets.append(target)
         return targets
 
