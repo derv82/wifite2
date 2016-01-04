@@ -49,6 +49,14 @@ class Color(object):
         Color.last_sameline_length = 0
 
     @staticmethod
+    def pe(text):
+        '''
+            Prints text using colored format with leading and trailing new line to STDERR.
+        '''
+        sys.stderr.write(Color.s('%s\n' % text))
+        Color.last_sameline_length = 0
+
+    @staticmethod
     def s(text):
         ''' Returns colored string '''
         output = text

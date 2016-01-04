@@ -13,7 +13,7 @@ class Airodump(object):
 
     def __init__(self, interface=None, channel=None, encryption=None,\
                        wps=False, target_bssid=None, output_file_prefix='airodump',\
-                       ivs_only=False):
+                       ivs_only=False, skip_wash=False):
         '''
             Sets up airodump arguments, doesn't start process yet
         '''
@@ -39,6 +39,7 @@ class Airodump(object):
         self.target_bssid = target_bssid
         self.output_file_prefix = output_file_prefix
         self.ivs_only = ivs_only
+        self.skip_wash = skip_wash
 
 
     def __enter__(self):
@@ -133,8 +134,9 @@ class Airodump(object):
         targets = Airodump.get_targets_from_csv(csv_filename)
 
         # Check targets for WPS
-        capfile = csv_filename[:-3] + 'cap'
-        Wash.check_for_wps_and_update_targets(capfile, targets)
+        if not self.skip_wash:
+            capfile = csv_filename[:-3] + 'cap'
+            Wash.check_for_wps_and_update_targets(capfile, targets)
 
         # Filter targets based on encryption
         targets = Airodump.filter_targets(targets)
@@ -175,7 +177,11 @@ class Airodump(object):
 
                 if hit_clients:
                     # The current row corresponds to a "Client" (computer)
-                    client = Client(row)
+                    try:
+                        client = Client(row)
+                    except IndexError:
+                        # Skip if we can't parse the client row
+                        continue
 
                     if 'not associated' in client.bssid:
                         # Ignore unassociated clients

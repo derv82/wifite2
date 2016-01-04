@@ -122,7 +122,7 @@ class Aireplay(object):
         if attack_type == WEPAttackType.fakeauth:
             cmd.extend(['-1', '0']) # Fake auth, no delay
             cmd.extend(['-a', target.bssid])
-            cmd.extend(['-T', '1']) # Make 1 attemp
+            cmd.extend(['-T', '3']) # Make 3 attempts
             if target.essid_known:
                 cmd.extend(['-e', target.essid])
             # Do not specify client MAC address,

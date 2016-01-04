@@ -93,18 +93,20 @@ class Scanner(object):
 
         if self.previous_target_count > 0:
             # We need to "overwrite" the previous list of targets.
-            if self.previous_target_count > len(self.targets) or \
-               Scanner.get_terminal_height() < self.previous_target_count + 3:
-                # Either:
-                # 1) We have less targets than before, so we can't overwrite the previous list
-                # 2) The terminal can't display the targets without scrolling.
-                # Clear the screen.
-                from Process import Process
-                Process.call('clear')
-            else:
-                # We can fit the targets in the terminal without scrolling
-                # "Move" cursor up so we will print over the previous list
-                Color.pl(Scanner.UP_CHAR * (3 + self.previous_target_count))
+            if Configuration.verbose <= 1:
+                # Don't clear screen buffer in verbose mode.
+                if self.previous_target_count > len(self.targets) or \
+                   Scanner.get_terminal_height() < self.previous_target_count + 3:
+                    # Either:
+                    # 1) We have less targets than before, so we can't overwrite the previous list
+                    # 2) The terminal can't display the targets without scrolling.
+                    # Clear the screen.
+                    from Process import Process
+                    Process.call('clear')
+                else:
+                    # We can fit the targets in the terminal without scrolling
+                    # "Move" cursor up so we will print over the previous list
+                    Color.pl(Scanner.UP_CHAR * (3 + self.previous_target_count))
 
         self.previous_target_count = len(self.targets)
 

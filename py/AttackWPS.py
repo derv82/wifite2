@@ -124,11 +124,8 @@ class AttackWPS(Attack):
             elif 'Detected AP rate limiting,' in stdout_last_line:
                 if Configuration.wps_skip_rate_limit:
                     Color.pl('{R}failed: {O}hit WPS rate-limit{W}')
-                    # TODO: Argument for --ignore-rate-limit
-                    '''
-                    Color.pl('{!} {O}use {R}--ignore-rate-limit{O} to ignore' +
-                             ' this kind of failure in the future')
-                    '''
+                    Color.pl('{!} {O}use {R}--skip-rate-limit{O} to ignore' +
+                             ' this kind of failure in the future{W}')
                     break
                 step = '({C}step -/8{W}) waiting for AP rate limit'
 
@@ -261,9 +258,11 @@ class AttackWPS(Attack):
 
             if 'Detected AP rate limiting' in out:
                 state = '{R}rate-limited{W}'
-                if not Configuration.wps_skip_rate_limit:
+                if Configuration.wps_skip_rate_limit:
                     Color.pl(state)
                     Color.pl('{!} {R}hit rate limit, stopping{W}\n')
+                    Color.pl('{!} {O}use {R}--skip-rate-limit{O} to ignore' +
+                             ' this kind of failure in the future{W}')
                     break
 
             if 'WARNING: Failed to associate with' in out:

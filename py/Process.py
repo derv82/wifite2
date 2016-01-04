@@ -1,5 +1,8 @@
 #!/usr/bin/python
 
+from Configuration import Configuration
+from Color import Color
+
 from subprocess import Popen, call, PIPE
 import time
 
@@ -20,20 +23,35 @@ class Process(object):
         '''
         if type(command) != str or ' ' in command or shell:
             shell = True
+            if Configuration.verbose > 1:
+                Color.pe("\n {C}[?] {W} Executing (Shell): {B}%s{W}" % command)
         else:
             shell = False
+            if Configuration.verbose > 1:
+                Color.pe("\n {C}[?]{W} Executing: {B}%s{W}" % command)
+
         pid = Popen(command, cwd=cwd, stdout=PIPE, stderr=PIPE, shell=shell)
         pid.wait()
-        return pid.communicate()
+        (stdout, stderr) = pid.communicate()
+
+        if Configuration.verbose > 1 and stdout.strip() != '':
+            Color.pe("{P} [stdout] %s{W}" % '\n [stdout] '.join(stdout.split('\n')))
+        if Configuration.verbose > 1 and stderr.strip() != '':
+            Color.pe("{P} [stderr] %s{W}" % '\n [stderr] '.join(stderr.split('\n')))
+
+        return (stdout, stderr)
 
     @staticmethod
     def exists(program):
         ''' Checks if program is installed on this system '''
         p = Process(['which', program])
-        if p.stdout().strip() == '' and p.stderr().strip() == '':
-            return False
-        return True
+        stdout = p.stdout().strip()
+        stderr = p.stderr().strip()
 
+        if stdout == '' and err == '':
+            return False
+
+        return True
 
     def __init__(self, command, devnull=False, stdout=PIPE, stderr=PIPE, cwd=None):
         ''' Starts executing command '''
@@ -43,6 +61,9 @@ class Process(object):
             command = command.split(' ')
 
         self.command = command
+
+        if Configuration.verbose > 1:
+            Color.pe("\n {C}[?] {W} Executing: {B}%s{W}" % ' '.join(command))
 
         self.out = None
         self.err = None
@@ -68,11 +89,15 @@ class Process(object):
     def stdout(self):
         ''' Waits for process to finish, returns stdout output '''
         self.get_output()
+        if Configuration.verbose > 1 and self.out.strip() != '':
+            Color.pe("{P} [stdout] %s{W}" % '\n [stdout] '.join(self.out.split('\n')))
         return self.out
 
     def stderr(self):
         ''' Waits for process to finish, returns stderr output '''
         self.get_output()
+        if Configuration.verbose > 1 and self.err.strip() != '':
+            Color.pe("{P} [stderr] %s{W}" % '\n [stderr] '.join(self.err.split('\n')))
         return self.err
 
     def get_output(self):

@@ -212,8 +212,8 @@ class Arguments(object):
                 % Configuration.wps_timeout_threshold)
         wps.add_argument('--ignore-ratelimit',
             action='store_false',
-            dest='wps_ignore_rate_limit',
-            help=Color.s('Continues attack if WPS is rate-limited (default: {G}off{W})'))
+            dest='wps_skip_rate_limit',
+            help=Color.s('Ignores attack if WPS is rate-limited (default: {G}on{W})'))
 
         # Commands
         commands = parser.add_argument_group('COMMANDS')
