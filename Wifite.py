@@ -13,7 +13,7 @@ from json import loads
 import os
 
 class Wifite(object):
-    
+
     def main(self):
         ''' Either performs action based on arguments, or starts attack scanning '''
 
@@ -60,15 +60,27 @@ class Wifite(object):
             Color.pl('\n{+} Cracked target #%d:' % (index + 1))
             cr = CrackResult.load(item)
             cr.dump()
-        
+
     def check_handshake(self, capfile):
         ''' Analyzes .cap file for handshake '''
-        Color.pl('{+} checking for handshake in .cap file {C}%s{W}' % capfile)
-        if not os.path.exists(capfile):
-            Color.pl('{!} {O}.cap file {C}%s{O} not found{W}' % capfile)
-            return
-        hs = Handshake(capfile, bssid=Configuration.target_bssid, essid=Configuration.target_essid)
-        hs.analyze()
+        if capfile == '<all>':
+            Color.pl('{+} checking all handshakes in {G}"./hs"{W} directory\n')
+            try:
+                capfiles = [os.path.join('hs', x) for x in os.listdir('hs') if x.endswith('.cap')]
+            except OSError, e:
+                capfiles = []
+            if len(capfiles) == 0:
+                Color.pl('{!} {R}no .cap files found in {O}"./hs"{W}\n')
+        else:
+            capfiles = [capfile]
+        for capfile in capfiles:
+            Color.pl('{+} checking for handshake in .cap file {C}%s{W}' % capfile)
+            if not os.path.exists(capfile):
+                Color.pl('{!} {O}.cap file {C}%s{O} not found{W}' % capfile)
+                return
+            hs = Handshake(capfile, bssid=Configuration.target_bssid, essid=Configuration.target_essid)
+            hs.analyze()
+            Color.pl('')
 
 
     def run(self):

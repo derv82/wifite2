@@ -40,7 +40,7 @@ class AttackWPA(Attack):
             Color.p('\r{+} {C}WPA-handshake attack{W}: ')
             Color.p('{O}waiting{W} for target to appear...')
             airodump_target = self.wait_for_target(airodump)
- 
+
             # Get client station MAC addresses
             clients = [c.station for c in airodump_target.clients]
             client_index = 0
@@ -137,7 +137,7 @@ class AttackWPA(Attack):
             if wordlist != None:
                 wordlist_name = wordlist.split(os.sep)[-1]
                 if not os.path.exists(wordlist):
-                    Color.pl('{!} {R}unable to crack:' + 
+                    Color.pl('{!} {R}unable to crack:' +
                              ' wordlist {O}%s{R} does not exist{W}' % wordlist)
                 else:
                     # We have a wordlist we can use
@@ -217,13 +217,14 @@ class AttackWPA(Attack):
             target_name = 'broadcast'
         command = [
             'aireplay-ng',
-            '--ignore-negative-one',
             '-0', # Deauthentication
+            '1', # Number of deauths to perform.
             '-a', self.target.bssid
         ]
+        command.append('--ignore-negative-one')
         if station_bssid:
             # Deauthing a specific client
-            command.extend(['-h', station_bssid])
+            command.extend(['-c', station_bssid])
         command.append(Configuration.interface)
         Color.p(' {C}sending deauth{W} to {C}%s{W}' % target_name)
         return Process(command)

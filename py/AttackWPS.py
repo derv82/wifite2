@@ -71,6 +71,7 @@ class AttackWPS(Attack):
 
         pin = None
         step = '0) initializing'
+        time_since_last_step = 0
 
         while True:
             time.sleep(1)
@@ -106,6 +107,7 @@ class AttackWPS(Attack):
                     Color.pl('{R}failed: {O}WPS pin not found{W}')
                     return False
 
+            last_step = step
             # Status updates, depending on last line of stdout
             if 'Waiting for beacon from' in stdout_last_line:
                 step = '({C}step 1/8{W}) waiting for beacon'
@@ -133,9 +135,19 @@ class AttackWPS(Attack):
                 Color.pl('{R}failed: {O}WPS pin not found{W}')
                 break
 
+            if step != last_step:
+                # Step changed, reset step timer
+                time_since_last_step = 0
+            else:
+                time_since_last_step += 1
+
+            if time_since_last_step > Configuration.wps_pixie_step_timeout:
+                Color.pl('{R}failed: {O}step-timeout after %d seconds{W}' % Configuration.wps_pixie_step_timeout)
+                break
+
             # TODO: Timeout check
             if reaver.running_time() > Configuration.wps_pixie_timeout:
-                Color.pl('{R}failed: {O}timeout after %d seconds{W}' % Configuration.wps_timeout)
+                Color.pl('{R}failed: {O}timeout after %d seconds{W}' % Configuration.wps_pixie_timeout)
                 break
 
             # Reaver Failure/Timeout check
@@ -197,7 +209,7 @@ class AttackWPS(Attack):
             if failures >= Configuration.wps_fail_threshold:
                 Color.pl('{R}failed: {O}too many failures{W}')
                 break
-                
+
             # Get output
             out = self.get_stdout()
 
@@ -364,15 +376,15 @@ class AttackWPS(Attack):
 
 if __name__ == '__main__':
     stdout = '''
-[Pixie-Dust]  
+[Pixie-Dust]
 [Pixie-Dust]   Pixiewps 1.1
-[Pixie-Dust]  
+[Pixie-Dust]
 [Pixie-Dust]   [*] E-S1:       00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00
 [Pixie-Dust]   [*] E-S2:       00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00
 [Pixie-Dust]   [+] WPS pin:    12345678
-[Pixie-Dust]  
+[Pixie-Dust]
 [Pixie-Dust]   [*] Time taken: 0 s
-[Pixie-Dust]  
+[Pixie-Dust]
 Running reaver with the correct pin, wait ...
 Cmd : reaver -i wlan0mon -b 08:86:3B:8C:FD:9C -c 11 -s y -vv -p 28097402
 

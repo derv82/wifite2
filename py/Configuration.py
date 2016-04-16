@@ -70,8 +70,9 @@ class Configuration(object):
         Configuration.no_reaver   = False  # Do not use Reaver on WPS networks
         Configuration.reaver      = False  # ONLY use Reaver on WPS networks
         Configuration.pixie_only  = False  # ONLY use Pixie-Dust attack on WPS
-        Configuration.wps_pin_timeout = 600   # Seconds to wait before reaver fails
-        Configuration.wps_pixie_timeout = 600 # Seconds to wait before pixie fails
+        Configuration.wps_pin_timeout = 600        # Seconds to wait for PIN before reaver fails
+        Configuration.wps_pixie_timeout = 300      # Seconds to wait for PIN before pixie fails
+        Configuration.wps_pixie_step_timeout = 30  # Seconds to wait for a step to change before pixie fails
         Configuration.wps_max_retries = 20 # Retries before failing
         Configuration.wps_fail_threshold = 30  # Max number of failures
         Configuration.wps_timeout_threshold = 30  # Max number of timeouts
@@ -181,6 +182,9 @@ class Configuration(object):
         if args.wps_pixie_timeout:
             Configuration.wps_pixie_timeout = args.wps_pixie_timeout
             Color.pl('{+} {C}option:{W} WPS pixie-dust attack will timeout after {G}%d seconds{W}' % args.wps_pixie_timeout)
+        if args.wps_pixie_step_timeout:
+            Configuration.wps_pixie_step_timeout = args.wps_pixie_step_timeout
+            Color.pl('{+} {C}option:{W} Any step in the pixie-dust attack will timeout after {G}%d seconds{W}' % args.wps_pixie_step_timeout)
         if args.wps_pin_timeout:
             Configuration.wps_pin_timeout = args.wps_pin_timeout
             Color.pl('{+} {C}option:{W} WPS PIN attack will timeout after {G}%d seconds{W}' % args.wps_pin_timeout)
@@ -245,7 +249,7 @@ class Configuration(object):
         if args.crack_wep: Configuration.crack_wep = args.crack_wep
         if args.update:    Configuration.update = True
         if args.check_handshake: Configuration.check_handshake = args.check_handshake
-        
+
 
     @staticmethod
     def temp(subfile=''):

@@ -182,6 +182,13 @@ class Arguments(object):
             type=int,
             help=Color.s('Time to wait before stopping PixieDust (default: {G}%d sec{W})')
                 % Configuration.wps_pixie_timeout)
+        wps.add_argument('--pixiest',
+            action='store',
+            dest='wps_pixie_step_timeout',
+            metavar='[seconds]',
+            type=int,
+            help=Color.s('Time to wait for a step to change before stopping PixieDust (default: {G}%d sec{W})')
+                % Configuration.wps_pixie_step_timeout)
         wps.add_argument('-wpst',
             action='store',
             dest='wps_pin_timeout',
@@ -223,26 +230,28 @@ class Arguments(object):
             help=Color.s('Display previously-cracked access points'))
         commands.add_argument('--check-hs',
             action='store',
-            metavar='[file]',
+            metavar='file',
+            nargs='?',
+            const='<all>',
             dest='check_handshake',
-            help=Color.s('Check a .cap file for WPA handshakes'))
+            help=Color.s('Check a .cap file (or all hs/*.cap files) for WPA handshakes'))
         commands.add_argument('--crack-wpa',
             action='store',
             type=str,
             dest='crack_wpa',
-            metavar='[file]',
+            metavar='file',
             help=Color.s('Crack a .cap file containing a WPA handshake'))
         commands.add_argument('--crack-wep',
             action='store',
             type=str,
             dest='crack_wep',
-            metavar='[file]',
+            metavar='file',
             help=Color.s('Crack a .cap file containing WEP IVS'))
         commands.add_argument('--update',
             action='store_true',
             dest='update',
             help=Color.s('Update to latest version of Wifite (on github)'))
-        
+
         return parser.parse_args()
 
 if __name__ == '__main__':

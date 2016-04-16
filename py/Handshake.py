@@ -29,8 +29,6 @@ class Handshake(object):
 
         if not self.essid and not self.bssid:
             # We do not know the bssid nor the essid
-            Color.pl('{!} {O}Warning{W}:' +
-                ' {R}bssid{O} and {R}essid{O} were not specified{W}')
             # TODO: Display menu for user to select from list
             # HACK: Just use the first one we see
             self.bssid = pairs[0][0]

@@ -203,13 +203,13 @@ class Airmon(object):
             choice = raw_input(question)
 
         iface = a.get(choice)
-        
+
         if a.get(choice).name in mon_ifaces:
             Color.pl('{+} {G}%s{W} is already in monitor mode' % iface.name)
         else:
             iface.name = Airmon.start(iface)
         return iface.name
-    
+
 
     @staticmethod
     def terminate_conflicting_processes():
@@ -221,7 +221,7 @@ class Airmon(object):
         Found 3 processes that could cause trouble.
         If airodump-ng, aireplay-ng or airtun-ng stops working after
         a short period of time, you may want to kill (some of) them!
-        -e 
+        -e
         PID Name
         2272    dhclient
         2293    NetworkManager
@@ -246,7 +246,7 @@ class Airmon(object):
                 pid = match.groups()[0]
                 pname = match.groups()[1]
                 Color.pl('{!} {R}terminating {O}conflicting process' +
-                         ' {R}%s{O} ({R}%s{O})' % (pname, pid))
+                         ' {R}%s{O} (PID {R}%s{O})' % (pname, pid))
                 os.kill(int(pid), signal.SIGTERM)
 
 
