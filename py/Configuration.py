@@ -81,9 +81,6 @@ class Configuration(object):
         # Commands
         Configuration.show_cracked = False
         Configuration.check_handshake = None
-        Configuration.crack_wpa = None
-        Configuration.crack_wep = None
-        Configuration.update = False
 
         # Overwrite config values with arguments (if defined)
         Configuration.load_from_arguments()
@@ -245,9 +242,6 @@ class Configuration(object):
 
         # Commands
         if args.cracked:   Configuration.show_cracked = True
-        if args.crack_wpa: Configuration.crack_wpa = args.crack_wpa
-        if args.crack_wep: Configuration.crack_wep = args.crack_wep
-        if args.update:    Configuration.update = True
         if args.check_handshake: Configuration.check_handshake = args.check_handshake
 
 

@@ -29,19 +29,6 @@ class Wifite(object):
 
         elif Configuration.check_handshake:
             self.check_handshake(Configuration.check_handshake)
-
-        elif Configuration.crack_wpa:
-            # TODO: Crack .cap file at crack_wpa
-            Color.pl('{!} Unimplemented method: crack_wpa')
-            pass
-        elif Configuration.crack_wep:
-            # TODO: Crack .cap file at crack_wep
-            Color.pl('{!} Unimplemented method: crack_wep')
-            pass
-        elif Configuration.update:
-            # TODO: Get latest version from github
-            Color.pl('{!} Unimplemented method: update')
-            pass
         else:
             Configuration.get_interface()
             self.run()
