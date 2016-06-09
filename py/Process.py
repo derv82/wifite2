@@ -1,10 +1,11 @@
 #!/usr/bin/python
 
-from Configuration import Configuration
-from Color import Color
-
-from subprocess import Popen, call, PIPE
 import time
+from subprocess import Popen, PIPE
+
+from Color import Color
+from Configuration import Configuration
+
 
 class Process(object):
     ''' Represents a running/ran process '''
@@ -15,7 +16,7 @@ class Process(object):
         return open('/dev/null', 'w')
 
     @staticmethod
-    def call(command, cwd=None,shell=False):
+    def call(command, cwd=None, shell=False):
         '''
             Calls a command (either string or list of args).
             Returns tuple:
@@ -48,7 +49,7 @@ class Process(object):
         stdout = p.stdout().strip()
         stderr = p.stderr().strip()
 
-        if stdout == '' and err == '':
+        if stdout == '' and stderr == '':
             return False
 
         return True
@@ -130,7 +131,7 @@ class Process(object):
             pid = self.pid.pid
             kill(pid, SIGINT)
 
-            wait_time = 0 # Time since Interrupt was sent
+            wait_time = 0  # Time since Interrupt was sent
             while self.pid.poll() == None:
                 # Process is still running
                 wait_time += 0.1
@@ -141,11 +142,12 @@ class Process(object):
                     kill(pid, SIGTERM)
                     self.pid.terminate()
                     break
-                    
+
         except OSError, e:
             if 'No such process' in e.__str__():
                 return
             raise e  # process cannot be killed
+
 
 if __name__ == '__main__':
     p = Process('ls')
@@ -153,14 +155,14 @@ if __name__ == '__main__':
     p.interrupt()
 
     # Calling as list of arguments
-    (out,err) = Process.call(['ls', '-lah'])
-    print out,err
+    (out, err) = Process.call(['ls', '-lah'])
+    print out, err
 
     print '\n---------------------\n'
 
     # Calling as string
-    (out,err) = Process.call('ls -l | head -2')
-    print out,err
+    (out, err) = Process.call('ls -l | head -2')
+    print out, err
 
     print '"reaver" exists:', Process.exists('reaver')
 

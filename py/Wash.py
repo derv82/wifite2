@@ -23,7 +23,7 @@ class Wash(object):
         wash_name = 'wash'
         if not Process.exists(wash_name):
             wash_name = 'walsh'
-            if not Proces.exists(wash_name):
+            if not Process.exists(wash_name):
                 # Wash isn't found, drop out
                 return
 
