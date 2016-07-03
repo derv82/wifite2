@@ -1,4 +1,5 @@
-#!/usr/bin/python
+#!/usr/bin/python2.7
+# -*- coding: utf-8 -*-
 
 from Attack import Attack
 from Airodump import Airodump

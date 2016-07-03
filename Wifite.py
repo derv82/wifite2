@@ -1,4 +1,5 @@
 #!/usr/bin/python2.7
+# -*- coding: utf-8 -*-
 
 from py.Configuration import Configuration
 from py.Scanner import Scanner
