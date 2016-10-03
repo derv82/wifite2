@@ -1,2 +1,2 @@
 #!/bin/sh
-python -m unittest discover py
+python2.7 -m unittest discover py
