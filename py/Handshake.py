@@ -135,7 +135,7 @@ class Handshake(object):
         for line in proc.stdout().split('\n'):
             # Extract source mac, destination mac, and message numbers
             mac_regex = ('[a-zA-Z0-9]{2}:' * 6)[:-1]
-            match = re.search('(%s) -> (%s).*Message.*(\d).*(\d)'
+            match = re.search('(%s) (?:->|→) (%s).*Message.*(\d).*(\d)'
                 % (mac_regex, mac_regex), line)
             if match == None:
                 # Line doesn't contain src, dst, Message numbers
