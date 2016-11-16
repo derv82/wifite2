@@ -23,6 +23,11 @@ class Arguments(object):
             metavar='[interface]',
             type=str,
             help=Color.s('Wireless interface to use (default: {G}ask{W})'))
+        glob.add_argument('-m',
+            '--mac',
+            action='store_true',
+            dest='mac_spoof',
+            help=Color.s('Spoof random MAC address using macchanger (default: {G}off{W})'))
         glob.add_argument('-c',
             action='store',
             dest='channel',
