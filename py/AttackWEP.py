@@ -12,6 +12,9 @@ from CrackResultWEP import CrackResultWEP
 
 import time
 
+import os  # File management
+from subprocess import Popen, call, PIPE
+
 class AttackWEP(Attack):
     '''
         Contains logic for attacking a WEP-encrypted access point.
@@ -50,7 +53,17 @@ class AttackWEP(Attack):
                     if self.fake_auth():
                         # We successfully authenticated!
                         # Use our interface's MAC address for the attacks.
-                        client_mac = Interface.get_mac()
+                        DN = open(os.devnull, 'w')
+                        proc = Popen(['cat', '/sys/class/net/wlan0mon/address'], stdout=PIPE, stderr=DN)
+                        proc.wait()
+                        mac = ''
+                        first_line = proc.communicate()[0].split('\n')[0]
+                        for word in first_line.split(' '):
+                            if word != '': mac = word
+                        if mac.find('-') != -1: mac = mac.replace('-', ':')
+                        if len(mac) > 17: mac = mac[0:17]
+                        client_mac = mac
+
                     elif len(airodump_target.clients) == 0:
                         # There are no associated clients. Warn user.
                         Color.pl('{!} {O}there are no associated clients{W}')
