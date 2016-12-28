@@ -92,10 +92,11 @@ class Interface(object):
         mac_regex = ('[a-zA-Z0-9]{2}-' * 6)[:-1]
         match = re.search('HWaddr (%s)' % mac_regex, output)
         if not match:
-            raise Exception('Could not find the mac address for %s' % iface)
+            match = re.search('unspec (%s)' % mac_regex, output)
+            if not match:
+                raise Exception('Could not find the mac address for %s' % iface)
         return match.groups()[0].replace('-', ':')
 
 if __name__ == '__main__':
     mac = Interface.get_mac()
     print 'wlan0mon mac address:', mac
-
