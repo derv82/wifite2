@@ -10,6 +10,9 @@ import re
 import os
 import signal
 
+from subprocess import Popen, call, PIPE
+
+
 class Airmon(object):
     ''' Wrapper around the 'airmon-ng' program '''
 
@@ -209,6 +212,16 @@ class Airmon(object):
             Color.pl('{+} {G}%s{W} is already in monitor mode' % iface.name)
         else:
             iface.name = Airmon.start(iface)
+        spoofing = Configuration.mac_spoof
+        if spoofing == True:
+            iface_mon = iface.name
+            DN = open(os.devnull, 'w')
+            proc = Popen(['ifconfig', iface_mon, 'down'], stdout=DN, stderr=DN)
+            proc.wait()
+            proc = Popen(['macchanger', '-r', iface_mon], stdout=DN, stderr=DN)
+            proc.wait()
+            proc = Popen(['ifconfig', iface_mon, 'up'], stdout=DN, stderr=DN)
+            proc.wait()
         return iface.name
 
 
