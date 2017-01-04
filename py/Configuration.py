@@ -32,6 +32,7 @@ class Configuration(object):
         Configuration.target_essid = None # User-defined AP name
         Configuration.target_bssid = None # User-defined AP BSSID
         Configuration.five_ghz = False # Scan 5Ghz channels
+        Configuration.mac_spoof = False # Spoof mac
         Configuration.pillage = False # "All" mode to attack everything
 
         Configuration.encryption_filter = ['WEP', 'WPA', 'WPS']
@@ -104,6 +105,9 @@ class Configuration(object):
         from Arguments import Arguments
 
         args = Arguments(Configuration).args
+        if args.mac_spoof == True:
+            Configuration.mac_spoof = True
+            Color.pl('{+} {C}option:{W} Spoofing {G}MAC{W} Address')
         if args.channel:
             Configuration.target_channel = args.channel
             Color.pl('{+} {C}option:{W} scanning for targets on channel {G}%s{W}' % args.channel)
