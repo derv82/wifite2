@@ -30,8 +30,7 @@ class Wash(object):
 
         command = [
             'wash',
-            '-f', capfile, # Path to cap file
-            '-C'            # Ignore Frame Check Sum errors
+            '-f', capfile # Path to cap file
         ]
         p = Process(command)
         for line in p.stdout().split('\n'):

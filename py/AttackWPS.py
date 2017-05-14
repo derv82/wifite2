@@ -62,7 +62,6 @@ class AttackWPS(Attack):
             '-b', self.target.bssid,
             '-c', self.target.channel,
             '-K', '1', # pixie-dust attack
-            '-a', # Automatically restart session
             '-vv' # (very) verbose
         ]
 
