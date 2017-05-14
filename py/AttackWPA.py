@@ -36,7 +36,7 @@ class AttackWPA(Attack):
                       target_bssid=self.target.bssid,
                       output_file_prefix='wpa') as airodump:
 
-            Color.clear_line()
+            Color.clear_entire_line()
             Color.pattack("WPA", self.target, "Handshake capture", "Waiting for target to appear...")
             airodump_target = self.wait_for_target(airodump)
 

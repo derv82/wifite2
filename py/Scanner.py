@@ -49,11 +49,20 @@ class Scanner(object):
                     client_count = sum(
                                        [len(t.clients)
                                            for t in self.targets])
-                    Color.p(
-                        '\r{+} scanning, found' +
-                        ' {G}%d{W} target(s),' % target_count +
-                        ' {G}%d{W} client(s).' % client_count +
-                        ' {O}Ctrl+C{W} when ready')
+                    outline = "\r{+} Scanning"
+                    if airodump.decloaking:
+                        outline += " & decloaking"
+                    outline += ". Found"
+                    outline += " {G}%d{W} target(s)," % target_count
+                    outline += " {G}%d{W} client(s)." % client_count
+                    outline += " {O}Ctrl+C{W} when ready "
+                    decloaked = airodump.decloaked_targets
+                    if len(decloaked) > 0:
+                        outline += "(decloaked"
+                        outline += " {C}%d{W} ESSIDs:" % len(decloaked)
+                        outline += " {G}%s{W}) " % ", ".join([x.essid for x in decloaked])
+                    Color.clear_entire_line()
+                    Color.p(outline)
                     sleep(1)
             except KeyboardInterrupt:
                 pass
@@ -118,6 +127,7 @@ class Scanner(object):
         Target.print_header()
         for (index, target) in enumerate(self.targets):
             index += 1
+            Color.clear_entire_line()
             Color.pl('   {G}%s %s' % (str(index).rjust(3), target))
 
     @staticmethod
@@ -125,6 +135,12 @@ class Scanner(object):
         import os
         (rows, columns) = os.popen('stty size', 'r').read().split()
         return int(rows)
+
+    @staticmethod
+    def get_terminal_width():
+        import os
+        (rows, columns) = os.popen('stty size', 'r').read().split()
+        return int(columns)
 
     def select_targets(self):
         ''' Asks user to select target(s) '''
@@ -139,6 +155,7 @@ class Scanner(object):
                 + " or you may have issues with your wifi card")
 
         self.print_targets()
+        Color.clear_entire_line()
         input_str  = '{+} select target(s)'
         input_str += ' ({G}1-%d{W})' % len(self.targets)
         input_str += ' separated by commas, dashes'

@@ -75,6 +75,12 @@ class Color(object):
         Color.last_sameline_length = 0
 
     @staticmethod
+    def clear_entire_line():
+        import os
+        (rows, columns) = os.popen('stty size', 'r').read().split()
+        Color.p("\r" + (" " * int(columns)) + "\r")
+
+    @staticmethod
     def pattack(attack_type, target, attack_name, progress):
         '''
             Prints a one-liner for an attack

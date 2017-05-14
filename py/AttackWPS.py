@@ -302,7 +302,7 @@ class AttackWPS(Attack):
                     state = '{R}rate-limited{W}'
                     if Configuration.wps_skip_rate_limit:
                         Color.pl(state)
-                        Color.pl('{!} {R}hit rate limit, stopping{W}\n')
+                        Color.pl('{!} {R}hit rate limit, stopping{W}')
                         Color.pl('{!} {O}use {R}--ignore-ratelimit{O} to ignore' +
                                  ' this kind of failure in the future{W}')
                         break
