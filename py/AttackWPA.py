@@ -34,13 +34,10 @@ class AttackWPA(Attack):
         # First, start Airodump process
         with Airodump(channel=self.target.channel,
                       target_bssid=self.target.bssid,
-                      skip_wash=True,
                       output_file_prefix='wpa') as airodump:
 
             Color.clear_line()
             Color.pattack("WPA", self.target, "Handshake capture", "Waiting for target to appear...")
-            #Color.p('\r{+} {C}WPA-handshake attack{W}: ')
-            #Color.p('{O}waiting{W} for target to appear...')
             airodump_target = self.wait_for_target(airodump)
 
             # Get client station MAC addresses
