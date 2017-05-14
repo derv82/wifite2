@@ -43,9 +43,6 @@ class Wash(object):
         bssids = [bssid.upper() for bssid in Wash.BSSID_REGEX.findall(p.stdout())]
         for t in targets:
             t.wps = t.bssid.upper() in bssids
-            if t.bssid.lower() == bssid.lower():
-                # Update the WPS flag
-                t.wps = True
 
 
 if __name__ == '__main__':
