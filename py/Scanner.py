@@ -23,6 +23,7 @@ class Scanner(object):
         self.targets = []
         self.target = None # Specific target (based on ESSID/BSSID)
 
+        Color.pl("")
         # Loads airodump with interface/channel/etc from Configuration
         with Airodump() as airodump:
             try:

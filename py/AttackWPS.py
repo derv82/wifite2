@@ -62,6 +62,7 @@ class AttackWPS(Attack):
             '-b', self.target.bssid,
             '-c', self.target.channel,
             '-K', '1', # pixie-dust attack
+            '--session', '/dev/null', # Don't restart session
             '-vv' # (very) verbose
         ]
 
@@ -126,7 +127,7 @@ class AttackWPS(Attack):
             elif 'Detected AP rate limiting,' in stdout_last_line:
                 if Configuration.wps_skip_rate_limit:
                     Color.pl('{R}failed: {O}hit WPS rate-limit{W}')
-                    Color.pl('{!} {O}use {R}--skip-rate-limit{O} to ignore' +
+                    Color.pl('{!} {O}use {R}--ignore-ratelimit{O} to ignore' +
                              ' this kind of failure in the future{W}')
                     break
                 step = '({C}step -/8{W}) waiting for AP rate limit'
@@ -184,7 +185,7 @@ class AttackWPS(Attack):
             '-i', Configuration.interface,
             '-b', self.target.bssid,
             '-c', self.target.channel,
-            '-a', # Automatically restart session
+            '--session', '/dev/null', # Don't restart session
             '-vv'  # verbose
         ]
         reaver = Process(command, stdout=stdout_write, stderr=Process.devnull())
@@ -273,7 +274,7 @@ class AttackWPS(Attack):
                 if Configuration.wps_skip_rate_limit:
                     Color.pl(state)
                     Color.pl('{!} {R}hit rate limit, stopping{W}\n')
-                    Color.pl('{!} {O}use {R}--skip-rate-limit{O} to ignore' +
+                    Color.pl('{!} {O}use {R}--ignore-ratelimit{O} to ignore' +
                              ' this kind of failure in the future{W}')
                     break
 

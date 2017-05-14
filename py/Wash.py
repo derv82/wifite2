@@ -2,9 +2,11 @@
 # -*- coding: utf-8 -*-
 
 from Process import Process
+import re
 
 class Wash(object):
     ''' Wrapper for Wash program. '''
+    BSSID_REGEX = re.compile("([A-F0-9\:]{17})", re.IGNORECASE)
 
     def __init__(self):
         pass
@@ -33,20 +35,17 @@ class Wash(object):
             '-f', capfile # Path to cap file
         ]
         p = Process(command)
-        for line in p.stdout().split('\n'):
-            # Ignore irrelevant lines
-            if line.strip() == '' or line.startswith('Scanning for'):
-                continue
-            bssid = line.split(' ')[0]
-            for t in targets:
-                if t.bssid.lower() == bssid.lower():
-                    # Update the WPS flag
-                    t.wps = True
 
-        # Mark other targets as "no" wps support
+        p.wait()
+        if p.poll() != 0:
+            return
+
+        bssids = [bssid.upper() for bssid in Wash.BSSID_REGEX.findall(p.stdout())]
         for t in targets:
-            if t.wps: continue
-            t.wps = False
+            t.wps = t.bssid.upper() in bssids
+            if t.bssid.lower() == bssid.lower():
+                # Update the WPS flag
+                t.wps = True
 
 
 if __name__ == '__main__':
