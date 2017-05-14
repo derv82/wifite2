@@ -53,7 +53,7 @@ class AttackWPA(Attack):
             while True:
                 if not deauth_proc or deauth_proc.poll() != None:
                     # Clear line only if we're not deauthing right now
-                    Color.clear_line()
+                    Color.clear_entire_line()
                 Color.pattack("WPA", airodump_target, "Handshake capture", "Waiting for handshake...")
                 #Color.p('\r{+} {C}WPA-handshake attack{W}: ')
                 #Color.p('waiting for {C}handshake{W}...')
@@ -96,7 +96,7 @@ class AttackWPA(Attack):
                 airodump_target = self.wait_for_target(airodump)
                 for client in airodump_target.clients:
                     if client.station not in clients:
-                        Color.clear_line()
+                        Color.clear_entire_line()
                         Color.pl('\r{+} discovered new {G}client{W}: {C}%s{W}' % client.station)
                         clients.append(client.station)
 

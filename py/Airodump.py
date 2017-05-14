@@ -69,7 +69,7 @@ class Airodump(object):
         if self.channel:
             command.extend(['-c', str(self.channel)])
         elif self.five_ghz:
-            command.extend(['--band', 'abg'])
+            command.extend(['--band', 'a'])
 
         if self.encryption:
             command.extend(['--enc', self.encryption])
