@@ -38,8 +38,9 @@ class AttackWPA(Attack):
                       output_file_prefix='wpa') as airodump:
 
             Color.clear_line()
-            Color.p('\r{+} {C}WPA-handshake attack{W}: ')
-            Color.p('{O}waiting{W} for target to appear...')
+            Color.pattack("WPA", self.target, "Handshake capture", "Waiting for target to appear...")
+            #Color.p('\r{+} {C}WPA-handshake attack{W}: ')
+            #Color.p('{O}waiting{W} for target to appear...')
             airodump_target = self.wait_for_target(airodump)
 
             # Get client station MAC addresses
@@ -55,9 +56,10 @@ class AttackWPA(Attack):
             while True:
                 if not deauth_proc or deauth_proc.poll() != None:
                     # Clear line only if we're not deauthing right now
-                    Color.p('\r%s\r' % (' ' * 90))
-                Color.p('\r{+} {C}WPA-handshake attack{W}: ')
-                Color.p('waiting for {C}handshake{W}...')
+                    Color.clear_line()
+                Color.pattack("WPA", airodump_target, "Handshake capture", "Waiting for handshake...")
+                #Color.p('\r{+} {C}WPA-handshake attack{W}: ')
+                #Color.p('waiting for {C}handshake{W}...')
 
                 time.sleep(1)
 
@@ -97,8 +99,8 @@ class AttackWPA(Attack):
                 airodump_target = self.wait_for_target(airodump)
                 for client in airodump_target.clients:
                     if client.station not in clients:
-                        Color.pl('\r{+} discovered {G}client{W}:' +
-                                 ' {C}%s{W}%s' % (client.station, ' ' * 10))
+                        Color.clear_line()
+                        Color.pl('\r{+} discovered new {G}client{W}: {C}%s{W}' % client.station)
                         clients.append(client.station)
 
                 # Send deauth to a client or broadcast

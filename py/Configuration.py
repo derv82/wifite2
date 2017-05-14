@@ -59,7 +59,8 @@ class Configuration(object):
         Configuration.wordlist = None
         wordlists = [
             '/usr/share/wfuzz/wordlist/fuzzdb/wordlists-user-passwd/passwds/phpbb.txt',
-            '/usr/share/fuzzdb/wordlists-user-passwd/passwds/phpbb.txt'
+            '/usr/share/fuzzdb/wordlists-user-passwd/passwds/phpbb.txt',
+            '/usr/share/sqlmap/txt/wordlist.txt'
         ]
         for wlist in wordlists:
             if os.path.exists(wlist):

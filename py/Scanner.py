@@ -52,7 +52,7 @@ class Scanner(object):
                     Color.p(
                         '\r{+} scanning, found' +
                         ' {G}%d{W} target(s),' % target_count +
-                        ' {G}%d{W} clients.' % client_count +
+                        ' {G}%d{W} client(s).' % client_count +
                         ' {O}Ctrl+C{W} when ready')
                     sleep(1)
             except KeyboardInterrupt:

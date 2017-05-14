@@ -15,7 +15,7 @@ class Attack(object):
 
     def run(self):
         raise Exception("Unimplemented method: run")
- 
+
     def wait_for_target(self, airodump):
         '''
             Waits for target to appear in airodump

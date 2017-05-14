@@ -82,8 +82,9 @@ class Color(object):
             [name] ESSID (MAC @ Pwr) Attack_Type: Progress
             e.g.: [WEP] Router2G (00:11:22 @ 23db) replay attack: 102 IVs
         '''
+        essid = "{C}%s{W}" % target.essid if target.essid_known else "{O}unknown{W}"
         Color.p("\r{+} {G}%s{W} ({C}%s @ %sdb{W}) {G}%s {C}%s{W}: %s " % (
-            target.essid, target.bssid, target.power, attack_type, attack_name, progress))
+            essid, target.bssid, target.power, attack_type, attack_name, progress))
 
 if __name__ == '__main__':
     Color.pl("{R}Testing{G}One{C}Two{P}Three{W}Done")
