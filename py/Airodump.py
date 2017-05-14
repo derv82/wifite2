@@ -58,7 +58,8 @@ class Airodump(object):
             'airodump-ng',
             self.interface,
             '-a', # Only show associated clients
-            '-w', self.csv_file_prefix # Output file prefix
+            '-w', self.csv_file_prefix, # Output file prefix
+            '--write-interval', '1' # Write every second
         ]
         if self.channel:
             command.extend(['-c', str(self.channel)])
