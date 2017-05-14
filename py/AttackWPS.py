@@ -38,7 +38,7 @@ class AttackWPS(Attack):
                 ' support the {O}WPS pixie-dust attack{W}')
 
         if Configuration.pixie_only:
-            Color.pl('{!} {O}--pixie{R} set, ignoring WPS-PIN attack{W}')
+            Color.pl('\r{!} {O}--pixie{R} set, ignoring WPS-PIN attack{W}')
             self.success = False
         else:
             # Run WPS-PIN attack
@@ -72,7 +72,7 @@ class AttackWPS(Attack):
         reaver = Process(command, stdout=stdout_write, stderr=Process.devnull())
 
         pin = None
-        step = '0) initializing'
+        step = 'initializing'
         time_since_last_step = 0
 
         with Airodump(channel=self.target.channel,
@@ -232,7 +232,7 @@ class AttackWPS(Attack):
                 Color.clear_line()
                 status = '{G}%.2f%% done{W}, ' % percent
                 status += '{G}%d{W}/{G}%d pins{W}, ' % (pin_current, pin_total)
-                status += '{R}%d/%d failures{W}) ' % (failures, Configuration.wps_fail_threshold)
+                status += '{R}%d/%d failures{W}' % (failures, Configuration.wps_fail_threshold)
                 Color.pattack("WPS", airodump_target, "PIN Attack", status)
 
                 if failures >= Configuration.wps_fail_threshold:
