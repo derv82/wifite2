@@ -7,6 +7,7 @@ import os
 
 class Configuration(object):
     ''' Stores configuration variables and functions for Wifite. '''
+    verbose = 0
 
     initialized = False # Flag indicating config has been initialized
     temp_dir = None     # Temporary directory
