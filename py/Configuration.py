@@ -86,6 +86,7 @@ class Configuration(object):
         # Commands
         Configuration.show_cracked = False
         Configuration.check_handshake = None
+        Configuration.crack_handshake = False
 
         # Overwrite config values with arguments (if defined)
         Configuration.load_from_arguments()
@@ -251,8 +252,9 @@ class Configuration(object):
                 % '{W}, {G}'.join(Configuration.wep_attacks))
 
         # Commands
-        if args.cracked:   Configuration.show_cracked = True
+        if args.cracked: Configuration.show_cracked = True
         if args.check_handshake: Configuration.check_handshake = args.check_handshake
+        if args.crack_handshake: Configuration.crack_handshake = True
 
 
     @staticmethod

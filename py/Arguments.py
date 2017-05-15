@@ -276,7 +276,10 @@ class Arguments(object):
             dest='check_handshake',
             help=Color.s('Check a .cap file (or all hs/*.cap files) for WPA handshakes'))
         commands.add_argument('-check', help=argparse.SUPPRESS, action='store', nargs='?', const='<all>', dest='check_handshake')
-
+        commands.add_argument('--crack',
+            action='store_true',
+            dest='crack_handshake',
+            help=Color.s('Show commands to crack a captured handshake'))
         return parser.parse_args()
 
 if __name__ == '__main__':
