@@ -57,6 +57,7 @@ class Configuration(object):
         Configuration.wpa_deauth_timeout = 10 # Wait time between deauths
         Configuration.wpa_attack_timeout = 500 # Wait time before failing
         Configuration.wpa_handshake_dir = "hs" # Dir to store handshakes
+        Configuration.wpa_strip_handshake = False # Strip non-handshake packets
 
         # Default dictionary for cracking
         Configuration.wordlist = None
@@ -174,6 +175,9 @@ class Configuration(object):
         if args.wpa_handshake_dir:
             Configuration.wpa_handshake_dir = args.wpa_handshake_dir
             Color.pl('{+} {C}option:{W} will store handshakes to {G}%s{W}' % args.wpa_handshake_dir)
+        if args.wpa_strip_handshake:
+            Configuration.wpa_strip_handshake = True
+            Color.pl("{+} {C}option:{W} will {G}strip{W} non-handshake packets")
 
         # WPS
         if args.wps_filter:

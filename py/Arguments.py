@@ -183,11 +183,15 @@ class Arguments(object):
             type=str,
             help=Color.s('File containing passwords for cracking (default: {G}%s{W})')
                 % Configuration.wordlist)
+
+        # TODO: Uncomment the --strip option once it works
+        '''
         wpa.add_argument('--strip',
             action='store_true',
             dest='wpa_strip_handshake',
             default=False,
-            help=Color.s('Strip unnecessary packets from handshake capture using tshark or pyrit'))
+            help=Color.s('Strip unnecessary packets from handshake capture using tshark'))
+        '''
         wpa.add_argument('-strip', help=argparse.SUPPRESS, action='store_true', dest='wpa_strip_handshake')
 
         # WPS

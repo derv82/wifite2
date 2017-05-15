@@ -195,9 +195,14 @@ class AttackWPA(Attack):
         cap_filename = 'handshake_%s_%s_%s.cap' % (essid_safe, bssid_safe, date)
         cap_filename = os.path.join(Configuration.wpa_handshake_dir, cap_filename)
 
-        Color.p('{+} saving copy of {C}handshake{W} to {C}%s{W} ' % cap_filename)
-        copy(handshake.capfile, cap_filename)
-        Color.pl('{G}saved{W}')
+        if Configuration.wpa_strip_handshake:
+            Color.p("{+} {C}stripping{W} non-handshake packets, saving to {G}%s{W}..." % cap_filename)
+            handshake.strip(outfile=cap_filename)
+            Color.pl('{G}saved{W}')
+        else:
+            Color.p('{+} saving copy of {C}handshake{W} to {C}%s{W} ' % cap_filename)
+            copy(handshake.capfile, cap_filename)
+            Color.pl('{G}saved{W}')
 
         # Update handshake to use the stored handshake file for future operations
         handshake.capfile = cap_filename

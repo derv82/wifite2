@@ -316,7 +316,8 @@ class Handshake(object):
         cmd = [
             'tshark',
             '-r', self.capfile, # input file
-            '-R', 'wlan.fc.type_subtype == 0x08 || eapol', # filter
+            '-R', 'wlan.fc.type_subtype == 0x08 || wlan.fc.type_subtype == 0x05 || eapol', # filter
+            '-2', # tshark: -R without -2 is deprecated.
             '-w', outfile # output file
         ]
         proc = Process(cmd)
