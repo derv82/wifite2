@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from Color import Color
+from Macchanger import Macchanger
 
 import os
 
@@ -34,6 +35,7 @@ class Configuration(object):
         Configuration.target_bssid = None # User-defined AP BSSID
         Configuration.five_ghz = False # Scan 5Ghz channels
         Configuration.pillage = False # "All" mode to attack everything
+        Configuration.random_mac = False
 
         Configuration.encryption_filter = ['WEP', 'WPA', 'WPS']
 
@@ -98,6 +100,8 @@ class Configuration(object):
             # Interface wasn't defined, select it!
             from Airmon import Airmon
             Configuration.interface = Airmon.ask()
+            if Configuration.random_mac:
+                Macchanger.random()
 
 
     @staticmethod
@@ -106,6 +110,9 @@ class Configuration(object):
         from Arguments import Arguments
 
         args = Arguments(Configuration).args
+        if args.random_mac:
+            Configuration.random_mac = True
+            Color.pl('{+} {C}option:{W} using {G}random mac address{W} when scanning & attacking')
         if args.channel:
             Configuration.target_channel = args.channel
             Color.pl('{+} {C}option:{W} scanning for targets on channel {G}%s{W}' % args.channel)
@@ -278,6 +285,7 @@ class Configuration(object):
     def exit_gracefully(code=0):
         ''' Deletes temp and exist with the given code '''
         Configuration.delete_temp()
+        Macchanger.reset_if_changed()
         exit(code)
 
     @staticmethod

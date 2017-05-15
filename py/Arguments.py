@@ -30,6 +30,11 @@ class Arguments(object):
             type=int,
             help=Color.s('Wireless channel to scan (default: {G}all channels{W})'))
         glob.add_argument('--channel', help=argparse.SUPPRESS, action='store', dest='channel', type=int)
+        glob.add_argument('-mac',
+            '---random-mac',
+            action='store_true',
+            dest='random_mac',
+            help=Color.s('Randomize wireless card MAC address (default: {G}off{W})'))
         glob.add_argument('-5',
             '--5ghz',
             action='store_true',
