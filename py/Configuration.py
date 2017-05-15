@@ -289,9 +289,10 @@ class Configuration(object):
         Configuration.delete_temp()
         Macchanger.reset_if_changed()
         from Airmon import Airmon
-        Airmon.stop(Configuration.interface)
-        Airmon.put_interfaces_up()
-        Airmon.start_network_manager()
+        if Configuration.interface is not None:
+            Airmon.stop(Configuration.interface)
+            Airmon.put_interfaces_up()
+            Airmon.start_network_manager()
         exit(code)
 
     @staticmethod

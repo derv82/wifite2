@@ -113,7 +113,7 @@ class Airmon(object):
 
     @staticmethod
     def stop(iface):
-        Color.p("{+} {R}disabling {O}monitor mode{R} on {O}%s{W}... " % iface)
+        Color.p("{!} {R}disabling {O}monitor mode{O} on {R}%s{O}... " % iface)
         (out,err) = Process.call('airmon-ng stop %s' % iface)
         mon_iface = None
         for line in out.split('\n'):
@@ -133,7 +133,7 @@ class Airmon(object):
                 break
 
         if mon_iface:
-            Color.pl('{R}disabled {O}%s{W}' % mon_iface)
+            Color.pl('{R}disabled %s{W}' % mon_iface)
         else:
             Color.pl('{O}could not disable on {R}%s{W}' % iface)
 
@@ -252,15 +252,16 @@ class Airmon(object):
 
     @staticmethod
     def put_interfaces_up():
-        Color.pl("{+} {O}Putting interfaces up...")
         for interface in Airmon.get_interfaces():
-            Color.pl("{+} {B}up into {O}%s" %(interface.name))
+            Color.p("{!} {O}putting interface {R}%s up{O}..." %(interface.name))
             (out,err) = Process.call('ifconfig %s up' %(interface.name))
+            Color.pl(" {R}done{W}")
 
     @staticmethod
     def start_network_manager():
-        Color.pl("{+} {O}Starting NetworkManager")
+        Color.p("{!} {O}Restarting {R}NetworkManager{O}...")
         (out,err) = Process.call('systemctl start NetworkManager')
+        Color.pl(" {R}restarted{W}")
 
 if __name__ == '__main__':
     Airmon.terminate_conflicting_processes()

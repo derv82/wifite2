@@ -185,6 +185,6 @@ if __name__ == '__main__':
             Color.pl(err)
         Color.pl('\n{!} {R}Exiting{W}\n')
     except KeyboardInterrupt:
-        Color.pl('\n{!} {O}interrupted{W}')
+        Color.pl('\n{!} {O}interrupted, shutting down...{W}')
     Configuration.exit_gracefully(0)
 
