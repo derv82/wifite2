@@ -12,6 +12,7 @@ import signal
 
 class Airmon(object):
     ''' Wrapper around the 'airmon-ng' program '''
+    base_interface = None
 
     def __init__(self):
         self.refresh()
@@ -71,6 +72,7 @@ class Airmon(object):
         # Get interface name from input
         if type(iface) == Interface:
             iface = iface.name
+        Airmon.base_interface = iface
 
         # Call airmon-ng
         Color.p("{+} enabling {G}monitor mode{W} on {C}%s{W}... " % iface)
@@ -178,6 +180,7 @@ class Airmon(object):
             iface = mon_ifaces[0]
             Color.pl('{+} using interface {G}%s{W} which is already in monitor mode'
                 % iface);
+            Airmon.base_interface = None
             return iface
 
         a = Airmon()
@@ -251,15 +254,14 @@ class Airmon(object):
                 os.kill(int(pid), signal.SIGTERM)
 
     @staticmethod
-    def put_interfaces_up():
-        for interface in Airmon.get_interfaces():
-            Color.p("{!} {O}putting interface {R}%s up{O}..." %(interface.name))
-            (out,err) = Process.call('ifconfig %s up' %(interface.name))
-            Color.pl(" {R}done{W}")
+    def put_interface_up(iface):
+        Color.p("{!} {O}putting interface {R}%s up{O}..." % (iface))
+        (out,err) = Process.call('ifconfig %s up' % (iface))
+        Color.pl(" {R}done{W}")
 
     @staticmethod
     def start_network_manager():
-        Color.p("{!} {O}Restarting {R}NetworkManager{O}...")
+        Color.p("{!} {O}restarting {R}NetworkManager{O}...")
         (out,err) = Process.call('systemctl start NetworkManager')
         Color.pl(" {R}restarted{W}")
 

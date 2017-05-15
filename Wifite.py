@@ -101,7 +101,10 @@ class Wifite(object):
                     result = False
                     try:
                         result = attack.run()
+                    except Exception, e:
+                        Color.pl("\n{!} {R}Error: {O}%s" % str(e))
                     except KeyboardInterrupt:
+                        Color.pl('\n{!} {O}interrupted{W}\n')
                         if not self.user_wants_to_continue(targets_remaining, 1):
                             break
 
@@ -121,7 +124,10 @@ class Wifite(object):
 
             try:
                 attack.run()
+            except Exception, e:
+                Color.pl("\n{!} {R}Error: {O}%s" % str(e))
             except KeyboardInterrupt:
+                Color.pl('\n{!} {O}interrupted{W}\n')
                 if not self.user_wants_to_continue(targets_remaining):
                     break
 
@@ -145,7 +151,6 @@ class Wifite(object):
 
     def user_wants_to_continue(self, targets_remaining, attacks_remaining=0):
         ''' Asks user if attacks should continue onto other targets '''
-        Color.pl('\n{!} {O}interrupted{W}\n')
         if attacks_remaining == 0 and targets_remaining == 0:
             # No targets or attacksleft, drop out
             return
