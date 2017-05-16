@@ -48,10 +48,13 @@ class CrackHandshake(object):
     def print_oclhashcat(self, cap_file):
         if not Process.exists("hashcat"): return
         Color.pl("\n  {O}# OCLHASHCAT: GPU-based cracking. Fast.")
-        # TODO: Generate hccapx automatically
-        hccapx_file = "generated.hccapx" #cap_file
-        Color.pl("  {O}# Visit https://hashcat.net/cap2hccapx to generate a .hccapx file{W}")
-        Color.pl("  {G}hashcat {W}-m 2500 {C}%s %s{W}" % (self.wordlist, hccapx_file))
+        hccapx_file = "generated.hccapx"
+        if Process.exists("cap2hccapx"):
+            Color.pl("  {G}cap2hccapx {C}%s %s{W}" % (cap_file, hccapx_file))
+        else:
+            Color.pl("  {O}# Visit https://hashcat.net/cap2hccapx to generate a .hccapx file{W}")
+            Color.pl("  {O}# Browse -> %s -> Convert" % cap_file)
+        Color.pl("  {G}hashcat {W}-m 2500 {C}%s %s{W}" % (hccapx_file, self.wordlist))
 
     def choose_handshake(self):
         Color.pl("\n{+} Listing captured handshakes...\n")
