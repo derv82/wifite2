@@ -36,6 +36,7 @@ class Configuration(object):
         Configuration.five_ghz = False # Scan 5Ghz channels
         Configuration.pillage = False # "All" mode to attack everything
         Configuration.random_mac = False
+        Configuration.no_deauth = False # Deauth hidden networks & WPA handshake targets
 
         Configuration.encryption_filter = ['WEP', 'WPA', 'WPS']
 
@@ -127,6 +128,9 @@ class Configuration(object):
         if args.five_ghz == True:
             Configuration.five_ghz = True
             Color.pl('{+} {C}option:{W} including {G}5Ghz networks{W} in scans')
+        if args.no_deauth == True:
+            Configuration.no_deauth = True
+            Color.pl('{+} {C}option:{W} will {R}not{W} {O}deauth{W} clients during scans or captures')
         if args.target_essid:
             Configuration.target_essid = args.target_essid
             Color.pl('{+} {C}option:{W} targeting ESSID {G}%s{W}' % args.target_essid)

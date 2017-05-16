@@ -77,7 +77,7 @@ class AttackWPS(Attack):
 
         with Airodump(channel=self.target.channel,
                       target_bssid=self.target.bssid,
-                      skip_wash=False,
+                      skip_wash=True,
                       output_file_prefix='pixie') as airodump:
 
             Color.clear_line()
@@ -214,7 +214,7 @@ class AttackWPS(Attack):
 
         with Airodump(channel=self.target.channel,
                       target_bssid=self.target.bssid,
-                      skip_wash=False,
+                      skip_wash=True,
                       output_file_prefix='wps') as airodump:
 
             Color.clear_line()

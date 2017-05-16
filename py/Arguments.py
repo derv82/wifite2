@@ -60,6 +60,10 @@ class Arguments(object):
             default=0,
             dest='verbose',
             help=Color.s('Verbose mode, prints more lines (default: {G}quiet{W})'))
+        glob.add_argument('--nodeauths',
+            action='store_true',
+            dest='no_deauth',
+            help=Color.s('Do not deauthenticate clients *EVER* (default: {G}off{W})'))
 
         # WEP
         wep = parser.add_argument_group('WEP-RELATED')

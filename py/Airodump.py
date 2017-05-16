@@ -146,7 +146,7 @@ class Airodump(object):
             Wash.check_for_wps_and_update_targets(capfile, targets)
 
         # Filter targets based on encryption
-        targets = Airodump.filter_targets(targets)
+        targets = Airodump.filter_targets(targets, skip_wash=self.skip_wash)
 
         # Sort by power
         targets.sort(key=lambda x: x.power, reverse=True)
@@ -224,19 +224,18 @@ class Airodump(object):
         return targets
 
     @staticmethod
-    def filter_targets(targets):
+    def filter_targets(targets, skip_wash=False):
         ''' Filters targets based on Configuration '''
         result = []
         # Filter based on Encryption
         for target in targets:
-            if 'WEP' in Configuration.encryption_filter and \
-               'WEP' in target.encryption:
+            if 'WEP' in Configuration.encryption_filter and 'WEP' in target.encryption:
                 result.append(target)
-            elif 'WPA' in Configuration.encryption_filter and \
-                 'WPA' in target.encryption:
+            elif 'WPA' in Configuration.encryption_filter and 'WPA' in target.encryption:
                     result.append(target)
-            elif 'WPS' in Configuration.encryption_filter and \
-                 target.wps:
+            elif 'WPS' in Configuration.encryption_filter and target.wps:
+                result.append(target)
+            elif skip_wash:
                 result.append(target)
 
         # Filter based on BSSID/ESSID
@@ -259,7 +258,11 @@ class Airodump(object):
             targets (APs) that have unknown ESSIDs (hidden router names).
         '''
         self.decloaking = False
-        # Only deauth if channel is fixed.
+
+        # Do not deauth if requested
+        if Configuration.no_deauth: return
+
+        # Do not deauth if channel is not fixed.
         if self.channel is None: return
 
         # Reusable deauth command

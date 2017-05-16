@@ -21,7 +21,8 @@ class Color(object):
     # Helper string replacements
     replacements = {
         '{+}': ' {W}[{G}+{W}]',
-        '{!}': ' {O}[{R}!{O}]{W}'
+        '{!}': ' {O}[{R}!{O}]{W}',
+        '{?}': ' {W}[{C}?{W}]'
     }
 
     last_sameline_length = 0

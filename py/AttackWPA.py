@@ -34,6 +34,7 @@ class AttackWPA(Attack):
         # First, start Airodump process
         with Airodump(channel=self.target.channel,
                       target_bssid=self.target.bssid,
+                      skip_wash=True,
                       output_file_prefix='wpa') as airodump:
 
             Color.clear_entire_line()
@@ -216,7 +217,8 @@ class AttackWPA(Attack):
                 station_bssid - Client BSSID to deauth
                                 Deauths 'broadcast' if no client is specified.
         '''
-        # TODO: Print that we are deauthing and who we are deauthing!
+        if Configuration.no_deauth: return
+
         target_name = station_bssid
         if target_name == None:
             target_name = 'broadcast'

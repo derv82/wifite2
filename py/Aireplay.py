@@ -53,7 +53,7 @@ class WEPAttackType(object):
 
 
 class Aireplay(object):
-    def __init__(self, target, attack_type, client_mac=None, replay_file=None):
+    def __init__(self, target, attack_type, client_mac=None, replay_file=None, devnull=False):
         '''
             Starts aireplay process.
             Args:
@@ -77,7 +77,7 @@ class Aireplay(object):
         '''
 
         self.pid = Process(cmd,
-                           devnull=False,
+                           devnull=devnull,
                            cwd=Configuration.temp())
 
     def is_running(self):
@@ -85,7 +85,7 @@ class Aireplay(object):
 
     def stop(self):
         ''' Stops aireplay process '''
-        if self.pid and self.pid.poll() != None:
+        if self.pid and self.pid.poll() == None:
             self.pid.interrupt()
 
     def get_output(self):
