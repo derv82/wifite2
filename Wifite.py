@@ -133,6 +133,7 @@ class Wifite(object):
 
             if attack.success:
                 attack.crack_result.save()
+        Color.pl("{+} Finished attacking {C}%d{W} target(s), exiting" % len(targets))
 
 
     def print_banner(self):

