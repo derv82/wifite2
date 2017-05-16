@@ -8,7 +8,7 @@ import os
 
 class Aircrack(object):
     def __init__(self, ivs_file=None):
-        
+
         self.cracked_file = Configuration.temp() + 'wepkey.txt'
 
         # Delete previous cracked files

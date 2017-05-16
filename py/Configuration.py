@@ -55,7 +55,7 @@ class Configuration(object):
 
         # WPA variables
         Configuration.wpa_filter = False # Only attack WPA networks
-        Configuration.wpa_deauth_timeout = 10 # Wait time between deauths
+        Configuration.wpa_deauth_timeout = 15 # Wait time between deauths
         Configuration.wpa_attack_timeout = 500 # Wait time before failing
         Configuration.wpa_handshake_dir = "hs" # Dir to store handshakes
         Configuration.wpa_strip_handshake = False # Strip non-handshake packets
@@ -172,10 +172,10 @@ class Configuration(object):
                 Color.pl('{+} {C}option:{O} wordlist {R}%s{O} was not found, using {R}%s{W}' % (args.wordlist, Configuration.wordlist))
         if args.wpa_deauth_timeout:
             Configuration.wpa_deauth_timeout = args.wpa_deauth_timeout
-            Color.pl('{+} {C}option:{W} will timeout WPA deauth tries after {G}%d seconds{W}' % args.wpa_deauth_timeout)
+            Color.pl('{+} {C}option:{W} will deauth WPA clients every {G}%d seconds{W}' % args.wpa_deauth_timeout)
         if args.wpa_attack_timeout:
             Configuration.wpa_attack_timeout = args.wpa_attack_timeout
-            Color.pl('{+} {C}option:{W} will timeout WPA attacks after {G}%d seconds{W}' % args.wpa_attack_timeout)
+            Color.pl('{+} {C}option:{W} will stop WPA handshake capture after {G}%d seconds{W}' % args.wpa_attack_timeout)
         if args.wpa_handshake_dir:
             Configuration.wpa_handshake_dir = args.wpa_handshake_dir
             Color.pl('{+} {C}option:{W} will store handshakes to {G}%s{W}' % args.wpa_handshake_dir)

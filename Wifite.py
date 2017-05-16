@@ -94,7 +94,7 @@ class Wifite(object):
 
             Color.pl('\n{+} ({G}%d{W}/{G}%d{W})' % (index + 1, len(targets)) +
                      ' starting attacks against {C}%s{W} ({C}%s{W})'
-                % (t.bssid, t.essid))
+                % (t.bssid, t.essid if t.essid_known else "{O}ESSID unknown"))
             if 'WEP' in t.encryption:
                 attack = AttackWEP(t)
             elif 'WPA' in t.encryption:

