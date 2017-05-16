@@ -86,8 +86,10 @@ class Wifite(object):
         else:
             targets = s.select_targets()
 
+        attacked_targets = 0
         targets_remaining = len(targets)
         for index, t in enumerate(targets):
+            attacked_targets += 1
             targets_remaining -= 1
 
             Color.pl('\n{+} ({G}%d{W}/{G}%d{W})' % (index + 1, len(targets)) +
@@ -133,7 +135,7 @@ class Wifite(object):
 
             if attack.success:
                 attack.crack_result.save()
-        Color.pl("{+} Finished attacking {C}%d{W} target(s), exiting" % len(targets))
+        Color.pl("{+} Finished attacking {C}%d{W} target(s), exiting" % attacked_targets)
 
 
     def print_banner(self):

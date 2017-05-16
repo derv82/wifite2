@@ -169,11 +169,13 @@ class Scanner(object):
             if '-' in choice:
                 # User selected a range
                 (lower,upper) = [int(x) - 1 for x in choice.split('-')]
-                for i in xrange(lower, upper):
+                for i in xrange(lower, min(len(self.targets), upper)):
                     chosen_targets.append(self.targets[i])
-            else:
+            elif choice.isdigit():
                 choice = int(choice) - 1
                 chosen_targets.append(self.targets[choice])
+            else:
+                pass
         return chosen_targets
 
 
