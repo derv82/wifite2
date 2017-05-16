@@ -141,7 +141,7 @@ class AttackWPA(Attack):
                      " wordlist {R}%s{O} was not found" % wordlist)
             return None
 
-        Color.pl("\n{+} {C}Cracking Handshake:{W} Using {C}aircrack-ng{W} via" +
+        Color.pl("\n{+} {C}Cracking WPA Handshake:{W} Using {C}aircrack-ng{W} via" +
                 " {C}%s{W} wordlist" % os.path.split(wordlist)[-1])
 
         key_file = Configuration.temp('wpakey.txt')
@@ -178,7 +178,7 @@ class AttackWPA(Attack):
             else:
                 continue
 
-            status = "\r{+} {C}Cracking Handshake: %0.2f%%{W}" % percent
+            status = "\r{+} {C}Cracking WPA Handshake: %0.2f%%{W}" % percent
             status += " ETA: {C}%s{W}" % eta_str
             status += " @ {C}%0.1fkps{W}" % num_kps
             #status += " ({C}%d{W}/{C}%d{W} keys)" % (num_tried, num_total)
@@ -194,7 +194,7 @@ class AttackWPA(Attack):
             f.close()
             os.remove(key_file)
 
-            Color.pl("{+} {G}Cracked Handshake{W} PSK: {G}%s{W}\n" % key)
+            Color.pl("{+} {G}Cracked WPA Handshake{W} PSK: {G}%s{W}\n" % key)
             return key
         else:
             Color.pl("{!} {R}Failed to crack handshake:" +

@@ -169,7 +169,8 @@ class Configuration(object):
                 Configuration.wordlist = args.wordlist
                 Color.pl('{+} {C}option:{W} using wordlist {G}%s{W} to crack WPA handshakes' % args.wordlist)
             else:
-                Color.pl('{+} {C}option:{O} wordlist {R}%s{O} was not found, using {R}%s{W}' % (args.wordlist, Configuration.wordlist))
+                Configuration.wordlist = None
+                Color.pl('{+} {C}option:{O} wordlist {R}%s{O} was not found, wifite will NOT attempt to crack handshakes' % args.wordlist)
         if args.wpa_deauth_timeout:
             Configuration.wpa_deauth_timeout = args.wpa_deauth_timeout
             Color.pl('{+} {C}option:{W} will deauth WPA clients every {G}%d seconds{W}' % args.wpa_deauth_timeout)
