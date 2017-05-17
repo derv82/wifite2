@@ -68,12 +68,15 @@ class Aireplay(object):
 
         # TODO: set 'stdout' when creating process to store output to file.
         # AttackWEP will read file to get status of attack.
-        # E.g., chopchop will regex "(\d+)% done" to get percent complete.
+        # E.g., chopchop will regex "\(\s?(\d+)% done" to get percent complete.
         '''
-        from subprocess import PIPE
-        sout = PIPE
-        if '--chopchop' in cmd:
-            sout = open(Configuration.temp('chopchop'), 'w')
+        if not devnull and attack_type == WEPAttackType.chopchop:
+            sout = open(Configuration.temp('chopchop.out'), 'w')
+            # Output sample:
+            # Offset   70 (11% done) | xor = 7A | pt = 00 |   24 frames written in   409ms
+        else:
+            sout = Process.devnull()
+        serr = Process.devnull()
         '''
 
         self.pid = Process(cmd,
@@ -183,6 +186,7 @@ class Aireplay(object):
                     "Client_mac and Replay_File are required for arp replay")
             cmd.append('--arpreplay')
             cmd.extend(['-b', target.bssid])
+            cmd.extend(['-h', client_mac])
             cmd.extend(['-r', replay_file])
             cmd.extend(['-F']) # Automatically choose first packet
             cmd.extend(['-x', str(Configuration.wep_pps)])

@@ -156,17 +156,18 @@ class AttackWEP(Attack):
                                 # If .xor exists, run packetforge-ng to create .cap
                                 Color.pl('\n{+} {C}%s attack{W}' % attack_name +
                                         ' generated a {C}.xor file{W}, {G}forging...{W}')
-                                forge_file = Aireplay.forge_packet(xor_file,
+                                replay_file = Aireplay.forge_packet(xor_file,
                                                                    airodump_target.bssid,
                                                                    client_mac)
-                                if forge_file:
-                                    replay_file = forge_file
+                                if replay_file:
                                     Color.pl('{+} {C}forged packet{W},' +
                                              ' {G}replaying...{W}')
-                                    attack_name = 'forged arp replay'
-                                    aireplay = Aireplay(self.target, \
-                                                        'forgedreplay', \
-                                                        client_mac=client_mac, \
+                                    wep_attack_type = WEPAttackType("forgedreplay")
+                                    attack_name = "forgedreplay"
+                                    aireplay = Aireplay(self.target,
+                                                        'forgedreplay',
+                                                        client_mac=client_mac,
+                                                        devnull=True,
                                                         replay_file=replay_file)
                                     continue
                                 else:
