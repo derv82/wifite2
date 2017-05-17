@@ -33,9 +33,7 @@ class AttackWPS(Attack):
                 self.success = True
                 return self.success
         else:
-            Color.pl(
-                '{!} {R}your version of "reaver" does not' +
-                ' support the {O}WPS pixie-dust attack{W}')
+            Color.pl("{!} {R}your version of 'reaver' does not support the {O}WPS pixie-dust attack{W}")
 
         if Configuration.pixie_only:
             Color.pl('\r{!} {O}--pixie{R} set, ignoring WPS-PIN attack{W}')

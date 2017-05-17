@@ -85,7 +85,7 @@ class Aireplay(Thread):
 
     def stop(self):
         ''' Stops aireplay process '''
-        if self.pid and self.pid.poll() == None:
+        if hasattr(self, "pid") and self.pid and self.pid.poll() == None:
             self.pid.interrupt()
 
     def get_output(self):
@@ -322,17 +322,20 @@ class Aireplay(Thread):
             return None
 
     @staticmethod
-    def deauth(target_bssid, client_mac=None, num_deauths=1, timeout=2):
+    def deauth(target_bssid, essid=None, client_mac=None, num_deauths=1, timeout=2):
         deauth_cmd = [
-            'aireplay-ng',
-            '-0', # Deauthentication
+            "aireplay-ng",
+            "-0", # Deauthentication
             str(num_deauths),
-            '--ignore-negative-one',
-            '-a', target_bssid # Target AP
+            "--ignore-negative-one",
+            "-a", target_bssid, # Target AP
+            "-D" # Skip AP detection
         ]
         if client_mac is not None:
             # Station-specific deauth
-            deauth_cmd.extend(['-c', client_mac])
+            deauth_cmd.extend(["-c", client_mac])
+        if essid:
+            deauth_cmd.extend(["-e", essid])
         deauth_cmd.append(Configuration.interface)
         proc = Process(deauth_cmd)
         while proc.poll() is None:
