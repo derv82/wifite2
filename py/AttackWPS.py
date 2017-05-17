@@ -63,8 +63,8 @@ class AttackWPS(Attack):
             '--bssid', self.target.bssid,
             '--channel', self.target.channel,
             '--pixie-dust', '1', # pixie-dust attack
-            '--delay', '0',
-            '--no-nacks',
+            #'--delay', '0',
+            #'--no-nacks',
             '--session', '/dev/null', # Don't restart session
             '-vv' # (very) verbose
         ]
