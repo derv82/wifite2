@@ -53,7 +53,7 @@ class Target(object):
         self.essid      =     fields[13].strip()
         if self.essid == '\\x00' * self.essid_len or self.essid.strip() == '':
             # Don't display "\x00..." for hidden ESSIDs
-            self.essid = '(%s)' % self.bssid
+            self.essid = None # '(%s)' % self.bssid
             self.essid_known = False
 
         self.wps = None
@@ -68,7 +68,7 @@ class Target(object):
         '''
 
         max_essid_len = 25
-        essid = self.essid
+        essid = self.essid if self.essid_known else "(%s)" % self.bssid
         # Trim ESSID (router name) if needed
         if len(essid) > max_essid_len:
             essid = essid[0:max_essid_len-3] + '...'

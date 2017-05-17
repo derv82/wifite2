@@ -102,6 +102,12 @@ class Process(object):
             Color.pe("{P} [stderr] %s{W}" % '\n [stderr] '.join(self.err.split('\n')))
         return self.err
 
+    def stdoutln(self):
+        return self.pid.stdout.readline()
+
+    def stderrln(self):
+        return self.pid.stderr.readline()
+
     def get_output(self):
         ''' Waits for process to finish, sets stdout & stderr '''
         if self.pid.poll() == None:
