@@ -125,7 +125,7 @@ class Airodump(object):
             if fil.endswith('.xor'):
                 os.remove(fil)
 
-    def get_targets(self):
+    def get_targets(self, apply_filter=True):
         ''' Parses airodump's CSV file, returns list of Targets '''
         # Find the .CSV file
         csv_filename = None
@@ -145,8 +145,9 @@ class Airodump(object):
             capfile = csv_filename[:-3] + 'cap'
             Wash.check_for_wps_and_update_targets(capfile, targets)
 
-        # Filter targets based on encryption
-        targets = Airodump.filter_targets(targets, skip_wash=self.skip_wash)
+        if apply_filter:
+            # Filter targets based on encryption & WPS capability
+            targets = Airodump.filter_targets(targets, skip_wash=self.skip_wash)
 
         # Sort by power
         targets.sort(key=lambda x: x.power, reverse=True)
@@ -245,11 +246,10 @@ class Airodump(object):
         while i < len(result):
             if bssid and result[i].bssid.lower() != bssid.lower():
                 result.pop(i)
-                continue
-            if essid and result[i].essid.lower() != essid.lower():
+            elif essid and result[i].essid and result[i].essid.lower() != essid.lower():
                 result.pop(i)
-                continue
-            i += 1
+            else:
+                i += 1
         return result
 
     def deauth_hidden_targets(self):

@@ -55,7 +55,7 @@ class Process(object):
 
         return True
 
-    def __init__(self, command, devnull=False, stdout=PIPE, stderr=PIPE, cwd=None):
+    def __init__(self, command, devnull=False, stdout=PIPE, stderr=PIPE, cwd=None, bufsize=0):
         ''' Starts executing command '''
 
         if type(command) == str:
@@ -78,7 +78,7 @@ class Process(object):
 
         self.start_time = time.time()
 
-        self.pid = Popen(command, stdout=sout, stderr=serr, cwd=cwd)
+        self.pid = Popen(command, stdout=sout, stderr=serr, cwd=cwd, bufsize=bufsize)
 
     def __del__(self):
         '''

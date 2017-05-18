@@ -21,7 +21,7 @@ class Attack(object):
             Waits for target to appear in airodump
         '''
         start_time = time.time()
-        targets = airodump.get_targets()
+        targets = airodump.get_targets(apply_filter=False)
         while len(targets) == 0:
             # Wait for target to appear in airodump.
             if int(time.time() - start_time) > Attack.target_wait:
@@ -45,6 +45,3 @@ class Attack(object):
 
         return airodump_target
 
-
-if __name__ == '__main__':
-    pass
