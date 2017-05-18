@@ -22,8 +22,8 @@ class Client(object):
                     6 Probed ESSIDs
         '''
         self.station =     fields[0].strip()
-        self.power   = int(fields[3].strip()) if fields[3].strip().isdigit() else 0
-        self.packets = int(fields[4].strip()) if fields[4].strip().isdigit() else 0
+        self.power   = int(fields[3].strip())
+        self.packets = int(fields[4].strip())
         self.bssid   =     fields[5].strip()
 
 

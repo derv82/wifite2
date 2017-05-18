@@ -170,6 +170,12 @@ class Bully(Attack):
         if pixie_re:
             self.state = "{R}Failed{W}"
 
+
+        # [+] Running pixiewps with the information, wait ...
+        pixie_re = re.compile(r".*Running pixiewps with the information").match(line)
+        if pixie_re:
+            self.state = "{G}Running pixiewps...{W}"
+
         # [*] Pin is '80246213', key is 'password'
         pin_key_re = re.compile(r"^\s*Pin is '(\d*)', key is '(.*)'\s*$").match(line)
         if pin_key_re:
