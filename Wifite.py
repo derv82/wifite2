@@ -23,8 +23,7 @@ class Wifite(object):
         if os.getuid() != 0:
             Color.pl('{!} {R}error: {O}wifite{R} must be run as {O}root{W}')
             Color.pl('{!} {O}re-run as: sudo ./Wifite.py{W}')
-            exit(0)
-            return
+            Configuration.exit_gracefully(0)
 
         Configuration.initialize(load_interface=False)
 

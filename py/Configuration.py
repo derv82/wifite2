@@ -298,7 +298,7 @@ class Configuration(object):
         Configuration.delete_temp()
         Macchanger.reset_if_changed()
         from Airmon import Airmon
-        if Configuration.interface is not None and Airmon.base_interface is not None:
+        if hasattr(Configuration, "interface") and Configuration.interface is not None and Airmon.base_interface is not None:
             Airmon.stop(Configuration.interface)
             Airmon.put_interface_up(Airmon.base_interface)
             Airmon.start_network_manager()
