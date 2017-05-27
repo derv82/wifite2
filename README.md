@@ -40,3 +40,8 @@ Decloaking & cracking a hidden access point (via the WPA Handshake attack):
 
 Cracking a weak WEP password (using the WEP Replay attack):
 ![Cracking a weak WEP password](http://i.imgur.com/VIeltx9.gif)
+
+-------------
+
+Various cracking options (using `--crack` option):
+![--crack option](http://i.imgur.com/rydOakW.png)
