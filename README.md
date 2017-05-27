@@ -4,6 +4,7 @@ A complete re-write of [`wifite`](https://github.com/derv82/wifite), a Python sc
 
 What's new?
 -----------
+* Lots of files instead of "one big script".
 * Cleaner process management -- No longer leaves processes running in the background.
 * UX: Target access points are refreshed every second instead of every 5 seconds.
 * UX: Displays realtime Power level (in db) of currently-attacked target
@@ -18,9 +19,12 @@ Full Feature List
 * Reaver Pixie-Dust attack (`--pixie`)
 * Reaver WPS PIN attack (`--reaver`)
 * WPA handshake capture (`--no-reaver`)
+* Validates handshakes against `pyrit`, `tshark`, `cowpatty`, and `aircrack-ng`
 * Various WEP attacks (replay, chopchop, fragment, etc)
 * 5Ghz support for wireless cards that support 5ghz (use `-5` option)
-* Stores cracked passwords and handshakes to the current directory, with metadata about the access point.
+* Stores cracked passwords and handshakes to the current directory, with metadata about the access point (via `--cracked` command).
+* Decloaks hidden access points when channel is fixed (use `-c <channel>` option)
+* Provides commands to crack captured WPA handshakes (via `--crack` command)
 
 Support
 -------
@@ -29,6 +33,14 @@ Wifite2 is designed entirely for the latest version of Kali Rolling release (tes
 This means only the latest versions of these programs are supported: Aircrack-ng suite, wash, reaver, tshark, cowpatty.
 
 Other pen-testing distributions (such as BackBox) have outdated versions of these suites; these distributions are not supported.
+
+Installing & Running
+--------------------
+```
+git clone https://github.com/derv82/wifite2.git
+cd wifite2
+./Wifite.py
+```
 
 Screenshots
 -----------
