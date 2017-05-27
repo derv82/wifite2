@@ -288,6 +288,10 @@ class Configuration(object):
         ''' Deletes temp and exist with the given code '''
         Configuration.delete_temp()
         Macchanger.reset_if_changed()
+        from Airmon import Airmon
+        Airmon.stop(Configuration.interface)
+        Airmon.put_interfaces_up()
+        Airmon.start_network_manager()
         exit(code)
 
     @staticmethod
@@ -312,4 +316,3 @@ class Configuration(object):
 if __name__ == '__main__':
     Configuration.initialize(False)
     print Configuration.dump()
-

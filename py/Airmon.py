@@ -250,6 +250,17 @@ class Airmon(object):
                          ' {R}%s{O} (PID {R}%s{O})' % (pname, pid))
                 os.kill(int(pid), signal.SIGTERM)
 
+    @staticmethod
+    def put_interfaces_up():
+        Color.pl("{+} {O}Putting interfaces up...")
+        for interface in Airmon.get_interfaces():
+            Color.pl("{+} {B}up into {O}%s" %(interface.name))
+            (out,err) = Process.call('ifconfig %s up' %(interface.name))
+
+    @staticmethod
+    def start_network_manager():
+        Color.pl("{+} {O}Starting NetworkManager")
+        (out,err) = Process.call('systemctl start NetworkManager')
 
 if __name__ == '__main__':
     Airmon.terminate_conflicting_processes()
