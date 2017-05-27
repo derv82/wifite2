@@ -32,4 +32,16 @@ Other pen-testing distributions (such as BackBox) have outdated versions of thes
 
 Screenshots
 -----------
-TBD
+
+Decloaking a hidden access point:
+![Decloaking a hidden access point](http://i.imgur.com/FkV87LZ.gif)
+
+-------------
+
+Decloaking & Cracking a hidden access point:
+![Decloaking and Cracking a hidden access point](http://i.imgur.com/MTMwSzM.gif)
+
+-------------
+
+Cracking a weak WEP password:
+![Cracking a weak WEP password](http://i.imgur.com/VIeltx9.gif)
