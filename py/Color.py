@@ -21,7 +21,7 @@ class Color(object):
     # Helper string replacements
     replacements = {
         '{+}': ' {W}[{G}+{W}]',
-        '{!}': ' {W}[{R}!{W}]'
+        '{!}': ' {O}[{R}!{O}]{W}'
     }
 
     last_sameline_length = 0
@@ -73,6 +73,24 @@ class Color(object):
         sys.stdout.write('\r%s\r' % spaces)
         sys.stdout.flush()
         Color.last_sameline_length = 0
+
+    @staticmethod
+    def clear_entire_line():
+        import os
+        (rows, columns) = os.popen('stty size', 'r').read().split()
+        Color.p("\r" + (" " * int(columns)) + "\r")
+
+    @staticmethod
+    def pattack(attack_type, target, attack_name, progress):
+        '''
+            Prints a one-liner for an attack
+            Includes attack type (WEP/WPA), target BSSID/ESSID & power, attack type, and progress
+            [name] ESSID (MAC @ Pwr) Attack_Type: Progress
+            e.g.: [WEP] Router2G (00:11:22 @ 23db) replay attack: 102 IVs
+        '''
+        essid = "{C}%s{W}" % target.essid if target.essid_known else "{O}unknown{W}"
+        Color.p("\r{+} {G}%s{W} ({C}%s @ %sdb{W}) {G}%s {C}%s{W}: %s " % (
+            essid, target.bssid, target.power, attack_type, attack_name, progress))
 
 if __name__ == '__main__':
     Color.pl("{R}Testing{G}One{C}Two{P}Three{W}Done")

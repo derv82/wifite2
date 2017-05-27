@@ -103,10 +103,12 @@ class Target(object):
         power = Color.s('{%s}%s' % (color, power))
 
         wps = Color.s('{O} n/a')
-        if self.wps:
+        if self.wps == True:
             wps = Color.s('{G} yes')
-        else:
+        elif self.wps == False:
             wps = Color.s('{R}  no')
+        else:
+            wps = Color.s('{O} n/a')
 
         clients = '       '
         if len(self.clients) == 1:

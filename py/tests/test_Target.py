@@ -1,7 +1,7 @@
 #!/usr/bin/python2.7
 # -*- coding: utf-8 -*-
 
-from Airodump import Airodump
+from py.Airodump import Airodump
 
 import unittest
 

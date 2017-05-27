@@ -41,6 +41,13 @@ class CrackResult(object):
         Color.pl('{+} saved crack result to {C}%s{W} ({G}%d total{W})'
             % (name, len(json)))
 
+    @classmethod
+    def load_all(cls):
+        if not os.path.exists(cls.cracked_file): return []
+        with open(cls.cracked_file, "r") as json_file:
+            json = loads(json_file.read())
+        return json
+
     @staticmethod
     def load(json):
         ''' Returns an instance of the appropriate object given a json instance '''

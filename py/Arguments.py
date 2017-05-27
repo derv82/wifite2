@@ -30,6 +30,11 @@ class Arguments(object):
             type=int,
             help=Color.s('Wireless channel to scan (default: {G}all channels{W})'))
         glob.add_argument('--channel', help=argparse.SUPPRESS, action='store', dest='channel', type=int)
+        glob.add_argument('-mac',
+            '---random-mac',
+            action='store_true',
+            dest='random_mac',
+            help=Color.s('Randomize wireless card MAC address (default: {G}off{W})'))
         glob.add_argument('-5',
             '--5ghz',
             action='store_true',
@@ -271,7 +276,10 @@ class Arguments(object):
             dest='check_handshake',
             help=Color.s('Check a .cap file (or all hs/*.cap files) for WPA handshakes'))
         commands.add_argument('-check', help=argparse.SUPPRESS, action='store', nargs='?', const='<all>', dest='check_handshake')
-
+        commands.add_argument('--crack',
+            action='store_true',
+            dest='crack_handshake',
+            help=Color.s('Show commands to crack a captured handshake'))
         return parser.parse_args()
 
 if __name__ == '__main__':

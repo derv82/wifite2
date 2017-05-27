@@ -2,11 +2,13 @@
 # -*- coding: utf-8 -*-
 
 from Color import Color
+from Macchanger import Macchanger
 
 import os
 
 class Configuration(object):
     ''' Stores configuration variables and functions for Wifite. '''
+    verbose = 0
 
     initialized = False # Flag indicating config has been initialized
     temp_dir = None     # Temporary directory
@@ -33,6 +35,7 @@ class Configuration(object):
         Configuration.target_bssid = None # User-defined AP BSSID
         Configuration.five_ghz = False # Scan 5Ghz channels
         Configuration.pillage = False # "All" mode to attack everything
+        Configuration.random_mac = False
 
         Configuration.encryption_filter = ['WEP', 'WPA', 'WPS']
 
@@ -59,7 +62,8 @@ class Configuration(object):
         Configuration.wordlist = None
         wordlists = [
             '/usr/share/wfuzz/wordlist/fuzzdb/wordlists-user-passwd/passwds/phpbb.txt',
-            '/usr/share/fuzzdb/wordlists-user-passwd/passwds/phpbb.txt'
+            '/usr/share/fuzzdb/wordlists-user-passwd/passwds/phpbb.txt',
+            '/usr/share/wordlists/fern-wifi/common.txt'
         ]
         for wlist in wordlists:
             if os.path.exists(wlist):
@@ -82,6 +86,7 @@ class Configuration(object):
         # Commands
         Configuration.show_cracked = False
         Configuration.check_handshake = None
+        Configuration.crack_handshake = False
 
         # Overwrite config values with arguments (if defined)
         Configuration.load_from_arguments()
@@ -96,6 +101,8 @@ class Configuration(object):
             # Interface wasn't defined, select it!
             from Airmon import Airmon
             Configuration.interface = Airmon.ask()
+            if Configuration.random_mac:
+                Macchanger.random()
 
 
     @staticmethod
@@ -104,6 +111,9 @@ class Configuration(object):
         from Arguments import Arguments
 
         args = Arguments(Configuration).args
+        if args.random_mac:
+            Configuration.random_mac = True
+            Color.pl('{+} {C}option:{W} using {G}random mac address{W} when scanning & attacking')
         if args.channel:
             Configuration.target_channel = args.channel
             Color.pl('{+} {C}option:{W} scanning for targets on channel {G}%s{W}' % args.channel)
@@ -242,8 +252,9 @@ class Configuration(object):
                 % '{W}, {G}'.join(Configuration.wep_attacks))
 
         # Commands
-        if args.cracked:   Configuration.show_cracked = True
+        if args.cracked: Configuration.show_cracked = True
         if args.check_handshake: Configuration.check_handshake = args.check_handshake
+        if args.crack_handshake: Configuration.crack_handshake = True
 
 
     @staticmethod
@@ -276,6 +287,7 @@ class Configuration(object):
     def exit_gracefully(code=0):
         ''' Deletes temp and exist with the given code '''
         Configuration.delete_temp()
+        Macchanger.reset_if_changed()
         from Airmon import Airmon
         Airmon.stop(Configuration.interface)
         Airmon.put_interfaces_up()

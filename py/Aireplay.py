@@ -108,7 +108,7 @@ class Aireplay(object):
         Configuration.initialize()
         if Configuration.interface == None:
             raise Exception("Wireless interface must be defined (-i)")
-            
+
         cmd = ['aireplay-ng']
         cmd.append('--ignore-negative-one')
 
@@ -231,7 +231,7 @@ class Aireplay(object):
 
 if __name__ == '__main__':
     t = WEPAttackType(4)
-    print t.name, type(t.name), t.value 
+    print t.name, type(t.name), t.value
     t = WEPAttackType('caffelatte')
     print t.name, type(t.name), t.value
 

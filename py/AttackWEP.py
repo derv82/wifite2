@@ -77,8 +77,8 @@ class AttackWEP(Attack):
 
                     while True:
                         airodump_target = self.wait_for_target(airodump)
-                        Color.p('\r{+} running {C}%s{W} WEP attack ({G}%d IVs{W}) '
-                            % (attack_name, airodump_target.ivs))
+                        Color.pattack("WEP", airodump_target, "%s attack" % attack_name, "%d IVs" % airodump_target.ivs)
+                        #Color.p('\r{+} running {C}%s{W} WEP attack ({G}%d IVs{W}) ' % (attack_name, airodump_target.ivs))
 
                         # Check if we cracked it.
                         if aircrack and aircrack.is_cracked():
@@ -219,8 +219,7 @@ class AttackWEP(Attack):
 
         attacks_remaining = Configuration.wep_attacks[attack_index + 1:]
         Color.pl("{+} {G}%d{W} attacks remain ({C}%s{W})" % (len(attacks_remaining), ', '.join(attacks_remaining)))
-        prompt = Color.s('{+} type {G}c{W} to {G}continue{W}' +
-                         ' or {R}s{W} to {R}stop{W}: ')
+        prompt = Color.s('{+} type {G}c{W} to {G}continue{W} or {R}s{W} to {R}stop{W}: ')
         if raw_input(prompt).lower().startswith('s'):
             return False
         else:

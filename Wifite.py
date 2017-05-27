@@ -9,6 +9,7 @@ from py.AttackWPA import AttackWPA
 from py.AttackWPS import AttackWPS
 from py.CrackResult import CrackResult
 from py.Handshake import Handshake
+from py.CrackHandshake import CrackHandshake
 
 from json import loads
 import os
@@ -30,6 +31,8 @@ class Wifite(object):
 
         elif Configuration.check_handshake:
             self.check_handshake(Configuration.check_handshake)
+        elif Configuration.crack_handshake:
+            CrackHandshake()
         else:
             Configuration.get_interface()
             self.run()
@@ -69,7 +72,6 @@ class Wifite(object):
             hs = Handshake(capfile, bssid=Configuration.target_bssid, essid=Configuration.target_essid)
             hs.analyze()
             Color.pl('')
-
 
     def run(self):
         '''
@@ -172,7 +174,7 @@ if __name__ == '__main__':
         w.main()
     except Exception, e:
         Color.pl('\n{!} {R}Error:{O} %s{W}' % str(e))
-        if Configuration.verbose > 0:
+        if Configuration.verbose > 0 or True:
             Color.pl('\n{!} {O}Full stack trace below')
             from traceback import format_exc
             Color.p('\n{!}    ')

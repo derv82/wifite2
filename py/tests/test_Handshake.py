@@ -4,7 +4,7 @@
 import sys
 sys.path.insert(0, '..')
 
-from Handshake import Handshake
+from py.Handshake import Handshake
 
 import unittest
 
@@ -20,7 +20,6 @@ class TestHandshake(unittest.TestCase):
 
     def testAnalyze(self):
         hs_file = self.getFile('handshake_exists.cap')
-        print hs_file
         hs = Handshake(hs_file, bssid='A4:2B:8C:16:6B:3A')
         try:
             hs.analyze()

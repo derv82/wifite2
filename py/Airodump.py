@@ -7,7 +7,7 @@ from Target import Target
 from Client import Client
 from Wash import Wash
 
-import os
+import os, time
 
 class Airodump(object):
     ''' Wrapper around airodump-ng program '''
@@ -42,6 +42,11 @@ class Airodump(object):
         self.ivs_only = ivs_only
         self.skip_wash = skip_wash
 
+        # For tracking decloaked APs (previously were hidden)
+        self.decloaking = False
+        self.decloaked_targets = []
+        self.decloaked_times = {} # Map of BSSID(str) -> epoch(int) of last deauth
+
 
     def __enter__(self):
         '''
@@ -58,12 +63,13 @@ class Airodump(object):
             'airodump-ng',
             self.interface,
             '-a', # Only show associated clients
-            '-w', self.csv_file_prefix # Output file prefix
+            '-w', self.csv_file_prefix, # Output file prefix
+            '--write-interval', '1' # Write every second
         ]
         if self.channel:
             command.extend(['-c', str(self.channel)])
         elif self.five_ghz:
-            command.extend(['--band', 'abg'])
+            command.extend(['--band', 'a'])
 
         if self.encryption:
             command.extend(['--enc', self.encryption])
@@ -145,7 +151,15 @@ class Airodump(object):
         # Sort by power
         targets.sort(key=lambda x: x.power, reverse=True)
 
+        for old_target in self.targets:
+            for new_target in targets:
+                if old_target.bssid != new_target.bssid: continue
+                if new_target.essid_known and not old_target.essid_known:
+                    # We decloaked a target!
+                    self.decloaked_targets.append(new_target)
+
         self.targets = targets
+        self.deauth_hidden_targets()
 
         return self.targets
 
@@ -200,11 +214,11 @@ class Airodump(object):
 
                     if target.essid_len == 0:
                         # Ignore empty/blank ESSIDs
-                        continue
+                        pass
 
                     if target.channel == "-1":
                         # Ignore -1 channel
-                        continue
+                        pass
 
                     targets.append(target)
         return targets
@@ -239,6 +253,41 @@ class Airodump(object):
             i += 1
         return result
 
+    def deauth_hidden_targets(self):
+        '''
+            Sends deauths (to broadcast and to each client) for all
+            targets (APs) that have unknown ESSIDs (hidden router names).
+        '''
+        self.decloaking = False
+        # Only deauth if channel is fixed.
+        if self.channel is None: return
+
+        # Reusable deauth command
+        deauth_cmd = [
+            'aireplay-ng',
+            '-0', # Deauthentication
+            '1', # Number of deauths to perform.
+            '--ignore-negative-one'
+        ]
+        for target in self.targets:
+            if target.essid_known: continue
+            now = int(time.time())
+            secs_since_decloak = now - self.decloaked_times.get(target.bssid, 0)
+            # Decloak every AP once every 30 seconds
+            if secs_since_decloak < 30: continue
+            self.decloaking = True
+            self.decloaked_times[target.bssid] = now
+            if Configuration.verbose > 1:
+                from Color import Color
+                verbout = " [?] Deauthing %s" % target.bssid
+                verbout += " (broadcast & %d clients)" % len(target.clients)
+                Color.pe("\n{C}" + verbout + "{W}")
+            # Deauth broadcast
+            iface = Configuration.interface
+            Process(deauth_cmd + ['-a', target.bssid, iface])
+            # Deauth clients
+            for client in target.clients:
+                Process(deauth_cmd + ['-c', client.bssid, iface])
 
 if __name__ == '__main__':
     ''' Example usage. wlan0mon should be in Monitor Mode '''

@@ -90,22 +90,24 @@ class Handshake(object):
         cmd = [
             'tshark',
             '-r', self.capfile,
-            '-R', 'wlan.fc.type_subtype == 0x08',
+            '-R', 'wlan.fc.type_subtype == 0x08 || wlan.fc.type_subtype == 0x05',
+            '-2', # tshark: -R without -2 is deprecated.
             '-n'
         ]
         proc = Process(cmd, devnull=False)
         for line in proc.stdout().split('\n'):
             # Extract src, dst, and essid
             mac_regex = ('[a-zA-Z0-9]{2}:' * 6)[:-1]
-            match = re.search('(%s) -> (%s).*.*SSID=(.*)$'
+            match = re.search('(%s) [^ ]* (%s).*.*SSID=(.*)$'
                 % (mac_regex, mac_regex), line)
             if match == None:
                 # Line doesn't contain src, dst, ssid
                 continue
             (src, dst, essid) = match.groups()
+            if dst.lower() == "ff:ff:ff:ff:ff:ff": continue
             if self.bssid:
                 # We know the BSSID, only return the ESSID for this BSSID.
-                if self.bssid.lower() == src.lower():
+                if self.bssid.lower() == src.lower() or self.bssid.lower() == dst.lower():
                     essids.add((src, essid))
             else:
                 # We do not know BSSID, add it.
@@ -263,7 +265,7 @@ class Handshake(object):
                     hit_Target = False
             else:
                 # Line does not contain AccessPoint
-                if hit_target and ', good,' in line:
+                if hit_target and ', good' in line:
                     bssid_essid_pairs.add( (current_bssid, current_essid) )
         return [x for x in bssid_essid_pairs]
 

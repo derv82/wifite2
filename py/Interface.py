@@ -90,7 +90,7 @@ class Interface(object):
 
         output = Process(['ifconfig', iface]).stdout()
         mac_regex = ('[a-zA-Z0-9]{2}-' * 6)[:-1]
-        match = re.search('HWaddr (%s)' % mac_regex, output)
+        match = re.search(' (%s)' % mac_regex, output)
         if not match:
             match = re.search('unspec (%s)' % mac_regex, output)
             if not match:
