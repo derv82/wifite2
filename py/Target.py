@@ -3,6 +3,8 @@
 
 from Color import Color
 
+import re
+
 class Target(object):
     '''
         Holds details for a "Target" aka Access Point (e.g. router).
@@ -49,8 +51,8 @@ class Target(object):
         self.ivs        = int(fields[10].strip())
 
         self.essid_known = True
-        self.essid_len  = int(fields[12].strip())
-        self.essid      =     fields[13].strip()
+        self.essid_len   = int(fields[12].strip())
+        self.essid       =     fields[13].strip()
         if self.essid == '\\x00' * self.essid_len or self.essid.strip() == '':
             # Don't display "\x00..." for hidden ESSIDs
             self.essid = None # '(%s)' % self.bssid
@@ -60,6 +62,23 @@ class Target(object):
 
         self.clients = []
 
+        self.validate()
+
+    def validate(self):
+        ''' Checks that the target is valid. '''
+        if self.essid_len == 0:
+            raise Exception("Ignoring target with empty/blank ESSID (length: 0)")
+        elif self.channel == "-1":
+            raise Exception("Ignoring target with Negative-One (-1) channel")
+
+        # Filter broadcast/multicast BSSIDs, see https://github.com/derv82/wifite2/issues/32
+        bssid_broadcast = re.compile(r"^(ff:ff:ff:ff:ff:ff|00:00:00:00:00:00)$")
+        if bssid_broadcast.match(self.bssid):
+            raise Exception("Ignoring target with Broadcast BSSID (%s)" % self.bssid)
+
+        bssid_multicast = re.compile(r"^(01:00:5e|01:80:c2|33:33)")
+        if bssid_multicast.match(self.bssid):
+            raise Exception("Ignoring target with Multicast BSSID (%s)" % self.bssid)
 
     def __str__(self):
         '''

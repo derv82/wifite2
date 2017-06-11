@@ -211,17 +211,12 @@ class Airodump(object):
 
                 else:
                     # The current row corresponds to a "Target" (router)
-                    target = Target(row)
+                    try:
+                        target = Target(row)
+                        targets.append(target)
+                    except Exception:
+                        continue
 
-                    if target.essid_len == 0:
-                        # Ignore empty/blank ESSIDs
-                        pass
-
-                    if target.channel == "-1":
-                        # Ignore -1 channel
-                        pass
-
-                    targets.append(target)
         return targets
 
     @staticmethod
