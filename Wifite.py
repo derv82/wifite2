@@ -13,6 +13,7 @@ from py.CrackHandshake import CrackHandshake
 
 from json import loads
 import os
+from sys import exit
 
 class Wifite(object):
 
@@ -22,6 +23,7 @@ class Wifite(object):
         if os.getuid() != 0:
             Color.pl('{!} {R}error: {O}wifite{R} must be run as {O}root{W}')
             Color.pl('{!} {O}re-run as: sudo ./Wifite.py{W}')
+            exit(0)
             return
 
         Configuration.initialize(load_interface=False)
@@ -213,4 +215,3 @@ if __name__ == '__main__':
     except KeyboardInterrupt:
         Color.pl('\n{!} {O}interrupted, shutting down...{W}')
     Configuration.exit_gracefully(0)
-
