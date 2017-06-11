@@ -35,8 +35,9 @@ class Configuration(object):
         Configuration.target_bssid = None # User-defined AP BSSID
         Configuration.five_ghz = False # Scan 5Ghz channels
         Configuration.pillage = False # "All" mode to attack everything
-        Configuration.random_mac = False
+        Configuration.random_mac = False # Should generate a random Mac address at startup.
         Configuration.no_deauth = False # Deauth hidden networks & WPA handshake targets
+        Configuration.num_deauths = 1 # Number of deauth packets to send to each target.
 
         Configuration.encryption_filter = ['WEP', 'WPA', 'WPS']
 
@@ -131,6 +132,9 @@ class Configuration(object):
         if args.no_deauth == True:
             Configuration.no_deauth = True
             Color.pl('{+} {C}option:{W} will {R}not{W} {O}deauth{W} clients during scans or captures')
+        if args.num_deauths and args.num_deauths > 0:
+            Configuration.num_deauths = args.num_deauths
+            Color.pl('{+} {C}option:{W} will send {G}%d{W} deauth packets when deauthing' % Configuration.num_deauths)
         if args.target_essid:
             Configuration.target_essid = args.target_essid
             Color.pl('{+} {C}option:{W} targeting ESSID {G}%s{W}' % args.target_essid)

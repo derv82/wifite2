@@ -322,7 +322,8 @@ class Aireplay(Thread):
             return None
 
     @staticmethod
-    def deauth(target_bssid, essid=None, client_mac=None, num_deauths=1, timeout=2):
+    def deauth(target_bssid, essid=None, client_mac=None, num_deauths=None, timeout=2):
+        num_deauths = num_deauths or Configuration.num_deauths
         deauth_cmd = [
             "aireplay-ng",
             "-0", # Deauthentication

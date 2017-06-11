@@ -250,7 +250,7 @@ class AttackWPA(Attack):
                     target,
                     "Handshake capture",
                     "Deauthing {O}%s{W}" % target_name)
-            Aireplay.deauth(target.bssid, client_mac=client, num_deauths=1, timeout=2)
+            Aireplay.deauth(target.bssid, client_mac=client, timeout=2)
 
 if __name__ == '__main__':
     from Target import Target

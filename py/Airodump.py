@@ -269,7 +269,7 @@ class Airodump(object):
         deauth_cmd = [
             'aireplay-ng',
             '-0', # Deauthentication
-            '1', # Number of deauths to perform.
+            str(Configuration.num_deauths), # Number of deauth packets to send
             '--ignore-negative-one'
         ]
         for target in self.targets:
@@ -290,7 +290,7 @@ class Airodump(object):
             Process(deauth_cmd + ['-a', target.bssid, iface])
             # Deauth clients
             for client in target.clients:
-                Process(deauth_cmd + ['-c', client.bssid, iface])
+                Process(deauth_cmd + ['-a', target.bssid, '-c', client.bssid, iface])
 
 if __name__ == '__main__':
     ''' Example usage. wlan0mon should be in Monitor Mode '''

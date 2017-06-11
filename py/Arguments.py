@@ -64,6 +64,13 @@ class Arguments(object):
             action='store_true',
             dest='no_deauth',
             help=Color.s('Do not deauthenticate clients *EVER* (default: {G}off{W})'))
+        glob.add_argument('--num-deauths',
+            action='store',
+            type=int,
+            dest='num_deauths',
+            metavar="[num]",
+            default=None,
+            help=Color.s('Number of deauth packets to send (default: {G}%d{W})' % Configuration.num_deauths))
 
         # WEP
         wep = parser.add_argument_group('WEP-RELATED')
