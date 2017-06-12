@@ -66,9 +66,7 @@ class Target(object):
 
     def validate(self):
         ''' Checks that the target is valid. '''
-        if self.essid_len == 0:
-            raise Exception("Ignoring target with empty/blank ESSID (length: 0)")
-        elif self.channel == "-1":
+        if self.channel == "-1":
             raise Exception("Ignoring target with Negative-One (-1) channel")
 
         # Filter broadcast/multicast BSSIDs, see https://github.com/derv82/wifite2/issues/32
