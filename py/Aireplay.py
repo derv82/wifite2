@@ -291,7 +291,8 @@ class Aireplay(Thread):
         ''' Finds the last .xor file in the directory '''
         xor = None
         for fil in os.listdir(Configuration.temp()):
-            if fil.startswith('replay_') and fil.endswith('.xor'):
+            if fil.startswith('replay_') and fil.endswith('.xor') or \
+               fil.startswith('fragment-') and fil.endswith('.xor'):
                 xor = fil
         return xor
 
