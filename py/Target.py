@@ -70,11 +70,11 @@ class Target(object):
             raise Exception("Ignoring target with Negative-One (-1) channel")
 
         # Filter broadcast/multicast BSSIDs, see https://github.com/derv82/wifite2/issues/32
-        bssid_broadcast = re.compile(r"^(ff:ff:ff:ff:ff:ff|00:00:00:00:00:00)$")
+        bssid_broadcast = re.compile(r"^(ff:ff:ff:ff:ff:ff|00:00:00:00:00:00)$", re.IGNORECASE)
         if bssid_broadcast.match(self.bssid):
             raise Exception("Ignoring target with Broadcast BSSID (%s)" % self.bssid)
 
-        bssid_multicast = re.compile(r"^(01:00:5e|01:80:c2|33:33)")
+        bssid_multicast = re.compile(r"^(01:00:5e|01:80:c2|33:33)", re.IGNORECASE)
         if bssid_multicast.match(self.bssid):
             raise Exception("Ignoring target with Multicast BSSID (%s)" % self.bssid)
 
