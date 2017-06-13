@@ -128,10 +128,8 @@ class Target(object):
             wps = Color.s('{O} n/a')
 
         clients = '       '
-        if len(self.clients) == 1:
-            clients = Color.s('{G}client ')
-        elif len(self.clients) > 1:
-            clients = Color.s('{G}clients')
+        if len(self.clients) > 0:
+            clients = Color.s('{G}  ' + str(len(self.clients)))
 
         result = '%s  %s  %s  %s  %s  %s' % (essid, channel,
                                         encryption, power,
