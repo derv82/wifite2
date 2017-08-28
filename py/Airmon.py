@@ -89,7 +89,7 @@ class Airmon(object):
                     mon_iface = mon_iface.split(')')[0]
                 break
 
-        if mon_iface == None:
+        if mon_iface is None:
             # Airmon did not enable monitor mode on an interface
             Color.pl("{R}failed{W}")
 

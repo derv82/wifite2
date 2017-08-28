@@ -85,7 +85,7 @@ class Process(object):
             Ran when object is GC'd.
             If process is still running at this point, it should die.
         '''
-        if self.pid and self.pid.poll() == None:
+        if self.pid and self.pid.poll() is None:
             self.interrupt()
 
     def stdout(self):
@@ -110,9 +110,9 @@ class Process(object):
 
     def get_output(self):
         ''' Waits for process to finish, sets stdout & stderr '''
-        if self.pid.poll() == None:
+        if self.pid.poll() is None:
             self.pid.wait()
-        if self.out == None:
+        if self.out is None:
             (self.out, self.err) = self.pid.communicate()
 
     def poll(self):
@@ -139,7 +139,7 @@ class Process(object):
             kill(pid, SIGINT)
 
             wait_time = 0  # Time since Interrupt was sent
-            while self.pid.poll() == None:
+            while self.pid.poll() is None:
                 # Process is still running
                 wait_time += 0.1
                 sleep(0.1)

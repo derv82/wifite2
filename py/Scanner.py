@@ -30,7 +30,7 @@ class Scanner(object):
                 # Loop until interrupted (Ctrl+C)
                 while True:
 
-                    if airodump.pid.poll() != None:
+                    if airodump.pid.poll() is not None:
                         # Airodump process died!
                         raise Exception(
                             "Airodump exited unexpectedly! " +
@@ -76,7 +76,7 @@ class Scanner(object):
         bssid = Configuration.target_bssid
         essid = Configuration.target_essid
 
-        if bssid == None and essid == None:
+        if bssid is None and essid is None:
             return False
 
         for target in self.targets:

@@ -39,7 +39,7 @@ class Attack(object):
                 airodump_target = t
                 break
 
-        if airodump_target == None:
+        if airodump_target is None:
             raise Exception(
                 'Could not find target (%s) in airodump' % self.target.bssid)
 

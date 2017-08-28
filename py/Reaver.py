@@ -96,7 +96,7 @@ class Reaver(Attack):
                 (pin, psk, ssid) = self.get_pin_psk_ssid(stdout)
 
                 # Check if we cracked it, or if process stopped.
-                if (pin and psk and ssid) or reaver.poll() != None:
+                if (pin and psk and ssid) or reaver.poll() is not None:
                     reaver.interrupt()
 
                     # Check one-last-time for PIN/PSK/SSID, in case of race condition.
@@ -321,7 +321,7 @@ class Reaver(Attack):
                     pin_current = 11000 - pins_left
 
                 # Check if process is still running
-                if reaver.pid.poll() != None:
+                if reaver.pid.poll() is not None:
                     Color.pl('{R}failed{W}')
                     Color.pl('{!} {R}reaver{O} quit unexpectedly{W}')
                     self.success = False

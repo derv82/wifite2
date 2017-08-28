@@ -21,15 +21,15 @@ class Airodump(object):
 
         Configuration.initialize()
 
-        if interface == None:
+        if interface is None:
             interface = Configuration.interface
-        if interface == None:
+        if interface is None:
             raise Exception("Wireless interface must be defined (-i)")
         self.interface = interface
 
         self.targets = []
 
-        if channel == None:
+        if channel is None:
             channel = Configuration.target_channel
         self.channel = channel
         self.five_ghz = Configuration.five_ghz
@@ -133,7 +133,7 @@ class Airodump(object):
             # Found the file
             csv_filename = fil
             break
-        if csv_filename == None or not os.path.exists(csv_filename):
+        if csv_filename is None or not os.path.exists(csv_filename):
             # No file found
             return self.targets
 

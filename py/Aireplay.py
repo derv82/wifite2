@@ -81,11 +81,11 @@ class Aireplay(Thread):
         self.start()
 
     def is_running(self):
-        return self.pid.poll() == None
+        return self.pid.poll() is None
 
     def stop(self):
         ''' Stops aireplay process '''
-        if hasattr(self, "pid") and self.pid and self.pid.poll() == None:
+        if hasattr(self, "pid") and self.pid and self.pid.poll() is None:
             self.pid.interrupt()
 
     def get_output(self):
@@ -182,7 +182,7 @@ class Aireplay(Thread):
 
         # Interface is required at this point
         Configuration.initialize()
-        if Configuration.interface == None:
+        if Configuration.interface is None:
             raise Exception("Wireless interface must be defined (-i)")
 
         cmd = ["aireplay-ng"]
@@ -259,7 +259,7 @@ class Aireplay(Thread):
                 cmd.extend(["-h", client_mac])
 
         elif attack_type == WEPAttackType.hirte:
-            if client_mac == None:
+            if client_mac is None:
                 # Unable to carry out hirte attack
                 raise Exception("Client is required for hirte attack")
             cmd.extend([
@@ -267,7 +267,7 @@ class Aireplay(Thread):
                 "-h", client_mac
             ])
         elif attack_type == WEPAttackType.forgedreplay:
-            if client_mac == None or replay_file == None:
+            if client_mac is None or replay_file is None:
                 raise Exception("Client_mac and Replay_File are required for arp replay")
             cmd.extend([
                 "--arpreplay",
