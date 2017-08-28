@@ -28,9 +28,9 @@ class WEPAttackType(object):
         '''
         self.value = None
         self.name = None
-        if type(var) == int:
+        if type(var) is int:
             for (name,value) in WEPAttackType.__dict__.iteritems():
-                if type(value) == int:
+                if type(value) is int:
                     if value == var:
                         self.name = name
                         self.value = value
@@ -38,7 +38,7 @@ class WEPAttackType(object):
             raise Exception("Attack number %d not found" % var)
         elif type(var) == str:
             for (name,value) in WEPAttackType.__dict__.iteritems():
-                if type(value) == int:
+                if type(value) is int:
                     if name == var:
                         self.name = name
                         self.value = value
