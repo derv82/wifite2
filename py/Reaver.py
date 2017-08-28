@@ -240,10 +240,8 @@ class Reaver(Attack):
                 out = self.get_stdout()
 
                 # Clear output file
-                f = open(self.stdout_file, 'w')
-                f.write('')
-                f.close()
-
+                with open(self.stdout_file, 'w'):
+                    pass
                 # CHECK FOR CRACK
 
                 (pin, psk, ssid) = Reaver.get_pin_psk_ssid(out)
@@ -394,9 +392,8 @@ class Reaver(Attack):
         ''' Gets output from stdout_file '''
         if not self.stdout_file:
             return ''
-        f = open(self.stdout_file, 'r')
-        stdout = f.read()
-        f.close()
+        with open(self.stdout_file, 'r') as fid:
+            stdout = fid.read()
         return stdout.strip()
 
 

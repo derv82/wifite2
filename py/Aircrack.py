@@ -39,10 +39,8 @@ class Aircrack(object):
     def get_key_hex_ascii(self):
         if not self.is_cracked():
             raise Exception('Cracked file not found')
-        f = open(self.cracked_file, 'r')
-        hex_raw = f.read()
-        f.close()
-
+        with open(self.cracked_file, 'r') as fid:
+            hex_raw = fid.read()
         hex_key = ''
         ascii_key = ''
         while len(hex_raw) > 0:

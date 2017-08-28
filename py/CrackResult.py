@@ -27,17 +27,15 @@ class CrackResult(object):
         name = CrackResult.cracked_file
         json = []
         if os.path.exists(name):
-            f = open(name, 'r')
-            text = f.read()
-            f.close()
+            with open(name, 'r') as fid:
+                text = fid.read()
             try:
                 json = loads(text)
             except Exception, e:
                 Color.pl('{!} error while loading %s: %s' % (name, str(e)))
         json.append(self.to_dict())
-        f = open(name, 'w')
-        f.write(dumps(json, indent=2))
-        f.close()
+        with open(name, 'w') as fid:
+            fid.write(dumps(json, indent=2))
         Color.pl('{+} saved crack result to {C}%s{W} ({G}%d total{W})'
             % (name, len(json)))
 

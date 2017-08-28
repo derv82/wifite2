@@ -45,9 +45,8 @@ class Wifite(object):
         if not os.path.exists(name):
             Color.pl('{!} {O}file {C}%s{O} not found{W}' % name)
             return
-        f = open(name, 'r')
-        json = loads(f.read())
-        f.close()
+        with open(name, 'r') as fid:
+            json = loads(fid.read())
         for (index, item) in enumerate(json):
             Color.pl('\n{+} Cracked target #%d:' % (index + 1))
             cr = CrackResult.load(item)

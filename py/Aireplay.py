@@ -96,14 +96,11 @@ class Aireplay(Thread):
         while self.pid.poll() is None:
             time.sleep(0.1)
             if not os.path.exists(self.output_file): continue
-            # Read output file
-            f = open(self.output_file, "r")
-            lines = f.read()
-            f.close()
-            # Clear output file
-            f = open(self.output_file, "w")
-            f.write("")
-            f.close()
+            # Read output file & clear output file
+            with open(self.output_file, "r+") as fid:
+                lines = fid.read()
+                fid.seek(0)
+                fid.truncate()
             for line in lines.split("\n"):
                 line = line.replace("\r", "").strip()
                 if line == "": continue
