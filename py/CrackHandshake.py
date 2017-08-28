@@ -74,11 +74,11 @@ class CrackHandshake(object):
         Color.p("  " + ("-" * 17))
         Color.p("  " + ("-" * 19) + "\n")
         # Print all handshakes
-        for index, hs in enumerate(handshakes):
+        for idx, hs in enumerate(handshakes, start=1):
             bssid = hs["bssid"]
             essid = hs["essid"]
             date = datetime.strftime(datetime.fromtimestamp(hs["date"]), "%Y-%m-%dT%H:%M:%S")
-            Color.p("  {G}%s{W}" % str(index + 1).rjust(3))
+            Color.p("  {G}%s{W}" % str(idx).rjust(3))
             Color.p("  {C}%s{W}" % essid.ljust(max_essid_len))
             Color.p("  {C}%s{W}" % bssid)
             Color.p("  {C}%s{W}\n" % date)

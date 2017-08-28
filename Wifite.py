@@ -47,8 +47,8 @@ class Wifite(object):
             return
         with open(name, 'r') as fid:
             json = loads(fid.read())
-        for (index, item) in enumerate(json):
-            Color.pl('\n{+} Cracked target #%d:' % (index + 1))
+        for idx, item in enumerate(json, start=1):
+            Color.pl('\n{+} Cracked target #%d:' % (idx))
             cr = CrackResult.load(item)
             cr.dump()
 
@@ -88,11 +88,11 @@ class Wifite(object):
 
         attacked_targets = 0
         targets_remaining = len(targets)
-        for index, t in enumerate(targets):
+        for idx, t in enumerate(targets, start=1):
             attacked_targets += 1
             targets_remaining -= 1
 
-            Color.pl('\n{+} ({G}%d{W}/{G}%d{W})' % (index + 1, len(targets)) +
+            Color.pl('\n{+} ({G}%d{W}/{G}%d{W})' % (idx, len(targets)) +
                      ' starting attacks against {C}%s{W} ({C}%s{W})'
                 % (t.bssid, t.essid if t.essid_known else "{O}ESSID unknown"))
             if 'WEP' in t.encryption:

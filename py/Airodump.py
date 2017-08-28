@@ -298,9 +298,8 @@ if __name__ == '__main__':
 
         targets = airodump.get_targets()
         Target.print_header()
-        for (index, target) in enumerate(targets):
-            index += 1
-            Color.pl('   {G}%s %s' % (str(index).rjust(3), target))
+        for idx, target in enumerate(targets, start=1):
+            Color.pl('   {G}%s %s' % (str(idx).rjust(3), target))
 
     Configuration.delete_temp()
 

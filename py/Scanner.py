@@ -125,10 +125,9 @@ class Scanner(object):
         Color.p('\r')
 
         Target.print_header()
-        for (index, target) in enumerate(self.targets):
-            index += 1
+        for idx, target in enumerate(self.targets, start=1):
             Color.clear_entire_line()
-            Color.pl('   {G}%s %s' % (str(index).rjust(3), target))
+            Color.pl('   {G}%s %s' % (str(idx).rjust(3), target))
 
     @staticmethod
     def get_terminal_height():

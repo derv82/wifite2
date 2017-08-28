@@ -24,8 +24,8 @@ class Airmon(object):
     def print_menu(self):
         ''' Prints menu '''
         print Interface.menu_header()
-        for (index, iface) in enumerate(self.interfaces):
-            Color.pl(" {G}%d{W}. %s" % (index + 1, iface))
+        for idx, iface in enumerate(self.interfaces, start=1):
+            Color.pl(" {G}%d{W}. %s" % (idx, iface))
 
     def get(self, index):
         ''' Gets interface at index (starts at 1) '''
