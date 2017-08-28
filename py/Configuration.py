@@ -321,9 +321,8 @@ class Configuration(object):
         result += Color.s('{W}%s------------------{W}\n' % ('-' * max_len))
 
         for (key,val) in sorted(Configuration.__dict__.iteritems()):
-            if key.startswith('__'): continue
-            if type(val) == staticmethod: continue
-            if val is None: continue
+            if key.startswith('__') or type(val) == staticmethod or val is None:
+                continue
             result += Color.s("{G}%s {W} {C}%s{W}\n" % (key.ljust(max_len),val))
         return result
 

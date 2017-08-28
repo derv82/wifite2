@@ -44,9 +44,8 @@ class Airmon(object):
         p = Process('airmon-ng')
         for line in p.stdout().split('\n'):
             # Ignore blank/header lines
-            if len(line) == 0: continue
-            if line.startswith('Interface'): continue
-            if line.startswith('PHY'): continue
+            if len(line) == 0 or line.startswith('Interface') or line.startswith('PHY'):
+                continue
 
             # Strip out interface information
             fields = line.split("\t")
@@ -242,8 +241,8 @@ class Airmon(object):
             if re.search('^ *PID', line):
                 hit_pids = True
                 continue
-            if not hit_pids: continue
-            if line.strip() == '': continue
+            if not hit_pids or line.strip() == '':
+                continue
             match = re.search('^[ \t]*(\d+)[ \t]*([a-zA-Z0-9_\-]+)[ \t]*$', line)
             if match:
                 # Found process to kill

@@ -120,9 +120,7 @@ class Airodump(object):
 
         # Remove .cap and .xor files from pwd
         for fil in os.listdir('.'):
-            if fil.startswith('replay_') and fil.endswith('.cap'):
-                os.remove(fil)
-            if fil.endswith('.xor'):
+            if fil.startswith('replay_') and fil.endswith('.cap') or fil.endswith('.xor'):
                 os.remove(fil)
 
     def get_targets(self, apply_filter=True):
