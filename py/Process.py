@@ -58,7 +58,7 @@ class Process(object):
     def __init__(self, command, devnull=False, stdout=PIPE, stderr=PIPE, cwd=None, bufsize=0):
         ''' Starts executing command '''
 
-        if type(command) == str:
+        if type(command) is str:
             # Commands have to be a list
             command = command.split(' ')
 
