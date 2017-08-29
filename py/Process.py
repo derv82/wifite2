@@ -23,7 +23,7 @@ class Process(object):
             Returns tuple:
                 (stdout, stderr)
         '''
-        if type(command) != str or ' ' in command or shell:
+        if type(command) is not str or ' ' in command or shell:
             shell = True
             if Configuration.verbose > 1:
                 Color.pe("\n {C}[?] {W} Executing (Shell): {B}%s{W}" % command)

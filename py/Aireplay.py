@@ -36,7 +36,7 @@ class WEPAttackType(object):
                         self.value = value
                         return
             raise Exception("Attack number %d not found" % var)
-        elif type(var) == str:
+        elif type(var) is str:
             for (name,value) in WEPAttackType.__dict__.iteritems():
                 if type(value) is int:
                     if name == var:

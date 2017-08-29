@@ -29,7 +29,7 @@ class Airmon(object):
 
     def get(self, index):
         ''' Gets interface at index (starts at 1) '''
-        if type(index) == str:
+        if type(index) is str:
             index = int(index)
         return self.interfaces[index - 1]
 
