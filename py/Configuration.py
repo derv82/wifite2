@@ -27,6 +27,8 @@ class Configuration(object):
         Configuration.initialized = True
 
         Configuration.verbose = 0 # Verbosity level.
+        
+        Configuration.scan_time = 0 # Scan time
 
         Configuration.tx_power = 0 # Wifi transmit power (0 is default)
         Configuration.interface = None
@@ -138,6 +140,9 @@ class Configuration(object):
         if args.target_essid:
             Configuration.target_essid = args.target_essid
             Color.pl('{+} {C}option:{W} targeting ESSID {G}%s{W}' % args.target_essid)
+        if args.scan_time:
+            Configuration.scan_time = args.scan_time
+            Color.pl('{+} {C}option:{W} scan time {G}%d{W}' % args.scan_time)
         if args.verbose:
             Configuration.verbose = args.verbose
             Color.pl('{+} {C}option:{W} verbosity level {G}%d{W}' % args.verbose)
