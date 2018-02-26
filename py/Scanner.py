@@ -157,30 +157,33 @@ class Scanner(object):
                 + " You may need to wait longer,"
                 + " or you may have issues with your wifi card")
 
-        self.print_targets()
-        Color.clear_entire_line()
-        input_str  = '{+} select target(s)'
-        input_str += ' ({G}1-%d{W})' % len(self.targets)
-        input_str += ' separated by commas, dashes'
-        input_str += ' or {G}all{W}: '
+        if not (Configuration.pillage is True):
+            self.print_targets()
+            Color.clear_entire_line()
+            input_str  = '{+} select target(s)'
+            input_str += ' ({G}1-%d{W})' % len(self.targets)
+            input_str += ' separated by commas, dashes'
+            input_str += ' or {G}all{W}: '
 
-        chosen_targets = []
-        for choice in raw_input(Color.s(input_str)).split(','):
-            if choice == 'all':
-                chosen_targets = self.targets
-                break
-            if '-' in choice:
-                # User selected a range
-                (lower,upper) = [int(x) - 1 for x in choice.split('-')]
-                for i in xrange(lower, min(len(self.targets), upper)):
-                    chosen_targets.append(self.targets[i])
-            elif choice.isdigit():
-                choice = int(choice) - 1
-                chosen_targets.append(self.targets[choice])
-            else:
-                pass
-        return chosen_targets
-
+            chosen_targets = []
+        
+            for choice in raw_input(Color.s(input_str)).split(','):
+                if choice == 'all':
+                    chosen_targets = self.targets
+                    break
+                if '-' in choice:
+                    # User selected a range
+                    (lower,upper) = [int(x) - 1 for x in choice.split('-')]
+                    for i in xrange(lower, min(len(self.targets), upper)):
+                        chosen_targets.append(self.targets[i])
+                elif choice.isdigit():
+                    choice = int(choice) - 1
+                    chosen_targets.append(self.targets[choice])
+                else:
+                    pass
+            return chosen_targets
+        else:
+            return self.targets
 
 if __name__ == '__main__':
     # Example displays targets and selects the appropriate one

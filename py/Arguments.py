@@ -77,6 +77,11 @@ class Arguments(object):
             metavar="[num]",
             default=None,
             help=Color.s('Number of deauth packets to send (default: {G}%d{W})' % Configuration.num_deauths))
+        glob.add_argument('-p',
+            action='store',
+            dest='pillage',
+            type=bool,
+            help=Color.s('Pillage "All" mode to attack everything (default: {G}ask{W})'))
 
         # WEP
         wep = parser.add_argument_group('WEP-RELATED')

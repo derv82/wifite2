@@ -29,6 +29,7 @@ class Configuration(object):
         Configuration.verbose = 0 # Verbosity level.
 
 	Configuration.scan_time = 0 # Scan time
+        Configuration.all_targets = False # Run attacks against all targets automatically
 
         Configuration.tx_power = 0 # Wifi transmit power (0 is default)
         Configuration.interface = None
@@ -143,6 +144,9 @@ class Configuration(object):
         if args.scan_time:
             Configuration.scan_time = args.scan_time
             Color.pl('{+} {C}option:{W} scan time {G}%d{W}' % args.scan_time)
+        if args.pillage:
+            Configuration.verbose = args.pillage
+            Color.pl('{+} {C}option:{W} pillage {G}%d{W}' % args.verbose)
         if args.verbose:
             Configuration.verbose = args.verbose
             Color.pl('{+} {C}option:{W} verbosity level {G}%d{W}' % args.verbose)
