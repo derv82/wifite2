@@ -17,6 +17,12 @@ class Arguments(object):
 
         # Global variables
         glob = parser.add_argument_group('SETTINGS')
+        glob.add_argument('-s',
+            action='store',
+            dest='scan_time',
+            metavar='[scantime]',
+            type=int,
+            help=Color.s('Scan time to (default: {G}ask{W})'))
         glob.add_argument('-i',
             action='store',
             dest='interface',

@@ -6,7 +6,7 @@ from Color import Color
 from Target import Target
 from Configuration import Configuration
 
-from time import sleep
+from time import sleep, time
 
 class Scanner(object):
     ''' Scans wifi networks & provides menu for selecting targets '''
@@ -23,13 +23,15 @@ class Scanner(object):
         self.targets = []
         self.target = None # Specific target (based on ESSID/BSSID)
 
+	scan_time = Configuration.scan_time # currently in seconds
+
         Color.pl("")
         # Loads airodump with interface/channel/etc from Configuration
         with Airodump() as airodump:
             try:
-                # Loop until interrupted (Ctrl+C)
+                # Loop until interrupted (Ctrl+C) or until scan_time is reached (if scan_time was defined)
+                start_time = time()
                 while True:
-
                     if airodump.pid.poll() is not None:
                         # Airodump process died!
                         raise Exception(
@@ -63,6 +65,8 @@ class Scanner(object):
                         outline += " {G}%s{W}) " % ", ".join([x.essid for x in decloaked])
                     Color.clear_entire_line()
                     Color.p(outline)
+                    if scan_time > 0 and time() > (start_time + scan_time):
+                        return
                     sleep(1)
             except KeyboardInterrupt:
                 pass
