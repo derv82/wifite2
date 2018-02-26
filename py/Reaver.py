@@ -96,7 +96,7 @@ class Reaver(Attack):
                 (pin, psk, ssid) = self.get_pin_psk_ssid(stdout)
 
                 # Check if we cracked it, or if process stopped.
-                if (pin and psk and ssid) or reaver.poll() != None:
+                if (pin and psk and ssid) or reaver.poll() is not None:
                     reaver.interrupt()
 
                     # Check one-last-time for PIN/PSK/SSID, in case of race condition.
@@ -240,10 +240,8 @@ class Reaver(Attack):
                 out = self.get_stdout()
 
                 # Clear output file
-                f = open(self.stdout_file, 'w')
-                f.write('')
-                f.close()
-
+                with open(self.stdout_file, 'w'):
+                    pass
                 # CHECK FOR CRACK
 
                 (pin, psk, ssid) = Reaver.get_pin_psk_ssid(out)
@@ -323,7 +321,7 @@ class Reaver(Attack):
                     pin_current = 11000 - pins_left
 
                 # Check if process is still running
-                if reaver.pid.poll() != None:
+                if reaver.pid.poll() is not None:
                     Color.pl('{R}failed{W}')
                     Color.pl('{!} {R}reaver{O} quit unexpectedly{W}')
                     self.success = False
@@ -394,9 +392,8 @@ class Reaver(Attack):
         ''' Gets output from stdout_file '''
         if not self.stdout_file:
             return ''
-        f = open(self.stdout_file, 'r')
-        stdout = f.read()
-        f.close()
+        with open(self.stdout_file, 'r') as fid:
+            stdout = fid.read()
         return stdout.strip()
 
 

@@ -23,7 +23,7 @@ class Process(object):
             Returns tuple:
                 (stdout, stderr)
         '''
-        if type(command) != str or ' ' in command or shell:
+        if type(command) is not str or ' ' in command or shell:
             shell = True
             if Configuration.verbose > 1:
                 Color.pe("\n {C}[?] {W} Executing (Shell): {B}%s{W}" % command)
@@ -58,7 +58,7 @@ class Process(object):
     def __init__(self, command, devnull=False, stdout=PIPE, stderr=PIPE, cwd=None, bufsize=0):
         ''' Starts executing command '''
 
-        if type(command) == str:
+        if type(command) is str:
             # Commands have to be a list
             command = command.split(' ')
 
@@ -85,7 +85,7 @@ class Process(object):
             Ran when object is GC'd.
             If process is still running at this point, it should die.
         '''
-        if self.pid and self.pid.poll() == None:
+        if self.pid and self.pid.poll() is None:
             self.interrupt()
 
     def stdout(self):
@@ -110,9 +110,9 @@ class Process(object):
 
     def get_output(self):
         ''' Waits for process to finish, sets stdout & stderr '''
-        if self.pid.poll() == None:
+        if self.pid.poll() is None:
             self.pid.wait()
-        if self.out == None:
+        if self.out is None:
             (self.out, self.err) = self.pid.communicate()
 
     def poll(self):
@@ -139,7 +139,7 @@ class Process(object):
             kill(pid, SIGINT)
 
             wait_time = 0  # Time since Interrupt was sent
-            while self.pid.poll() == None:
+            while self.pid.poll() is None:
                 # Process is still running
                 wait_time += 0.1
                 sleep(0.1)

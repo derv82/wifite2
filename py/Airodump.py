@@ -21,15 +21,15 @@ class Airodump(object):
 
         Configuration.initialize()
 
-        if interface == None:
+        if interface is None:
             interface = Configuration.interface
-        if interface == None:
+        if interface is None:
             raise Exception("Wireless interface must be defined (-i)")
         self.interface = interface
 
         self.targets = []
 
-        if channel == None:
+        if channel is None:
             channel = Configuration.target_channel
         self.channel = channel
         self.five_ghz = Configuration.five_ghz
@@ -120,9 +120,7 @@ class Airodump(object):
 
         # Remove .cap and .xor files from pwd
         for fil in os.listdir('.'):
-            if fil.startswith('replay_') and fil.endswith('.cap'):
-                os.remove(fil)
-            if fil.endswith('.xor'):
+            if fil.startswith('replay_') and fil.endswith('.cap') or fil.endswith('.xor'):
                 os.remove(fil)
 
     def get_targets(self, apply_filter=True):
@@ -133,7 +131,7 @@ class Airodump(object):
             # Found the file
             csv_filename = fil
             break
-        if csv_filename == None or not os.path.exists(csv_filename):
+        if csv_filename is None or not os.path.exists(csv_filename):
             # No file found
             return self.targets
 
@@ -298,9 +296,8 @@ if __name__ == '__main__':
 
         targets = airodump.get_targets()
         Target.print_header()
-        for (index, target) in enumerate(targets):
-            index += 1
-            Color.pl('   {G}%s %s' % (str(index).rjust(3), target))
+        for idx, target in enumerate(targets, start=1):
+            Color.pl('   {G}%s %s' % (str(idx).rjust(3), target))
 
     Configuration.delete_temp()
 

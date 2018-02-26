@@ -82,10 +82,10 @@ class Interface(object):
         from Process import Process
         import re
 
-        if iface == None:
+        if iface is None:
             Configuration.initialize()
             iface = Configuration.interface
-        if iface == None:
+        if iface is None:
             raise Exception('Interface must be defined (-i)')
 
         output = Process(['ifconfig', iface]).stdout()

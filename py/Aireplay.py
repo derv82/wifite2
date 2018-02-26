@@ -28,17 +28,17 @@ class WEPAttackType(object):
         '''
         self.value = None
         self.name = None
-        if type(var) == int:
+        if type(var) is int:
             for (name,value) in WEPAttackType.__dict__.iteritems():
-                if type(value) == int:
+                if type(value) is int:
                     if value == var:
                         self.name = name
                         self.value = value
                         return
             raise Exception("Attack number %d not found" % var)
-        elif type(var) == str:
+        elif type(var) is str:
             for (name,value) in WEPAttackType.__dict__.iteritems():
-                if type(value) == int:
+                if type(value) is int:
                     if name == var:
                         self.name = name
                         self.value = value
@@ -81,11 +81,11 @@ class Aireplay(Thread):
         self.start()
 
     def is_running(self):
-        return self.pid.poll() == None
+        return self.pid.poll() is None
 
     def stop(self):
         ''' Stops aireplay process '''
-        if hasattr(self, "pid") and self.pid and self.pid.poll() == None:
+        if hasattr(self, "pid") and self.pid and self.pid.poll() is None:
             self.pid.interrupt()
 
     def get_output(self):
@@ -96,14 +96,11 @@ class Aireplay(Thread):
         while self.pid.poll() is None:
             time.sleep(0.1)
             if not os.path.exists(self.output_file): continue
-            # Read output file
-            f = open(self.output_file, "r")
-            lines = f.read()
-            f.close()
-            # Clear output file
-            f = open(self.output_file, "w")
-            f.write("")
-            f.close()
+            # Read output file & clear output file
+            with open(self.output_file, "r+") as fid:
+                lines = fid.read()
+                fid.seek(0)
+                fid.truncate()
             for line in lines.split("\n"):
                 line = line.replace("\r", "").strip()
                 if line == "": continue
@@ -185,7 +182,7 @@ class Aireplay(Thread):
 
         # Interface is required at this point
         Configuration.initialize()
-        if Configuration.interface == None:
+        if Configuration.interface is None:
             raise Exception("Wireless interface must be defined (-i)")
 
         cmd = ["aireplay-ng"]
@@ -262,7 +259,7 @@ class Aireplay(Thread):
                 cmd.extend(["-h", client_mac])
 
         elif attack_type == WEPAttackType.hirte:
-            if client_mac == None:
+            if client_mac is None:
                 # Unable to carry out hirte attack
                 raise Exception("Client is required for hirte attack")
             cmd.extend([
@@ -270,7 +267,7 @@ class Aireplay(Thread):
                 "-h", client_mac
             ])
         elif attack_type == WEPAttackType.forgedreplay:
-            if client_mac == None or replay_file == None:
+            if client_mac is None or replay_file is None:
                 raise Exception("Client_mac and Replay_File are required for arp replay")
             cmd.extend([
                 "--arpreplay",

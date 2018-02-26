@@ -189,9 +189,8 @@ class AttackWPA(Attack):
         Color.pl("")
         # Check crack result
         if os.path.exists(key_file):
-            f = open(key_file, "r")
-            key = f.read().strip()
-            f.close()
+            with open(key_file, "r") as fid:
+                key = fid.read().strip()
             os.remove(key_file)
 
             Color.pl("{+} {G}Cracked WPA Handshake{W} PSK: {G}%s{W}\n" % key)

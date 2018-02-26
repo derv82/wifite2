@@ -100,7 +100,7 @@ class Handshake(object):
             mac_regex = ('[a-zA-Z0-9]{2}:' * 6)[:-1]
             match = re.search('(%s) [^ ]* (%s).*.*SSID=(.*)$'
                 % (mac_regex, mac_regex), line)
-            if match == None:
+            if match is None:
                 # Line doesn't contain src, dst, ssid
                 continue
             (src, dst, essid) = match.groups()
@@ -139,7 +139,7 @@ class Handshake(object):
             mac_regex = ('[a-zA-Z0-9]{2}:' * 6)[:-1]
             match = re.search('(%s) (?:->|→) (%s).*Message.*(\d).*(\d)'
                 % (mac_regex, mac_regex), line)
-            if match == None:
+            if match is None:
                 # Line doesn't contain src, dst, Message numbers
                 continue
             (src, dst, index, ttl) = match.groups()

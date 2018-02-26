@@ -26,23 +26,21 @@ class Aircrack(object):
 
 
     def is_running(self):
-        return self.pid.poll() == None
+        return self.pid.poll() is None
 
     def is_cracked(self):
         return os.path.exists(self.cracked_file)
 
     def stop(self):
         ''' Stops aircrack process '''
-        if self.pid.poll() == None:
+        if self.pid.poll() is None:
             self.pid.interrupt()
 
     def get_key_hex_ascii(self):
         if not self.is_cracked():
             raise Exception('Cracked file not found')
-        f = open(self.cracked_file, 'r')
-        hex_raw = f.read()
-        f.close()
-
+        with open(self.cracked_file, 'r') as fid:
+            hex_raw = fid.read()
         hex_key = ''
         ascii_key = ''
         while len(hex_raw) > 0:
@@ -58,7 +56,7 @@ class Aircrack(object):
                 # Hex key is non-printable in ascii
                 ascii_key = None
                 continue
-            elif ascii_key == None:
+            elif ascii_key is None:
                 # We can't generate an Ascii key
                 continue
             # Convert decimal to char

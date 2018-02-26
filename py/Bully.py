@@ -206,7 +206,7 @@ class Bully(Attack):
             return False
 
     def stop(self):
-        if hasattr(self, "pid") and self.pid and self.pid.poll() == None:
+        if hasattr(self, "pid") and self.pid and self.pid.poll() is None:
             self.pid.interrupt()
 
     def __del__(self):

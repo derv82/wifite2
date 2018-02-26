@@ -100,7 +100,7 @@ class Configuration(object):
 
     @staticmethod
     def get_interface():
-        if Configuration.interface == None:
+        if Configuration.interface is None:
             # Interface wasn't defined, select it!
             from Airmon import Airmon
             Configuration.interface = Airmon.ask()
@@ -273,7 +273,7 @@ class Configuration(object):
     @staticmethod
     def temp(subfile=''):
         ''' Creates and/or returns the temporary directory '''
-        if Configuration.temp_dir == None:
+        if Configuration.temp_dir is None:
             Configuration.temp_dir = Configuration.create_temp()
         return Configuration.temp_dir + subfile
 
@@ -289,7 +289,7 @@ class Configuration(object):
     @staticmethod
     def delete_temp():
         ''' Remove temp files and folder '''
-        if Configuration.temp_dir == None: return
+        if Configuration.temp_dir is None: return
         if os.path.exists(Configuration.temp_dir):
             for f in os.listdir(Configuration.temp_dir):
                 os.remove(Configuration.temp_dir + f)
@@ -321,9 +321,8 @@ class Configuration(object):
         result += Color.s('{W}%s------------------{W}\n' % ('-' * max_len))
 
         for (key,val) in sorted(Configuration.__dict__.iteritems()):
-            if key.startswith('__'): continue
-            if type(val) == staticmethod: continue
-            if val == None: continue
+            if key.startswith('__') or type(val) == staticmethod or val is None:
+                continue
             result += Color.s("{G}%s {W} {C}%s{W}\n" % (key.ljust(max_len),val))
         return result
 
