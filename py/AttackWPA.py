@@ -51,6 +51,7 @@ class AttackWPA(Attack):
             handshake = self.load_handshake(bssid=bssid, essid=essid)
 
             if handshake:
+                Color.pl('\n\n{+} {G}using existing handshake found at %s{W}' % handshake.capfile)
                 Color.pl('\n\n{+} {G}successfully loaded handshake{W}')
             else:
                 timeout_timer = Timer(Configuration.wpa_attack_timeout)

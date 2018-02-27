@@ -28,7 +28,7 @@ class Configuration(object):
 
         Configuration.verbose = 0 # Verbosity level.
 
-	Configuration.scan_time = 0 # Scan time
+        Configuration.scan_time = 0 # Scan time
         Configuration.all_targets = False # Run attacks against all targets automatically
 
         Configuration.tx_power = 0 # Wifi transmit power (0 is default)
@@ -69,7 +69,7 @@ class Configuration(object):
         wordlists = [
             '/usr/share/wfuzz/wordlist/fuzzdb/wordlists-user-passwd/passwds/phpbb.txt',
             '/usr/share/fuzzdb/wordlists-user-passwd/passwds/phpbb.txt',
-            '/usr/share/wordlists/fern-wifi/common.txt'
+            '/usr/share/fern-wifi-cracker/extras/wordlists/common.txt'
         ]
         for wlist in wordlists:
             if os.path.exists(wlist):

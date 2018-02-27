@@ -22,7 +22,7 @@ class Arguments(object):
             dest='scan_time',
             metavar='[scantime]',
             type=int,
-            help=Color.s('Scan time to (default: {G}ask{W})'))
+            help=Color.s('Seconds to scan before attacking (default: {G}ask{W})'))
         glob.add_argument('-i',
             action='store',
             dest='interface',
