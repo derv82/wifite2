@@ -52,7 +52,7 @@ class AttackWPA(Attack):
 
             if handshake:
                 Color.pl('\n\n{+} {G}using existing handshake found at %s{W}' % handshake.capfile)
-                Color.pl('\n\n{+} {G}successfully loaded handshake{W}')
+                Color.pl('\n{+} {G}successfully loaded handshake{W}')
             else:
                 timeout_timer = Timer(Configuration.wpa_attack_timeout)
                 deauth_timer = Timer(Configuration.wpa_deauth_timeout)
