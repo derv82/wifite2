@@ -57,6 +57,22 @@ TSHARK
 * DIY: Extract Beacon frames from the .cap file with WPS flags...
 * `tshark -r f.cap -R "wps.primary_device_type.category == 6" -n -2`
 
+We can extract WPS networks' BSSID and WPS lock status:
+
+```bash
+% tshark -r withwps-01.cap -n -Y "wps.wifi_protected_setup_state && wlan.da == ff:ff:ff:ff:ff:ff" -T fields -e wlan.ta -e wps.ap_setup_locked -E separator=,
+# Output:
+88:ad:43:d2:77:c8,
+18:d6:c7:6d:6b:18,
+f4:f2:6d:9e:34:25,
+fc:51:a4:1e:11:67,
+98:e7:f4:90:f1:12,0x00000001
+10:13:31:30:35:2c,
+60:a4:4c:6a:46:b0,
+c0:7c:d1:6f:a2:c8,
+f8:cf:c5:fb:a3:e2,
+```
+
 ------------------------------------------------------
 
 ### Backwards Compatibility

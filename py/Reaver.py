@@ -73,7 +73,7 @@ class Reaver(Attack):
 
         with Airodump(channel=self.target.channel,
                       target_bssid=self.target.bssid,
-                      skip_wash=True,
+                      skip_wps=True,
                       output_file_prefix='pixie') as airodump:
 
             Color.clear_line()
@@ -210,7 +210,7 @@ class Reaver(Attack):
 
         with Airodump(channel=self.target.channel,
                       target_bssid=self.target.bssid,
-                      skip_wash=True,
+                      skip_wps=True,
                       output_file_prefix='wps') as airodump:
 
             Color.clear_line()

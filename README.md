@@ -30,7 +30,7 @@ Support
 -------
 Wifite2 is designed entirely for the latest version of Kali Rolling release (tested on Kali 2016.2, updated May 2017).
 
-This means only the latest versions of these programs are supported: Aircrack-ng suite, wash, reaver, tshark, cowpatty.
+This means only the latest versions of these programs are supported: Aircrack-ng suite, reaver, tshark, cowpatty.
 
 Other pen-testing distributions (such as BackBox) have outdated versions of these suites; these distributions are not supported.
 

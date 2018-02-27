@@ -5,7 +5,7 @@ from Process import Process
 from Configuration import Configuration
 from Target import Target
 from Client import Client
-from Wash import Wash
+from Tshark import Tshark
 
 import os, time
 
@@ -14,7 +14,7 @@ class Airodump(object):
 
     def __init__(self, interface=None, channel=None, encryption=None,\
                        wps=False, target_bssid=None, output_file_prefix='airodump',\
-                       ivs_only=False, skip_wash=False):
+                       ivs_only=False, skip_wps=False):
         '''
             Sets up airodump arguments, doesn't start process yet
         '''
@@ -40,7 +40,7 @@ class Airodump(object):
         self.target_bssid = target_bssid
         self.output_file_prefix = output_file_prefix
         self.ivs_only = ivs_only
-        self.skip_wash = skip_wash
+        self.skip_wps = skip_wps
 
         # For tracking decloaked APs (previously were hidden)
         self.decloaking = False
@@ -139,13 +139,13 @@ class Airodump(object):
         targets = Airodump.get_targets_from_csv(csv_filename)
 
         # Check targets for WPS
-        if not self.skip_wash:
+        if not self.skip_wps:
             capfile = csv_filename[:-3] + 'cap'
-            Wash.check_for_wps_and_update_targets(capfile, targets)
+            Tshark.check_for_wps_and_update_targets(capfile, targets)
 
         if apply_filter:
             # Filter targets based on encryption & WPS capability
-            targets = Airodump.filter_targets(targets, skip_wash=self.skip_wash)
+            targets = Airodump.filter_targets(targets, skip_wps=self.skip_wps)
 
         # Sort by power
         targets.sort(key=lambda x: x.power, reverse=True)
@@ -218,7 +218,7 @@ class Airodump(object):
         return targets
 
     @staticmethod
-    def filter_targets(targets, skip_wash=False):
+    def filter_targets(targets, skip_wps=False):
         ''' Filters targets based on Configuration '''
         result = []
         # Filter based on Encryption
@@ -229,7 +229,7 @@ class Airodump(object):
                     result.append(target)
             elif 'WPS' in Configuration.encryption_filter and target.wps:
                 result.append(target)
-            elif skip_wash:
+            elif skip_wps:
                 result.append(target)
 
         # Filter based on BSSID/ESSID

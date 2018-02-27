@@ -44,7 +44,7 @@ class AttackWEP(Attack):
                 with Airodump(channel=self.target.channel,
                               target_bssid=self.target.bssid,
                               ivs_only=True, # Only capture IVs packets
-                              skip_wash=True, # Don't check for WPS-compatibility
+                              skip_wps=True, # Don't check for WPS-compatibility
                               output_file_prefix='wep') as airodump:
 
                     Color.clear_line()
