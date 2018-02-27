@@ -23,19 +23,19 @@ class Scanner(object):
         self.targets = []
         self.target = None # Specific target (based on ESSID/BSSID)
 
+        self.err_msg = None
+
         Color.pl("")
         # Loads airodump with interface/channel/etc from Configuration
-        with Airodump() as airodump:
-            try:
+        try:
+            with Airodump() as airodump:
                 # Loop until interrupted (Ctrl+C)
                 while True:
 
                     if airodump.pid.poll() is not None:
-                        # Airodump process died!
-                        raise Exception(
-                            "Airodump exited unexpectedly! " +
-                            "Command ran: %s"
-                                % ' '.join(airodump.pid.command))
+                        # Airodump process died
+                        self.err_msg = '\r{!} {R}Airodump exited unexpectedly (Code: %d){O} Command: {W}%s' % (airodump.pid.poll(), " ".join(airodump.pid.command))
+                        raise KeyboardInterrupt
 
                     self.targets = airodump.get_targets()
 
@@ -64,8 +64,8 @@ class Scanner(object):
                     Color.clear_entire_line()
                     Color.p(outline)
                     sleep(1)
-            except KeyboardInterrupt:
-                pass
+        except KeyboardInterrupt:
+            pass
 
     def found_target(self):
         '''
@@ -145,6 +145,9 @@ class Scanner(object):
         ''' Asks user to select target(s) '''
 
         if len(self.targets) == 0:
+            if self.err_msg is not None:
+                Color.pl(self.err_msg)
+
             # TODO Print a more-helpful reason for failure.
             # 1. Link to wireless drivers wiki,
             # 2. How to check if your device supporst monitor mode,
@@ -155,6 +158,10 @@ class Scanner(object):
 
         self.print_targets()
         Color.clear_entire_line()
+
+        if self.err_msg is not None:
+            Color.pl(self.err_msg)
+
         input_str  = '{+} select target(s)'
         input_str += ' ({G}1-%d{W})' % len(self.targets)
         input_str += ' separated by commas, dashes'

@@ -125,6 +125,7 @@ class Airodump(object):
 
     def get_targets(self, apply_filter=True):
         ''' Parses airodump's CSV file, returns list of Targets '''
+
         # Find the .CSV file
         csv_filename = None
         for fil in self.find_files(endswith='-01.csv'):
@@ -156,6 +157,9 @@ class Airodump(object):
                 if new_target.essid_known and not old_target.essid_known:
                     # We decloaked a target!
                     self.decloaked_targets.append(new_target)
+
+        if self.pid.poll() is not None:
+            raise Exception('Airodump has stopped')
 
         self.targets = targets
         self.deauth_hidden_targets()
