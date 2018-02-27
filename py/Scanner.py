@@ -37,7 +37,10 @@ class Scanner(object):
                         self.err_msg = '\r{!} {R}Airodump exited unexpectedly (Code: %d){O} Command: {W}%s' % (airodump.pid.poll(), " ".join(airodump.pid.command))
                         raise KeyboardInterrupt
 
-                    self.targets = airodump.get_targets()
+                    try:
+                        self.targets = airodump.get_targets()
+                    except Exception, e:
+                        break
 
                     if self.found_target():
                         # We found the target we want
