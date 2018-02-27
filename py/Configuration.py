@@ -69,7 +69,7 @@ class Configuration(object):
         wordlists = [
             '/usr/share/wfuzz/wordlist/fuzzdb/wordlists-user-passwd/passwds/phpbb.txt',
             '/usr/share/fuzzdb/wordlists-user-passwd/passwds/phpbb.txt',
-            '/usr/share/fern-wifi-cracker/extras/wordlists/common.txt'
+            '/usr/share/wordlists/fern-wifi/common.txt'
         ]
         for wlist in wordlists:
             if os.path.exists(wlist):
