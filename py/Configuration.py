@@ -28,6 +28,9 @@ class Configuration(object):
 
         Configuration.verbose = 0 # Verbosity level.
 
+        Configuration.scan_time = 0 # Scan time
+        Configuration.all_targets = False # Run attacks against all targets automatically
+
         Configuration.tx_power = 0 # Wifi transmit power (0 is default)
         Configuration.interface = None
         Configuration.target_channel = None # User-defined channel to scan
@@ -66,7 +69,7 @@ class Configuration(object):
         wordlists = [
             '/usr/share/wfuzz/wordlist/fuzzdb/wordlists-user-passwd/passwds/phpbb.txt',
             '/usr/share/fuzzdb/wordlists-user-passwd/passwds/phpbb.txt',
-            '/usr/share/wordlists/fern-wifi/common.txt'
+            '/usr/share/fern-wifi-cracker/extras/wordlists/common.txt'
         ]
         for wlist in wordlists:
             if os.path.exists(wlist):
@@ -138,6 +141,12 @@ class Configuration(object):
         if args.target_essid:
             Configuration.target_essid = args.target_essid
             Color.pl('{+} {C}option:{W} targeting ESSID {G}%s{W}' % args.target_essid)
+        if args.scan_time:
+            Configuration.scan_time = args.scan_time
+            Color.pl('{+} {C}option:{W} scan time {G}%d{W}' % args.scan_time)
+        if args.pillage:
+            Configuration.verbose = args.pillage
+            Color.pl('{+} {C}option:{W} pillage {G}%d{W}' % args.verbose)
         if args.verbose:
             Configuration.verbose = args.verbose
             Color.pl('{+} {C}option:{W} verbosity level {G}%d{W}' % args.verbose)

@@ -17,6 +17,12 @@ class Arguments(object):
 
         # Global variables
         glob = parser.add_argument_group('SETTINGS')
+        glob.add_argument('-s',
+            action='store',
+            dest='scan_time',
+            metavar='[scantime]',
+            type=int,
+            help=Color.s('Seconds to scan before attacking (default: {G}ask{W})'))
         glob.add_argument('-i',
             action='store',
             dest='interface',
@@ -71,6 +77,11 @@ class Arguments(object):
             metavar="[num]",
             default=None,
             help=Color.s('Number of deauth packets to send (default: {G}%d{W})' % Configuration.num_deauths))
+        glob.add_argument('-p',
+            action='store',
+            dest='pillage',
+            type=bool,
+            help=Color.s('Pillage "All" mode to attack everything (default: {G}ask{W})'))
 
         # WEP
         wep = parser.add_argument_group('WEP-RELATED')

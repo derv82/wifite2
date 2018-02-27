@@ -6,7 +6,7 @@ from Color import Color
 from Target import Target
 from Configuration import Configuration
 
-from time import sleep
+from time import sleep, time
 
 class Scanner(object):
     ''' Scans wifi networks & provides menu for selecting targets '''
@@ -23,13 +23,15 @@ class Scanner(object):
         self.targets = []
         self.target = None # Specific target (based on ESSID/BSSID)
 
+	scan_time = Configuration.scan_time # currently in seconds
+
         Color.pl("")
         # Loads airodump with interface/channel/etc from Configuration
         with Airodump() as airodump:
             try:
-                # Loop until interrupted (Ctrl+C)
+                # Loop until interrupted (Ctrl+C) or until scan_time is reached (if scan_time was defined)
+                start_time = time()
                 while True:
-
                     if airodump.pid.poll() is not None:
                         # Airodump process died!
                         raise Exception(
@@ -63,6 +65,8 @@ class Scanner(object):
                         outline += " {G}%s{W}) " % ", ".join([x.essid for x in decloaked])
                     Color.clear_entire_line()
                     Color.p(outline)
+                    if scan_time > 0 and time() > (start_time + scan_time):
+                        return
                     sleep(1)
             except KeyboardInterrupt:
                 pass
@@ -153,30 +157,33 @@ class Scanner(object):
                 + " You may need to wait longer,"
                 + " or you may have issues with your wifi card")
 
-        self.print_targets()
-        Color.clear_entire_line()
-        input_str  = '{+} select target(s)'
-        input_str += ' ({G}1-%d{W})' % len(self.targets)
-        input_str += ' separated by commas, dashes'
-        input_str += ' or {G}all{W}: '
+        if not (Configuration.pillage is True):
+            self.print_targets()
+            Color.clear_entire_line()
+            input_str  = '{+} select target(s)'
+            input_str += ' ({G}1-%d{W})' % len(self.targets)
+            input_str += ' separated by commas, dashes'
+            input_str += ' or {G}all{W}: '
 
-        chosen_targets = []
-        for choice in raw_input(Color.s(input_str)).split(','):
-            if choice == 'all':
-                chosen_targets = self.targets
-                break
-            if '-' in choice:
-                # User selected a range
-                (lower,upper) = [int(x) - 1 for x in choice.split('-')]
-                for i in xrange(lower, min(len(self.targets), upper)):
-                    chosen_targets.append(self.targets[i])
-            elif choice.isdigit():
-                choice = int(choice) - 1
-                chosen_targets.append(self.targets[choice])
-            else:
-                pass
-        return chosen_targets
-
+            chosen_targets = []
+        
+            for choice in raw_input(Color.s(input_str)).split(','):
+                if choice == 'all':
+                    chosen_targets = self.targets
+                    break
+                if '-' in choice:
+                    # User selected a range
+                    (lower,upper) = [int(x) - 1 for x in choice.split('-')]
+                    for i in xrange(lower, min(len(self.targets), upper)):
+                        chosen_targets.append(self.targets[i])
+                elif choice.isdigit():
+                    choice = int(choice) - 1
+                    chosen_targets.append(self.targets[choice])
+                else:
+                    pass
+            return chosen_targets
+        else:
+            return self.targets
 
 if __name__ == '__main__':
     # Example displays targets and selects the appropriate one
