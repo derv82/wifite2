@@ -21,15 +21,10 @@ class Client(object):
                     5 BSSID, (Access Point's MAC address)
                     6 Probed ESSIDs
         '''
-        try:
-            self.station =     fields[0].strip()
-            self.power   = int(fields[3].strip())
-            self.packets = int(fields[4].strip())
-            self.bssid   =     fields[5].strip()
-        except ValueError, e:
-            print "\nValueError ({})".format(e)
-            print "\twhile parsing {}".format(fields)
-            raise e
+        self.station =     fields[0].strip()
+        self.power   = int(fields[3].strip())
+        self.packets = int(fields[4].strip())
+        self.bssid   =     fields[5].strip()
 
 
     def __str__(self):
