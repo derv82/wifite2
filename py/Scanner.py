@@ -85,10 +85,10 @@ class Scanner(object):
             return False
 
         for target in self.targets:
-            if bssid and bssid.lower() == target.bssid.lower():
+            if bssid and target.bssid and bssid.lower() == target.bssid.lower():
                 self.target = target
                 break
-            if essid and essid.lower() == target.essid.lower():
+            if essid and target.essid and essid.lower() == target.essid.lower():
                 self.target = target
                 break
 

@@ -62,6 +62,7 @@ class Configuration(object):
         Configuration.wpa_attack_timeout = 500 # Wait time before failing
         Configuration.wpa_handshake_dir = "hs" # Dir to store handshakes
         Configuration.wpa_strip_handshake = False # Strip non-handshake packets
+        Configuration.ignore_old_handshakes = False # Always fetch a new handshake
 
         # Default dictionary for cracking
         Configuration.wordlist = None
