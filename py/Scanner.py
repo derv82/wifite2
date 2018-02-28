@@ -6,7 +6,7 @@ from Color import Color
 from Target import Target
 from Configuration import Configuration
 
-from time import sleep
+from time import sleep, time
 
 class Scanner(object):
     ''' Scans wifi networks & provides menu for selecting targets '''
@@ -30,8 +30,9 @@ class Scanner(object):
         try:
             with Airodump() as airodump:
                 # Loop until interrupted (Ctrl+C)
-                while True:
+                scan_start_time = time()
 
+                while True:
                     if airodump.pid.poll() is not None:
                         # Airodump process died
                         self.err_msg = '\r{!} {R}Airodump exited unexpectedly (Code: %d){O} Command: {W}%s' % (airodump.pid.poll(), " ".join(airodump.pid.command))
@@ -66,6 +67,10 @@ class Scanner(object):
                         outline += " {G}%s{W}) " % ", ".join([x.essid for x in decloaked])
                     Color.clear_entire_line()
                     Color.p(outline)
+
+                    if Configuration.scan_time > 0 and time() > scan_start_time + Configuration.scan_time:
+                        return
+
                     sleep(1)
         except KeyboardInterrupt:
             pass
@@ -83,10 +88,10 @@ class Scanner(object):
             return False
 
         for target in self.targets:
-            if bssid and bssid.lower() == target.bssid.lower():
+            if bssid and target.bssid and bssid.lower() == target.bssid.lower():
                 self.target = target
                 break
-            if essid and essid.lower() == target.essid.lower():
+            if essid and target.essid and essid.lower() == target.essid.lower():
                 self.target = target
                 break
 
@@ -159,6 +164,9 @@ class Scanner(object):
                 + " You may need to wait longer,"
                 + " or you may have issues with your wifi card")
 
+        if Configuration.scan_time > 0:
+            return self.targets
+
         self.print_targets()
         Color.clear_entire_line()
 
@@ -171,6 +179,7 @@ class Scanner(object):
         input_str += ' or {G}all{W}: '
 
         chosen_targets = []
+    
         for choice in raw_input(Color.s(input_str)).split(','):
             if choice == 'all':
                 chosen_targets = self.targets
@@ -186,7 +195,6 @@ class Scanner(object):
             else:
                 pass
         return chosen_targets
-
 
 if __name__ == '__main__':
     # Example displays targets and selects the appropriate one

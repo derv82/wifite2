@@ -28,13 +28,15 @@ class Configuration(object):
 
         Configuration.verbose = 0 # Verbosity level.
 
+        Configuration.scan_time = 0 # Time to wait before attacking all targets
+        Configuration.all_targets = False # Run attacks against all targets automatically
+
         Configuration.tx_power = 0 # Wifi transmit power (0 is default)
         Configuration.interface = None
         Configuration.target_channel = None # User-defined channel to scan
         Configuration.target_essid = None # User-defined AP name
         Configuration.target_bssid = None # User-defined AP BSSID
         Configuration.five_ghz = False # Scan 5Ghz channels
-        Configuration.pillage = False # "All" mode to attack everything
         Configuration.random_mac = False # Should generate a random Mac address at startup.
         Configuration.no_deauth = False # Deauth hidden networks & WPA handshake targets
         Configuration.num_deauths = 1 # Number of deauth packets to send to each target.
@@ -60,6 +62,7 @@ class Configuration(object):
         Configuration.wpa_attack_timeout = 500 # Wait time before failing
         Configuration.wpa_handshake_dir = "hs" # Dir to store handshakes
         Configuration.wpa_strip_handshake = False # Strip non-handshake packets
+        Configuration.ignore_old_handshakes = False # Always fetch a new handshake
 
         # Default dictionary for cracking
         Configuration.wordlist = None
@@ -138,6 +141,9 @@ class Configuration(object):
         if args.target_essid:
             Configuration.target_essid = args.target_essid
             Color.pl('{+} {C}option:{W} targeting ESSID {G}%s{W}' % args.target_essid)
+        if args.scan_time:
+            Configuration.scan_time = args.scan_time
+            Color.pl('{+} {C}option:{W} ({G}pillage{W}) attack all targets after {G}%d{W}s' % args.scan_time)
         if args.verbose:
             Configuration.verbose = args.verbose
             Color.pl('{+} {C}option:{W} verbosity level {G}%d{W}' % args.verbose)
