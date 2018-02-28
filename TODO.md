@@ -1,46 +1,73 @@
-Braindump of ideas to improve Wifite2 (or for Wifite3)
+# TODO
 
-### Directory structure
-
-Too modular in some places, not modular enough in others.
-
-Not "/py":
-
-* aircrack/aircrack.py <- process
-* aircrack/airmon.py <- process
-* aircrack/airodump.py <- process
-* aircrack/aireplay.py <- process
-* attack/decloak.py <- aireplay, airodump
-* attack/wep.py (relay, chopchop, etc) <- aireplay, airodump
-* attack/wpa.py (capture handshake only) <- aireplay, airodump
-* attack/wps-pixie.py <- reaver
-* attack/wps-pin.py
-* config.py
-* crack/crackwep.py <- target, result, aireplay, aircrack
-* crack/crackwpa.py <- target, handshake, result, aircrack
-* handshake/tshark.py <- process
-* handshake/cowpatty.py <- process
-* handshake/pyrit.py <- process
-* output.py (color/printing) <- config
-* process.py <- config
-* scan/scan.py (airodump output to target) <- config, target, airodump
-* target/target.py (ssid, pcap file) <- airodump, tshark
-* target/result.py (PIN/PSK/KEY)
-* target/handshake.py <- tshark, cowpatty, pyrit, aircrack
+This file is a braindump of ideas to improve Wifite2 (or forward-looking to "Wifite3")
 
 ------------------------------------------------------
 
-### Dependency injection
+### Command-line Arguments
 
-* Initialize each dependency at startup or when first possible.
-* Pass dependencies to modules that require them.
-  * Modules that call aircrack expect aircrack.py
-  * Modules that print expect output.py
-* Unit test using mocked dependencies.
+Wifite is a 'Spray and Pray', 'Big Red Button' script. Wifite should not provide obscure options that only advanced users can understand. Advanced users can simply use Wifite's dependencies directly.
+
+--------------------------------
+
+Every option in Wifite's should either:
+
+1. Significantly affect how Wifite behaves (e.g. `pillage`, `5ghz`, '--no-wps', '--nodeauths')
+2. Or narrow down the list of targets (e.g. filtering --wps --wep --channel)
+3. Or set some flag required by certain hardware (packets per second)
+
+Any options that don't fall into the above buckets should be removed.
+
+--------------------------------
+
+Currently there are way too many command-line options:
+
+* 8 options to configure a timeout in seconds (wpat, wpadt, pixiet, pixiest, wpst, wept, weprs, weprc)
+  * I don't even know what these are or if they work anymore.
+* 5 options to configure Thresholds (WPS retry/fail/timeout, WEP pps/ivs)
+  * And the WPS options are NOT consistent between Bully & Reaver.
+* "Num deauths" etc
+
+For most of these, We can just set a sane default value to avoid the `--help` Wall-of-Text.
+
+--------------------------------
+
+The "Commands" (`cracked`, `crack`, `check`) should probably not start with `--`, e.g. `--crack` should be simply `crack`
+
+------------------------------------------------------
+
+### Native Python Implementations
+
+Some dependencies of Wifite (aircrack suite, tshark, etc) could be replaced with native Python implementations.
+
+*Scapy* allows listening to and inspecting packets, writing pcap files, and other features.
+
+There's ways to change wireless channels, enumerate wireless devices, send Deauth packets, etc. all within Python.
+
+We could still utilize libraries when it's more trouble than it's worth to port to Python, like some of aircrack (chopchop, packetforge-ng).
+
+And some native Python implementations might be cross-platform, which would allow...
+
+------------------------------------------------------
+
+### Non-Linux support (OSX & Windows)
+
+Some of Wifite's dependencies work on other OSes (airodump) but some don't (airmon).
+
+If it's possible to run these programs on Windows or OSX, Wifite should suporrt that.
+
+------------------------------------------------------
+
+### Backwards Compatibility
+
+* WIFITE: needs command-line parity with older versions (or does it?)
+* AIRODUMP: --output-format, --wps, and other flags are only in new versions of Airodump.
 
 ------------------------------------------------------
 
 ### WPS detection
+
+See https://github.com/derv82/wifite2/issues/62 for discussion.
 
 WASH
 * Wash does not seem to detect APs when given a .cap file
@@ -62,35 +89,67 @@ We can extract WPS networks' BSSID and WPS lock status:
 ```bash
 % tshark -r withwps-01.cap -n -Y "wps.wifi_protected_setup_state && wlan.da == ff:ff:ff:ff:ff:ff" -T fields -e wlan.ta -e wps.ap_setup_locked -E separator=,
 # Output:
-88:ad:43:d2:77:c8,
-18:d6:c7:6d:6b:18,
-f4:f2:6d:9e:34:25,
 fc:51:a4:1e:11:67,
 98:e7:f4:90:f1:12,0x00000001
 10:13:31:30:35:2c,
-60:a4:4c:6a:46:b0,
-c0:7c:d1:6f:a2:c8,
-f8:cf:c5:fb:a3:e2,
 ```
+
+--------------------------------
+
+### Directory structure
+
+Too modular in some places, not modular enough in others.
+
+Not "/py":
+
+* **aircrack/**
+  * `aircrack.py` <- process
+  * `airmon.py` <- process
+  * `airodump.py` <- process
+  * `aireplay.py` <- process
+* **attack/**
+  * `decloak.py` <- aireplay, airodump
+  * `wps-pin.py` <- reaver, bully
+  * `wps-pixie.py` <- reaver, bully
+  * `wpa.py` (handshake only)  <- aireplay, airodump
+  * `wep.py` (relay, chopchop) <- aireplay, airodump
+* `config.py`
+* **crack/**
+  * `crackwep.py` <- target, result, aireplay, aircrack
+  * `crackwpa.py` <- target, handshake, result, aircrack
+* **handshake/**
+  * `tshark.py` <- process
+  * `cowpatty.py` <- process
+  * `pyrit.py` <- process
+* `output.py` (color/printing) <- config
+* `process.py` <- config
+* `scan.py` (airodump output to target) <- config, target, airodump
+* **target/**
+  * `target.py` (ssid, pcap file) <- airodump, tshark
+  * `result.py` (PIN/PSK/KEY)
+  * `handshake.py` <- tshark, cowpatty, pyrit, aircrack
 
 ------------------------------------------------------
 
-### Backwards Compatibility
+### Dependency injection
 
-* WIFITE: needs command-line parity with older versions (or does it?)
-* AIRODUMP: --output-format, --wps, and other flags are newer
-* WASH: Broken? can we use AIRODUMP or something else?
+* Initialize each dependency at startup or when first possible.
+* Pass dependencies to modules that require them.
+  * Modules that call aircrack expect aircrack.py
+  * Modules that print expect output.py
+* Unit test using mocked dependencies.
 
 ------------------------------------------------------
 
 ### Dependencies
 
-AIRMON
+**AIRMON**
+
 * Detect interfaces in monitor mode.
 * Check if config interface name is found.
 * Enable or Disable monitor mode on a device.
 
-AIRODUMP
+**AIRODUMP**
 * Run as daemon (background thread)
 * Accept flags as input (--ivs, --wps, etc)
 * Construct a Target for all found APs
@@ -103,14 +162,14 @@ AIRODUMP
 * XXX: Reading STDOUT might not match what's in the Cap file...
 * XXX: But STDOUT gives us WPS and avoids WASH...
 
-TARGET
+**TARGET**
 * Constructed via passed-in CSV (airodump-ng --output-format=csv)
   * Needs info on the current AP (1 line) and ALL clients (n lines)
 * Keep track of BSSID, ESSID, Channel, AUTH, other attrs
 * Construct Clients of target
 * Start & return an Airodump Daemon (e.g. WEP needs --ivs flag)
 
-AIREPLAY
+**AIREPLAY**
 * Fakeauth
   * (Daemon) Start fakeauth process
   * Detect fakeauth status
@@ -119,9 +178,9 @@ AIREPLAY
   * Call aireplay-ng to deauth a Client BSSID+ESSID
   * Return status of deauth
 * Chopchop & Fragment
-  1. (Daemon) Start aireplay-ng --chopchop on Target
+  1. (Daemon) Start aireplay-ng --chopchop or --fragment on Target
   2. LOOP
-    1. Detect chopchop status (.xor or EXCEPTION)
+    1. Detect chopchop/fragment status (.xor or EXCEPTION)
     2. If .xor is created:
       * Call packetforge-ng to forge cap
       * Arpreplay on forged cap
@@ -131,13 +190,13 @@ AIREPLAY
   2. Detect status of replay (# of packets)
   3. If running time > threshold and/or packet velocity < threshold, EXCEPTION
 
-AIRCRACK
+**AIRCRACK**
 * Start aircrack-ng for WEP: Needs pcap file with IVS
 * Start aircrack-ng for WPA: Needs pcap file containig Handshake
-* Check status of aircrack-ng (`percenage`, `keys_tried`)
+* Check status of aircrack-ng (`percenage`, `keys-tried`)
 * Return cracked key
 
-CONFIG
+**CONFIG**
 * Key/value stores: 1) defaults and 2) customer-defined
 * Reads from command-line arguments (+input validation)
 * Keys to filter scanned targets by some attribute
@@ -156,17 +215,17 @@ CONFIG
 
 ------------------------------------------------------
 
-### Workflow
+### Process Workflow
 
-MAIN: Starts everything
+**MAIN**: Starts everything
 1. Parse command-line args, override defaults
 2. Start appropriate COMMAND (SCAN, ATTACK, CRACK, INFO)
 
-SCAN: (Scan + Attack + Result)
+**SCAN**: (Scan + Attack + Result)
 1. Find interface, start monitor mode (airmon.py)
 2. LOOP
    1. Get list of filtered targets (airodump.py)
-      * Option: Read from CSV every second or parse airodump STDOUT
+     * Option: Read from CSV every second or parse airodump STDOUT
    2. Decloak SSIDs if possible (decloak.py)
    3. Sort targets; Prefer WEP over WPS over WPA(1+ clients) over WPA(noclient)
    4. Print targets to screen (ESSID, Channel, Power, WPS, # of clients)
@@ -179,10 +238,10 @@ SCAN: (Scan + Attack + Result)
    3. WPA-only: Start cracking Handshake
    4. If cracked, test credentials by connecting to the router (?).
 
-ATTACK (ALL)
+**ATTACK** (All types)
 Returns cracked target information or throws exception
 
-ATTACK (WEP)
+**ATTACK WEP**
 0. Expects: Target
 1. Start Airodump to capture IVS from the AP (airodump)
 2. LOOP
@@ -194,7 +253,7 @@ ATTACK (WEP)
    4. If aireplay/others and IVS has not changed in N seconds, restart attack.
    5. If running time > threshold, EXCEPTION
 
-ATTACK (WPA): Returns cracked Target or Handshake of Target
+**ATTACK WPA**: Returns cracked Target or Handshake of Target
 0. Expects: Target
 1. Start Airodump to capture PCAP from the Target AP
 2. LOOP
@@ -208,10 +267,10 @@ ATTACK (WPA): Returns cracked Target or Handshake of Target
    1. If successful, add PSK to target and return
 4. If not cracking or crack is unsuccessful, mark PSK as "Handshake" and return
 
-ATTACK-WPS:
+**ATTACK WPS**
 0. Expects: Target
 1. For each attack (PIN and/or Pixie-Dust based on CONFIG):
-   1. (Daemon) Start Reaver (PIN/Pixie-Dust)
+   1. (Daemon) Start Reaver/Bully (PIN/Pixie-Dust)
    2. LOOP
       1. Print Pixie status
       2. If Pixie is successful, add PSK+PIN to Target and return
@@ -219,7 +278,7 @@ ATTACK-WPS:
       4. If Pixie is locked out == CONFIG, EXCEPTION
       5. If running time > threshold, EXCEPTION
 
-CRACK (WEP)
+**CRACK WEP**
 0. Expects: String pcap file containing IVS
 2. FOR EACH Aircrack option:
    1. (Daemon) Start Aircrack
@@ -228,7 +287,7 @@ CRACK (WEP)
       2. If Aircrack is successful, print result
       3. If unsuccessful, EXCEPTION
 
-CRACK (WPA)
+**CRACK WPA**
 0. Expects: String pcap file containing Handshake (optional: BSSID/ESSID)
 1. Select Cracking option (Aircrack, Cowpatty, Pyrit)
 2. (Daemon) Start attack
@@ -237,8 +296,9 @@ CRACK (WPA)
    2. If successful, print result
    3. If unsuccessful, EXCEPTION
 
-INFO:
+**INFO**
 * Print list of handshake files with ESSIDs, Dates, etc.
+  * Show options to `--crack` handshakes (or execute those commands directly)
 * Print list of cracked Targets (including WEP/WPA/WPS key)
 
 ------------------------------------------------------
