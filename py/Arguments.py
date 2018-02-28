@@ -52,7 +52,7 @@ class Arguments(object):
             dest='target_essid',
             metavar='[essid]',
             type=str,
-            help=Color.s('ESSID (name) of access point to attack'))
+            help=Color.s('ESSID (e.g. {GR}NETGEAR07{W}) of access point to attack'))
         glob.add_argument('--essid', help=argparse.SUPPRESS, action='store', dest='target_essid', type=str)
         glob.add_argument('-v',
             '--verbose',
@@ -225,18 +225,18 @@ class Arguments(object):
             dest='wps_filter',
             help=Color.s('Filter to display only WPS-enabled networks'))
         wps.add_argument('-wps', help=argparse.SUPPRESS, action='store_true', dest='wps_filter')
-        wps.add_argument('--no-wps',
-            action='store_true',
-            dest='no_wps',
-            help=Color.s('{O}NEVER{W} use WPS attacks (Pixie-Dust, PIN) (default: {G}off{W})'))
-        wps.add_argument('--wps-only',
-            action='store_true',
-            dest='wps_only',
-            help=Color.s('Only perform WPS attacks on WPA networks (default: {G}off{W})'))
         wps.add_argument('--bully',
             action='store_true',
             dest='use_bully',
             help=Color.s('Use {C}bully{W} instead of {C}reaver{W} for WPS attacks (default: {G}reaver{W})'))
+        wps.add_argument('--no-wps',
+            action='store_true',
+            dest='no_wps',
+            help=Color.s('{O}NEVER{W} use WPS attacks (Pixie-Dust, PIN) on WPA networks (default: {G}off{W})'))
+        wps.add_argument('--wps-only',
+            action='store_true',
+            dest='wps_only',
+            help=Color.s('{G}ALWAYS{W} use WPS attacks (Pixie-Dust, PIN) on WPA networks (default: {G}off{W})'))
         wps.add_argument('--pixie',
             action='store_true',
             dest='pixie_only',
