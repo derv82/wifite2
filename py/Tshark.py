@@ -51,8 +51,9 @@ class Tshark(object):
             if ',' not in line:
                 continue
             bssid, locked = line.split(',')
-            # TODO: Ignore if WPS is locked?
-            bssids.add(bssid.upper())
+            # Ignore if WPS is locked?
+            if '1' not in locked:
+                bssids.add(bssid.upper())
 
         for t in targets:
             t.wps = t.bssid.upper() in bssids

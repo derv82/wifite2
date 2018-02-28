@@ -188,6 +188,10 @@ class Arguments(object):
             help=Color.s('Time to wait before failing WPA attack (default: {G}%d sec{W})')
                 % Configuration.wpa_attack_timeout)
         wpa.add_argument('-wpat', help=argparse.SUPPRESS, action='store', dest='wpa_attack_timeout', type=int)
+        wpa.add_argument('--new-hs',
+            action='store_true',
+            dest='ignore_old_handshakes',
+            help=Color.s('Captures new handshakes, ignores existing handshakes in ./hs (default: {G}off{W})'))
         wpa.add_argument('--hs-dir',
             action='store',
             dest='wpa_handshake_dir',

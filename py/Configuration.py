@@ -188,6 +188,9 @@ class Configuration(object):
         if args.wpa_attack_timeout:
             Configuration.wpa_attack_timeout = args.wpa_attack_timeout
             Color.pl('{+} {C}option:{W} will stop WPA handshake capture after {G}%d seconds{W}' % args.wpa_attack_timeout)
+        if args.ignore_old_handshakes:
+            Configuration.ignore_old_handshakes = True
+            Color.pl("{+} {C}option:{W} will {O}ignore{W} existing handshakes (force capture)")
         if args.wpa_handshake_dir:
             Configuration.wpa_handshake_dir = args.wpa_handshake_dir
             Color.pl('{+} {C}option:{W} will store handshakes to {G}%s{W}' % args.wpa_handshake_dir)
