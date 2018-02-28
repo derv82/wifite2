@@ -86,7 +86,7 @@ class Arguments(object):
         wep.add_argument('--wep',
             action='store_true',
             dest='wep_filter',
-            help=Color.s('Filter to display WEP-encrypted networks (default: {G}off{W})'))
+            help=Color.s('Filter to display only WEP-encrypted networks (default: {G}off{W})'))
         wep.add_argument('-wep', help=argparse.SUPPRESS, action='store_true', dest='wep_filter')
         wep.add_argument('--require-fakeauth',
             action='store_true',
@@ -170,7 +170,7 @@ class Arguments(object):
         wpa.add_argument('--wpa',
             action='store_true',
             dest='wpa_filter',
-            help=Color.s('Filter to display WPA-encrypted networks (includes WPS)'))
+            help=Color.s('Filter to display only WPA-encrypted networks (includes WPS)'))
         wpa.add_argument('-wpa', help=argparse.SUPPRESS, action='store_true', dest='wpa_filter')
         wpa.add_argument('--wpadt',
             action='store',
@@ -219,20 +219,24 @@ class Arguments(object):
         wps.add_argument('--wps',
             action='store_true',
             dest='wps_filter',
-            help=Color.s('Filter to display WPS-enabled networks'))
+            help=Color.s('Filter to display only WPS-enabled networks'))
         wps.add_argument('-wps', help=argparse.SUPPRESS, action='store_true', dest='wps_filter')
-        wps.add_argument('--reaver',
+        wps.add_argument('--no-wps',
             action='store_true',
-            dest='reaver_only',
-            help=Color.s('ONLY use Reaver on WPS networks (default: {G}off{W})'))
-        wps.add_argument('--no-reaver',
+            dest='no_wps',
+            help=Color.s('{O}NEVER{W} use WPS attacks (Pixie-Dust, PIN) (default: {G}off{W})'))
+        wps.add_argument('--wps-only',
             action='store_true',
-            dest='no_reaver',
-            help=Color.s('Do NOT use Reaver on WPS networks (default: {G}off{W})'))
+            dest='wps_only',
+            help=Color.s('Only perform WPS attacks on WPA networks (default: {G}off{W})'))
+        wps.add_argument('--bully',
+            action='store_true',
+            dest='use_bully',
+            help=Color.s('Use {C}bully{W} instead of {C}reaver{W} for WPS attacks (default: {G}reaver{W})'))
         wps.add_argument('--pixie',
             action='store_true',
             dest='pixie_only',
-            help=Color.s('Only use the WPS Pixie-Dust attack (default: {G}off{W})'))
+            help=Color.s('Only use the WPS Pixie-Dust attack (no PIN) (default: {G}off{W})'))
         wps.add_argument('--pixiet',
             action='store',
             dest='wps_pixie_timeout',
@@ -268,7 +272,7 @@ class Arguments(object):
             dest='wps_fail_threshold',
             metavar='[fails]',
             type=int,
-            help=Color.s('Maximum number of Reaver Failures before failing attack (default: {G}%d{W})')
+            help=Color.s('Maximum number of WPS Failures before failing attack (default: {G}%d{W})')
                 % Configuration.wps_fail_threshold)
         wps.add_argument('-wpsmf', help=argparse.SUPPRESS, action='store', dest='wps_fail_threshold', type=int)
         wps.add_argument('--wpsmt',

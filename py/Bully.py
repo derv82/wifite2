@@ -11,6 +11,8 @@ from Configuration import Configuration
 import os, time, re
 from threading import Thread
 
+# TODO: Support Pixie/PIN settings in Configuration
+
 class Bully(Attack):
     def __init__(self, target, pixie=False):
         super(Bully, self).__init__(target)

@@ -78,11 +78,12 @@ class Configuration(object):
 
         # WPS variables
         Configuration.wps_filter  = False  # Only attack WPS networks
-        Configuration.no_reaver   = False  # Do not use Reaver on WPS networks
-        Configuration.reaver      = False  # ONLY use Reaver on WPS networks
+        Configuration.no_wps      = False  # Do not use WPS attacks (Pixie-Dust & PIN attacks)
+        Configuration.wps_only    = False  # ONLY use WPS attacks on non-WEP networks
+        Configuration.use_bully   = False  # Use bully instead of reaver
         Configuration.pixie_only  = False  # ONLY use Pixie-Dust attack on WPS
-        Configuration.wps_pin_timeout = 600        # Seconds to wait for PIN before reaver fails
-        Configuration.wps_pixie_timeout = 300      # Seconds to wait for PIN before pixie fails
+        Configuration.wps_pin_timeout = 600        # Seconds to wait for PIN before WPS PIN attack fails
+        Configuration.wps_pixie_timeout = 300      # Seconds to wait for PIN before WPS Pixie attack fails
         Configuration.wps_pixie_step_timeout = 30  # Seconds to wait for a step to change before pixie fails
         Configuration.wps_max_retries = 20 # Retries before failing
         Configuration.wps_fail_threshold = 30  # Max number of failures
@@ -197,12 +198,15 @@ class Configuration(object):
         # WPS
         if args.wps_filter:
             Configuration.wps_filter  = args.wps_filter
-        if args.reaver_only:
-            Configuration.reaver_only = args.reaver_only
-            Color.pl('{+} {C}option:{W} will *only* use {G}reaver{W} to attack WPA targets')
-        if args.no_reaver:
-            Configuration.no_reaver   = args.no_reaver
-            Color.pl('{+} {C}option:{W} will *never* use {G}reaver{W} to attack WPA targets')
+        if args.wps_only:
+            Configuration.wps_only    = args.wps_only
+            Color.pl('{+} {C}option:{W} will *only* attack non-WEP networks with {G}WPS attacks{W} (no handshake capture)')
+        if args.no_wps:
+            Configuration.no_wps   = args.no_wps
+            Color.pl('{+} {C}option:{W} will {O}never{W} use {C}WPS attacks{W} (Pixie-Dust/PIN) on targets')
+        if args.use_bully:
+            Configuration.use_bully   = args.use_bully
+            Color.pl('{+} {C}option:{W} use {C}bully{W} instead of {C}reaver{W} for WPS Attacks')
         if args.pixie_only:
             Configuration.pixie_only  = args.pixie_only
             Color.pl('{+} {C}option:{W} will only use {G}WPS pixie-dust attack{W} on WPS targets')

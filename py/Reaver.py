@@ -16,32 +16,6 @@ class Reaver(Attack):
         self.success = False
         self.crack_result = None
 
-    def run(self):
-        ''' Run all WPS-related attacks '''
-
-        # Drop out if user specified to not use Reaver
-        if Configuration.no_reaver:
-            self.success = False
-            return self.success
-
-        # Run Pixie-Dust attack
-        if self.is_pixiedust_supported():
-            if self.run_pixiedust_attack():
-                # Pixie-Dust attack succeeded. We're done.
-                self.success = True
-                return self.success
-        else:
-            Color.pl("{!} {R}your version of 'reaver' does not support the {O}WPS pixie-dust attack{W}")
-
-        if Configuration.pixie_only:
-            Color.pl('\r{!} {O}--pixie{R} set, ignoring WPS-PIN attack{W}')
-            self.success = False
-        else:
-            # Run WPS-PIN attack
-            self.success = self.run_wps_pin_attack()
-        return self.success
-
-
     def is_pixiedust_supported(self):
         ''' Checks if 'reaver' supports WPS Pixie-Dust attack '''
         output = Process(['reaver', '-h']).stderr()
