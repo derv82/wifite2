@@ -54,7 +54,7 @@ class AttackWPA(Attack):
         if key is None:
             self.success = False
         else:
-            self.crack_result = CrackResultWPA(bssid, essid, handshake.capfile, key)
+            self.crack_result = CrackResultWPA(handshake.bssid, handshake.essid, handshake.capfile, key)
             self.crack_result.dump()
             self.success = True
         return self.success
@@ -75,11 +75,10 @@ class AttackWPA(Attack):
 
             self.clients = []
 
-            bssid = airodump_target.bssid
-            essid = airodump_target.essid if airodump_target.essid_known else None
-
             # Try to load existing handshake
             if Configuration.ignore_old_handshakes == False:
+                bssid = airodump_target.bssid
+                essid = airodump_target.essid if airodump_target.essid_known else None
                 handshake = self.load_handshake(bssid=bssid, essid=essid)
                 if handshake:
                     Color.clear_entire_line()
@@ -300,4 +299,3 @@ if __name__ == '__main__':
     target = Target(fields)
     wpa = AttackWPA(target)
     wpa.run()
-
