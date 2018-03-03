@@ -78,7 +78,7 @@ class Target(object):
         if bssid_multicast.match(self.bssid):
             raise Exception("Ignoring target with Multicast BSSID (%s)" % self.bssid)
 
-    def __str__(self):
+    def to_str(self, show_bssid=False):
         '''
             *Colored* string representation of this Target.
             Specifically formatted for the "scanning" table view.
@@ -98,6 +98,11 @@ class Target(object):
         else:
             # Unknown ESSID
             essid = Color.s("{O}%s" % essid)
+
+        if show_bssid:
+            bssid = Color.s('{O}%s  ' % self.bssid)
+        else:
+            bssid = ''
 
         channel_color = "{G}"
         if int(self.channel) > 14:
@@ -131,17 +136,10 @@ class Target(object):
         if len(self.clients) > 0:
             clients = Color.s('{G}  ' + str(len(self.clients)))
 
-        result = '%s  %s  %s  %s  %s  %s' % (essid, channel,
-                                        encryption, power,
-                                        wps, clients)
+        result = '%s  %s%s  %s  %s  %s  %s' % (
+                essid, bssid, channel, encryption, power, wps, clients)
         result += Color.s("{W}")
         return result
-
-    @staticmethod
-    def print_header():
-        ''' Prints header rows for "scanning" table view '''
-        print '   NUM                     ESSID   CH  ENCR  POWER  WPS?  CLIENT'
-        print '   --- -------------------------  ---  ----  -----  ----  ------'
 
 
 if __name__ == '__main__':
@@ -149,6 +147,5 @@ if __name__ == '__main__':
     t = Target(fields)
     t.clients.append("asdf")
     t.clients.append("asdf")
-    Target.print_header()
-    Color.pl('   {G}%s %s' % ('1'.rjust(3), t))
+    print t.to_str()
 

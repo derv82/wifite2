@@ -37,6 +37,7 @@ class Configuration(object):
         Configuration.target_essid = None # User-defined AP name
         Configuration.target_bssid = None # User-defined AP BSSID
         Configuration.five_ghz = False # Scan 5Ghz channels
+        Configuration.show_bssids = False # Show BSSIDs in targets list
         Configuration.random_mac = False # Should generate a random Mac address at startup.
         Configuration.no_deauth = False # Deauth hidden networks & WPA handshake targets
         Configuration.num_deauths = 1 # Number of deauth packets to send to each target.
@@ -133,6 +134,9 @@ class Configuration(object):
         if args.five_ghz == True:
             Configuration.five_ghz = True
             Color.pl('{+} {C}option:{W} including {G}5Ghz networks{W} in scans')
+        if args.show_bssids == True:
+            Configuration.show_bssids = True
+            Color.pl('{+} {C}option:{W} showing {G}bssids{W} of targets during scan')
         if args.no_deauth == True:
             Configuration.no_deauth = True
             Color.pl('{+} {C}option:{W} will {R}not{W} {O}deauth{W} clients during scans or captures')

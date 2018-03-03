@@ -132,10 +132,25 @@ class Scanner(object):
         # Overwrite the current line
         Color.p('\r')
 
-        Target.print_header()
+        # First row: columns
+        Color.p('   NUM')
+        Color.p('                      ESSID')
+        if Configuration.show_bssids:
+            Color.p('              BSSID')
+        Color.pl('   CH  ENCR  POWER  WPS?  CLIENT')
+
+        # Second row: separator
+        Color.p('   ---')
+        Color.p('  -------------------------')
+        if Configuration.show_bssids:
+            Color.p('  -----------------')
+        Color.pl('  ---  ----  -----  ----  ------')
+
+        # Remaining rows: targets
         for idx, target in enumerate(self.targets, start=1):
             Color.clear_entire_line()
-            Color.pl('   {G}%s %s' % (str(idx).rjust(3), target))
+            Color.p('   {G}%s  ' % str(idx).rjust(3))
+            Color.pl(target.to_str(Configuration.show_bssids))
 
     @staticmethod
     def get_terminal_height():

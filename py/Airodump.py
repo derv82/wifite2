@@ -299,9 +299,8 @@ if __name__ == '__main__':
         from Color import Color
 
         targets = airodump.get_targets()
-        Target.print_header()
         for idx, target in enumerate(targets, start=1):
-            Color.pl('   {G}%s %s' % (str(idx).rjust(3), target))
+            Color.pl('   {G}%s %s' % (str(idx).rjust(3), target.to_str()))
 
     Configuration.delete_temp()
 

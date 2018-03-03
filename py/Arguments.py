@@ -54,6 +54,10 @@ class Arguments(object):
             type=str,
             help=Color.s('ESSID (e.g. {GR}NETGEAR07{W}) of access point to attack'))
         glob.add_argument('--essid', help=argparse.SUPPRESS, action='store', dest='target_essid', type=str)
+        glob.add_argument('--showb',
+            action='store_true',
+            dest='show_bssids',
+            help=Color.s('Show BSSIDs of targets while scanning'))
         glob.add_argument('-v',
             '--verbose',
             action='count',
