@@ -10,6 +10,7 @@ from py.AttackWPS import AttackWPS
 from py.CrackResult import CrackResult
 from py.Handshake import Handshake
 from py.CrackHandshake import CrackHandshake
+from py.Process import Process
 
 from json import loads
 import os
@@ -25,6 +26,8 @@ class Wifite(object):
             Color.pl('{!} {O}re-run as: sudo ./Wifite.py{W}')
             Configuration.exit_gracefully(0)
 
+        self.dependency_check()
+
         Configuration.initialize(load_interface=False)
 
         if Configuration.show_cracked:
@@ -37,6 +40,31 @@ class Wifite(object):
         else:
             Configuration.get_interface()
             self.run()
+
+    def dependency_check(self):
+        ''' Check that required programs are installed '''
+        required_apps = ['airmon-ng', 'iwconfig', 'ifconfig', 'aircrack-ng', 'aireplay-ng', 'airodump-ng', 'tshark']
+        optional_apps = ['packetforge-ng', 'reaver', 'bully', 'cowpatty', 'pyrit', 'stdbuf', 'macchanger']
+        missing_required = False
+        missing_optional = False
+
+        for app in required_apps:
+            if not Process.exists(app):
+                missing_required = True
+                Color.pl('{!} {R}error: required app {O}%s{R} was not found' % app)
+
+        for app in optional_apps:
+            if not Process.exists(app):
+                missing_optional = True
+                Color.pl('{!} {O}warning: recommended app {R}%s{O} was not found' % app)
+
+        if missing_required:
+            Color.pl('{!} {R}required app(s) were not found, exiting.{W}')
+            exit(-1)
+
+        if missing_optional:
+            Color.pl('{!} {O}recommended app(s) were not found')
+            Color.pl('{!} {O}wifite may not work as expected{W}')
 
     def display_cracked(self):
         ''' Show cracked targets from cracked.txt '''
