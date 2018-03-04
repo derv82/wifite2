@@ -65,36 +65,36 @@ If it's possible to run these programs on Windows or OSX, Wifite should suporrt 
 
 ------------------------------------------------------
 
-### WPS detection
+### WPS Attacks
 
-See https://github.com/derv82/wifite2/issues/62 for discussion.
+Wifite's Pixie-Dust attack status output differs between Reaver & Bully. And the command line switches are... not even used?
 
-WASH
-* Wash does not seem to detect APs when given a .cap file
-* Wash can scan, but is slow and does not provide as much info as airodump
-* We could run Wash as a daemon on the same channel as airodump...
-  * Channel-hopping might interfere with each-other?
-  * Could we tell wash to channel hop & tell airodump-ng to not channelhop? Vice versa?
+Ideally for Pixie-Dust, we'd have:
 
-AIRODUMP
-* Airodump-ng detects WPS, but does not output to CSV
-* Airodump-ng WPS detection requires parsing airodump's STDOUT
+1. Switch to set bully/reaver timeout
+2. Identical counters between bully/reaver (failures, timeouts, lockouts)
+  * I don't think users should be able to set failure/timeout thresholds (no switches).
+3. Identical statuses between bully/reaver.
+  * Errors: "WPSFail", "Timeout", "NoAssoc", etc
+  * Statuses: "Waiting for target", "Trying PIN", "Sending M2 message", "Running pixiewps", etc.
+  * "Step X/Y" is nice, but not entirely accurate.
+  * It's weird when we go from (6/8) to (5/8) without explanation. And the first 4 are usually not displayed.
+3. Countdown timer until attack is aborted (e.g. 5min)
+4. Countdown timer on "step timeout" (time since last status changed, e.g. 30s)
 
-TSHARK
-* DIY: Extract Beacon frames from the .cap file with WPS flags...
-* `tshark -r f.cap -R "wps.primary_device_type.category == 6" -n -2`
+Order of statuses:
+1. Waiting for beacon
+2. Associating with target
+3. Trying PIN / EAPOL start / identity response / M1,M2 (M3,M4)
+4. Running pixiewps
+5. Cracked or Failed
 
-We can extract WPS networks' BSSID and WPS lock status:
+And as for PIN cracking.. um.. Not even sure this should be an option in Wifite TBH.
+PIN cracking takes days and most APs auto-lock after 3 attempts.
+Multi-day (possibly multi-month) attacks aren't a good fit for Wifite.
+Users with that kind of dedication can run bully/reaver themselves.
 
-```bash
-% tshark -r withwps-01.cap -n -Y "wps.wifi_protected_setup_state && wlan.da == ff:ff:ff:ff:ff:ff" -T fields -e wlan.ta -e wps.ap_setup_locked -E separator=,
-# Output:
-fc:51:a4:1e:11:67,
-98:e7:f4:90:f1:12,0x00000001
-10:13:31:30:35:2c,
-```
-
---------------------------------
+------------------------------------------------------
 
 ### Directory structure
 

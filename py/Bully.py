@@ -7,6 +7,7 @@ from Color import Color
 from Timer import Timer
 from Process import Process
 from Configuration import Configuration
+from CrackResultWPS import CrackResultWPS
 
 import os, time, re
 from threading import Thread
@@ -37,14 +38,11 @@ class Bully(Attack):
             "--force",
             "-v", "4"
         ]
-        #self.cmd.extend(["-p", "80246212", "--force", "--bruteforce"])
         if self.pixie:
             self.cmd.append("--pixiewps")
         self.cmd.append(Configuration.interface)
 
         self.bully_proc = None
-        self.run()
-        self.stop()
 
     def attack_type(self):
         return "Pixie-Dust" if self.pixie else "PIN Attack"
@@ -123,13 +121,13 @@ class Bully(Attack):
 
     def parse_line(self, line):
         # [+] Got beacon for 'Green House 5G' (30:85:a9:39:d2:1c)
-        got_beacon = re.compile(r".*Got beacon for '(.*)' \((.*)\)").match(line)
+        got_beacon = re.search(r".*Got beacon for '(.*)' \((.*)\)", line)
         if got_beacon:
             # group(1)=ESSID, group(2)=BSSID
             self.state = "Got beacon"
 
         # [+] Last State = 'NoAssoc'   Next pin '48855501'
-        last_state = re.compile(r".*Last State = '(.*)'\s*Next pin '(.*)'").match(line)
+        last_state = re.search(r".*Last State = '(.*)'\s*Next pin '(.*)'", line)
         if last_state:
             # group(1)=result, group(2)=PIN
             result = "Start" # last_state.group(1)
@@ -138,7 +136,7 @@ class Bully(Attack):
 
         # [+] Rx(  M5  ) = 'Pin1Bad'   Next pin '35565505'
         # [+] Tx( Auth ) = 'Timeout'   Next pin '80241263'
-        rx_m = re.compile(r".*[RT]x\(\s*(.*)\s*\) = '(.*)'\s*Next pin '(.*)'").match(line)
+        rx_m = re.search(r".*[RT]x\(\s*(.*)\s*\) = '(.*)'\s*Next pin '(.*)'", line)
         if rx_m:
             # group(1)=M3/M5, group(2)=result, group(3)=PIN
             self.m_state = rx_m.group(1)
@@ -161,48 +159,54 @@ class Bully(Attack):
             self.state = "Trying PIN:{C}%s{W} (%s)" % (pin, result)
 
         # [!] WPS lockout reported, sleeping for 43 seconds ...
-        lock_out = re.compile(r".*WPS lockout reported, sleeping for (\d+) seconds").match(line)
+        lock_out = re.search(r".*WPS lockout reported, sleeping for (\d+) seconds", line)
         if lock_out:
             sleeping = lock_out.group(1)
             self.state = "{R}WPS Lock-out: {O}Waiting %s seconds{W}" % sleeping
             self.consecutive_lockouts += 1
 
         # [Pixie-Dust] WPS pin not found
-        pixie_re = re.compile(r".*\[Pixie-Dust\] WPS pin not found").match(line)
+        pixie_re = re.search(r".*\[Pixie-Dust\] WPS pin not found", line)
         if pixie_re:
             self.state = "{R}Failed{W}"
 
 
         # [+] Running pixiewps with the information, wait ...
-        pixie_re = re.compile(r".*Running pixiewps with the information").match(line)
+        pixie_re = re.search(r".*Running pixiewps with the information", line)
         if pixie_re:
             self.state = "{G}Running pixiewps...{W}"
 
         # [*] Pin is '80246213', key is 'password'
-        pin_key_re = re.compile(r"^\s*Pin is '(\d*)', key is '(.*)'\s*$").match(line)
+        # [*] Pin is '11867722', key is '9a6f7997'
+        pin_key_re = re.search(r"Pin is '(\d*)', key is '(.*)'", line)
         if pin_key_re:
             self.cracked_pin = pin_key_re.group(1)
             self.cracked_key = pin_key_re.group(2)
 
         #        PIN   : '80246213'
-        pin_re = re.compile(r"^\s*PIN\s*:\s*'(.*)'\s*$").match(line)
-        if pin_re: self.cracked_pin = pin_re.group(1)
+        pin_re = re.search(r"^\s*PIN\s*:\s*'(.*)'\s*$", line)
+        if pin_re:
+            self.cracked_pin = pin_re.group(1)
 
         #        KEY   : 'password'
-        key_re = re.compile(r"^\s*KEY\s*:\s*'(.*)'\s*$").match(line)
-        if key_re: self.cracked_key = key_re.group(1)
+        key_re = re.search(r"^\s*KEY\s*:\s*'(.*)'\s*$", line)
+        if key_re:
+            self.cracked_key = key_re.group(1)
 
-        #warn_re = re.compile(r"\[\!\]\s*(.*)$").match(line)
+        #warn_re = re.search(r"\[\!\]\s*(.*)$", line)
         #if warn_re: self.state = "{O}%s{W}" % warn_re.group(1)
 
         if not self.crack_result and self.cracked_pin and self.cracked_key:
             Color.clear_entire_line()
-            Color.pattack("WPS", self.target, "Pixie-Dust", "{G}successfully cracked WPS PIN and PSK{W}\n")
+            Color.pattack("WPS", self.target, "Pixie-Dust", "{G}successfully cracked WPS PIN and PSK{W}")
+            Color.pl("")
             self.crack_result = CrackResultWPS(
-                    airodump_target.essid,
-                    airodump_target.bssid,
+                    self.target.bssid,
+                    self.target.essid,
                     self.cracked_pin,
                     self.cracked_key)
+            Color.pl("")
+            self.crack_result.dump()
             return True
         else:
             return False
@@ -213,3 +217,12 @@ class Bully(Attack):
 
     def __del__(self):
         self.stop()
+
+if __name__ == '__main__':
+    stdout = " [*] Pin is '11867722', key is '9a6f7997'"
+    Configuration.initialize(False)
+    from Target import Target
+    fields = 'AA:BB:CC:DD:EE:FF,2015-05-27 19:28:44,2015-05-27 19:28:46,1,54,WPA2,CCMP TKIP,PSK,-58,2,0,0.0.0.0,9,HOME-ABCD,'.split(',')
+    target = Target(fields)
+    b = Bully(target)
+    b.parse_line(stdout)

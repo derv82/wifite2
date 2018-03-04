@@ -16,12 +16,16 @@ class CrackResultWPS(CrackResult):
         super(CrackResultWPS, self).__init__()
 
     def dump(self):
-        if self.essid:
+        if self.essid is not None:
             Color.pl('{+} %s: {C}%s{W}' % (      'ESSID'.rjust(12), self.essid))
+        if self.psk is None:
+            psk = '{O}N/A{W}'
+        else:
+            psk = '{G}%s{W}' % self.psk
         Color.pl('{+} %s: {C}%s{W}'     % (      'BSSID'.rjust(12), self.bssid))
         Color.pl('{+} %s: {C}WPA{W} ({C}WPS{W})' % 'Encryption'.rjust(12))
         Color.pl('{+} %s: {G}%s{W}'     % (     'WPS PIN'.rjust(12), self.pin))
-        Color.pl('{+} %s: {G}%s{W}'     % ('PSK/Password'.rjust(12), self.psk))
+        Color.pl('{+} %s: {G}%s{W}'     % ('PSK/Password'.rjust(12), psk))
 
     def to_dict(self):
         return {

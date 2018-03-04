@@ -2,11 +2,8 @@
 # -*- coding: utf-8 -*-
 
 from Attack import Attack
-from Airodump import Airodump
 from Color import Color
 from Configuration import Configuration
-from CrackResultWPS import CrackResultWPS
-from Process import Process
 from Bully import Bully
 from Reaver import Reaver
 
@@ -29,6 +26,8 @@ class AttackWPS(Attack):
         if Configuration.use_bully:
             # Bully: Pixie-dust
             bully = Bully(self.target, pixie=True)
+            bully.run()
+            bully.stop()
             if bully.crack_result is not None:
                 self.crack_result = bully.crack_result
                 return True
@@ -51,6 +50,8 @@ class AttackWPS(Attack):
         if Configuration.use_bully:
             # Bully: PIN guessing
             bully = Bully(self.target, pixie=False)
+            bully.run()
+            bully.stop()
             if bully.crack_result is not None:
                 self.crack_result = bully.crack_result
                 return True
