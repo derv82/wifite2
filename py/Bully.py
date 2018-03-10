@@ -12,10 +12,8 @@ from CrackResultWPS import CrackResultWPS
 import os, time, re
 from threading import Thread
 
-# TODO: Support Pixie/PIN settings in Configuration
-
 class Bully(Attack):
-    def __init__(self, target, pixie=False):
+    def __init__(self, target):
         super(Bully, self).__init__(target)
         self.consecutive_lockouts = self.consecutive_timeouts = self.consecutive_noassoc = 0
         self.pins_attempted = 0
@@ -27,7 +25,6 @@ class Bully(Attack):
         self.crack_result = None
 
         self.target = target
-        self.pixie = pixie
 
         self.cmd = [
             "stdbuf", "-o0", # No buffer. See https://stackoverflow.com/a/40453613/7510292
@@ -36,16 +33,15 @@ class Bully(Attack):
             "--channel", target.channel,
             "--detectlock", # Detect WPS lockouts unreported by AP
             "--force",
-            "-v", "4"
+            "-v", "4",
+            "--pixiewps",
+            Configuration.interface
         ]
-        if self.pixie:
-            self.cmd.append("--pixiewps")
-        self.cmd.append(Configuration.interface)
 
         self.bully_proc = None
 
     def attack_type(self):
-        return "Pixie-Dust" if self.pixie else "PIN Attack"
+        return "Pixie-Dust"
 
     def run(self):
         with Airodump(channel=self.target.channel,

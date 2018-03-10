@@ -82,11 +82,8 @@ class Configuration(object):
         Configuration.no_wps      = False  # Do not use WPS attacks (Pixie-Dust & PIN attacks)
         Configuration.wps_only    = False  # ONLY use WPS attacks on non-WEP networks
         Configuration.use_bully   = False  # Use bully instead of reaver
-        Configuration.pixie_only  = False  # ONLY use Pixie-Dust attack on WPS
-        Configuration.wps_pin_timeout = 600        # Seconds to wait for PIN before WPS PIN attack fails
         Configuration.wps_pixie_timeout = 300      # Seconds to wait for PIN before WPS Pixie attack fails
         Configuration.wps_pixie_step_timeout = 30  # Seconds to wait for a step to change before pixie fails
-        Configuration.wps_max_retries = 20 # Retries before failing
         Configuration.wps_fail_threshold = 30  # Max number of failures
         Configuration.wps_timeout_threshold = 30  # Max number of timeouts
         Configuration.wps_skip_rate_limit = True # Skip rate-limited WPS APs
@@ -214,21 +211,12 @@ class Configuration(object):
         if args.use_bully:
             Configuration.use_bully   = args.use_bully
             Color.pl('{+} {C}option:{W} use {C}bully{W} instead of {C}reaver{W} for WPS Attacks')
-        if args.pixie_only:
-            Configuration.pixie_only  = args.pixie_only
-            Color.pl('{+} {C}option:{W} will only use {G}WPS pixie-dust attack{W} on WPS targets')
         if args.wps_pixie_timeout:
             Configuration.wps_pixie_timeout = args.wps_pixie_timeout
             Color.pl('{+} {C}option:{W} WPS pixie-dust attack will timeout after {G}%d seconds{W}' % args.wps_pixie_timeout)
         if args.wps_pixie_step_timeout:
             Configuration.wps_pixie_step_timeout = args.wps_pixie_step_timeout
             Color.pl('{+} {C}option:{W} Any step in the pixie-dust attack will timeout after {G}%d seconds{W}' % args.wps_pixie_step_timeout)
-        if args.wps_pin_timeout:
-            Configuration.wps_pin_timeout = args.wps_pin_timeout
-            Color.pl('{+} {C}option:{W} WPS PIN attack will timeout after {G}%d seconds{W}' % args.wps_pin_timeout)
-        if args.wps_max_retries:
-            Configuration.wps_max_retries = args.wps_max_retries
-            Color.pl('{+} {C}option:{W} will stop WPS attack after {G}%d retries{W}' % args.wps_max_retries)
         if args.wps_fail_threshold:
             Configuration.wps_fail_threshold = args.wps_fail_threshold
             Color.pl('{+} {C}option:{W} will stop WPS attack after {G}%d failures{W}' % args.wps_fail_threshold)

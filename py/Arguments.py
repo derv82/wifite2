@@ -236,12 +236,15 @@ class Arguments(object):
         wps.add_argument('--no-wps',
             action='store_true',
             dest='no_wps',
-            help=Color.s('{O}NEVER{W} use WPS attacks (Pixie-Dust, PIN) on WPA networks (default: {G}off{W})'))
+            help=Color.s('{O}NEVER{W} use WPS attacks (Pixie-Dust) on WPA networks (default: {G}off{W})'))
         wps.add_argument('--wps-only',
             action='store_true',
             dest='wps_only',
-            help=Color.s('{G}ALWAYS{W} use WPS attacks (Pixie-Dust, PIN) on WPA networks (default: {G}off{W})'))
+            help=Color.s('{G}ALWAYS{W} use WPS attacks (Pixie-Dust) on WPA networks (default: {G}off{W})'))
+
+        # --pixie is IGNORED: PIN attack no longer available in Wifite
         wps.add_argument('--pixie',
+            help=argparse.SUPPRESS,
             action='store_true',
             dest='pixie_only',
             help=Color.s('Only use the WPS Pixie-Dust attack (no PIN) (default: {G}off{W})'))
@@ -259,22 +262,6 @@ class Arguments(object):
             type=int,
             help=Color.s('Time to wait for a step to progress before failing PixieDust attack (default: {G}%d sec{W})')
                 % Configuration.wps_pixie_step_timeout)
-        wps.add_argument('--wpst',
-            action='store',
-            dest='wps_pin_timeout',
-            metavar='[seconds]',
-            type=int,
-            help=Color.s('Time to wait before failing WPS PIN attack (default: {G}%d sec{W})')
-                % Configuration.wps_pin_timeout)
-        wps.add_argument('-wpst', help=argparse.SUPPRESS, action='store', dest='wps_pin_timeout', type=int)
-        wps.add_argument('--wpsmr',
-            action='store',
-            dest='wps_max_retries',
-            metavar='[retries]',
-            type=int,
-            help=Color.s('Maximum number of Retries before failing (default: {G}%d{W})')
-                % Configuration.wps_max_retries)
-        wps.add_argument('-wpsmr', help=argparse.SUPPRESS, action='store', dest='wps_max_retries', type=int)
         wps.add_argument('--wpsmf',
             action='store',
             dest='wps_fail_threshold',
