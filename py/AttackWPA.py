@@ -29,8 +29,8 @@ class AttackWPA(Attack):
         '''
 
         # Check if user only wants to run PixieDust attack
-        if Configuration.pixie_only and self.target.wps:
-            Color.pl('{!} {O}--pixie{R} set, ignoring WPA-handshake attack')
+        if Configuration.wps_only and self.target.wps:
+            Color.pl('\r{!} {O}--wps-only{R} set, ignoring WPA-handshake attack on {O}%s{W}' % self.target.essid)
             self.success = False
             return self.success
 
@@ -81,9 +81,8 @@ class AttackWPA(Attack):
                 essid = airodump_target.essid if airodump_target.essid_known else None
                 handshake = self.load_handshake(bssid=bssid, essid=essid)
                 if handshake:
-                    Color.clear_entire_line()
-                    Color.pl('{+} found {G}existing handshake{W} for {C}%s{W}' % handshake.essid)
-                    Color.pl('{+} from {C}%s{W}' % handshake.capfile)
+                    Color.pattack("WPA", self.target, "Handshake capture", "found {G}existing handshake{W} for {C}%s{W}" % handshake.essid)
+                    Color.pl('\n{+} Using handshake from {C}%s{W}' % handshake.capfile)
                     return handshake
 
             timeout_timer = Timer(Configuration.wpa_attack_timeout)

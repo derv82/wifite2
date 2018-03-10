@@ -18,6 +18,7 @@ class AttackWPS(Attack):
 
         # Drop out if user specified to not use Reaver/Bully
         if Configuration.no_wps:
+            Color.pl('\r{!} {O}--no-wps{R} set, ignoring WPS attack on {O}%s{W}' % self.target.essid)
             self.success = False
             return self.success
 
@@ -42,9 +43,5 @@ class AttackWPS(Attack):
                     return True
             else:
                 Color.pl("{!} {R}your version of 'reaver' does not support the {O}WPS pixie-dust attack{W}")
-
-        if Configuration.pixie_only:
-            Color.pl('\r{!} {O}--pixie{R} set, ignoring WPS-PIN attack{W}')
-            return False
 
         return False

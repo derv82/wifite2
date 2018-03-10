@@ -203,7 +203,7 @@ class Configuration(object):
         if args.wps_filter:
             Configuration.wps_filter  = args.wps_filter
         if args.wps_only:
-            Configuration.wps_only    = args.wps_only
+            Configuration.wps_only = True
             Color.pl('{+} {C}option:{W} will *only* attack non-WEP networks with {G}WPS attacks{W} (no handshake capture)')
         if args.no_wps:
             Configuration.no_wps   = args.no_wps

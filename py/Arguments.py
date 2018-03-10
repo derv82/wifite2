@@ -68,6 +68,14 @@ class Arguments(object):
             action='store_true',
             dest='no_deauth',
             help=Color.s('Do not deauthenticate clients *EVER* (default: {G}off{W})'))
+        glob.add_argument('--no-deauths',
+            action='store_true',
+            dest='no_deauth',
+            help=argparse.SUPPRESS)
+        glob.add_argument('-nd',
+            action='store_true',
+            dest='no_deauth',
+            help=argparse.SUPPRESS)
         glob.add_argument('--num-deauths',
             action='store',
             type=int,
@@ -242,12 +250,12 @@ class Arguments(object):
             dest='wps_only',
             help=Color.s('{G}ALWAYS{W} use WPS attacks (Pixie-Dust) on WPA networks (default: {G}off{W})'))
 
-        # --pixie is IGNORED: PIN attack no longer available in Wifite
+        # Same as --wps-only
         wps.add_argument('--pixie',
             help=argparse.SUPPRESS,
             action='store_true',
-            dest='pixie_only',
-            help=Color.s('Only use the WPS Pixie-Dust attack (no PIN) (default: {G}off{W})'))
+            dest='wps_only')
+
         wps.add_argument('--pixiet',
             action='store',
             dest='wps_pixie_timeout',
