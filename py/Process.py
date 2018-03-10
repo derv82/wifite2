@@ -114,6 +114,7 @@ class Process(object):
             self.pid.wait()
         if self.out is None:
             (self.out, self.err) = self.pid.communicate()
+        return (self.out, self.err)
 
     def poll(self):
         ''' Returns exit code if process is dead, otherwise "None" '''

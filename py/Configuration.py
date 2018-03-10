@@ -322,7 +322,10 @@ class Configuration(object):
         if hasattr(Configuration, "interface") and Configuration.interface is not None and Airmon.base_interface is not None:
             Airmon.stop(Configuration.interface)
             Airmon.put_interface_up(Airmon.base_interface)
+
+        if Airmon.killed_network_manager:
             Airmon.start_network_manager()
+
         exit(code)
 
     @staticmethod

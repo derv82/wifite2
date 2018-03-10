@@ -13,6 +13,7 @@ import signal
 class Airmon(object):
     ''' Wrapper around the 'airmon-ng' program '''
     base_interface = None
+    killed_network_manager = False
 
     def __init__(self):
         self.refresh()
@@ -251,6 +252,8 @@ class Airmon(object):
                 Color.pl('{!} {R}terminating {O}conflicting process' +
                          ' {R}%s{O} (PID {R}%s{O})' % (pname, pid))
                 os.kill(int(pid), signal.SIGTERM)
+                if pname == 'NetworkManager':
+                    Airmon.killed_network_manager= True
 
     @staticmethod
     def put_interface_up(iface):
@@ -261,8 +264,36 @@ class Airmon(object):
     @staticmethod
     def start_network_manager():
         Color.p("{!} {O}restarting {R}NetworkManager{O}...")
-        (out,err) = Process.call('systemctl start NetworkManager')
-        Color.pl(" {R}restarted{W}")
+
+        if Process.exists('service'):
+            cmd = 'service network-manager start'
+            proc = Process(cmd)
+            (out, err) = proc.get_output()
+            if proc.poll() != 0:
+                Color.pl(" {R}Error executing {O}%s{W}" % cmd)
+                if out is not None and out.strip() != "":
+                    Color.pl(" {O}STDOUT> %s{W}" % out)
+                if err is not None and err.strip() != "":
+                    Color.pl(" {O}STDERR> %s{W}" % err)
+            else:
+                Color.pl(" {GR}restarted{W} ({C}%s{W})" % cmd)
+                return
+
+        if Process.exists('systemctl'):
+            cmd = 'systemctl start NetworkManager'
+            proc = Process(cmd)
+            (out, err) = proc.get_output()
+            if proc.poll() != 0:
+                Color.pl(" {R}Error executing {O}%s{W}" % cmd)
+                if out is not None and out.strip() != "":
+                    Color.pl(" {O}STDOUT> %s{W}" % out)
+                if err is not None and err.strip() != "":
+                    Color.pl(" {O}STDERR> %s{W}" % err)
+            else:
+                Color.pl(" {GR}restarted{W} ({C}%s{W})" % cmd)
+                return
+        else:
+            Color.pl(" {R}can't restart NetworkManager: {O}systemctl{R} or {O}service{R} not found{W}")
 
 if __name__ == '__main__':
     Airmon.terminate_conflicting_processes()

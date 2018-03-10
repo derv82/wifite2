@@ -394,7 +394,9 @@ if __name__ == '__main__':
     while aireplay.is_running():
         from time import sleep
         sleep(0.1)
-    print aireplay.get_output()
+    stdout, stderr = aireplay.get_output()
+    print "STDOUT>", stdout
+    print "STDERR>", stderr
     '''
 
     '''
