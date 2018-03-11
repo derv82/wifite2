@@ -27,6 +27,7 @@ class Configuration(object):
         Configuration.initialized = True
 
         Configuration.verbose = 0 # Verbosity level.
+        Configuration.print_stack_traces = True
 
         Configuration.kill_conflicting_processes = False
 

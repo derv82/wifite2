@@ -131,9 +131,9 @@ class Wifite(object):
                     result = False
                     try:
                         result = attack.run()
-                    except Exception, e:
+                    except Exception as e:
                         Color.pl("\n{!} {R}Error: {O}%s" % str(e))
-                        if Configuration.verbose > 0 or True:
+                        if Configuration.verbose > 0 or Configuration.print_stack_traces:
                             Color.pl('\n{!} {O}Full stack trace below')
                             from traceback import format_exc
                             Color.p('\n{!}    ')
