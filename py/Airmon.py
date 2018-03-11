@@ -272,11 +272,11 @@ class Airmon(object):
             if proc.poll() != 0:
                 Color.pl(" {R}Error executing {O}%s{W}" % cmd)
                 if out is not None and out.strip() != "":
-                    Color.pl(" {O}STDOUT> %s{W}" % out)
+                    Color.pl("{!} {O}STDOUT> %s{W}" % out)
                 if err is not None and err.strip() != "":
-                    Color.pl(" {O}STDERR> %s{W}" % err)
+                    Color.pl("{!} {O}STDERR> %s{W}" % err)
             else:
-                Color.pl(" {GR}restarted{W} ({C}%s{W})" % cmd)
+                Color.pl(" {G}done{W} ({C}%s{W})" % cmd)
                 return
 
         if Process.exists('systemctl'):
@@ -286,11 +286,11 @@ class Airmon(object):
             if proc.poll() != 0:
                 Color.pl(" {R}Error executing {O}%s{W}" % cmd)
                 if out is not None and out.strip() != "":
-                    Color.pl(" {O}STDOUT> %s{W}" % out)
+                    Color.pl("{!} {O}STDOUT> %s{W}" % out)
                 if err is not None and err.strip() != "":
-                    Color.pl(" {O}STDERR> %s{W}" % err)
+                    Color.pl("{!} {O}STDERR> %s{W}" % err)
             else:
-                Color.pl(" {GR}restarted{W} ({C}%s{W})" % cmd)
+                Color.pl(" {G}done{W} ({C}%s{W})" % cmd)
                 return
         else:
             Color.pl(" {R}can't restart NetworkManager: {O}systemctl{R} or {O}service{R} not found{W}")

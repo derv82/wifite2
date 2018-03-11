@@ -95,7 +95,7 @@ class AttackWEP(Attack):
                         Color.clear_entire_line()
                         Color.pattack("WEP",
                                 airodump_target,
-                                "%s attack" % attack_name,
+                                "%s" % attack_name,
                                 status)
 
                         #self.aircrack_check()
@@ -159,8 +159,7 @@ class AttackWEP(Attack):
                                 xor_file = Aireplay.get_xor()
                                 if not xor_file:
                                     # If .xor is not there, the process failed.
-                                    Color.pl('\n{!} {O}%s attack{R} did not generate' % attack_name +
-                                             ' a .xor file{W}')
+                                    Color.pl('\n{!} {O}%s attack{R} did not generate a .xor file' % attack_name)
                                     # XXX: For debugging
                                     Color.pl('{?} {O}Command: {R}%s{W}' % aireplay.cmd)
                                     Color.pl('{?} {O}Output:\n{R}%s{W}' % aireplay.get_output())
