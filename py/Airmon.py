@@ -246,14 +246,19 @@ class Airmon(object):
                 continue
             match = re.search('^[ \t]*(\d+)[ \t]*([a-zA-Z0-9_\-]+)[ \t]*$', line)
             if match:
-                # Found process to kill
+                # Found process
                 pid = match.groups()[0]
                 pname = match.groups()[1]
-                Color.pl('{!} {R}terminating {O}conflicting process' +
-                         ' {R}%s{O} (PID {R}%s{O})' % (pname, pid))
-                os.kill(int(pid), signal.SIGTERM)
-                if pname == 'NetworkManager':
-                    Airmon.killed_network_manager= True
+                if Configuration.kill_conflicting_processes:
+                    Color.pl('{!} {R}terminating {O}conflicting process {R}%s{O} (PID {R}%s{O})' % (pname, pid))
+                    os.kill(int(pid), signal.SIGTERM)
+                    if pname == 'NetworkManager':
+                        Airmon.killed_network_manager= True
+                else:
+                    Color.pl('{!} {O}conflicting process: {R}%s{O} (PID {R}%s{O})' % (pname, pid))
+
+        if not Configuration.kill_conflicting_processes:
+            Color.pl('{!} {O}if you have problems, try killing these processes ({R}kill -9 PID{O}){W}')
 
     @staticmethod
     def put_interface_up(iface):

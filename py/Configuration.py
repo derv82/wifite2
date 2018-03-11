@@ -28,6 +28,8 @@ class Configuration(object):
 
         Configuration.verbose = 0 # Verbosity level.
 
+        Configuration.kill_conflicting_processes = False
+
         Configuration.scan_time = 0 # Time to wait before attacking all targets
         Configuration.all_targets = False # Run attacks against all targets automatically
 
@@ -149,7 +151,9 @@ class Configuration(object):
         if args.verbose:
             Configuration.verbose = args.verbose
             Color.pl('{+} {C}option:{W} verbosity level {G}%d{W}' % args.verbose)
-
+        if args.kill_conflicting_processes:
+            Configuration.kill_conflicting_processes = True
+            Color.pl('{+} {C}option:{W} kill conflicting processes {G}enabled{W}')
 
         # WEP
         if args.wep_filter:

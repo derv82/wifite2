@@ -17,65 +17,67 @@ class Arguments(object):
 
         # Global variables
         glob = parser.add_argument_group('SETTINGS')
+
         glob.add_argument('-i',
             action='store',
             dest='interface',
             metavar='[interface]',
             type=str,
             help=Color.s('Wireless interface to use (default: {G}ask{W})'))
+
+        glob.add_argument('--kill',
+            action='store_true',
+            dest='kill_conflicting_processes',
+            help=Color.s('Kill processes that conflict with Airmon/Airodump (default: {G}off{W})'))
+
+        glob.add_argument('--channel', help=argparse.SUPPRESS, action='store', dest='channel', type=int)
         glob.add_argument('-c',
             action='store',
             dest='channel',
             metavar='[channel]',
             type=int,
             help=Color.s('Wireless channel to scan (default: {G}all channels{W})'))
-        glob.add_argument('--channel', help=argparse.SUPPRESS, action='store', dest='channel', type=int)
+
         glob.add_argument('-mac',
             '---random-mac',
             action='store_true',
             dest='random_mac',
             help=Color.s('Randomize wireless card MAC address (default: {G}off{W})'))
+
         glob.add_argument('-5',
             '--5ghz',
             action='store_true',
             dest='five_ghz',
             help=Color.s('Include 5Ghz channels (default: {G}off{W})'))
+
+        glob.add_argument('--bssid', help=argparse.SUPPRESS, action='store', dest='target_bssid', type=str)
         glob.add_argument('-b',
             action='store',
             dest='target_bssid',
             metavar='[bssid]',
             type=str,
             help=Color.s('BSSID (e.g. {GR}AA:BB:CC:DD:EE:FF{W}) of access point to attack'))
-        glob.add_argument('--bssid', help=argparse.SUPPRESS, action='store', dest='target_bssid', type=str)
+
+        glob.add_argument('--essid', help=argparse.SUPPRESS, action='store', dest='target_essid', type=str)
         glob.add_argument('-e',
             action='store',
             dest='target_essid',
             metavar='[essid]',
             type=str,
             help=Color.s('ESSID (e.g. {GR}NETGEAR07{W}) of access point to attack'))
-        glob.add_argument('--essid', help=argparse.SUPPRESS, action='store', dest='target_essid', type=str)
+
         glob.add_argument('--showb',
             action='store_true',
             dest='show_bssids',
             help=Color.s('Show BSSIDs of targets while scanning'))
-        glob.add_argument('-v',
-            '--verbose',
-            action='count',
-            default=0,
-            dest='verbose',
-            help=Color.s('Verbose mode, prints more lines (default: {G}quiet{W})'))
+
         glob.add_argument('--nodeauths',
             action='store_true',
             dest='no_deauth',
             help=Color.s('Do not deauthenticate clients *EVER* (default: {G}off{W})'))
-        glob.add_argument('--no-deauths',
-            action='store_true',
-            dest='no_deauth',
-            help=argparse.SUPPRESS)
-        glob.add_argument('-nd',
-            action='store_true',
-            dest='no_deauth',
-            help=argparse.SUPPRESS)
+        glob.add_argument('--no-deauths', action='store_true', dest='no_deauth', help=argparse.SUPPRESS)
+        glob.add_argument('-nd',          action='store_true', dest='no_deauth', help=argparse.SUPPRESS)
+
         glob.add_argument('--num-deauths',
             action='store',
             type=int,
@@ -83,6 +85,8 @@ class Arguments(object):
             metavar="[num]",
             default=None,
             help=Color.s('Number of deauth packets to send (default: {G}%d{W})' % Configuration.num_deauths))
+
+        glob.add_argument('--pillage', help=argparse.SUPPRESS, action='store', dest='scan_time', nargs='?', const=10, type=int)
         glob.add_argument('-p',
             action='store',
             dest='scan_time',
@@ -91,7 +95,13 @@ class Arguments(object):
             metavar='scantime',
             type=int,
             help=Color.s('{G}Pillage{W}: Attack all targets after {C}scantime{W} seconds'))
-        glob.add_argument('--pillage', help=argparse.SUPPRESS, action='store', dest='scan_time', nargs='?', const=10, type=int)
+
+        glob.add_argument('-v',
+            '--verbose',
+            action='count',
+            default=0,
+            dest='verbose',
+            help=Color.s('Verbose mode, prints more lines (default: {G}quiet{W})'))
 
         # WEP
         wep = parser.add_argument_group('WEP-RELATED')
