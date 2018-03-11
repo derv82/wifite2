@@ -15,7 +15,8 @@ class Color(object):
         'B' : '\033[34m', # blue
         'P' : '\033[35m', # purple
         'C' : '\033[36m', # cyan
-        'GR': '\033[37m'  # gray
+        'GR': '\033[37m', # gray
+        'D' : '\033[2m'   # dims current color. {W} resets.
     }
 
     # Helper string replacements

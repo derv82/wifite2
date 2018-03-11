@@ -186,17 +186,13 @@ class Wifite(object):
 
     def print_banner(self):
         """ Displays ASCII art of the highest caliber.  """
-        Color.pl("")
-        Color.pl("{G}  .;'                     `;,    ")
-        Color.pl("{G} .;'  ,;'             `;,  `;,  {W}WiFite v%.2f" % Configuration.version)
-        Color.pl("{G}.;'  ,;'  ,;'     `;,  `;,  `;,  ")
-        Color.pl("{G}::   ::   :   {GR}( ){G}   :   ::   ::  {W}Automated Wireless Auditor")
-        Color.pl("{G}':.  ':.  ':. {GR}/_\\{G} ,:'  ,:'  ,:'  ")
-        Color.pl("{G} ':.  ':.    {GR}/___\\{G}   ,:'  ,:'   {C}https://github.com/derv82/wifite2{W}")
-        Color.pl("{G}  ':.       {GR}/_____\\{G}     ,:'     ")
-        Color.pl("{G}           {GR}/       \\{G}         ")
-        Color.pl("{W}")
-
+        Color.pl(r'''
+{G}  .     {GR}{D}     {W}{G}     .    {W}
+{G}.´  ·  .{GR}{D}     {W}{G}.  ·  `.  {G}wifite {D}%s{W}
+{G}:  :  : {GR}{D} (¯) {W}{G} :  :  :  {W}{D}automated wireless auditor
+{G}`.  ·  `{GR}{D} /¯\ {W}{G}´  ·  .´  {C}{D}https://github.com/derv82/wifite2
+{G}  `     {GR}{D}/¯¯¯\{W}{G}     ´    {W}
+''' % Configuration.version)
 
     def user_wants_to_continue(self, targets_remaining, attacks_remaining=0):
         ''' Asks user if attacks should continue onto other targets '''
