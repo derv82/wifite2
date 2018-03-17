@@ -1,1 +1,1 @@
-python2 -m wifite.wifite $@
+python2.7 -m wifite.wifite $@

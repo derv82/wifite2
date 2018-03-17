@@ -3,14 +3,14 @@
 
 from config import Configuration
 from util.scanner import Scanner
+from util.process import Process
 from util.color import Color
+from util.crack import CrackHandshake
 from attack.wep import AttackWEP
 from attack.wpa import AttackWPA
 from attack.wps import AttackWPS
 from model.result import CrackResult
 from model.handshake import Handshake
-from crack import CrackHandshake
-from util.process import Process
 
 from json import loads
 import os
