@@ -1,2 +1,2 @@
 #!/bin/sh
-python2.7 -m unittest discover py/tests -v
+python2.7 -m unittest discover tests -v
