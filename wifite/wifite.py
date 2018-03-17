@@ -1,7 +1,10 @@
 #!/usr/bin/python2.7
 # -*- coding: utf-8 -*-
 
-from config import Configuration
+try:
+    from config import Configuration
+except (ValueError, ImportError) as e:
+    raise Exception('You may need to run wifite from the root directory (which includes README.md)')
 from util.scanner import Scanner
 from util.process import Process
 from util.color import Color
