@@ -39,6 +39,7 @@ class AttackWPS(Attack):
                 # Reaver: Pixie-dust
                 reaver = Reaver(self.target)
                 if reaver.run_pixiedust_attack():
+                    self.crack_result = reaver.crack_result
                     self.success = True
                     return True
             else:
