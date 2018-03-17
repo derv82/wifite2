@@ -62,21 +62,21 @@ class Airmon(object):
 
     @staticmethod
     def start_baddriver(iface): #fix for bad drivers like the rtl8812AU
-    	os.system("ifconfig %s down; iwconfig %s mode monitor; ifconfig %s up" % (iface, iface, iface))
-	    with open("/sys/class/net/" + iface + "/type", "r") as f:
-			if (int(f.read()) == Airmon.ARPHRD_IEEE80211_RADIOTAP):
-		    	return iface
+        os.system("ifconfig %s down; iwconfig %s mode monitor; ifconfig %s up" % (iface, iface, iface))
+        with open("/sys/class/net/" + iface + "/type", "r") as f:
+            if (int(f.read()) == Airmon.ARPHRD_IEEE80211_RADIOTAP):
+                return iface
 
-	return None
+        return None
 
     @staticmethod
     def stop_baddriver(iface):
-    	os.system("ifconfig %s down; iwconfig %s mode managed; ifconfig %s up" % (iface, iface, iface))
-		with open("/sys/class/net/" + iface + "/type", "r") as f:
-	    	if (int(f.read()) == Airmon.ARPHRD_ETHER): 
-	        	return iface
+        os.system("ifconfig %s down; iwconfig %s mode managed; ifconfig %s up" % (iface, iface, iface))
+        with open("/sys/class/net/" + iface + "/type", "r") as f:
+            if (int(f.read()) == Airmon.ARPHRD_ETHER): 
+                return iface
 
-	return None
+        return None
 
     @staticmethod
     def start(iface):
@@ -113,9 +113,10 @@ class Airmon(object):
 
         if mon_iface is None:
             # Airmon did not enable monitor mode on an interface
-	    mon_iface = Airmon.start_baddriver(iface)
-	    if mon_iface is None:
-                Color.pl("{R}failed{W}")
+            mon_iface = Airmon.start_baddriver(iface)
+
+        if mon_iface is None:
+            Color.pl("{R}failed{W}")
 
         mon_ifaces = Airmon.get_interfaces_in_monitor_mode()
 
@@ -159,7 +160,7 @@ class Airmon(object):
                 break
 
         if not mon_iface:
-	    mon_iface = Airmon.stop_baddriver(iface)
+            mon_iface = Airmon.stop_baddriver(iface)
 
         if mon_iface:
             Color.pl('{R}disabled %s{W}' % mon_iface)
