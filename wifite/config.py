@@ -39,6 +39,7 @@ class Configuration(object):
         Configuration.target_channel = None # User-defined channel to scan
         Configuration.target_essid = None # User-defined AP name
         Configuration.target_bssid = None # User-defined AP BSSID
+        Configuration.ignore_essid = None # ESSIDs to ignore
         Configuration.five_ghz = False # Scan 5Ghz channels
         Configuration.show_bssids = False # Show BSSIDs in targets list
         Configuration.random_mac = False # Should generate a random Mac address at startup.
@@ -146,6 +147,9 @@ class Configuration(object):
         if args.target_essid:
             Configuration.target_essid = args.target_essid
             Color.pl('{+} {C}option:{W} targeting ESSID {G}%s{W}' % args.target_essid)
+        if args.ignore_essid is not None:
+            Configuration.ignore_essid = args.ignore_essid
+            Color.pl('{+} {C}option:{W} {O}ignoring ESSIDs that include {R}%s{W}' % args.ignore_essid)
         if args.scan_time:
             Configuration.scan_time = args.scan_time
             Color.pl('{+} {C}option:{W} ({G}pillage{W}) attack all targets after {G}%d{W}s' % args.scan_time)

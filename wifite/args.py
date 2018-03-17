@@ -49,7 +49,7 @@ class Arguments(object):
             action='count',
             default=0,
             dest='verbose',
-            help=Color.s('Shows more options (-h) and the executed commands (default: {G}quiet{W})'))
+            help=Color.s('Shows more options ({C}-h -v{W}). Prints tool outputs. (default: {G}quiet{W})'))
 
         glob.add_argument('-i',
             action='store',
@@ -108,6 +108,15 @@ class Arguments(object):
             type=str,
             help=self._verbose('ESSID (e.g. {GR}NETGEAR07{W}) of access point to attack'))
         glob.add_argument('--essid', help=argparse.SUPPRESS, action='store', dest='target_essid', type=str)
+
+        glob.add_argument('-E',
+            action='store',
+            dest='ignore_essid',
+            metavar='[text]',
+            type=str,
+            default=None,
+            help=self._verbose('Hides targets with ESSIDs that match the given text'))
+        glob.add_argument('--ignore-essid', help=argparse.SUPPRESS, action='store', dest='ignore_essid', type=str)
 
         glob.add_argument('--showb',
             action='store_true',

@@ -227,7 +227,7 @@ class Wifite(object):
             return True
 
 
-if __name__ == '__main__':
+def run():
     w = Wifite()
     w.print_banner()
 
@@ -253,3 +253,6 @@ if __name__ == '__main__':
         Color.pl('\n{!} {O}interrupted, shutting down...{W}')
 
     Configuration.exit_gracefully(0)
+
+if __name__ == '__main__':
+    run()
