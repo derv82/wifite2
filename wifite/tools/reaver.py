@@ -1,12 +1,12 @@
 #!/usr/bin/python2.7
 # -*- coding: utf-8 -*-
 
-from Attack import Attack
-from Airodump import Airodump
-from Color import Color
-from Configuration import Configuration
-from CrackResultWPS import CrackResultWPS
-from Process import Process
+from ..model.attack import Attack
+from ..config import Configuration
+from ..util.color import Color
+from ..util.process import Process
+from ..tools.airodump import Airodump
+from ..model.wps_result import CrackResultWPS
 
 import os, time, re
 

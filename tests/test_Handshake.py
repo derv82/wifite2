@@ -4,7 +4,7 @@
 import sys
 sys.path.insert(0, '..')
 
-from py.Handshake import Handshake
+from wifite.model.handshake import Handshake
 
 import unittest
 

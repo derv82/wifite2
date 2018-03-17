@@ -1,8 +1,8 @@
 #!/usr/bin/python2.7
 # -*- coding: utf-8 -*-
 
-from Color import Color
-from Macchanger import Macchanger
+from util.color import Color
+from tools.macchanger import Macchanger
 
 import os
 
@@ -39,6 +39,7 @@ class Configuration(object):
         Configuration.target_channel = None # User-defined channel to scan
         Configuration.target_essid = None # User-defined AP name
         Configuration.target_bssid = None # User-defined AP BSSID
+        Configuration.ignore_essid = None # ESSIDs to ignore
         Configuration.five_ghz = False # Scan 5Ghz channels
         Configuration.show_bssids = False # Show BSSIDs in targets list
         Configuration.random_mac = False # Should generate a random Mac address at startup.
@@ -107,7 +108,7 @@ class Configuration(object):
     def get_interface():
         if Configuration.interface is None:
             # Interface wasn't defined, select it!
-            from Airmon import Airmon
+            from tools.airmon import Airmon
             Configuration.interface = Airmon.ask()
             if Configuration.random_mac:
                 Macchanger.random()
@@ -116,7 +117,7 @@ class Configuration(object):
     @staticmethod
     def load_from_arguments():
         ''' Sets configuration values based on Argument.args object '''
-        from Arguments import Arguments
+        from args import Arguments
 
         args = Arguments(Configuration).args
         if args.random_mac:
@@ -146,6 +147,9 @@ class Configuration(object):
         if args.target_essid:
             Configuration.target_essid = args.target_essid
             Color.pl('{+} {C}option:{W} targeting ESSID {G}%s{W}' % args.target_essid)
+        if args.ignore_essid is not None:
+            Configuration.ignore_essid = args.ignore_essid
+            Color.pl('{+} {C}option:{W} {O}ignoring ESSIDs that include {R}%s{W}' % args.ignore_essid)
         if args.scan_time:
             Configuration.scan_time = args.scan_time
             Color.pl('{+} {C}option:{W} ({G}pillage{W}) attack all targets after {G}%d{W}s' % args.scan_time)
@@ -311,7 +315,7 @@ class Configuration(object):
         ''' Deletes temp and exist with the given code '''
         Configuration.delete_temp()
         Macchanger.reset_if_changed()
-        from Airmon import Airmon
+        from tools.airmon import Airmon
         if hasattr(Configuration, "interface") and Configuration.interface is not None and Airmon.base_interface is not None:
             Airmon.stop(Configuration.interface)
             Airmon.put_interface_up(Airmon.base_interface)
@@ -324,7 +328,7 @@ class Configuration(object):
     @staticmethod
     def dump():
         ''' (Colorful) string representation of the configuration '''
-        from Color import Color
+        from util.color import Color
 
         max_len = 20
         for key in Configuration.__dict__.keys():

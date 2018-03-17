@@ -1,14 +1,14 @@
 #!/usr/bin/python2.7
 # -*- coding: utf-8 -*-
 
-from Attack import Attack
-from Airodump import Airodump
-from Aireplay import Aireplay, WEPAttackType
-from Aircrack import Aircrack
-from Configuration import Configuration
-from Interface import Interface
-from Color import Color
-from CrackResultWEP import CrackResultWEP
+from ..model.attack import Attack
+from ..tools.airodump import Airodump
+from ..tools.aireplay import Aireplay, WEPAttackType
+from ..tools.aircrack import Aircrack
+from ..config import Configuration
+from ..model.interface import Interface
+from ..util.color import Color
+from ..model.wep_result import CrackResultWEP
 
 import time
 
@@ -34,6 +34,7 @@ class AttackWEP(Attack):
         aircrack = None # Aircrack process, not started yet
         fakeauth_proc = None
         replay_file = None
+        airodump_target = None
 
         attacks_remaining = list(Configuration.wep_attacks)
         while len(attacks_remaining) > 0:
@@ -245,6 +246,9 @@ class AttackWEP(Attack):
             Ask user what attack to perform next (re-orders attacks_remaining, returns False),
             or if we should stop attacking this target (returns True).
         '''
+        if target is None:
+            Color.pl("")
+            return True
         target_name = target.essid if target.essid_known else target.bssid
 
         Color.pl("\n\n{!} {O}Interrupted")
@@ -322,9 +326,11 @@ class AttackWEP(Attack):
 
 
 if __name__ == '__main__':
-    from Target import Target
+    Configuration.initialize(True)
+    from ..model.target import Target
     fields = "A4:2B:8C:16:6B:3A, 2015-05-27 19:28:44, 2015-05-27 19:28:46,  6,  54e,WEP, WEP, , -58,        2,        0,   0.  0.  0.  0,   9, Test Router Please Ignore, ".split(',')
     target = Target(fields)
     wep = AttackWEP(target)
     wep.run()
+    Configuration.exit_gracefully(0)
 

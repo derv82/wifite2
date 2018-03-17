@@ -1,10 +1,10 @@
 #!/usr/bin/python2.7
 # -*- coding: utf-8 -*-
 
-from Interface import Interface
-from Process import Process
-from Color import Color
-from Configuration import Configuration
+from ..model.interface import Interface
+from ..util.process import Process
+from ..util.color import Color
+from ..config import Configuration
 
 import re
 import os
@@ -14,6 +14,10 @@ class Airmon(object):
     ''' Wrapper around the 'airmon-ng' program '''
     base_interface = None
     killed_network_manager = False
+
+    #see if_arp.h
+    ARPHRD_ETHER = 1 #managed
+    ARPHRD_IEEE80211_RADIOTAP = 803 #monitor
 
     def __init__(self):
         self.refresh()
@@ -57,6 +61,24 @@ class Airmon(object):
         return interfaces
 
     @staticmethod
+    def start_baddriver(iface): #fix for bad drivers like the rtl8812AU
+    	os.system("ifconfig %s down; iwconfig %s mode monitor; ifconfig %s up" % (iface, iface, iface))
+	    with open("/sys/class/net/" + iface + "/type", "r") as f:
+			if (int(f.read()) == Airmon.ARPHRD_IEEE80211_RADIOTAP):
+		    	return iface
+
+	return None
+
+    @staticmethod
+    def stop_baddriver(iface):
+    	os.system("ifconfig %s down; iwconfig %s mode managed; ifconfig %s up" % (iface, iface, iface))
+		with open("/sys/class/net/" + iface + "/type", "r") as f:
+	    	if (int(f.read()) == Airmon.ARPHRD_ETHER): 
+	        	return iface
+
+	return None
+
+    @staticmethod
     def start(iface):
         '''
             Starts an interface (iface) in monitor mode
@@ -91,7 +113,9 @@ class Airmon(object):
 
         if mon_iface is None:
             # Airmon did not enable monitor mode on an interface
-            Color.pl("{R}failed{W}")
+	    mon_iface = Airmon.start_baddriver(iface)
+	    if mon_iface is None:
+                Color.pl("{R}failed{W}")
 
         mon_ifaces = Airmon.get_interfaces_in_monitor_mode()
 
@@ -133,6 +157,9 @@ class Airmon(object):
             if match:
                 mon_iface = match.groups()[0]
                 break
+
+        if not mon_iface:
+	    mon_iface = Airmon.stop_baddriver(iface)
 
         if mon_iface:
             Color.pl('{R}disabled %s{W}' % mon_iface)

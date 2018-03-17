@@ -1,7 +1,7 @@
 #!/usr/bin/python2.7
 # -*- coding: utf-8 -*-
 
-from py.Airodump import Airodump
+from wifite.tools.airodump import Airodump
 
 import unittest
 

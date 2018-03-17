@@ -1,13 +1,13 @@
 #!/usr/bin/python2.7
 # -*- coding: utf-8 -*-
 
-from Attack import Attack
-from Airodump import Airodump
-from Color import Color
-from Timer import Timer
-from Process import Process
-from Configuration import Configuration
-from CrackResultWPS import CrackResultWPS
+from ..model.attack import Attack
+from ..tools.airodump import Airodump
+from ..util.color import Color
+from ..util.timer import Timer
+from ..util.process import Process
+from ..config import Configuration
+from ..model.wps_result import CrackResultWPS
 
 import os, time, re
 from threading import Thread
@@ -217,7 +217,7 @@ class Bully(Attack):
 if __name__ == '__main__':
     stdout = " [*] Pin is '11867722', key is '9a6f7997'"
     Configuration.initialize(False)
-    from Target import Target
+    from ..model.target import Target
     fields = 'AA:BB:CC:DD:EE:FF,2015-05-27 19:28:44,2015-05-27 19:28:46,1,54,WPA2,CCMP TKIP,PSK,-58,2,0,0.0.0.0,9,HOME-ABCD,'.split(',')
     target = Target(fields)
     b = Bully(target)

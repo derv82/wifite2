@@ -1,10 +1,11 @@
 #!/usr/bin/python2.7
 # -*- coding: utf-8 -*-
 
-from Process import Process
-from Color import Color
-from Configuration import Configuration
-from CrackResult import CrackResult
+from ..util.process import Process
+from ..util.color import Color
+from ..config import Configuration
+from ..model.result import CrackResult
+
 from datetime import datetime
 
 import os

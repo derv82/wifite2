@@ -1,7 +1,7 @@
 #!/usr/bin/python2.7
 # -*- coding: utf-8 -*-
 
-from Color import Color
+from ..util.color import Color
 
 import re
 

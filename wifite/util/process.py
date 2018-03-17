@@ -4,8 +4,8 @@
 import time
 from subprocess import Popen, PIPE
 
-from Color import Color
-from Configuration import Configuration
+from ..util.color import Color
+from ..config import Configuration
 
 
 class Process(object):
@@ -37,9 +37,9 @@ class Process(object):
         (stdout, stderr) = pid.communicate()
 
         if Configuration.verbose > 1 and stdout.strip() != '':
-            Color.pe("{P} [stdout] %s{W}" % '\n [stdout] '.join(stdout.split('\n')))
+            Color.pe("{P} [stdout] %s{W}" % '\n [stdout] '.join(stdout.strip().split('\n')))
         if Configuration.verbose > 1 and stderr.strip() != '':
-            Color.pe("{P} [stderr] %s{W}" % '\n [stderr] '.join(stderr.split('\n')))
+            Color.pe("{P} [stderr] %s{W}" % '\n [stderr] '.join(stderr.strip().split('\n')))
 
         return (stdout, stderr)
 
@@ -92,14 +92,14 @@ class Process(object):
         ''' Waits for process to finish, returns stdout output '''
         self.get_output()
         if Configuration.verbose > 1 and self.out.strip() != '':
-            Color.pe("{P} [stdout] %s{W}" % '\n [stdout] '.join(self.out.split('\n')))
+            Color.pe("{P} [stdout] %s{W}" % '\n [stdout] '.join(self.out.strip().split('\n')))
         return self.out
 
     def stderr(self):
         ''' Waits for process to finish, returns stderr output '''
         self.get_output()
         if Configuration.verbose > 1 and self.err.strip() != '':
-            Color.pe("{P} [stderr] %s{W}" % '\n [stderr] '.join(self.err.split('\n')))
+            Color.pe("{P} [stderr] %s{W}" % '\n [stderr] '.join(self.err.strip().split('\n')))
         return self.err
 
     def stdoutln(self):

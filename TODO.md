@@ -121,13 +121,13 @@ Not "/py":
   * `tshark.py` <- process
   * `cowpatty.py` <- process
   * `pyrit.py` <- process
+  * `handshake.py` <- tshark, cowpatty, pyrit, aircrack
 * `output.py` (color/printing) <- config
 * `process.py` <- config
 * `scan.py` (airodump output to target) <- config, target, airodump
 * **target/**
   * `target.py` (ssid, pcap file) <- airodump, tshark
   * `result.py` (PIN/PSK/KEY)
-  * `handshake.py` <- tshark, cowpatty, pyrit, aircrack
 
 ------------------------------------------------------
 

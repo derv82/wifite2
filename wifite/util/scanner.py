@@ -1,10 +1,10 @@
 #!/usr/bin/python2.7
 # -*- coding: utf-8 -*-
 
-from Airodump import Airodump
-from Color import Color
-from Target import Target
-from Configuration import Configuration
+from ..tools.airodump import Airodump
+from ..util.color import Color
+from ..model.target import Target
+from ..config import Configuration
 
 from time import sleep, time
 
@@ -88,6 +88,8 @@ class Scanner(object):
             return False
 
         for target in self.targets:
+            if Configuration.wps_only and target.wps != True:
+                continue
             if bssid and target.bssid and bssid.lower() == target.bssid.lower():
                 self.target = target
                 break
@@ -120,7 +122,7 @@ class Scanner(object):
                     # 1) We have less targets than before, so we can't overwrite the previous list
                     # 2) The terminal can't display the targets without scrolling.
                     # Clear the screen.
-                    from Process import Process
+                    from ..util.process import Process
                     Process.call('clear')
                 else:
                     # We can fit the targets in the terminal without scrolling

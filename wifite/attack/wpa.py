@@ -1,15 +1,15 @@
 #!/usr/bin/python2.7
 # -*- coding: utf-8 -*-
 
-from Attack import Attack
-from Airodump import Airodump
-from Aireplay import Aireplay
-from Color import Color
-from Configuration import Configuration
-from Handshake import Handshake
-from Process import Process
-from CrackResultWPA import CrackResultWPA
-from Timer import Timer
+from ..model.attack import Attack
+from ..tools.airodump import Airodump
+from ..tools.aireplay import Aireplay
+from ..config import Configuration
+from ..util.color import Color
+from ..util.process import Process
+from ..util.timer import Timer
+from ..model.handshake import Handshake
+from ..model.wpa_result import CrackResultWPA
 
 import time
 import os
@@ -293,8 +293,14 @@ class AttackWPA(Attack):
             Aireplay.deauth(target.bssid, client_mac=client, timeout=2)
 
 if __name__ == '__main__':
-    from Target import Target
+    Configuration.initialize(True)
+    from ..model.target import Target
     fields = "A4:2B:8C:16:6B:3A, 2015-05-27 19:28:44, 2015-05-27 19:28:46,  11,  54e,WPA, WPA, , -58,        2,        0,   0.  0.  0.  0,   9, Test Router Please Ignore, ".split(',')
     target = Target(fields)
     wpa = AttackWPA(target)
-    wpa.run()
+    try:
+        wpa.run()
+    except KeyboardInterrupt:
+        Color.pl("")
+        pass
+    Configuration.exit_gracefully(0)
