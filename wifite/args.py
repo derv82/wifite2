@@ -28,13 +28,13 @@ class Arguments(object):
         glob = parser.add_argument_group('SETTINGS')
         self._add_global_args(glob)
 
-        wep_group = parser.add_argument_group('WEP-RELATED')
+        wep_group = parser.add_argument_group('WEP')
         self._add_wep_args(wep_group)
 
-        wpa_group = parser.add_argument_group('WPA-RELATED')
+        wpa_group = parser.add_argument_group('WPA')
         self._add_wpa_args(wpa_group)
 
-        wps_group = parser.add_argument_group('WPS-RELATED')
+        wps_group = parser.add_argument_group('WPS')
         self._add_wps_args(wps_group)
 
         commands_group = parser.add_argument_group('COMMANDS')

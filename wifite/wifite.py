@@ -5,6 +5,7 @@ try:
     from config import Configuration
 except (ValueError, ImportError) as e:
     raise Exception('You may need to run wifite from the root directory (which includes README.md)')
+
 from util.scanner import Scanner
 from util.process import Process
 from util.color import Color
@@ -15,9 +16,9 @@ from attack.wps import AttackWPS
 from model.result import CrackResult
 from model.handshake import Handshake
 
-from json import loads
+import json
 import os
-from sys import exit
+import sys
 
 class Wifite(object):
 
@@ -63,7 +64,7 @@ class Wifite(object):
 
         if missing_required:
             Color.pl('{!} {R}required app(s) were not found, exiting.{W}')
-            exit(-1)
+            sys.exit(-1)
 
         if missing_optional:
             Color.pl('{!} {O}recommended app(s) were not found')
@@ -71,17 +72,22 @@ class Wifite(object):
 
     def display_cracked(self):
         ''' Show cracked targets from cracked.txt '''
-        Color.pl('{+} displaying {C}cracked target(s){W}')
         name = CrackResult.cracked_file
         if not os.path.exists(name):
             Color.pl('{!} {O}file {C}%s{O} not found{W}' % name)
             return
+
         with open(name, 'r') as fid:
-            json = loads(fid.read())
-        for idx, item in enumerate(json, start=1):
-            Color.pl('\n{+} Cracked target #%d:' % (idx))
-            cr = CrackResult.load(item)
-            cr.dump()
+            cracked_targets = json.loads(fid.read())
+
+        if len(cracked_targets) == 0:
+            Color.pl('{!} {R}no results found in {O}%s{W}' % name)
+        else:
+            Color.pl('{+} displaying {G}%d {C}cracked target(s){W}\n' % len(cracked_targets))
+            for item in cracked_targets:
+                cr = CrackResult.load(item)
+                cr.dump()
+                Color.pl('')
 
     def check_handshake(self, capfile):
         ''' Analyzes .cap file for handshake '''
@@ -95,6 +101,7 @@ class Wifite(object):
                 Color.pl('{!} {R}no .cap files found in {O}"./hs"{W}\n')
         else:
             capfiles = [capfile]
+
         for capfile in capfiles:
             Color.pl('{+} checking for handshake in .cap file {C}%s{W}' % capfile)
             if not os.path.exists(capfile):
@@ -189,7 +196,7 @@ class Wifite(object):
 
     def print_banner(self):
         """ Displays ASCII art of the highest caliber.  """
-        Color.pl(r'''
+        Color.pl('''\
 {G}  .     {GR}{D}     {W}{G}     .    {W}
 {G}.´  ·  .{GR}{D}     {W}{G}.  ·  `.  {G}wifite {D}%s{W}
 {G}:  :  : {GR}{D} (¯) {W}{G} :  :  :  {W}{D}automated wireless auditor
@@ -222,11 +229,14 @@ class Wifite(object):
 
 if __name__ == '__main__':
     w = Wifite()
+    w.print_banner()
+
     try:
-        w.print_banner()
         w.main()
+
     except Exception, e:
         Color.pl('\n{!} {R}Error:{O} %s{W}' % str(e))
+
         if Configuration.verbose > 0 or True:
             Color.pl('\n{!} {O}Full stack trace below')
             from traceback import format_exc
@@ -236,7 +246,10 @@ if __name__ == '__main__':
             err = err.replace('  File', '{W}File')
             err = err.replace('  Exception: ', '{R}Exception: {O}')
             Color.pl(err)
+
         Color.pl('\n{!} {R}Exiting{W}\n')
+
     except KeyboardInterrupt:
         Color.pl('\n{!} {O}interrupted, shutting down...{W}')
+
     Configuration.exit_gracefully(0)
