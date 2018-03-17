@@ -314,7 +314,7 @@ class Aireplay(Thread):
         if out.strip() == 'Wrote packet to: %s' % forged_file:
             return forged_file
         else:
-            from Color import Color
+            from ..util.color import Color
             Color.pl('{!} {R}failed to forge packet from .xor file{W}')
             Color.pl('output:\n"%s"' % out)
             return None
@@ -385,7 +385,7 @@ if __name__ == '__main__':
     t = WEPAttackType(t)
     print t.name, type(t.name), t.value
 
-    from Target import Target
+    from ..model.target import Target
     fields = 'A4:2B:8C:16:6B:3A, 2015-05-27 19:28:44, 2015-05-27 19:28:46,  6,  54e, WEP, WEP, , -58,        2,        0,   0.  0.  0.  0,   9, Test Router Please Ignore, '.split(',')
     t = Target(fields)
 

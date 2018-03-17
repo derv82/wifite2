@@ -293,8 +293,14 @@ class AttackWPA(Attack):
             Aireplay.deauth(target.bssid, client_mac=client, timeout=2)
 
 if __name__ == '__main__':
-    from Target import Target
+    Configuration.initialize(True)
+    from ..model.target import Target
     fields = "A4:2B:8C:16:6B:3A, 2015-05-27 19:28:44, 2015-05-27 19:28:46,  11,  54e,WPA, WPA, , -58,        2,        0,   0.  0.  0.  0,   9, Test Router Please Ignore, ".split(',')
     target = Target(fields)
     wpa = AttackWPA(target)
-    wpa.run()
+    try:
+        wpa.run()
+    except KeyboardInterrupt:
+        Color.pl("")
+        pass
+    Configuration.exit_gracefully(0)

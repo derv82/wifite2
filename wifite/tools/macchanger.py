@@ -1,8 +1,8 @@
 #!/usr/bin/python2.7
 # -*- coding: utf-8 -*-
 
-from wifite.model.interface import Interface
-from wifite.util.color import Color
+from ..model.interface import Interface
+from ..util.color import Color
 
 class Macchanger(object):
     is_init = False
@@ -12,7 +12,7 @@ class Macchanger(object):
     @classmethod
     def init(cls):
         if cls.is_init: return
-        from Configuration import Configuration
+        from ..config import Configuration
         iface = Configuration.interface
         if type(iface) == Interface:
             iface = iface.name
@@ -21,8 +21,8 @@ class Macchanger(object):
     @classmethod
     def down_macch_up(cls, macch_option):
         cls.init()
-        from Process import Process
-        from Configuration import Configuration
+        from ..util.process import Process
+        from ..config import Configuration
         iface = Configuration.interface
 
         cmd = ["ifconfig", iface, "down"]
@@ -61,7 +61,7 @@ class Macchanger(object):
         # --permanent to reset to permanent MAC address
         if not cls.down_macch_up("-p"): return
         Color.pl("\r{+} {C}macchanger{W}: Resetting MAC address...")
-        from Configuration import Configuration
+        from ..config import Configuration
         new_mac = Interface.get_mac(Configuration.interface)
         Color.clear_entire_line()
         Color.pl("\r{+} {C}macchanger{W}: Reset MAC address back to {C}%s{W}" % new_mac)
@@ -71,7 +71,7 @@ class Macchanger(object):
         # Use --permanent to use random MAC address
         if not cls.down_macch_up("-r"): return
         cls.is_changed = True
-        from Configuration import Configuration
+        from ..config import Configuration
         new_mac = Interface.get_mac(Configuration.interface)
         Color.clear_entire_line()
         Color.pl("\r{+} {C}macchanger{W}: Changed MAC address to {C}%s{W}" % new_mac)

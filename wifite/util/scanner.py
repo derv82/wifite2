@@ -1,10 +1,10 @@
 #!/usr/bin/python2.7
 # -*- coding: utf-8 -*-
 
-from wifite.tools.airodump import Airodump
-from wifite.util.color import Color
-from wifite.model.target import Target
-from wifite.config import Configuration
+from ..tools.airodump import Airodump
+from ..util.color import Color
+from ..model.target import Target
+from ..config import Configuration
 
 from time import sleep, time
 
@@ -120,7 +120,7 @@ class Scanner(object):
                     # 1) We have less targets than before, so we can't overwrite the previous list
                     # 2) The terminal can't display the targets without scrolling.
                     # Clear the screen.
-                    from Process import Process
+                    from ..util.process import Process
                     Process.call('clear')
                 else:
                     # We can fit the targets in the terminal without scrolling

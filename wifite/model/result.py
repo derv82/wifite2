@@ -50,20 +50,20 @@ class CrackResult(object):
     def load(json):
         ''' Returns an instance of the appropriate object given a json instance '''
         if json['type'] == 'WPA':
-            from CrackResultWPA import CrackResultWPA
+            from .wpa_result import CrackResultWPA
             result = CrackResultWPA(json['bssid'],
                                     json['essid'],
                                     json['handshake_file'],
                                     json['key'])
         elif json['type'] == 'WEP':
-            from CrackResultWEP import CrackResultWEP
+            from .wep_result import CrackResultWEP
             result = CrackResultWEP(json['bssid'],
                                     json['essid'],
                                     json['hex_key'],
                                     json['ascii_key'])
 
         elif json['type'] == 'WPS':
-            from CrackResultWPS import CrackResultWPS
+            from .wps_result import CrackResultWPS
             result = CrackResultWPS(json['bssid'],
                                     json['essid'],
                                     json['pin'],

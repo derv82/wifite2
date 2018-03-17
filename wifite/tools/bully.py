@@ -217,7 +217,7 @@ class Bully(Attack):
 if __name__ == '__main__':
     stdout = " [*] Pin is '11867722', key is '9a6f7997'"
     Configuration.initialize(False)
-    from Target import Target
+    from ..model.target import Target
     fields = 'AA:BB:CC:DD:EE:FF,2015-05-27 19:28:44,2015-05-27 19:28:46,1,54,WPA2,CCMP TKIP,PSK,-58,2,0,0.0.0.0,9,HOME-ABCD,'.split(',')
     target = Target(fields)
     b = Bully(target)

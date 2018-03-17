@@ -1,7 +1,7 @@
 #!/usr/bin/python2.7
 # -*- coding: utf-8 -*-
 
-from wifite.util.process import Process
+from ..util.process import Process
 import re
 
 class Tshark(object):
@@ -63,7 +63,7 @@ if __name__ == '__main__':
     test_file = './tests/files/contains_wps_network.cap'
 
     target_bssid = 'A4:2B:8C:16:6B:3A'
-    from Target import Target
+    from ..model.target import Target
     fields = [
         'A4:2B:8C:16:6B:3A', # BSSID
         '2015-05-27 19:28:44', '2015-05-27 19:28:46', # Dates

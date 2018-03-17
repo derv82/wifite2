@@ -1,7 +1,7 @@
 #!/usr/bin/python2.7
 # -*- coding: utf-8 -*-
 
-from wifite.util.color import Color
+from ..util.color import Color
 
 import re
 
@@ -78,9 +78,8 @@ class Interface(object):
 
     @staticmethod
     def get_mac(iface=None):
-        from Configuration import Configuration
-        from Process import Process
-        import re
+        from ..config import Configuration
+        from ..util.process import Process
 
         if iface is None:
             Configuration.initialize()

@@ -1,11 +1,11 @@
 #!/usr/bin/python2.7
 # -*- coding: utf-8 -*-
 
-from wifite.util.process import Process
-from wifite.config import Configuration
-from wifite.model.target import Target
-from wifite.model.client import Client
-from wifite.tools.tshark import Tshark
+from .tshark import Tshark
+from ..util.process import Process
+from ..config import Configuration
+from ..model.target import Target
+from ..model.client import Client
 
 import os, time
 
@@ -278,7 +278,7 @@ class Airodump(object):
             self.decloaking = True
             self.decloaked_times[target.bssid] = now
             if Configuration.verbose > 1:
-                from Color import Color
+                from ..util.color import Color
                 verbout = " [?] Deauthing %s" % target.bssid
                 verbout += " (broadcast & %d clients)" % len(target.clients)
                 Color.pe("\n{C}" + verbout + "{W}")
@@ -296,7 +296,7 @@ if __name__ == '__main__':
         from time import sleep
         sleep(7)
 
-        from Color import Color
+        from ..util.color import Color
 
         targets = airodump.get_targets()
         for idx, target in enumerate(targets, start=1):
