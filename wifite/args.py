@@ -7,10 +7,12 @@ import argparse
 
 class Arguments(object):
     ''' Holds arguments used by the Wifite '''
-    def __init__(self, Configuration):
-        self.args = self.get_arguments(Configuration)
 
-    def get_arguments(self, Configuration):
+    def __init__(self, config):
+        self.args = self.get_arguments(config)
+
+
+    def get_arguments(self, config):
         ''' Returns parser.args() containing all program arguments '''
 
         parser = argparse.ArgumentParser(usage=argparse.SUPPRESS,
@@ -18,7 +20,24 @@ class Arguments(object):
 
         # Global variables
         glob = parser.add_argument_group('SETTINGS')
+        self._add_global_args(glob, config)
 
+        wep_group = parser.add_argument_group('WEP-RELATED')
+        self._add_wep_args(wep_group, config)
+
+        wpa_group = parser.add_argument_group('WPA-RELATED')
+        self._add_wpa_args(wpa_group, config)
+
+        wps_group = parser.add_argument_group('WPS-RELATED')
+        self._add_wps_args(wps_group, config)
+
+        commands_group = parser.add_argument_group('COMMANDS')
+        self._add_command_args(commands_group, config)
+
+        return parser.parse_args()
+
+
+    def _add_global_args(self, glob, config):
         glob.add_argument('-i',
             action='store',
             dest='interface',
@@ -85,7 +104,7 @@ class Arguments(object):
             dest='num_deauths',
             metavar="[num]",
             default=None,
-            help=Color.s('Number of deauth packets to send (default: {G}%d{W})' % Configuration.num_deauths))
+            help=Color.s('Number of deauth packets to send (default: {G}%d{W})' % config.num_deauths))
 
         glob.add_argument('--pillage', help=argparse.SUPPRESS, action='store', dest='scan_time', nargs='?', const=10, type=int)
         glob.add_argument('-p',
@@ -104,132 +123,150 @@ class Arguments(object):
             dest='verbose',
             help=Color.s('Verbose mode, prints more lines (default: {G}quiet{W})'))
 
+
+    def _add_wep_args(self, wep, config):
         # WEP
-        wep = parser.add_argument_group('WEP-RELATED')
         wep.add_argument('--wep',
             action='store_true',
             dest='wep_filter',
             help=Color.s('Filter to display only WEP-encrypted networks (default: {G}off{W})'))
         wep.add_argument('-wep', help=argparse.SUPPRESS, action='store_true', dest='wep_filter')
+
         wep.add_argument('--require-fakeauth',
             action='store_true',
             dest='require_fakeauth',
             help=Color.s('Fails attacks if fake-auth fails (default: {G}off{W})'))
         wep.add_argument('--nofakeauth', help=argparse.SUPPRESS, action='store_true', dest='require_fakeauth')
         wep.add_argument('-nofakeauth', help=argparse.SUPPRESS, action='store_true', dest='require_fakeauth')
+
         wep.add_argument('--pps',
             action='store',
             dest='wep_pps',
             metavar='[pps]',
             type=int,
             help=Color.s('Packets Per Second to replay (default: {G}%d pps{W})')
-                % Configuration.wep_pps)
+                % config.wep_pps)
         wep.add_argument('-pps', help=argparse.SUPPRESS, action='store', dest='wep_pps', type=int)
+
         wep.add_argument('--wept',
             action='store',
             dest='wep_timeout',
             metavar='[seconds]',
             type=int,
             help=Color.s('Seconds to wait before failing (default: {G}%d sec{W})')
-                % Configuration.wep_timeout)
+                % config.wep_timeout)
         wep.add_argument('-wept', help=argparse.SUPPRESS, action='store', dest='wep_timeout', type=int)
+
         wep.add_argument('--wepca',
             action='store',
             dest='wep_crack_at_ivs',
             metavar='[ivs]',
             type=int,
             help=Color.s('Start cracking at this many IVs (default: {G}%d ivs{W})')
-                % Configuration.wep_crack_at_ivs)
+                % config.wep_crack_at_ivs)
         wep.add_argument('-wepca', help=argparse.SUPPRESS, action='store', dest='wep_crack_at_ivs', type=int)
+
         wep.add_argument('--weprs',
             action='store',
             dest='wep_restart_stale_ivs',
             metavar='[seconds]',
             type=int,
             help=Color.s('Restart aireplay if no new IVs appear (default: {G}%d sec{W})')
-                % Configuration.wep_restart_stale_ivs)
+                % config.wep_restart_stale_ivs)
         wep.add_argument('-weprs', help=argparse.SUPPRESS, action='store', dest='wep_restart_stale_ivs', type=int)
+
         wep.add_argument('--weprc',
             action='store',
             dest='wep_restart_aircrack',
             metavar='[seconds]',
             type=int,
             help=Color.s('Restart aircrack after this delay (default: {G}%d sec{W})')
-                % Configuration.wep_restart_aircrack)
+                % config.wep_restart_aircrack)
         wep.add_argument('-weprc', help=argparse.SUPPRESS, action='store', dest='wep_restart_aircrack', type=int)
+
         wep.add_argument('--arpreplay',
             action='store_true',
             dest='wep_attack_replay',
             help=Color.s('Use ARP-replay WEP attack (default: {G}on{W})'))
         wep.add_argument('-arpreplay', help=argparse.SUPPRESS, action='store_true', dest='wep_attack_replay')
+
         wep.add_argument('--fragment',
             action='store_true',
             dest='wep_attack_fragment',
             help=Color.s('Use fragmentation WEP attack (default: {G}on{W})'))
         wep.add_argument('-fragment', help=argparse.SUPPRESS, action='store_true', dest='wep_attack_fragment')
+
         wep.add_argument('--chopchop',
             action='store_true',
             dest='wep_attack_chopchop',
             help=Color.s('Use chop-chop WEP attack (default: {G}on{W})'))
         wep.add_argument('-chopchop', help=argparse.SUPPRESS, action='store_true', dest='wep_attack_chopchop')
+
         wep.add_argument('--caffelatte',
             action='store_true',
             dest='wep_attack_caffe',
             help=Color.s('Use caffe-latte WEP attack (default: {G}on{W})'))
         wep.add_argument('-caffelatte', help=argparse.SUPPRESS, action='store_true', dest='wep_attack_caffelatte')
+
         wep.add_argument('--p0841',
             action='store_true',
             dest='wep_attack_p0841',
             help=Color.s('Use p0841 WEP attack (default: {G}on{W})'))
         wep.add_argument('-p0841', help=argparse.SUPPRESS, action='store_true', dest='wep_attack_p0841')
+
         wep.add_argument('--hirte',
             action='store_true',
             dest='wep_attack_hirte',
             help=Color.s('Use ARP-replay WEP attack (default: {G}on{W})'))
         wep.add_argument('-hirte', help=argparse.SUPPRESS, action='store_true', dest='wep_attack_hirte')
 
-        # WPA
-        wpa = parser.add_argument_group('WPA-RELATED')
+
+    def _add_wpa_args(self, wpa, config):
         wpa.add_argument('--wpa',
             action='store_true',
             dest='wpa_filter',
             help=Color.s('Filter to display only WPA-encrypted networks (includes WPS)'))
         wpa.add_argument('-wpa', help=argparse.SUPPRESS, action='store_true', dest='wpa_filter')
+
         wpa.add_argument('--wpadt',
             action='store',
             dest='wpa_deauth_timeout',
             metavar='[seconds]',
             type=int,
             help=Color.s('Time to wait between sending Deauths (default: {G}%d sec{W})')
-                % Configuration.wpa_deauth_timeout)
+                % config.wpa_deauth_timeout)
         wpa.add_argument('-wpadt', help=argparse.SUPPRESS, action='store', dest='wpa_deauth_timeout', type=int)
+
         wpa.add_argument('--wpat',
             action='store',
             dest='wpa_attack_timeout',
             metavar='[seconds]',
             type=int,
             help=Color.s('Time to wait before failing WPA attack (default: {G}%d sec{W})')
-                % Configuration.wpa_attack_timeout)
+                % config.wpa_attack_timeout)
         wpa.add_argument('-wpat', help=argparse.SUPPRESS, action='store', dest='wpa_attack_timeout', type=int)
+
         wpa.add_argument('--new-hs',
             action='store_true',
             dest='ignore_old_handshakes',
             help=Color.s('Captures new handshakes, ignores existing handshakes in ./hs (default: {G}off{W})'))
+
         wpa.add_argument('--hs-dir',
             action='store',
             dest='wpa_handshake_dir',
             metavar='[dir]',
             type=str,
             help=Color.s('Directory to store handshake files (default: {G}%s{W})')
-                % Configuration.wpa_handshake_dir)
+                % config.wpa_handshake_dir)
         wpa.add_argument('-hs-dir', help=argparse.SUPPRESS, action='store', dest='wpa_handshake_dir', type=str)
+
         wpa.add_argument('--dict',
             action='store',
             dest='wordlist',
             metavar='[file]',
             type=str,
             help=Color.s('File containing passwords for cracking (default: {G}%s{W})')
-                % Configuration.wordlist)
+                % config.wordlist)
 
         # TODO: Uncomment the --strip option once it works
         '''
@@ -241,8 +278,8 @@ class Arguments(object):
         '''
         wpa.add_argument('-strip', help=argparse.SUPPRESS, action='store_true', dest='wpa_strip_handshake')
 
-        # WPS
-        wps = parser.add_argument_group('WPS-RELATED')
+
+    def _add_wps_args(self, wps, config):
         wps.add_argument('--wps',
             action='store_true',
             dest='wps_filter',
@@ -273,21 +310,21 @@ class Arguments(object):
             metavar='[seconds]',
             type=int,
             help=Color.s('Time to wait before failing PixieDust attack (default: {G}%d sec{W})')
-                % Configuration.wps_pixie_timeout)
+                % config.wps_pixie_timeout)
         wps.add_argument('--pixiest',
             action='store',
             dest='wps_pixie_step_timeout',
             metavar='[seconds]',
             type=int,
             help=Color.s('Time to wait for a step to progress before failing PixieDust attack (default: {G}%d sec{W})')
-                % Configuration.wps_pixie_step_timeout)
+                % config.wps_pixie_step_timeout)
         wps.add_argument('--wpsmf',
             action='store',
             dest='wps_fail_threshold',
             metavar='[fails]',
             type=int,
             help=Color.s('Maximum number of WPS Failures before failing attack (default: {G}%d{W})')
-                % Configuration.wps_fail_threshold)
+                % config.wps_fail_threshold)
         wps.add_argument('-wpsmf', help=argparse.SUPPRESS, action='store', dest='wps_fail_threshold', type=int)
         wps.add_argument('--wpsmt',
             action='store',
@@ -295,7 +332,7 @@ class Arguments(object):
             metavar='[timeouts]',
             type=int,
             help=Color.s('Maximum number of Timeouts before stopping (default: {G}%d{W})')
-                % Configuration.wps_timeout_threshold)
+                % config.wps_timeout_threshold)
         wps.add_argument('-wpsmt', help=argparse.SUPPRESS, action='store', dest='wps_timeout_threshold', type=int)
         wps.add_argument('--ignore-ratelimit',
             action='store_false',
@@ -303,13 +340,14 @@ class Arguments(object):
             help=Color.s('Ignores attack if WPS is rate-limited (default: {G}on{W})'))
         wps.add_argument('-ignore-ratelimit', help=argparse.SUPPRESS, action='store_false', dest='wps_skip_rate_limit')
 
-        # Commands
-        commands = parser.add_argument_group('COMMANDS')
+
+    def _add_command_args(self, commands, config):
         commands.add_argument('--cracked',
             action='store_true',
             dest='cracked',
             help=Color.s('Display previously-cracked access points'))
         commands.add_argument('-cracked', help=argparse.SUPPRESS, action='store_true', dest='cracked')
+
         commands.add_argument('--check',
             action='store',
             metavar='file',
@@ -318,15 +356,15 @@ class Arguments(object):
             dest='check_handshake',
             help=Color.s('Check a .cap file (or all hs/*.cap files) for WPA handshakes'))
         commands.add_argument('-check', help=argparse.SUPPRESS, action='store', nargs='?', const='<all>', dest='check_handshake')
+
         commands.add_argument('--crack',
             action='store_true',
             dest='crack_handshake',
             help=Color.s('Show commands to crack a captured handshake'))
-        return parser.parse_args()
 
 if __name__ == '__main__':
-    from Color import Color
-    from Configuration import Configuration
+    from util.color import Color
+    from config import Configuration
     Configuration.initialize(False)
     a = Arguments(Configuration)
     args = a.args
