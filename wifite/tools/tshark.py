@@ -1,7 +1,7 @@
 #!/usr/bin/python2.7
 # -*- coding: utf-8 -*-
 
-from Process import Process
+from wifite.util.process import Process
 import re
 
 class Tshark(object):

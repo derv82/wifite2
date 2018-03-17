@@ -1,10 +1,10 @@
 #!/usr/bin/python2.7
 # -*- coding: utf-8 -*-
 
-from Interface import Interface
-from Process import Process
-from Color import Color
-from Configuration import Configuration
+from ..model.interface import Interface
+from ..util.process import Process
+from ..util.color import Color
+from ..config import Configuration
 
 import re
 import os

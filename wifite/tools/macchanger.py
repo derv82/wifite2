@@ -1,8 +1,8 @@
 #!/usr/bin/python2.7
 # -*- coding: utf-8 -*-
 
-from Interface import Interface
-from Color import Color
+from wifite.model.interface import Interface
+from wifite.util.color import Color
 
 class Macchanger(object):
     is_init = False

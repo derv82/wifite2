@@ -1,10 +1,10 @@
 #!/usr/bin/python2.7
 # -*- coding: utf-8 -*-
 
-from Airodump import Airodump
-from Color import Color
-from Target import Target
-from Configuration import Configuration
+from wifite.tools.airodump import Airodump
+from wifite.util.color import Color
+from wifite.model.target import Target
+from wifite.config import Configuration
 
 from time import sleep, time
 

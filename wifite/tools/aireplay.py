@@ -1,9 +1,9 @@
 #!/usr/bin/python2.7
 # -*- coding: utf-8 -*-
 
-from Configuration import Configuration
-from Process import Process
-from Timer import Timer
+from ..config import Configuration
+from ..util.process import Process
+from ..util.timer import Timer
 
 import os, time, re
 from threading import Thread

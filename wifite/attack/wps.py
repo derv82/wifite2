@@ -1,11 +1,11 @@
 #!/usr/bin/python2.7
 # -*- coding: utf-8 -*-
 
-from Attack import Attack
-from Color import Color
-from Configuration import Configuration
-from Bully import Bully
-from Reaver import Reaver
+from ..model.attack import Attack
+from ..util.color import Color
+from ..config import Configuration
+from ..tools.bully import Bully
+from ..tools.reaver import Reaver
 
 class AttackWPS(Attack):
     def __init__(self, target):

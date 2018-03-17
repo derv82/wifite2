@@ -1,11 +1,11 @@
 #!/usr/bin/python2.7
 # -*- coding: utf-8 -*-
 
-from Process import Process
-from Configuration import Configuration
-from Target import Target
-from Client import Client
-from Tshark import Tshark
+from wifite.util.process import Process
+from wifite.config import Configuration
+from wifite.model.target import Target
+from wifite.model.client import Client
+from wifite.tools.tshark import Tshark
 
 import os, time
 

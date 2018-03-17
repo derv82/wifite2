@@ -1,8 +1,9 @@
 #!/usr/bin/python2.7
 # -*- coding: utf-8 -*-
 
+from util.color import Color
+
 import argparse
-from Color import Color
 
 class Arguments(object):
     ''' Holds arguments used by the Wifite '''

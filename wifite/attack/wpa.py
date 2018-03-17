@@ -1,15 +1,15 @@
 #!/usr/bin/python2.7
 # -*- coding: utf-8 -*-
 
-from Attack import Attack
-from Airodump import Airodump
-from Aireplay import Aireplay
-from Color import Color
-from Configuration import Configuration
-from Handshake import Handshake
-from Process import Process
-from CrackResultWPA import CrackResultWPA
-from Timer import Timer
+from ..model.attack import Attack
+from ..tools.airodump import Airodump
+from ..tools.aireplay import Aireplay
+from ..config import Configuration
+from ..util.color import Color
+from ..util.process import Process
+from ..util.timer import Timer
+from ..model.handshake import Handshake
+from ..model.wpa_result import CrackResultWPA
 
 import time
 import os

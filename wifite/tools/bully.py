@@ -1,13 +1,13 @@
 #!/usr/bin/python2.7
 # -*- coding: utf-8 -*-
 
-from Attack import Attack
-from Airodump import Airodump
-from Color import Color
-from Timer import Timer
-from Process import Process
-from Configuration import Configuration
-from CrackResultWPS import CrackResultWPS
+from ..model.attack import Attack
+from ..tools.airodump import Airodump
+from ..util.color import Color
+from ..util.timer import Timer
+from ..util.process import Process
+from ..config import Configuration
+from ..model.wps_result import CrackResultWPS
 
 import os, time, re
 from threading import Thread

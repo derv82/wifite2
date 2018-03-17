@@ -1,8 +1,8 @@
 #!/usr/bin/python2.7
 # -*- coding: utf-8 -*-
 
-from Process import Process
-from Color import Color
+from ..util.process import Process
+from ..util.color import Color
 
 import re
 import os

@@ -4,8 +4,8 @@
 import time
 from subprocess import Popen, PIPE
 
-from Color import Color
-from Configuration import Configuration
+from wifite.util.color import Color
+from wifite.config import Configuration
 
 
 class Process(object):

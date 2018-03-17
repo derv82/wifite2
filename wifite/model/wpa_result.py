@@ -1,8 +1,8 @@
 #!/usr/bin/python2.7
 # -*- coding: utf-8 -*-
 
-from Color import Color
-from CrackResult import CrackResult
+from ..util.color import Color
+from .result import CrackResult
 
 class CrackResultWPA(CrackResult):
     def __init__(self, bssid, essid, handshake_file, key):

@@ -1,14 +1,14 @@
 #!/usr/bin/python2.7
 # -*- coding: utf-8 -*-
 
-from Attack import Attack
-from Airodump import Airodump
-from Aireplay import Aireplay, WEPAttackType
-from Aircrack import Aircrack
-from Configuration import Configuration
-from Interface import Interface
-from Color import Color
-from CrackResultWEP import CrackResultWEP
+from ..model.attack import Attack
+from ..tools.airodump import Airodump
+from ..tools.aireplay import Aireplay, WEPAttackType
+from ..tools.aircrack import Aircrack
+from ..config import Configuration
+from ..model.interface import Interface
+from ..util.color import Color
+from ..model.wep_result import CrackResultWEP
 
 import time
 
