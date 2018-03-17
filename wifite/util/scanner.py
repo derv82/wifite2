@@ -88,6 +88,8 @@ class Scanner(object):
             return False
 
         for target in self.targets:
+            if Configuration.wps_only and target.wps != True:
+                continue
             if bssid and target.bssid and bssid.lower() == target.bssid.lower():
                 self.target = target
                 break
