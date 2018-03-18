@@ -7,7 +7,7 @@ ENV HASHCAT_VERSION hashcat-3.6.0
 RUN echo "deb-src http://deb.debian.org/debian jessie main" >> /etc/apt/sources.list
 RUN apt-get update && apt-get upgrade -y
 RUN apt-get install ca-certificates gcc openssl make kmod nano wget p7zip build-essential libsqlite3-dev libpcap0.8-dev libpcap-dev sqlite3 pkg-config libnl-genl-3-dev libssl-dev net-tools iw ethtool usbutils pciutils wireless-tools git curl wget unzip macchanger pyrit tshark -y
-RUN apt-get build-dep aircrack-ng
+RUN apt-get build-dep aircrack-ng -y
 
 
 
@@ -16,7 +16,7 @@ RUN wget http://download.aircrack-ng.org/aircrack-ng-1.2-rc4.tar.gz
 RUN tar xzvf aircrack-ng-1.2-rc4.tar.gz
 WORKDIR /aircrack-ng-1.2-rc4/
 RUN make
-RUN make installl
+RUN make install
 RUN airodump-ng-oui-update
 
 # Workdir /
@@ -24,7 +24,7 @@ WORKDIR /
 
 # Install wps-pixie
 RUN git clone https://github.com/wiire/pixiewps
-WORKDIR /pixiewps/src/
+WORKDIR /pixiewps/
 RUN make
 RUN make install
 
@@ -47,7 +47,7 @@ WORKDIR /
 #Install and configure hashcat
 RUN mkdir hashcat && \
     cd hashcat && \
-    wget http://hashcat.net/files/${HASHCAT_VERSION}.7z && \
+    wget https://hashcat.net/files_legacy/${HASHCAT_VERSION}.7z && \
     7zr e ${HASHCAT_VERSION}.7z
 
 
