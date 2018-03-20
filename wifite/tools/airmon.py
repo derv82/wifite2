@@ -15,6 +15,10 @@ class Airmon(object):
     base_interface = None
     killed_network_manager = False
 
+    #see if_arp.h
+    ARPHRD_ETHER = 1 #managed
+    ARPHRD_IEEE80211_RADIOTAP = 803 #monitor
+
     def __init__(self):
         self.refresh()
 
@@ -57,6 +61,28 @@ class Airmon(object):
         return interfaces
 
     @staticmethod
+    def start_baddriver(iface): #fix for bad drivers like the rtl8812AU
+    	os.system("ifconfig %s down; iwconfig %s mode monitor; ifconfig %s up" % (iface, iface, iface))
+	#You cannot trust the output of the rtl8812AU
+	#it says that interface 10 is the monitor interface, it isn't.
+	#its actually just the same name, but lets not trust it anyway
+	for x in os.listdir("/sys/class/net/."):
+	    with open("/sys/class/net/" + x + "/type", "r") as f:
+		if (int(f.read()) == Airmon.ARPHRD_IEEE80211_RADIOTAP):
+		    return x
+
+	return None
+
+    @staticmethod
+    def stop_baddriver(iface):
+    	os.system("ifconfig %s down; iwconfig %s mode managed; ifconfig %s up" % (iface, iface, iface))
+	with open("/sys/class/net/" + iface + "/type", "r") as f:
+	    if (int(f.read()) == Airmon.ARPHRD_ETHER): 
+	        return iface
+
+	return None
+
+    @staticmethod
     def start(iface):
         '''
             Starts an interface (iface) in monitor mode
@@ -91,7 +117,9 @@ class Airmon(object):
 
         if mon_iface is None:
             # Airmon did not enable monitor mode on an interface
-            Color.pl("{R}failed{W}")
+	    mon_iface = Airmon.start_baddriver(iface)
+	    if mon_iface is None:
+                Color.pl("{R}failed{W}")
 
         mon_ifaces = Airmon.get_interfaces_in_monitor_mode()
 
@@ -133,6 +161,9 @@ class Airmon(object):
             if match:
                 mon_iface = match.groups()[0]
                 break
+
+        if not mon_iface:
+	    mon_iface = Airmon.stop_baddriver(iface)
 
         if mon_iface:
             Color.pl('{R}disabled %s{W}' % mon_iface)
