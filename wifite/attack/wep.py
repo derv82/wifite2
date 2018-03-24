@@ -94,12 +94,7 @@ class AttackWEP(Attack):
                         if aireplay.status is not None:
                             status += ", %s" % aireplay.status
                         Color.clear_entire_line()
-                        Color.pattack("WEP",
-                                airodump_target,
-                                "%s" % attack_name,
-                                status)
-
-                        #self.aircrack_check()
+                        Color.pattack("WEP", airodump_target, "%s" % attack_name, status)
 
                         # Check if we cracked it.
                         if aircrack and aircrack.is_cracked():
@@ -109,8 +104,7 @@ class AttackWEP(Attack):
                                 essid = airodump_target.essid
                             else:
                                 essid = None
-                            Color.pl('\n{+} {C}%s{W} WEP attack {G}successful{W}\n'
-                                % attack_name)
+                            Color.pl('\n{+} {C}%s{W} WEP attack {G}successful{W}\n' % attack_name)
                             if aireplay: aireplay.stop()
                             if fakeauth_proc: fakeauth_proc.stop()
                             self.crack_result = CrackResultWEP(self.target.bssid,
@@ -143,9 +137,7 @@ class AttackWEP(Attack):
                                 # Restart aircrack after X seconds
                                 aircrack.stop()
                                 ivs_file = airodump.find_files(endswith='.ivs')[0]
-                                Color.pl('\n{+} {C}aircrack{W} ran for more than' +
-                                         ' {C}%d{W} seconds, restarting'
-                                             % Configuration.wep_restart_aircrack)
+                                Color.pl('\n{+} {C}aircrack{W} ran for more than {C}%d{W} seconds, restarting' % Configuration.wep_restart_aircrack)
                                 aircrack = Aircrack(ivs_file)
 
 
