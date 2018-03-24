@@ -6,6 +6,7 @@ from ..config import Configuration
 from ..util.color import Color
 from ..util.process import Process
 from ..tools.airodump import Airodump
+from ..tools.bully import Bully # for PSK retrieval
 from ..model.wps_result import CrackResultWPS
 
 import os, time, re
@@ -33,6 +34,7 @@ class Reaver(Attack):
             '--bssid', self.target.bssid,
             '--channel', self.target.channel,
             '--pixie-dust', '1', # pixie-dust attack
+            '--timeout', '4', # Stop waiting after 4 seconds
             #'--delay', '0',
             #'--no-nacks',
             '--session', '/dev/null', # Don't restart session
@@ -80,9 +82,17 @@ class Reaver(Attack):
                     # Check if we cracked it.
                     if pin is not None:
                         # We cracked it.
+
+                        if psk is None:
+                            # Try to derive PSK from PIN using Bully
+                            psk = Bully.get_psk_from_pin(self.target, pin)
+
                         bssid = self.target.bssid
                         Color.clear_entire_line()
-                        Color.pattack("WPS", airodump_target, "Pixie-Dust", "{G}successfully cracked WPS PIN and PSK{W}")
+                        if psk is None:
+                            Color.pattack("WPS", airodump_target, "Pixie-Dust", "{G}successfully cracked WPS PIN{W} (but not PSK)")
+                        else:
+                            Color.pattack("WPS", airodump_target, "Pixie-Dust", "{G}successfully cracked WPS PIN and PSK{W}")
                         Color.pl("")
                         self.crack_result = CrackResultWPS(bssid, ssid, pin, psk)
                         self.crack_result.dump()
