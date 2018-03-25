@@ -36,9 +36,9 @@ class Process(object):
         pid.wait()
         (stdout, stderr) = pid.communicate()
 
-        if Configuration.verbose > 1 and stdout.strip() != '':
+        if Configuration.verbose > 1 and stdout is not None and stdout.strip() != '':
             Color.pe("{P} [stdout] %s{W}" % '\n [stdout] '.join(stdout.strip().split('\n')))
-        if Configuration.verbose > 1 and stderr.strip() != '':
+        if Configuration.verbose > 1 and stderr is not None and stderr.strip() != '':
             Color.pe("{P} [stderr] %s{W}" % '\n [stderr] '.join(stderr.strip().split('\n')))
 
         return (stdout, stderr)
@@ -91,14 +91,14 @@ class Process(object):
     def stdout(self):
         ''' Waits for process to finish, returns stdout output '''
         self.get_output()
-        if Configuration.verbose > 1 and self.out.strip() != '':
+        if Configuration.verbose > 1 and self.out is not None and self.out.strip() != '':
             Color.pe("{P} [stdout] %s{W}" % '\n [stdout] '.join(self.out.strip().split('\n')))
         return self.out
 
     def stderr(self):
         ''' Waits for process to finish, returns stderr output '''
         self.get_output()
-        if Configuration.verbose > 1 and self.err.strip() != '':
+        if Configuration.verbose > 1 and self.err is not None and self.err.strip() != '':
             Color.pe("{P} [stderr] %s{W}" % '\n [stderr] '.join(self.err.strip().split('\n')))
         return self.err
 

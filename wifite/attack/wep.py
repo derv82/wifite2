@@ -85,6 +85,10 @@ class AttackWEP(Attack):
 
                     while True:
                         airodump_target = self.wait_for_target(airodump)
+
+                        if client_mac is None and len(airodump_target.clients) > 0:
+                            client_mac = airodump_target.clients[0].station
+
                         status = "%d/{C}%d{W} IVs" % (airodump_target.ivs, Configuration.wep_crack_at_ivs)
                         if fakeauth_proc:
                             if fakeauth_proc and fakeauth_proc.status:
@@ -154,7 +158,7 @@ class AttackWEP(Attack):
                                     # If .xor is not there, the process failed.
                                     Color.pl('\n{!} {O}%s attack{R} did not generate a .xor file' % attack_name)
                                     # XXX: For debugging
-                                    Color.pl('{?} {O}Command: {R}%s{W}' % aireplay.cmd)
+                                    Color.pl('{?} {O}Command: {R}%s{W}' % " ".join(aireplay.cmd))
                                     Color.pl('{?} {O}Output:\n{R}%s{W}' % aireplay.get_output())
                                     break
 
@@ -179,8 +183,8 @@ class AttackWEP(Attack):
                                     break
                             else:
                                 Color.pl('\n{!} {O}aireplay-ng exited unexpectedly{W}')
-                                Color.pl('{?} {O}Command: {R}%s{W}' % aireplay.cmd)
-                                Color.pl('{?} {O}Output:\n%s{W}' % aireplay.get_output())
+                                Color.pl('{?} {O}Command: {R}%s{W}' % " ".join(aireplay.cmd))
+                                Color.pl('{?} {O}Output:\n{R}%s{W}' % aireplay.get_output())
                                 break # Continue to other attacks
 
                         # Check if IVs stopped flowing (same for > N seconds)
