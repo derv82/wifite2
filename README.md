@@ -4,21 +4,21 @@ A complete re-write of [`wifite`](https://github.com/derv82/wifite), a Python sc
 
 What's new?
 -----------
-* Lots of files instead of "one big script".
 * Cleaner process management -- No longer leaves processes running in the background.
 * UX: Target access points are refreshed every second instead of every 5 seconds.
 * UX: Displays realtime Power level (in db) of currently-attacked target
+* No more WPS PIN attack (which can take days on-average). But the Pixie-Dust attack is still around.
+* Development: Lots of files instead of "one big script".
 
 What's not new?
 ---------------
 * Backwards compatibility with the original `wifite`'s arguments.
 * Same text-based interface everyone knows and loves.
 
-Full Feature List
------------------
-* Reaver Pixie-Dust attack (`--pixie`)
-* Reaver WPS PIN attack (`--reaver`)
-* WPA handshake capture (`--no-reaver`)
+Brief Feature List
+------------------
+* Reaver Pixie-Dust attack (`--wps-only`)
+* WPA handshake capture (`--no-wps`)
 * Validates handshakes against `pyrit`, `tshark`, `cowpatty`, and `aircrack-ng`
 * Various WEP attacks (replay, chopchop, fragment, etc)
 * 5Ghz support for wireless cards that support 5ghz (use `-5` option)
@@ -28,7 +28,7 @@ Full Feature List
 
 Support
 -------
-Wifite2 is designed entirely for the latest version of Kali Rolling release (tested on Kali 2016.2, updated May 2017).
+Wifite2 is designed entirely for the latest version of Kali Rolling release (tested on Kali 2017.2, updated Jan 2018).
 
 This means only the latest versions of these programs are supported: Aircrack-ng suite, reaver, tshark, cowpatty.
 
