@@ -47,8 +47,8 @@ class Wifite(object):
 
     def dependency_check(self):
         ''' Check that required programs are installed '''
-        required_apps = ['airmon-ng', 'iwconfig', 'ifconfig', 'aircrack-ng', 'aireplay-ng', 'airodump-ng', 'tshark']
-        optional_apps = ['packetforge-ng', 'reaver', 'bully', 'cowpatty', 'pyrit', 'stdbuf', 'macchanger']
+        required_apps = ['airmon-ng', 'iwconfig', 'ifconfig', 'aircrack-ng', 'aireplay-ng', 'airodump-ng']
+        optional_apps = ['packetforge-ng', 'reaver', 'bully', 'cowpatty', 'pyrit', 'stdbuf', 'macchanger', 'tshark']
         missing_required = False
         missing_optional = False
 
