@@ -231,6 +231,7 @@ class Bully(Attack):
             '--bssid', target.bssid,
             '--pin', pin,
             '--bruteforce',
+            '--force',
             Configuration.interface
         ]
 
