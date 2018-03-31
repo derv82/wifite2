@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from .tshark import Tshark
+from .wash import Wash
 from ..util.process import Process
 from ..config import Configuration
 from ..model.target import Target
@@ -142,7 +143,11 @@ class Airodump(object):
         # Check targets for WPS
         if not self.skip_wps:
             capfile = csv_filename[:-3] + 'cap'
-            Tshark.check_for_wps_and_update_targets(capfile, targets)
+            try:
+                Tshark.check_for_wps_and_update_targets(capfile, targets)
+            except Exception, e:
+                # No tshark, or it failed. Fall-back to wash
+                Wash.check_for_wps_and_update_targets(capfile, targets)
 
         if apply_filter:
             # Filter targets based on encryption & WPS capability

@@ -17,7 +17,7 @@ class Handshake(object):
         '''
             Tries to find BSSID and ESSID from cap file.
             Sets this instances 'bssid' and 'essid' instance fields.
-         '''
+        '''
         # Get list of bssid/essid pairs from cap file
         pairs = self.tshark_bssid_essid_pairs()
         if len(pairs) == 0:
@@ -65,14 +65,12 @@ class Handshake(object):
         if len(self.pyrit_handshakes()) > 0:
             return True
 
-
-        # XXX: Disabling these checks since I don't think they are reliable.
-        '''
         if len(self.cowpatty_handshakes()) > 0:
             return True
+
         if len(self.aircrack_handshakes()) > 0:
             return True
-        '''
+
         return False
 
 
@@ -82,7 +80,7 @@ class Handshake(object):
             Returns list of tuples: (bssid,essid)
         '''
         if not Process.exists('tshark'):
-            raise Exception('tshark is required to find ESSID')
+            return []
 
         essids = set()
 

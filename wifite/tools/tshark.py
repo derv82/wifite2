@@ -11,6 +11,10 @@ class Tshark(object):
         pass
 
     @staticmethod
+    def exists():
+        return Process.exists('tshark')
+
+    @staticmethod
     def check_for_wps_and_update_targets(capfile, targets):
         '''
             Given a cap file and list of targets, use TShark to
@@ -21,9 +25,9 @@ class Tshark(object):
                 capfile - .cap file from airodump containing packets
                 targets - list of Targets from scan, to be updated
         '''
-        # Tshark is required to detect WPS networks
-        if not Process.exists('tshark'):
-            return
+
+        if not Tshark.exists():
+            raise Exception('Cannot detect WPS networks: Tshark does not exist')
 
         command = [
             'tshark',
@@ -37,7 +41,6 @@ class Tshark(object):
             '-E', 'separator=,' # CSV
         ]
         p = Process(command)
-
 
         try:
             p.wait()
