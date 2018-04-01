@@ -45,8 +45,8 @@ if __name__ == '__main__':
     w.dump()
 
     w = CrackResultWPA('AA:BB:CC:DD:EE:FF', 'Test Router', 'hs/capfile.cap', 'Key')
-    print '\n'
+    print('\n')
     w.dump()
     w.save()
-    print w.__dict__['bssid']
+    print(w.__dict__['bssid'])
 

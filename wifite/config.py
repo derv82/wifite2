@@ -1,8 +1,8 @@
 #!/usr/bin/python2.7
 # -*- coding: utf-8 -*-
 
-from util.color import Color
-from tools.macchanger import Macchanger
+from .util.color import Color
+from .tools.macchanger import Macchanger
 
 import os
 
@@ -108,7 +108,7 @@ class Configuration(object):
     def get_interface():
         if Configuration.interface is None:
             # Interface wasn't defined, select it!
-            from tools.airmon import Airmon
+            from .tools.airmon import Airmon
             Configuration.interface = Airmon.ask()
             if Configuration.random_mac:
                 Macchanger.random()
@@ -117,7 +117,7 @@ class Configuration(object):
     @staticmethod
     def load_from_arguments():
         ''' Sets configuration values based on Argument.args object '''
-        from args import Arguments
+        from .args import Arguments
 
         args = Arguments(Configuration).args
         if args.random_mac:
@@ -315,7 +315,7 @@ class Configuration(object):
         ''' Deletes temp and exist with the given code '''
         Configuration.delete_temp()
         Macchanger.reset_if_changed()
-        from tools.airmon import Airmon
+        from .tools.airmon import Airmon
         if hasattr(Configuration, "interface") and Configuration.interface is not None and Airmon.base_interface is not None:
             Airmon.stop(Configuration.interface)
             Airmon.put_interface_up(Airmon.base_interface)
@@ -328,7 +328,7 @@ class Configuration(object):
     @staticmethod
     def dump():
         ''' (Colorful) string representation of the configuration '''
-        from util.color import Color
+        from .util.color import Color
 
         max_len = 20
         for key in Configuration.__dict__.keys():
@@ -337,7 +337,7 @@ class Configuration(object):
         result  = Color.s('{W}%s  Value{W}\n' % 'Configuration Key'.ljust(max_len))
         result += Color.s('{W}%s------------------{W}\n' % ('-' * max_len))
 
-        for (key,val) in sorted(Configuration.__dict__.iteritems()):
+        for (key,val) in sorted(Configuration.__dict__.items()):
             if key.startswith('__') or type(val) == staticmethod or val is None:
                 continue
             result += Color.s("{G}%s {W} {C}%s{W}\n" % (key.ljust(max_len),val))
@@ -345,4 +345,4 @@ class Configuration(object):
 
 if __name__ == '__main__':
     Configuration.initialize(False)
-    print Configuration.dump()
+    print(Configuration.dump())

@@ -2,19 +2,20 @@
 # -*- coding: utf-8 -*-
 
 try:
-    from config import Configuration
+    from .config import Configuration
 except (ValueError, ImportError) as e:
     raise Exception('You may need to run wifite from the root directory (which includes README.md)')
 
-from util.scanner import Scanner
-from util.process import Process
-from util.color import Color
-from util.crack import CrackHandshake
-from attack.wep import AttackWEP
-from attack.wpa import AttackWPA
-from attack.wps import AttackWPS
-from model.result import CrackResult
-from model.handshake import Handshake
+from .util.scanner import Scanner
+from .util.process import Process
+from .util.color import Color
+from .util.crack import CrackHandshake
+from .util.input import raw_input
+from .attack.wep import AttackWEP
+from .attack.wpa import AttackWPA
+from .attack.wps import AttackWPS
+from .model.result import CrackResult
+from .model.handshake import Handshake
 
 import json
 import os
@@ -95,7 +96,7 @@ class Wifite(object):
             Color.pl('{+} checking all handshakes in {G}"./hs"{W} directory\n')
             try:
                 capfiles = [os.path.join('hs', x) for x in os.listdir('hs') if x.endswith('.cap')]
-            except OSError, e:
+            except OSError as e:
                 capfiles = []
             if len(capfiles) == 0:
                 Color.pl('{!} {R}no .cap files found in {O}"./hs"{W}\n')
@@ -173,7 +174,7 @@ class Wifite(object):
 
             try:
                 attack.run()
-            except Exception, e:
+            except Exception as e:
                 Color.pl("\n{!} {R}Error: {O}%s" % str(e))
                 if Configuration.verbose > 0 or True:
                     Color.pl('\n{!} {O}Full stack trace below')
@@ -234,7 +235,7 @@ def run():
     try:
         w.main()
 
-    except Exception, e:
+    except Exception as e:
         Color.pl('\n{!} {R}Error:{O} %s{W}' % str(e))
 
         if Configuration.verbose > 0 or True:

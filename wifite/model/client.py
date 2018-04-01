@@ -30,7 +30,7 @@ class Client(object):
     def __str__(self):
         ''' String representation of a Client '''
         result = ''
-        for (key,value) in self.__dict__.iteritems():
+        for (key,value) in self.__dict__.items():
             result += key + ': ' + str(value)
             result += ', '
         return result
@@ -39,4 +39,4 @@ class Client(object):
 if __name__ == '__main__':
     fields = 'AA:BB:CC:DD:EE:FF, 2015-05-27 19:43:47, 2015-05-27 19:43:47, -67,        2, (not associated) ,HOME-ABCD'.split(',')
     c = Client(fields)
-    print c
+    print('Client', c)

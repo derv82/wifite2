@@ -147,5 +147,5 @@ if __name__ == '__main__':
     t = Target(fields)
     t.clients.append("asdf")
     t.clients.append("asdf")
-    print t.to_str()
+    print(t.to_str())
 

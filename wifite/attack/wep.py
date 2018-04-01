@@ -8,6 +8,7 @@ from ..tools.aircrack import Aircrack
 from ..config import Configuration
 from ..model.interface import Interface
 from ..util.color import Color
+from ..util.input import raw_input
 from ..model.wep_result import CrackResultWEP
 
 import time

@@ -186,7 +186,7 @@ class Handshake(object):
 
         bssids = set()
         # Check if we have all 4 messages for the handshake between the same MACs
-        for (client_target, num) in target_client_msg_nums.iteritems():
+        for (client_target, num) in target_client_msg_nums.items():
             if num == 4:
                 # We got a handshake!
                 bssid = client_target.split(',')[0]
@@ -358,7 +358,6 @@ class Handshake(object):
 
 if __name__ == '__main__':
     hs = Handshake('./tests/files/handshake_exists.cap', bssid='A4:2B:8C:16:6B:3A')
-
     hs.analyze()
-    print "has_hanshake() =", hs.has_handshake()
+    print("has_hanshake() =", hs.has_handshake())
 

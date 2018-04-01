@@ -98,4 +98,4 @@ class Interface(object):
 
 if __name__ == '__main__':
     mac = Interface.get_mac()
-    print 'wlan0mon mac address:', mac
+    print('wlan0mon mac address:', mac)

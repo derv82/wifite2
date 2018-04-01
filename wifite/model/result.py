@@ -31,7 +31,7 @@ class CrackResult(object):
                 text = fid.read()
             try:
                 json = loads(text)
-            except Exception, e:
+            except Exception as e:
                 Color.pl('{!} error while loading %s: %s' % (name, str(e)))
         json.append(self.to_dict())
         with open(name, 'w') as fid:

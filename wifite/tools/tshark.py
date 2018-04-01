@@ -82,6 +82,6 @@ if __name__ == '__main__':
     # Should update 'wps' field of a target
     Tshark.check_for_wps_and_update_targets(test_file, targets)
 
-    print 'Target(BSSID={}).wps = {} (Expected: True)'.format(targets[0].bssid, targets[0].wps)
+    print('Target(BSSID={}).wps = {} (Expected: True)'.format(targets[0].bssid, targets[0].wps))
     assert targets[0].wps == True
 

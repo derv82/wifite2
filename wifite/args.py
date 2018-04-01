@@ -1,7 +1,7 @@
 #!/usr/bin/python2.7
 # -*- coding: utf-8 -*-
 
-from util.color import Color
+from .util.color import Color
 
 import argparse, sys
 
@@ -366,11 +366,11 @@ class Arguments(object):
             help=Color.s('Show commands to crack a captured handshake'))
 
 if __name__ == '__main__':
-    from util.color import Color
+    from .util.color import Color
     from config import Configuration
     Configuration.initialize(False)
     a = Arguments(Configuration)
     args = a.args
-    for (key,value) in sorted(args.__dict__.iteritems()):
+    for (key,value) in sorted(args.__dict__.items()):
         Color.pl('{C}%s: {G}%s{W}' % (key.ljust(21),value))
 

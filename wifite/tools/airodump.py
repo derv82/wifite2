@@ -145,7 +145,7 @@ class Airodump(object):
             capfile = csv_filename[:-3] + 'cap'
             try:
                 Tshark.check_for_wps_and_update_targets(capfile, targets)
-            except Exception, e:
+            except Exception as e:
                 # No tshark, or it failed. Fall-back to wash
                 Wash.check_for_wps_and_update_targets(capfile, targets)
 
@@ -180,8 +180,13 @@ class Airodump(object):
         targets = []
         import csv
         with open(csv_filename, 'rb') as csvopen:
-            lines = (line.replace('\0', '') for line in csvopen)
+            lines = []
+            for line in csvopen:
+                if type(line) is bytes: line = line.decode('utf-8')
+                line = line.replace('\0', '')
+                lines.append(line)
             csv_reader = csv.reader(lines, delimiter=',')
+
             hit_clients = False
             for row in csv_reader:
                 # Each "row" is a list of fields for a target/client

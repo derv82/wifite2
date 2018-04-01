@@ -36,6 +36,11 @@ class Process(object):
         pid.wait()
         (stdout, stderr) = pid.communicate()
 
+        # Python 3 compatibility
+        if type(stdout) is bytes: stdout = stdout.decode('utf-8')
+        if type(stderr) is bytes: stderr = stderr.decode('utf-8')
+
+
         if Configuration.verbose > 1 and stdout is not None and stdout.strip() != '':
             Color.pe("{P} [stdout] %s{W}" % '\n [stdout] '.join(stdout.strip().split('\n')))
         if Configuration.verbose > 1 and stderr is not None and stderr.strip() != '':
@@ -114,6 +119,13 @@ class Process(object):
             self.pid.wait()
         if self.out is None:
             (self.out, self.err) = self.pid.communicate()
+
+        if type(self.out) is bytes:
+            self.out = self.out.decode('utf-8')
+
+        if type(self.err) is bytes:
+            self.err = self.err.decode('utf-8')
+
         return (self.out, self.err)
 
     def poll(self):
@@ -151,7 +163,7 @@ class Process(object):
                     self.pid.terminate()
                     break
 
-        except OSError, e:
+        except OSError as e:
             if 'No such process' in e.__str__():
                 return
             raise e  # process cannot be killed
@@ -159,20 +171,20 @@ class Process(object):
 
 if __name__ == '__main__':
     p = Process('ls')
-    print p.stdout(), p.stderr()
+    print(p.stdout(), p.stderr())
     p.interrupt()
 
     # Calling as list of arguments
     (out, err) = Process.call(['ls', '-lah'])
-    print out, err
+    print(out, err)
 
-    print '\n---------------------\n'
+    print('\n---------------------\n')
 
     # Calling as string
     (out, err) = Process.call('ls -l | head -2')
-    print out, err
+    print(out, err)
 
-    print '"reaver" exists:', Process.exists('reaver')
+    print('"reaver" exists:', Process.exists('reaver'))
 
     # Test on never-ending process
     p = Process('yes')

@@ -4,6 +4,7 @@
 from ..model.interface import Interface
 from ..util.process import Process
 from ..util.color import Color
+from ..util.input import raw_input
 from ..config import Configuration
 
 import re
@@ -28,7 +29,7 @@ class Airmon(object):
 
     def print_menu(self):
         ''' Prints menu '''
-        print Interface.menu_header()
+        print(Interface.menu_header())
         for idx, iface in enumerate(self.interfaces, start=1):
             Color.pl(" {G}%d{W}. %s" % (idx, iface))
 

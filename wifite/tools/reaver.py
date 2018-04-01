@@ -268,7 +268,7 @@ executing pixiewps -e d0141b15656e96b85fcead2e8e76330d2b1ac1576bb026e7a328c0e1ba
     result = CrackResultWPS('AA:BB:CC:DD:EE:FF', ssid, pin, psk)
     result.dump()
 
-    print ""
+    print("")
 
     (pin, psk, ssid) = Reaver.get_pin_psk_ssid(new_stdout)
     assert pin  == '11867722',   'pin was "%s", should have been "11867722"' % pin

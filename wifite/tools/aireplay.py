@@ -29,7 +29,7 @@ class WEPAttackType(object):
         self.value = None
         self.name = None
         if type(var) is int:
-            for (name,value) in WEPAttackType.__dict__.iteritems():
+            for (name,value) in WEPAttackType.__dict__.items():
                 if type(value) is int:
                     if value == var:
                         self.name = name
@@ -37,7 +37,7 @@ class WEPAttackType(object):
                         return
             raise Exception("Attack number %d not found" % var)
         elif type(var) is str:
-            for (name,value) in WEPAttackType.__dict__.iteritems():
+            for (name,value) in WEPAttackType.__dict__.items():
                 if type(value) is int:
                     if name == var:
                         self.name = name
@@ -438,12 +438,12 @@ class Aireplay(Thread):
 
 if __name__ == '__main__':
     t = WEPAttackType(4)
-    print t.name, type(t.name), t.value
+    print(t.name, type(t.name), t.value)
     t = WEPAttackType('caffelatte')
-    print t.name, type(t.name), t.value
+    print(t.name, type(t.name), t.value)
 
     t = WEPAttackType(t)
-    print t.name, type(t.name), t.value
+    print(t.name, type(t.name), t.value)
 
     from ..model.target import Target
     fields = 'A4:2B:8C:16:6B:3A, 2015-05-27 19:28:44, 2015-05-27 19:28:46,  6,  54e, WEP, WEP, , -58,        2,        0,   0.  0.  0.  0,   9, Test Router Please Ignore, '.split(',')
@@ -455,13 +455,13 @@ if __name__ == '__main__':
         from time import sleep
         sleep(0.1)
     stdout, stderr = aireplay.get_output()
-    print "STDOUT>", stdout
-    print "STDERR>", stderr
+    print("STDOUT>", stdout)
+    print("STDERR>", stderr)
     '''
 
     '''
     forge = Aireplay.forge_packet('/tmp/replay_dec-0605-060243.xor', \
                                   'A4:2B:8C:16:6B:3A', \
                                   '00:C0:CA:4E:CA:E0')
-    print forge
+    print(forge)
     '''
