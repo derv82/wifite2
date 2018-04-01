@@ -26,8 +26,14 @@ class Bully(Attack):
 
         self.target = target
 
-        self.cmd = [
-            "stdbuf", "-o0", # No buffer. See https://stackoverflow.com/a/40453613/7510292
+        self.cmd = []
+
+        if Process.exists('stdbuf'):
+            self.cmd.extend([
+                "stdbuf", "-o0" # No buffer. See https://stackoverflow.com/a/40453613/7510292
+            ])
+
+        self.cmd.extend([
             "bully",
             "--bssid", target.bssid,
             "--channel", target.channel,
@@ -36,7 +42,7 @@ class Bully(Attack):
             "-v", "4",
             "--pixiewps",
             Configuration.interface
-        ]
+        ])
 
         self.bully_proc = None
 
