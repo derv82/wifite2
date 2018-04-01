@@ -116,9 +116,9 @@ class Tshark(object):
         command = [
             'tshark',
             '-r', capfile, # Path to cap file
-            # Extract beacon frames
-            '-Y', 'wlan.fc.type_subtype == 0x08 || wlan.fc.type_subtype == 0x05',
             '-n', # Don't resolve addresses
+            # Extract beacon frames
+            '-Y', '"wlan.fc.type_subtype == 0x08 || wlan.fc.type_subtype == 0x05"',
         ]
         tshark = Process(command, devnull=False)
 
