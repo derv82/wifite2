@@ -4,6 +4,7 @@
 from ..util.process import Process
 from ..util.color import Color
 from ..tools.tshark import Tshark
+from ..tools.pyrit import Pyrit
 
 import re, os
 
@@ -67,9 +68,6 @@ class Handshake(object):
         return False
 
 
-    def tshark_bssid_essid_pairs(self):
-        '''Returns list of tuples: (bssid,essid) found in capfile'''
-
     def tshark_handshakes(self):
         ''' Returns True if tshark identifies a handshake, False otherwise '''
         tshark_bssids = Tshark.bssids_with_handshakes(self.capfile, bssid=self.bssid)
@@ -98,54 +96,9 @@ class Handshake(object):
         return []
 
 
-    def pyrit_command(self):
-        return [
-            'pyrit',
-            '-r', self.capfile,
-            'analyze'
-        ]
-
     def pyrit_handshakes(self):
-        ''' Returns True if pyrit identifies a handshake, False otherwise '''
-        if not Process.exists('pyrit'):
-            return []
-
-        bssid_essid_pairs = set()
-        hit_target = False
-        current_bssid = self.bssid
-        current_essid = self.essid
-        proc = Process(self.pyrit_command(), devnull=False)
-        for line in proc.stdout().split('\n'):
-            mac_regex = ('[a-zA-Z0-9]{2}:' * 6)[:-1]
-            match = re.search("^#\d+: AccessPoint (%s) \('(.*)'\):$"
-                % (mac_regex), line)
-            if match:
-                # We found a BSSID and ESSID
-                (bssid, essid) = match.groups()
-
-                # Compare to what we're searching for
-                if self.bssid and self.bssid.lower() == bssid.lower():
-                    current_essid = essid
-                    hit_target = True
-                    continue
-
-                elif self.essid and self.essid == essid:
-                    current_bssid = bssid
-                    hit_target = True
-                    continue
-
-                elif not self.bssid and not self.essid:
-                    # We don't know either
-                    current_bssid = bssid
-                    current_essid = essid
-                    hit_target = True
-                else:
-                    hit_Target = False # This AccessPoint is not what we're looking for
-            else:
-                # Line does not contain AccessPoint
-                if hit_target and ', good' in line:
-                    bssid_essid_pairs.add( (current_bssid, current_essid) )
-        return [x for x in bssid_essid_pairs]
+        ''' Returns list of BSSID,ESSID tuples if pyrit identifies a handshake'''
+        return Pyrit.bssid_essid_with_handshakes(self.capfile, bssid=self.bssid, essid=self.essid)
 
 
     def aircrack_handshakes(self):
