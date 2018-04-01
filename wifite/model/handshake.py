@@ -119,17 +119,10 @@ class Handshake(object):
         '''Prints analysis of handshake capfile'''
         self.divine_bssid_and_essid()
 
-        pairs = self.tshark_handshakes()
-        Handshake.print_pairs(pairs, self.capfile, 'tshark')
-
-        pairs = self.pyrit_handshakes()
-        Handshake.print_pairs(pairs, self.capfile, 'pyrit')
-
-        pairs = self.cowpatty_handshakes()
-        Handshake.print_pairs(pairs, self.capfile, 'cowpatty')
-
-        pairs = self.aircrack_handshakes()
-        Handshake.print_pairs(pairs, self.capfile, 'aircrack')
+        Handshake.print_pairs(self.tshark_handshakes(),   self.capfile, 'tshark')
+        Handshake.print_pairs(self.pyrit_handshakes(),    self.capfile, 'pyrit')
+        Handshake.print_pairs(self.cowpatty_handshakes(), self.capfile, 'cowpatty')
+        Handshake.print_pairs(self.aircrack_handshakes(), self.capfile, 'aircrack')
 
 
     def strip(self, outfile=None):
@@ -168,27 +161,21 @@ class Handshake(object):
             Prints out BSSID and/or ESSID given a list of tuples (bssid,essid)
         '''
         tool_str = ''
-        if tool:
+        if tool is not None:
             tool_str = '{C}%s{W}: ' % tool.rjust(8)
 
         if len(pairs) == 0:
-            Color.pl("{!} %s.cap file {R}does not{O} contain a valid handshake{W}"
-                % (tool_str))
+            Color.pl("{!} %s.cap file {R}does not{O} contain a valid handshake{W}" % (tool_str))
             return
 
         for (bssid, essid) in pairs:
+            out_str = '{+} %s.cap file {G}contains a valid handshake{W} for' % tool_str
             if bssid and essid:
-                Color.pl('{+} %s.cap file' % tool_str +
-                         ' {G}contains a valid handshake{W}' +
-                         ' for {G}%s{W} ({G}%s{W})' % (bssid, essid))
+                Color.pl('%s {G}%s{W} ({G}%s{W})' % (out_str, bssid, essid))
             elif bssid:
-                Color.pl('{+} %s.cap file' % tool_str +
-                         ' {G}contains a valid handshake{W}' +
-                         ' for {G}%s{W}' % bssid)
+                Color.pl('%s {G}%s{W}' % (out_str, bssid))
             elif essid:
-                Color.pl('{+} %s.cap file' % tool_str +
-                         ' {G}contains a valid handshake{W}' +
-                         ' for ({G}%s{W})' % essid)
+                Color.pl('%s ({G}%s{W})' % (out_str, essid))
 
 
 if __name__ == '__main__':
