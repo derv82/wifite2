@@ -199,7 +199,8 @@ class Scanner(object):
         chosen_targets = []
     
         for choice in raw_input(Color.s(input_str)).split(','):
-            if choice == 'all':
+            choice = choice.strip()
+            if choice.lower() == 'all':
                 chosen_targets = self.targets
                 break
             if '-' in choice:
