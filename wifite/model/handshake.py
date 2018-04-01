@@ -20,6 +20,12 @@ class Handshake(object):
             Sets this instances 'bssid' and 'essid' instance fields.
         '''
 
+        if self.bssid is None:
+            hs_regex = re.compile(r"^.*handshake_\w+_([0-9A-F\-]{17})_.*\.cap$", re.IGNORECASE)
+            match = hs_regex.match(self.capfile)
+            if match:
+                self.bssid = match.group(1).replace('-', ':')
+
         # Get list of bssid/essid pairs from cap file
         pairs = Tshark.bssid_essid_pairs(self.capfile, bssid=self.bssid)
 
