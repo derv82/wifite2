@@ -3,9 +3,9 @@
 
 from ..util.process import Process
 from ..util.color import Color
+from ..tools.tshark import Tshark
 
-import re
-import os
+import re, os
 
 class Handshake(object):
     def __init__(self, capfile, bssid=None, essid=None):
@@ -18,15 +18,15 @@ class Handshake(object):
             Tries to find BSSID and ESSID from cap file.
             Sets this instances 'bssid' and 'essid' instance fields.
         '''
+
         # Get list of bssid/essid pairs from cap file
-        pairs = self.tshark_bssid_essid_pairs()
+        pairs = Tshark.bssid_essid_pairs(self.capfile, bssid=self.bssid)
+
         if len(pairs) == 0:
-            # Find bssid/essid pairs that have handshakes in Pyrit
-            pairs = self.pyrit_handshakes()
+            pairs = self.pyrit_handshakes() # Find bssid/essid pairs that have handshakes in Pyrit
 
         if len(pairs) == 0 and not self.bssid and not self.essid:
-            # Tshark and Pyrit failed us, nothing else we can do.
-            raise Exception("Cannot find BSSID or ESSID in cap file")
+            raise Exception("Cannot find BSSID or ESSID in cap file") # Tshark and Pyrit failed us, nothing else we can do.
 
         if not self.essid and not self.bssid:
             # We do not know the bssid nor the essid
@@ -34,10 +34,8 @@ class Handshake(object):
             # HACK: Just use the first one we see
             self.bssid = pairs[0][0]
             self.essid = pairs[0][1]
-            Color.pl('{!} {O}Warning{W}:' +
-                ' {O}Arbitrarily selected' +
-                ' {R}bssid{O} {C}%s{O} and {R}essid{O} "{C}%s{O}"{W}'
-                    % (self.bssid, self.essid))
+            Color.pl('{!} {O}Warning{W}: {O}Arbitrarily selected ' +
+                    '{R}bssid{O} {C}%s{O} and {R}essid{O} "{C}%s{O}"{W}' % (self.bssid, self.essid))
 
         elif not self.bssid:
             # We already know essid
@@ -59,140 +57,23 @@ class Handshake(object):
         if not self.bssid or not self.essid:
             self.divine_bssid_and_essid()
 
-        if len(self.tshark_handshakes()) > 0:
-            return True
+        if len(self.tshark_handshakes()) > 0:   return True
+        if len(self.pyrit_handshakes()) > 0:    return True
 
-        if len(self.pyrit_handshakes()) > 0:
-            return True
-
-        if len(self.cowpatty_handshakes()) > 0:
-            return True
-
-        if len(self.aircrack_handshakes()) > 0:
-            return True
+        # TODO: Can we trust cowpatty & aircrack?
+        #if len(self.cowpatty_handshakes()) > 0: return True
+        #if len(self.aircrack_handshakes()) > 0: return True
 
         return False
 
 
     def tshark_bssid_essid_pairs(self):
-        '''
-            Scrapes capfile for beacon frames indicating the ESSID.
-            Returns list of tuples: (bssid,essid)
-        '''
-        if not Process.exists('tshark'):
-            return []
-
-        essids = set()
-
-        # Extract beacon frames from cap file
-        cmd = [
-            'tshark',
-            '-r', self.capfile,
-            '-R', 'wlan.fc.type_subtype == 0x08 || wlan.fc.type_subtype == 0x05',
-            '-2', # tshark: -R without -2 is deprecated.
-            '-n'
-        ]
-        proc = Process(cmd, devnull=False)
-        for line in proc.stdout().split('\n'):
-            # Extract src, dst, and essid
-            mac_regex = ('[a-zA-Z0-9]{2}:' * 6)[:-1]
-            match = re.search('(%s) [^ ]* (%s).*.*SSID=(.*)$'
-                % (mac_regex, mac_regex), line)
-            if match is None:
-                # Line doesn't contain src, dst, ssid
-                continue
-            (src, dst, essid) = match.groups()
-            if dst.lower() == "ff:ff:ff:ff:ff:ff": continue
-            if self.bssid:
-                # We know the BSSID, only return the ESSID for this BSSID.
-                if self.bssid.lower() == src.lower() or self.bssid.lower() == dst.lower():
-                    essids.add((src, essid))
-            else:
-                # We do not know BSSID, add it.
-                essids.add((src, essid))
-        # Return list of tuples
-        return [x for x in essids]
-
-
-    def tshark_command(self):
-        return [
-            'tshark',
-            '-r', self.capfile,
-            '-R', 'eapol',
-            '-n',
-            '-2' # 2-pass filtering, required when using -R in newer versions of tshark
-        ]
+        '''Returns list of tuples: (bssid,essid) found in capfile'''
 
     def tshark_handshakes(self):
         ''' Returns True if tshark identifies a handshake, False otherwise '''
-        if not Process.exists('tshark'):
-            return []
-
-        target_client_msg_nums = {}
-
-        # Dump EAPOL packets
-        proc = Process(self.tshark_command(), devnull=False)
-        for line in proc.stdout().split('\n'):
-            # Extract source mac, destination mac, and message numbers
-            mac_regex = ('[a-zA-Z0-9]{2}:' * 6)[:-1]
-            match = re.search('(%s) (?:->|→) (%s).*Message.*(\d).*(\d)'
-                % (mac_regex, mac_regex), line)
-            if match is None:
-                # Line doesn't contain src, dst, Message numbers
-                continue
-            (src, dst, index, ttl) = match.groups()
-            # "Message (index) of (ttl)"
-            index = int(index)
-            ttl = int(ttl)
-
-            if ttl != 4:
-                # Must be a 4-way handshake
-                continue
-
-            # Identify the client and target MAC addresses
-            if index % 2 == 1:
-                # First and Third messages
-                target = src
-                client = dst
-            else:
-                # Second and Fourth messages
-                client = src
-                target = dst
-
-            if self.bssid and self.bssid.lower() != target.lower():
-                # We know the BSSID and this msg was not for the target
-                continue
-
-            target_client_key = '%s,%s' % (target, client)
-
-            # Ensure all 4 messages are:
-            # Between the same client and target
-            # In numeric & chronological order (1,2,3,4)
-            if index == 1:
-                # First message, add to dict
-                target_client_msg_nums[target_client_key] = 1
-
-            elif target_client_key not in target_client_msg_nums:
-                # Not first message, we haven't gotten the first message yet
-                continue
-
-            elif index - 1 != target_client_msg_nums[target_client_key]:
-                # Message is not in sequence
-                continue
-
-            else:
-                # Message is > 1 and is received in-order
-                target_client_msg_nums[target_client_key] = index
-
-        bssids = set()
-        # Check if we have all 4 messages for the handshake between the same MACs
-        for (client_target, num) in target_client_msg_nums.items():
-            if num == 4:
-                # We got a handshake!
-                bssid = client_target.split(',')[0]
-                bssids.add(bssid)
-
-        return [(bssid, None) for bssid in bssids]
+        tshark_bssids = Tshark.bssids_with_handshakes(self.capfile, bssid=self.bssid)
+        return [(bssid, None) for bssid in tshark_bssids]
 
 
     def cowpatty_command(self):
@@ -259,8 +140,7 @@ class Handshake(object):
                     current_essid = essid
                     hit_target = True
                 else:
-                    # This AccessPoint is not what we're looking for
-                    hit_Target = False
+                    hit_Target = False # This AccessPoint is not what we're looking for
             else:
                 # Line does not contain AccessPoint
                 if hit_target and ', good' in line:
@@ -268,19 +148,22 @@ class Handshake(object):
         return [x for x in bssid_essid_pairs]
 
 
-    def aircrack_command(self):
-        return 'echo "" | aircrack-ng -a 2 -w - -b %s "%s"' % (self.bssid, self.capfile)
-
     def aircrack_handshakes(self):
+        '''Returns tuple (BSSID,None) if aircrack thinks self.capfile contains a handshake / can be cracked'''
         if not self.bssid:
-            return []
-        (stdout, stderr) = Process.call(self.aircrack_command())
+            return [] # Aircrack requires BSSID
+
+        command = 'echo "" | aircrack-ng -a 2 -w - -b %s "%s"' % (self.bssid, self.capfile)
+        (stdout, stderr) = Process.call(command)
+
         if 'passphrase not in dictionary' in stdout.lower():
             return [(self.bssid, None)]
         else:
             return []
 
+
     def analyze(self):
+        '''Prints analysis of handshake capfile'''
         self.divine_bssid_and_essid()
 
         pairs = self.tshark_handshakes()
@@ -314,8 +197,7 @@ class Handshake(object):
         cmd = [
             'tshark',
             '-r', self.capfile, # input file
-            '-R', 'wlan.fc.type_subtype == 0x08 || wlan.fc.type_subtype == 0x05 || eapol', # filter
-            '-2', # tshark: -R without -2 is deprecated.
+            '-Y', 'wlan.fc.type_subtype == 0x08 || wlan.fc.type_subtype == 0x05 || eapol', # filter
             '-w', outfile # output file
         ]
         proc = Process(cmd)
@@ -357,7 +239,23 @@ class Handshake(object):
 
 
 if __name__ == '__main__':
-    hs = Handshake('./tests/files/handshake_exists.cap', bssid='A4:2B:8C:16:6B:3A')
+    print('With BSSID & ESSID specified:')
+    hs = Handshake('./tests/files/handshake_has_1234.cap', bssid='18:d6:c7:6d:6b:18', essid='YZWifi')
+    hs.analyze()
+    print("has_hanshake() =", hs.has_handshake())
+
+    print('\nWith BSSID, but no ESSID specified:')
+    hs = Handshake('./tests/files/handshake_has_1234.cap', bssid='18:d6:c7:6d:6b:18')
+    hs.analyze()
+    print("has_hanshake() =", hs.has_handshake())
+
+    print('\nWith ESSID, but no BSSID specified:')
+    hs = Handshake('./tests/files/handshake_has_1234.cap', essid='YZWifi')
+    hs.analyze()
+    print("has_hanshake() =", hs.has_handshake())
+
+    print('\nWith neither BSSID nor ESSID specified:')
+    hs = Handshake('./tests/files/handshake_has_1234.cap')
     hs.analyze()
     print("has_hanshake() =", hs.has_handshake())
 
