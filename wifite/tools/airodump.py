@@ -237,6 +237,8 @@ class Airodump(object):
         result = []
         # Filter based on Encryption
         for target in targets:
+            if Configuration.clients_only and len(target.clients) == 0:
+                continue
             if 'WEP' in Configuration.encryption_filter and 'WEP' in target.encryption:
                 result.append(target)
             elif 'WPA' in Configuration.encryption_filter and 'WPA' in target.encryption:

@@ -118,6 +118,11 @@ class Arguments(object):
             help=self._verbose('Hides targets with ESSIDs that match the given text'))
         glob.add_argument('--ignore-essid', help=argparse.SUPPRESS, action='store', dest='ignore_essid', type=str)
 
+        glob.add_argument('--clients-only', '-co',
+            action='store_true',
+            dest='clients_only',
+            help=Color.s('Only show targets that have associated clients (default: {G}off{W})'))
+
         glob.add_argument('--showb',
             action='store_true',
             dest='show_bssids',
