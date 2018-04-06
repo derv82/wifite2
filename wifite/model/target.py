@@ -52,13 +52,17 @@ class Target(object):
 
         self.essid_known = True
         self.essid_len   = int(fields[12].strip())
-        self.essid       =     fields[13].strip()
-        if self.essid == '\\x00' * self.essid_len or self.essid.strip() == '':
+        self.essid       =     fields[13]
+        if self.essid == '\\x00' * self.essid_len or \
+                self.essid == 'x00' * self.essid_len or \
+                self.essid.strip() == '':
             # Don't display "\x00..." for hidden ESSIDs
             self.essid = None # '(%s)' % self.bssid
             self.essid_known = False
 
         self.wps = None
+
+        self.decloaked = False # If ESSID was hidden but we decloaked it.
 
         self.clients = []
 
@@ -84,7 +88,7 @@ class Target(object):
             Specifically formatted for the "scanning" table view.
         '''
 
-        max_essid_len = 25
+        max_essid_len = 24
         essid = self.essid if self.essid_known else "(%s)" % self.bssid
         # Trim ESSID (router name) if needed
         if len(essid) > max_essid_len:
@@ -98,6 +102,10 @@ class Target(object):
         else:
             # Unknown ESSID
             essid = Color.s("{O}%s" % essid)
+
+        # Add a "*" if we decloaked the ESSID
+        decloaked_char = '*' if self.decloaked else ' '
+        essid += Color.s("{P}%s" % decloaked_char)
 
         if show_bssid:
             bssid = Color.s('{O}%s  ' % self.bssid)

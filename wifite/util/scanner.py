@@ -48,6 +48,10 @@ class Scanner(object):
                         # We found the target we want
                         return
 
+                    for target in self.targets:
+                        if target.bssid in airodump.decloaked_bssids:
+                            target.decloaked = True
+
                     self.print_targets()
 
                     target_count = len(self.targets)
@@ -61,11 +65,6 @@ class Scanner(object):
                     outline += " {G}%d{W} target(s)," % target_count
                     outline += " {G}%d{W} client(s)." % client_count
                     outline += " {O}Ctrl+C{W} when ready "
-                    decloaked = airodump.decloaked_targets
-                    if len(decloaked) > 0:
-                        outline += "(decloaked"
-                        outline += " {C}%d{W} ESSIDs:" % len(decloaked)
-                        outline += " {G}%s{W}) " % ", ".join([x.essid for x in decloaked])
                     Color.clear_entire_line()
                     Color.p(outline)
 

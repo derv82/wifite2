@@ -12,7 +12,7 @@ class Configuration(object):
 
     initialized = False # Flag indicating config has been initialized
     temp_dir = None     # Temporary directory
-    version = '2.1.1'
+    version = '2.1.2'
 
     @staticmethod
     def initialize(load_interface=True):

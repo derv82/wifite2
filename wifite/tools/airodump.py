@@ -45,7 +45,7 @@ class Airodump(object):
 
         # For tracking decloaked APs (previously were hidden)
         self.decloaking = False
-        self.decloaked_targets = []
+        self.decloaked_bssids = set()
         self.decloaked_times = {} # Map of BSSID(str) -> epoch(int) of last deauth
 
 
@@ -161,7 +161,8 @@ class Airodump(object):
                 if old_target.bssid != new_target.bssid: continue
                 if new_target.essid_known and not old_target.essid_known:
                     # We decloaked a target!
-                    self.decloaked_targets.append(new_target)
+                    new_target.decloaked = True
+                    self.decloaked_bssids.add(new_target.bssid)
 
         if self.pid.poll() is not None:
             raise Exception('Airodump has stopped')
@@ -185,7 +186,11 @@ class Airodump(object):
                 if type(line) is bytes: line = line.decode('utf-8')
                 line = line.replace('\0', '')
                 lines.append(line)
-            csv_reader = csv.reader(lines, delimiter=',')
+            csv_reader = csv.reader(lines,
+                    delimiter=',',
+                    quoting=csv.QUOTE_ALL,
+                    skipinitialspace=True,
+                    escapechar='\\')
 
             hit_clients = False
             for row in csv_reader:
@@ -317,4 +322,3 @@ if __name__ == '__main__':
             Color.pl('   {G}%s %s' % (str(idx).rjust(3), target.to_str()))
 
     Configuration.delete_temp()
-
