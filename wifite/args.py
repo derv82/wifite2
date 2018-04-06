@@ -49,14 +49,14 @@ class Arguments(object):
             action='count',
             default=0,
             dest='verbose',
-            help=Color.s('Shows more options ({C}-h -v{W}). Prints tool outputs. (default: {G}quiet{W})'))
+            help=Color.s('Shows more options ({C}-h -v{W}). Prints commands and outputs. (default: {G}quiet{W})'))
 
         glob.add_argument('-i',
             action='store',
             dest='interface',
             metavar='[interface]',
             type=str,
-            help=Color.s('Wireless interface to use (default: {G}ask{W})'))
+            help=Color.s('Wireless interface to use (default: {G}choose first or ask{W})'))
 
         glob.add_argument('-c',
             action='store',
