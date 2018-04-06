@@ -34,9 +34,6 @@ class Reaver(Attack):
             '--bssid', self.target.bssid,
             '--channel', self.target.channel,
             '--pixie-dust', '1', # pixie-dust attack
-            '--timeout', '4', # Stop waiting after 4 seconds
-            #'--delay', '0',
-            #'--no-nacks',
             '--session', '/dev/null', # Don't restart session
             '-vv' # (very) verbose
         ]
