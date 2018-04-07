@@ -29,19 +29,18 @@ class AttackWPS(Attack):
             bully = Bully(self.target)
             bully.run()
             bully.stop()
-            if bully.crack_result is not None:
-                self.crack_result = bully.crack_result
-                self.success = True
-                return True
+            self.crack_result = bully.crack_result
+            self.success = self.crack_result is not None
+            return self.success
         else:
             reaver = Reaver(self.target)
             if reaver.is_pixiedust_supported():
                 # Reaver: Pixie-dust
                 reaver = Reaver(self.target)
-                if reaver.run_pixiedust_attack():
-                    self.crack_result = reaver.crack_result
-                    self.success = True
-                    return True
+                reaver.run()
+                self.crack_result = reaver.crack_result
+                self.success = self.crack_result is not None
+                return self.success
             else:
                 Color.pl("{!} {R}your version of 'reaver' does not support the {O}WPS pixie-dust attack{W}")
 

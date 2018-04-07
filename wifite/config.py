@@ -12,7 +12,7 @@ class Configuration(object):
 
     initialized = False # Flag indicating config has been initialized
     temp_dir = None     # Temporary directory
-    version = '2.1.2'
+    version = '2.1.3'
 
     @staticmethod
     def initialize(load_interface=True):
@@ -88,10 +88,8 @@ class Configuration(object):
         Configuration.wps_only    = False  # ONLY use WPS attacks on non-WEP networks
         Configuration.use_bully   = False  # Use bully instead of reaver
         Configuration.wps_pixie_timeout = 300      # Seconds to wait for PIN before WPS Pixie attack fails
-        Configuration.wps_pixie_step_timeout = 30  # Seconds to wait for a step to change before pixie fails
-        Configuration.wps_fail_threshold = 30  # Max number of failures
-        Configuration.wps_timeout_threshold = 30  # Max number of timeouts
-        Configuration.wps_skip_rate_limit = True # Skip rate-limited WPS APs
+        Configuration.wps_fail_threshold = 100     # Max number of failures
+        Configuration.wps_timeout_threshold = 100  # Max number of timeouts
 
         # Commands
         Configuration.show_cracked = False
@@ -214,31 +212,25 @@ class Configuration(object):
 
         # WPS
         if args.wps_filter:
-            Configuration.wps_filter  = args.wps_filter
+            Configuration.wps_filter = args.wps_filter
         if args.wps_only:
             Configuration.wps_only = True
             Color.pl('{+} {C}option:{W} will *only* attack non-WEP networks with {G}WPS attacks{W} (no handshake capture)')
         if args.no_wps:
-            Configuration.no_wps   = args.no_wps
+            Configuration.no_wps = args.no_wps
             Color.pl('{+} {C}option:{W} will {O}never{W} use {C}WPS attacks{W} (Pixie-Dust/PIN) on targets')
         if args.use_bully:
-            Configuration.use_bully   = args.use_bully
+            Configuration.use_bully = args.use_bully
             Color.pl('{+} {C}option:{W} use {C}bully{W} instead of {C}reaver{W} for WPS Attacks')
         if args.wps_pixie_timeout:
             Configuration.wps_pixie_timeout = args.wps_pixie_timeout
-            Color.pl('{+} {C}option:{W} WPS pixie-dust attack will timeout after {G}%d seconds{W}' % args.wps_pixie_timeout)
-        if args.wps_pixie_step_timeout:
-            Configuration.wps_pixie_step_timeout = args.wps_pixie_step_timeout
-            Color.pl('{+} {C}option:{W} Any step in the pixie-dust attack will timeout after {G}%d seconds{W}' % args.wps_pixie_step_timeout)
+            Color.pl('{+} {C}option:{W} WPS pixie-dust attack will fail after {O}%d seconds{W}' % args.wps_pixie_timeout)
         if args.wps_fail_threshold:
             Configuration.wps_fail_threshold = args.wps_fail_threshold
-            Color.pl('{+} {C}option:{W} will stop WPS attack after {G}%d failures{W}' % args.wps_fail_threshold)
+            Color.pl('{+} {C}option:{W} will stop WPS attack after {O}%d failures{W}' % args.wps_fail_threshold)
         if args.wps_timeout_threshold:
             Configuration.wps_timeout_threshold = args.wps_timeout_threshold
-            Color.pl('{+} {C}option:{W} will stop WPS attack after {G}%d timeouts{W}' % args.wps_timeout_threshold)
-        if args.wps_skip_rate_limit == False:
-            Configuration.wps_skip_rate_limit = False
-            Color.pl('{+} {C}option:{W} will {G}continue{W} WPS attacks when rate-limited')
+            Color.pl('{+} {C}option:{W} will stop WPS attack after {O}%d timeouts{W}' % args.wps_timeout_threshold)
 
         # Adjust encryption filter
         Configuration.encryption_filter = []
@@ -321,11 +313,14 @@ class Configuration(object):
         Macchanger.reset_if_changed()
         from .tools.airmon import Airmon
         if hasattr(Configuration, "interface") and Configuration.interface is not None and Airmon.base_interface is not None:
-            Airmon.stop(Configuration.interface)
-            Airmon.put_interface_up(Airmon.base_interface)
+            Color.pl('{!} Leaving interface {C}%s{W} in Monitor Mode.' % Configuration.interface)
+            Color.pl('{!} You can disable Monitor Mode when finished ({C}airmon-ng stop %s{W})' % Configuration.interface)
+            #Airmon.stop(Configuration.interface)
+            #Airmon.put_interface_up(Airmon.base_interface)
 
         if Airmon.killed_network_manager:
-            Airmon.start_network_manager()
+            Color.pl('{!} You can restart NetworkManager when finished ({C}service network-manager start{W})')
+            #Airmon.start_network_manager()
 
         exit(code)
 
