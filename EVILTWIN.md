@@ -21,7 +21,8 @@ Clients enter the password to the target AP. The Evil Twin then:
 3. If valid, all clients are deauthed from Evil Twin so they re-join the target AP.
 4. Otherwise, tell the user the password is invalid and to "try again". GOTO step #1.
 
-Below are all of the requirements/components that Wifite would need to start & maintain.
+Below are all of the requirements/components that Wifite would need for this feature.
+
 
 DHCP
 ====
@@ -54,6 +55,16 @@ I think steps 3-5 can be applied to a specific wireless card (interface).
 
 * TODO: More details on how to start the fake AP, assign IPs, DHCP, DNS, etc.
 * TODO: Should the Evil Twin spoof the real AP's hardware MAC address?
+
+
+DEAUTHING
+=========
+Easy to do using [MDK](https://tools.kali.org/wireless-attacks/mdk3) or `aireplay-ng`.
+
+I think MDK is a better tool for this job, but Wifite already requires the `aircrack` suite, so we should support both.
+
+TODO: Require MDK if it is miles-ahead of `aireplay-ng`
+TODO: Figure out MDK commands for persistent deauths; if we can provide a list of client MAC addresses & BSSIDs.
 
 
 Website
@@ -131,6 +142,7 @@ The websites served by the webserver is dynamic and depends on numerous variable
 
 We want to utilize the CGIHTTPServer in Python which would make some the logic easier to track.
 
+
 Spoofing Health Checks
 ----------------------
 Some devices (Android, iOS, Windows?) verify the AP has an internet connection by requesting some externally-hosted webpage.
@@ -145,6 +157,9 @@ Requirements:
 
 * Webserver detects requests to these health-check pages and returns the expected response (HTML, 204, etc).
 
+TODO: Go through Fluxion to know hostnames/paths and expected responses for Apple & Google devices.
+
+
 HTTPS
 -----
 What if Google, Apple requires HTTPS? Can we spoof the certs somehow? Or redirect to HTTP?
@@ -157,6 +172,8 @@ We can detect the router vendor based on the MAC address.
 If we have a fake login page for that vendor, we serve that.
 
 Otherwise we serve a generic login page.
+
+TODO: Can we use macchanger to detect vendor, or have some mapping of `BSSID_REGEX -> HTML_FILE`?
 
 
 Password Capture
@@ -178,6 +195,9 @@ This requires connecting to the target AP on an unused wireless card:
 2. Second card is Deauthing clients. This could be 'paused' while validating the password, but that may allow clients to connect to the target AP.
 3. ...A third wifi card may make this cleaner.
 
+TODO: The exact commands to verify Wifi passwords in Linux; I'm guessing we have to use `wpa_supplicant` and the like.
+TODO: Choose the fastest & most-relaiable method for verifying wifi paswords
+
 
 Evil Webserver & Deauth Communication
 -------------------------------------
@@ -195,6 +215,9 @@ So the webserver would need to maintain:
 3. Background process which is deauthing the above BSSIDs on a separate wireless card.
 
 I am not sure how feasible this is in Python; we could also resort to using static files to store the stage (e.g. JSON file with BSSIDs and current step -- e.g. "Shutting down" or "Waiing for password").
+
+TODO: See if the CGIHTTPServer has some way we can maintain/alter background threads.
+TODO: See how hard it would be to maintain state in the CGIHTTPServer (do we have to use the filesystem?)
 
 
 Success & Cleanup
