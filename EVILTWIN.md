@@ -50,11 +50,14 @@ Mainly we need to:
 5. Start DHCP to auto-assign IPs to incoming clients.
 6. Start deauthing clients of the real AP.
 
-
 I think steps 3-5 can be applied to a specific wireless card (interface).
 
 * TODO: More details on how to start the fake AP, assign IPs, DHCP, DNS, etc.
+   * Fluxion using `hostapd`: [code](https://github.com/FluxionNetwork/fluxion/blob/16965ec192eb87ae40c211d18bf11bb37951b155/lib/ap/hostapd.sh#L59-L64)
+   * Kali "Evil Wireless AP" (uses `hostapd`): [article](https://www.offensive-security.com/kali-linux/kali-linux-evil-wireless-access-point/)
+   * Fluxion using `airbase-ng`: [code](https://github.com/FluxionNetwork/fluxion/blob/16965ec192eb87ae40c211d18bf11bb37951b155/lib/ap/airbase-ng.sh#L76-L77)
 * TODO: Should the Evil Twin spoof the real AP's hardware MAC address?
+   * Yes, looks like that's what Fluxion does ([code](https://github.com/FluxionNetwork/fluxion/blob/16965ec192eb87ae40c211d18bf11bb37951b155/lib/ap/hostapd.sh#L66-L74)).
 
 
 DEAUTHING
