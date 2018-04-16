@@ -101,16 +101,7 @@ class Airmon(object):
         Color.p("{+} enabling {G}monitor mode{W} on {C}%s{W}... " % iface)
         (out,err) = Process.call('airmon-ng start %s' % iface)
 
-        # Find the interface put into monitor mode (if any)
-        mon_iface = None
-        for line in out.split('\n'):
-            if 'monitor mode' in line and 'enabled' in line and ' on ' in line:
-                mon_iface = line.split(' on ')[1]
-                if ']' in mon_iface:
-                    mon_iface = mon_iface.split(']')[1]
-                if ')' in mon_iface:
-                    mon_iface = mon_iface.split(')')[0]
-                break
+        mon_iface = Airmon._parse_airmon_start(out)
 
         if mon_iface is None:
             # Airmon did not enable monitor mode on an interface
@@ -136,6 +127,20 @@ class Airmon(object):
 
         Configuration.interface = mon_iface
 
+        return mon_iface
+
+    @staticmethod
+    def _parse_airmon_start(stdout):
+        # Find the interface put into monitor mode (if any)
+        mon_iface = None
+        for line in stdout.split('\n'):
+            if 'monitor mode' in line and 'enabled' in line and ' on ' in line:
+                mon_iface = line.split(' on ')[1]
+                if ']' in mon_iface:
+                    mon_iface = mon_iface.split(']')[1]
+                if ')' in mon_iface:
+                    mon_iface = mon_iface.split(')')[0]
+                break
         return mon_iface
 
 
