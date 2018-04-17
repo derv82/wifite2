@@ -66,6 +66,7 @@ Gleaned this info from:
 
 * ["Setting up wireless access point in Kali"](https://www.psattack.com/articles/20160410/setting-up-a-wireless-access-point-in-kali/) by PSAttack
 * ["Kali Linux Evil Wireless Access Point"](https://www.offensive-security.com/kali-linux/kali-linux-evil-wireless-access-point/) by OffensiveSecurity
+* ["SniffAir" hostapd script](https://github.com/Tylous/SniffAir/blob/master/module/hostapd.py)
 
 
 HOSTAPD
