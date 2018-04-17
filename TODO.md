@@ -4,6 +4,29 @@ This file is a braindump of ideas to improve Wifite2 (or forward-looking to "Wif
 
 ------------------------------------------------------
 
+### Better Dependency Handling
+I can rely on `pip` + `requirements.txt` for python libraries, but most of wifite's dependencies are installed programs.
+
+When a dependency is not found, Wifite should walk the user through installing all required dependencies, and maybe the optional dependencies as well.
+
+The dependency-installation walkthrough should provide or auto-execute the install commands (`git clone`, `wget | tar && ./config`, etc).
+
+Since we have a Python script for every dependency (under `wifite/tools/` or `wifite/util/`), we use Python's multiple-inheritance to achive this.
+
+Requirements:
+
+1. A base *Dependency* class
+   * `@abstractmethods` for `exists()`, `name()`, `install()`, `print_install()`
+2. Update all dependencies to inherit *Dependency*
+   * Override abstract methods
+3. Dependency-checker to run at Wifite startup.
+   * Check if all required dependencies exists.
+   * If required deps are missing, Prompt to install all (optional+required) or just required, or to continue w/o install with warning.
+   * If optional deps are missing, suggest `--install` without prompting.
+   * Otherwise continue silently.
+
+------------------------------------------------------
+
 ### Support Other Distributions (not just Kali x86/64)
 
 Off the top of my head:
