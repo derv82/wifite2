@@ -5,8 +5,8 @@ from ..model.attack import Attack
 from ..tools.airodump import Airodump
 from ..tools.aireplay import Aireplay, WEPAttackType
 from ..tools.aircrack import Aircrack
+from ..tools.ifconfig import Ifconfig
 from ..config import Configuration
-from ..model.interface import Interface
 from ..util.color import Color
 from ..util.input import raw_input
 from ..model.wep_result import CrackResultWEP
@@ -57,7 +57,7 @@ class AttackWEP(Attack):
                     if self.fake_auth():
                         # We successfully authenticated!
                         # Use our interface's MAC address for the attacks.
-                        client_mac = Interface.get_mac()
+                        client_mac = Ifconfig.get_mac(Configuration.interface)
                         # Keep us authenticated
                         fakeauth_proc = Aireplay(self.target, "fakeauth")
                     elif len(airodump_target.clients) == 0:

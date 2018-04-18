@@ -1,7 +1,6 @@
 #!/usr/bin/python2.7
 # -*- coding: utf-8 -*-
 
-from ..model.interface import Interface
 from ..tools.ifconfig import Ifconfig
 from ..tools.iwconfig import Iwconfig
 from ..util.process import Process
@@ -23,15 +22,16 @@ class AirmonIface(object):
 
     # Max length of fields.
     # Used for printing a table of interfaces.
-    PHY_LEN = 6
     INTERFACE_LEN = 12
+    PHY_LEN = 6
     DRIVER_LEN = 20
     CHIPSET_LEN = 30
 
     def __str__(self):
         ''' Colored string representation of interface '''
-        s = Color.s('{W}%s' % self.phy.ljust(self.PHY_LEN))
+        s = ''
         s += Color.s('{G}%s' % self.interface.ljust(self.INTERFACE_LEN))
+        s += Color.s('{W}%s' % self.phy.ljust(self.PHY_LEN))
         s += Color.s('{C}%s' % self.driver.ljust(self.DRIVER_LEN))
         s += Color.s('{W}%s' % self.chipset.ljust(self.CHIPSET_LEN))
         return s
@@ -39,13 +39,13 @@ class AirmonIface(object):
     @staticmethod
     def menu_header():
         ''' Colored header row for interfaces '''
-        s = '    '
-        s += 'PHY'.ljust(AirmonIface.PHY_LEN)
+        s = '    '  # Space for index #
         s += 'Interface'.ljust(AirmonIface.INTERFACE_LEN)
+        s += 'PHY'.ljust(AirmonIface.PHY_LEN)
         s += 'Driver'.ljust(AirmonIface.DRIVER_LEN)
         s += 'Chipset'.ljust(AirmonIface.CHIPSET_LEN)
         s += '\n'
-        s += '-' * (Interface.PHY_LEN + Interface.INTERFACE_LEN + Interface.DRIVER_LEN + Interface.CHIPSET_LEN + 3)
+        s += '-' * (AirmonIface.INTERFACE_LEN + AirmonIface.PHY_LEN + AirmonIface.DRIVER_LEN + AirmonIface.CHIPSET_LEN + 3)
         return s
 
 

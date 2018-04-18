@@ -1,7 +1,6 @@
 #!/usr/bin/python2.7
 # -*- coding: utf-8 -*-
 
-from ..model.interface import Interface
 from ..tools.ifconfig import Ifconfig
 from ..util.color import Color
 
