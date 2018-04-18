@@ -67,7 +67,7 @@ class Arguments(object):
         glob.add_argument('--channel', help=argparse.SUPPRESS, action='store', dest='channel', type=int)
 
         glob.add_argument('-mac',
-            '---random-mac',
+            '--random-mac',
             action='store_true',
             dest='random_mac',
             help=Color.s('Randomize wireless card MAC address (default: {G}off{W})'))

@@ -4,7 +4,9 @@
 class Iwconfig(object):
     @classmethod
     def exists(cls):
-        pass
+        from ..util.process import Process
+        return Process.exists('iwconfig')
+
 
     @classmethod
     def mode(cls, iface, mode_name):
@@ -14,6 +16,7 @@ class Iwconfig(object):
         pid.wait()
 
         return pid.poll()
+
 
     @classmethod
     def get_interfaces(cls, mode=None):
@@ -34,5 +37,6 @@ class Iwconfig(object):
 
             if mode is not None and 'Mode:{}'.format(mode) in line:
                 interfaces.add(iface)
+
         return list(interfaces)
 

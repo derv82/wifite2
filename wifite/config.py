@@ -1,18 +1,19 @@
 #!/usr/bin/python2.7
 # -*- coding: utf-8 -*-
 
+import os
+
 from .util.color import Color
 from .tools.macchanger import Macchanger
 
-import os
-
 class Configuration(object):
     ''' Stores configuration variables and functions for Wifite. '''
-    verbose = 0
+    version = '2.1.3'
 
     initialized = False # Flag indicating config has been initialized
     temp_dir = None     # Temporary directory
-    version = '2.1.3'
+    interface = None
+    verbose = 0
 
     @staticmethod
     def initialize(load_interface=True):
@@ -315,15 +316,18 @@ class Configuration(object):
         Configuration.delete_temp()
         Macchanger.reset_if_changed()
         from .tools.airmon import Airmon
-        if hasattr(Configuration, "interface") and Configuration.interface is not None and Airmon.base_interface is not None:
-            Color.pl('{!} Leaving interface {C}%s{W} in Monitor Mode.' % Configuration.interface)
-            Color.pl('{!} You can disable Monitor Mode when finished ({C}airmon-ng stop %s{W})' % Configuration.interface)
-            #Airmon.stop(Configuration.interface)
-            #Airmon.put_interface_up(Airmon.base_interface)
+        if Configuration.interface is not None and Airmon.base_interface is not None:
+            #Color.pl('{!} Leaving interface {C}%s{W} in Monitor Mode.' % Configuration.interface)
+            #Color.pl('{!} You can disable Monitor Mode when finished ({C}airmon-ng stop %s{W})' % Configuration.interface)
+
+            # Stop monitor mode
+            Airmon.stop(Configuration.interface)
+            # Bring original interface back up
+            Airmon.put_interface_up(Airmon.base_interface)
 
         if Airmon.killed_network_manager:
-            Color.pl('{!} You can restart NetworkManager when finished ({C}service network-manager start{W})')
-            #Airmon.start_network_manager()
+            #Color.pl('{!} You can restart NetworkManager when finished ({C}service network-manager start{W})')
+            Airmon.start_network_manager()
 
         exit(code)
 

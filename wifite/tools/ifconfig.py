@@ -18,7 +18,8 @@ class Ifconfig(object):
 
         pid = Process(command)
         pid.wait()
-        return pid.poll() == 0
+        if pid.poll() != 0:
+            raise Exception('Error putting interface %s up:\n%s\n%s' % (interface, pid.stdout(), pid.stderr()))
 
 
     @classmethod
@@ -26,15 +27,10 @@ class Ifconfig(object):
         '''Put interface down'''
         from ..util.process import Process
 
-        command = ['ifconfig', interface, 'down']
-        if type(args) is list:
-            command.extend(args)
-        elif type(args) is 'str':
-            command.append(args)
-
-        pid = Process(command)
+        pid = Process(['ifconfig', interface, 'down'])
         pid.wait()
-        return pid.poll() == 0
+        if pid.poll() != 0:
+            raise Exception('Error putting interface %s down:\n%s\n%s' % (interface, pid.stdout(), pid.stderr()))
 
 
     @classmethod
@@ -43,11 +39,17 @@ class Ifconfig(object):
 
         output = Process(['ifconfig', interface]).stdout()
 
-        mac_regex = ('[a-zA-Z0-9]{2}-' * 6)[:-1]
-        match = re.search(' (%s)' % mac_regex, output)
+        # Mac address separated by dashes
+        mac_dash_regex = ('[a-zA-Z0-9]{2}-' * 6)[:-1]
+        match = re.search(' ({})'.format(mac_dash_regex), output)
+        if match:
+            return match.group(1).replace('-', ':')
 
-        if not match:
-            raise Exception('Could not find the mac address for %s' % interface)
+        # Mac address separated by colons
+        mac_colon_regex = ('[a-zA-Z0-9]{2}:' * 6)[:-1]
+        match = re.search(' ({})'.format(mac_colon_regex), output)
+        if match:
+            return match.group(1)
 
-        return match.groups()[0].replace('-', ':')
+        raise Exception('Could not find the mac address for %s' % interface)
 
