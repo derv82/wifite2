@@ -1,0 +1,38 @@
+#!/usr/bin/python2.7
+# -*- coding: utf-8 -*-
+
+class Iwconfig(object):
+    @classmethod
+    def exists(cls):
+        pass
+
+    @classmethod
+    def mode(cls, iface, mode_name):
+        from ..util.process import Process
+
+        pid = Process(['iwconfig', iface, 'mode', mode_name])
+        pid.wait()
+
+        return pid.poll()
+
+    @classmethod
+    def get_interfaces(cls, mode=None):
+        from ..util.process import Process
+
+        interfaces = set()
+
+        (out, err) = Process.call('iwconfig')
+        for line in out.split('\n'):
+            if len(line) == 0: continue
+
+            if not line.startswith(' '):
+                iface = line.split(' ')[0]
+                if '\t' in iface:
+                    iface = iface.split('\t')[0]
+                if mode is None:
+                    interfaces.add(iface)
+
+            if mode is not None and 'Mode:{}'.format(mode) in line:
+                interfaces.add(iface)
+        return list(interfaces)
+

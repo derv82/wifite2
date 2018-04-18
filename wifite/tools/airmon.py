@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 
 from ..model.interface import Interface
+from ..tools.ifconfig import Ifconfig
+from ..tools.iwconfig import Iwconfig
 from ..util.process import Process
 from ..util.color import Color
 from ..util.input import raw_input
@@ -63,7 +65,10 @@ class Airmon(object):
 
     @staticmethod
     def start_baddriver(iface): #fix for bad drivers like the rtl8812AU
-        os.system("ifconfig %s down; iwconfig %s mode monitor; ifconfig %s up" % (iface, iface, iface))
+        Ifconfig.down(iface)
+        Iwconfig.mode(iface, 'monitor')
+        Ifconfig.up(iface)
+
         with open("/sys/class/net/" + iface + "/type", "r") as f:
             if (int(f.read()) == Airmon.ARPHRD_IEEE80211_RADIOTAP):
                 return iface
@@ -72,7 +77,10 @@ class Airmon(object):
 
     @staticmethod
     def stop_baddriver(iface):
-        os.system("ifconfig %s down; iwconfig %s mode managed; ifconfig %s up" % (iface, iface, iface))
+        Ifconfig.down(iface)
+        Iwconfig.mode(iface, 'managed')
+        Ifconfig.up(iface)
+
         with open("/sys/class/net/" + iface + "/type", "r") as f:
             if (int(f.read()) == Airmon.ARPHRD_ETHER): 
                 return iface
@@ -94,7 +102,7 @@ class Airmon(object):
         '''
         # Get interface name from input
         if type(iface) == Interface:
-            iface = iface.name
+            iface = iface.interface
         Airmon.base_interface = iface
 
         # Call airmon-ng
@@ -181,17 +189,7 @@ class Airmon(object):
             Returns:
                 List of interface names that are in monitor mode
         '''
-        interfaces = []
-        (out, err) = Process.call("iwconfig")
-        for line in out.split("\n"):
-            if len(line) == 0: continue
-            if line[0] != ' ':
-                iface = line.split(' ')[0]
-                if '\t' in iface:
-                    iface = iface.split('\t')[0]
-            if 'Mode:Monitor' in line and iface not in interfaces:
-                interfaces.append(iface)
-        return interfaces
+        return Iwconfig.get_interfaces(mode='Monitor')
 
 
     @staticmethod
@@ -242,11 +240,11 @@ class Airmon(object):
 
         iface = a.get(choice)
 
-        if a.get(choice).name in mon_ifaces:
-            Color.pl('{+} {G}%s{W} is already in monitor mode' % iface.name)
+        if a.get(choice).interface in mon_ifaces:
+            Color.pl('{+} {G}%s{W} is already in monitor mode' % iface.interface)
         else:
-            iface.name = Airmon.start(iface)
-        return iface.name
+            iface.interface = Airmon.start(iface)
+        return iface.interface
 
 
     @staticmethod
@@ -297,7 +295,7 @@ class Airmon(object):
     @staticmethod
     def put_interface_up(iface):
         Color.p("{!} {O}putting interface {R}%s up{O}..." % (iface))
-        (out,err) = Process.call('ifconfig %s up' % (iface))
+        Ifconfig.up(iface)
         Color.pl(" {R}done{W}")
 
     @staticmethod

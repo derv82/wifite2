@@ -1,6 +1,7 @@
 #!/usr/bin/python2.7
 # -*- coding: utf-8 -*-
 
+from ..tools.ifconfig import Ifconfig
 from ..util.color import Color
 
 import re
@@ -10,13 +11,6 @@ class Interface(object):
         Represents an 'interface' known by airmon-ng
     '''
 
-    # Max length of fields.
-    # Used for printing a table of interfaces.
-    PHY_LEN = 6
-    NAME_LEN = 12
-    DRIVER_LEN = 20
-    CHIPSET_LEN = 30
-
     def __init__(self, fields):
         '''
             Initializes & stores info about an interface.
@@ -24,7 +18,7 @@ class Interface(object):
             Args:
                 Fields - list of fields
                         0: PHY
-                        1: NAME
+                        1: INTERFACE
                         2: DRIVER
                         3: CHIPSET
         '''
@@ -38,42 +32,35 @@ class Interface(object):
         if len(fields) != 4:
             raise Exception("Expected 4, got %d in %s" % (len(fields), fields))
         self.phy = fields[0].strip()
-        self.name = fields[1].strip()
+        self.interface = fields[1].strip()
         self.driver = fields[2].strip()
         self.chipset = fields[3].strip()
 
+    # Max length of fields.
+    # Used for printing a table of interfaces.
+    PHY_LEN = 6
+    INTERFACE_LEN = 12
+    DRIVER_LEN = 20
+    CHIPSET_LEN = 30
+
     def __str__(self):
         ''' Colored string representation of interface '''
-        s = Color.s("{W}%s" % self.phy)
-        s += ' ' * max(Interface.PHY_LEN - len(self.phy), 0)
-
-        s += Color.s("{G}%s" % self.name)
-        s += ' ' * max(Interface.NAME_LEN - len(self.name), 0)
-
-        s += Color.s("{C}%s" % self.driver)
-        s += ' ' * max(Interface.DRIVER_LEN - len(self.driver), 0)
-
-        s += Color.s("{W}%s" % self.chipset)
-        s += ' ' * max(Interface.CHIPSET_LEN - len(self.chipset), 0)
+        s = Color.s('{W}%s' % self.phy.ljust(self.PHY_LEN))
+        s += Color.s('{G}%s' % self.interface.ljust(self.INTERFACE_LEN))
+        s += Color.s('{C}%s' % self.driver.ljust(self.DRIVER_LEN))
+        s += Color.s('{W}%s' % self.chipset.ljust(self.CHIPSET_LEN))
         return s
 
     @staticmethod
     def menu_header():
         ''' Colored header row for interfaces '''
         s = '    '
-        s += 'PHY'
-        s += ' ' * (Interface.PHY_LEN - len("PHY"))
-
-        s += 'Interface'
-        s += ' ' * (Interface.NAME_LEN - len("Interface"))
-        s += 'Driver'
-        s += ' ' * (Interface.DRIVER_LEN - len("Driver"))
-
-        s += 'Chipset'
-        s += ' ' * (Interface.CHIPSET_LEN - len("Chipset"))
-
-        s += '\n---'
-        s += '-' * (Interface.PHY_LEN + Interface.NAME_LEN + Interface.DRIVER_LEN + Interface.CHIPSET_LEN)
+        s += 'PHY'.ljust(Interface.PHY_LEN)
+        s += 'Interface'.ljust(Interface.INTERFACE_LEN)
+        s += 'Driver'.ljust(Interface.DRIVER_LEN)
+        s += 'Chipset'.ljust(Interface.CHIPSET_LEN)
+        s += '\n'
+        s += '-' * (Interface.PHY_LEN + Interface.INTERFACE_LEN + Interface.DRIVER_LEN + Interface.CHIPSET_LEN + 3)
         return s
 
     @staticmethod
@@ -87,14 +74,7 @@ class Interface(object):
         if iface is None:
             raise Exception('Interface must be defined (-i)')
 
-        output = Process(['ifconfig', iface]).stdout()
-        mac_regex = ('[a-zA-Z0-9]{2}-' * 6)[:-1]
-        match = re.search(' (%s)' % mac_regex, output)
-        if not match:
-            match = re.search('unspec (%s)' % mac_regex, output)
-            if not match:
-                raise Exception('Could not find the mac address for %s' % iface)
-        return match.groups()[0].replace('-', ':')
+        Ifconfig.get_mac(iface)
 
 if __name__ == '__main__':
     mac = Interface.get_mac()

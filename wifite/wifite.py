@@ -4,7 +4,7 @@
 try:
     from .config import Configuration
 except (ValueError, ImportError) as e:
-    raise Exception('You may need to run wifite from the root directory (which includes README.md)')
+    raise Exception('You may need to run wifite from the root directory (which includes README.md)', e)
 
 from .util.scanner import Scanner
 from .util.process import Process
@@ -43,7 +43,7 @@ class Wifite(object):
         elif Configuration.crack_handshake:
             CrackHandshake()
         else:
-            Configuration.get_interface()
+            Configuration.get_monitor_mode_interface()
             self.run()
 
     def dependency_check(self):

@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from ..model.interface import Interface
+from ..tools.ifconfig import Ifconfig
 from ..util.color import Color
 
 class Macchanger(object):
@@ -15,22 +16,22 @@ class Macchanger(object):
         from ..config import Configuration
         iface = Configuration.interface
         if type(iface) == Interface:
-            iface = iface.name
-        cls.original_mac = Interface.get_mac(iface)
+            iface = iface.interface
+        cls.original_mac = Ifconfig.get_mac(iface)
+        cls.is_init = True
 
     @classmethod
     def down_macch_up(cls, macch_option):
         cls.init()
+
         from ..util.process import Process
         from ..config import Configuration
         iface = Configuration.interface
 
-        cmd = ["ifconfig", iface, "down"]
         Color.clear_entire_line()
         Color.p("\r{+} {C}macchanger{W}: Taking interface {C}%s{W} down..." % iface)
-        ifdown = Process(cmd)
-        ifdown.wait()
-        if ifdown.poll() != 0:
+
+        if Ifconfig.down(iface) != 0:
             Color.pl("{!} {C}macchanger{W}: Error running %s" % " ".join(cmd))
             Color.pl("{!} Output: %s, %s" % (ifdown.stdout(), ifdown.stderr()))
             return False
@@ -45,12 +46,11 @@ class Macchanger(object):
             Color.pl("{!} Output: %s, %s" % (macch.stdout(), macch.stderr()))
             return False
 
-        cmd = ["ifconfig", iface, "up"]
         Color.clear_entire_line()
         Color.p("\r{+} {C}macchanger{W}: Bringing interface {C}%s{W} up..." % iface)
-        ifup = Process(cmd)
+
         ifup.wait()
-        if ifup.poll() != 0:
+        if Ifconfig.up(iface) != 0:
             Color.pl("{!} {C}macchanger{W}: Error running %s" % " ".join(cmd))
             Color.pl("{!} Output: %s, %s" % (ifup.stdout(), ifup.stderr()))
             return False
@@ -62,7 +62,7 @@ class Macchanger(object):
         if not cls.down_macch_up("-p"): return
         Color.pl("\r{+} {C}macchanger{W}: Resetting MAC address...")
         from ..config import Configuration
-        new_mac = Interface.get_mac(Configuration.interface)
+        new_mac = Ifconfig.get_mac(Configuration.interface)
         Color.clear_entire_line()
         Color.pl("\r{+} {C}macchanger{W}: Reset MAC address back to {C}%s{W}" % new_mac)
 
@@ -72,7 +72,7 @@ class Macchanger(object):
         if not cls.down_macch_up("-r"): return
         cls.is_changed = True
         from ..config import Configuration
-        new_mac = Interface.get_mac(Configuration.interface)
+        new_mac = Ifconfig.get_mac(Configuration.interface)
         Color.clear_entire_line()
         Color.pl("\r{+} {C}macchanger{W}: Changed MAC address to {C}%s{W}" % new_mac)
 

@@ -100,11 +100,11 @@ class Configuration(object):
         Configuration.load_from_arguments()
 
         if load_interface:
-            Configuration.get_interface()
+            Configuration.get_monitor_mode_interface()
 
 
     @staticmethod
-    def get_interface():
+    def get_monitor_mode_interface():
         if Configuration.interface is None:
             # Interface wasn't defined, select it!
             from .tools.airmon import Airmon
@@ -112,6 +112,9 @@ class Configuration(object):
             if Configuration.random_mac:
                 Macchanger.random()
 
+    @staticmethod
+    def get_wireless_interface():
+        pass
 
     @staticmethod
     def load_from_arguments():
