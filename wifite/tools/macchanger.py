@@ -49,7 +49,6 @@ class Macchanger(object):
         Color.clear_entire_line()
         Color.p("\r{+} {C}macchanger{W}: Bringing interface {C}%s{W} up..." % iface)
 
-        ifup.wait()
         if Ifconfig.up(iface) != 0:
             Color.pl("{!} {C}macchanger{W}: Error running %s" % " ".join(cmd))
             Color.pl("{!} Output: %s, %s" % (ifup.stdout(), ifup.stderr()))
