@@ -317,17 +317,17 @@ class Configuration(object):
         Macchanger.reset_if_changed()
         from .tools.airmon import Airmon
         if Configuration.interface is not None and Airmon.base_interface is not None:
-            #Color.pl('{!} Leaving interface {C}%s{W} in Monitor Mode.' % Configuration.interface)
-            #Color.pl('{!} You can disable Monitor Mode when finished ({C}airmon-ng stop %s{W})' % Configuration.interface)
+            Color.pl('{!} Leaving interface {C}%s{W} in Monitor Mode.' % Configuration.interface)
+            Color.pl('{!} You can disable Monitor Mode when finished ({C}airmon-ng stop %s{W})' % Configuration.interface)
 
             # Stop monitor mode
-            Airmon.stop(Configuration.interface)
+            #Airmon.stop(Configuration.interface)
             # Bring original interface back up
-            Airmon.put_interface_up(Airmon.base_interface)
+            #Airmon.put_interface_up(Airmon.base_interface)
 
         if Airmon.killed_network_manager:
-            #Color.pl('{!} You can restart NetworkManager when finished ({C}service network-manager start{W})')
-            Airmon.start_network_manager()
+            Color.pl('{!} You can restart NetworkManager when finished ({C}service network-manager start{W})')
+            #Airmon.start_network_manager()
 
         exit(code)
 
