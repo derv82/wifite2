@@ -6,7 +6,7 @@ import time
 class Attack(object):
     '''Contains functionality common to all attacks.'''
 
-    target_wait = 20
+    target_wait = 60
 
     def __init__(self, target):
         self.target = target

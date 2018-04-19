@@ -137,6 +137,7 @@ class AttackWEP(Attack):
                                 self.fake_auth()
                                 aircrack = Aircrack(ivs_file)
 
+                            '''
                             elif Configuration.wep_restart_aircrack > 0 and \
                                     aircrack.pid.running_time() > Configuration.wep_restart_aircrack:
                                 # Restart aircrack after X seconds
@@ -144,6 +145,7 @@ class AttackWEP(Attack):
                                 ivs_file = airodump.find_files(endswith='.ivs')[0]
                                 Color.pl('\n{+} {C}aircrack{W} ran for more than {C}%d{W} seconds, restarting' % Configuration.wep_restart_aircrack)
                                 aircrack = Aircrack(ivs_file)
+                            '''
 
 
                         if not aireplay.is_running():

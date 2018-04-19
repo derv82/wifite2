@@ -213,7 +213,7 @@ class Airmon(object):
 
         airmon_output = Process(['airmon-ng', 'stop', iface]).stdout()
 
-        disabled_iface = Airmon._parse_airmon_stop(airmon_output)
+        (disabled_iface, enabled_iface) = Airmon._parse_airmon_stop(airmon_output)
 
         if not disabled_iface and iface in Airmon.BAD_DRIVERS:
             Color.p('{O}"bad driver" detected{W} ')
@@ -223,6 +223,8 @@ class Airmon(object):
             Color.pl('{G}disabled %s{W}' % disabled_iface)
         else:
             Color.pl('{O}could not disable on {R}%s{W}' % iface)
+
+        return (disabled_iface, enabled_iface)
 
 
     @staticmethod
@@ -235,17 +237,25 @@ class Airmon(object):
         # airmon-ng 1.2rc1 output: wlan0mon (removed)
         removed_re = re.compile(r'([a-zA-Z0-9]+).*\(removed\)')
 
+        # Enabled interface: (mac80211 station mode vif enabled on [phy4]wlan0)
+        enabled_re = re.compile(r'\s*\(mac80211 station mode (?:vif )?enabled on (?:\[\w+\])?(\w+)\)\s*')
+
         disabled_iface = None
+        enabled_iface = None
         for line in airmon_output.split('\n'):
             matches = disabled_re.match(line)
             if matches:
-                return matches.group(1)
+                disabled_iface = matches.group(1)
 
             matches = removed_re.match(line)
             if matches:
-                return matches.group(1)
+                disabled_iface = matches.group(1)
 
-        return None
+            matches = enabled_re.match(line)
+            if matches:
+                enabled_iface = matches.group(1)
+
+        return (disabled_iface, enabled_iface)
 
 
     @staticmethod
@@ -386,4 +396,6 @@ class Airmon(object):
 if __name__ == '__main__':
     Airmon.terminate_conflicting_processes()
     iface = Airmon.ask()
-    Airmon.stop(iface)
+    (disabled_iface, enabled_iface) = Airmon.stop(iface)
+    print("Disabled:", disabled_iface)
+    print("Enabled:", enabled_iface)

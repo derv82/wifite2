@@ -10,11 +10,12 @@ class Ifconfig(object):
         '''Put interface up'''
         from ..util.process import Process
 
-        command = ['ifconfig', interface, 'up']
+        command = ['ifconfig', interface]
         if type(args) is list:
             command.extend(args)
         elif type(args) is 'str':
             command.append(args)
+        command.append('up')
 
         pid = Process(command)
         pid.wait()

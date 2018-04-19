@@ -222,7 +222,7 @@ class Aireplay(Thread):
                         if pps == "0":
                             self.status = "Waiting for packet..."
                         else:
-                            self.status = "Replaying packet @ %s/sec" % pps
+                            self.status = "Replaying @ %s/sec" % pps
                     pass
 
     def __del__(self):
