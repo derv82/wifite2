@@ -149,8 +149,8 @@ class Wifite(object):
                             from traceback import format_exc
                             Color.p('\n{!}    ')
                             err = format_exc().strip()
-                            err = err.replace('\n', '\n{!} {C}   ')
-                            err = err.replace('  File', '{W}File')
+                            err = err.replace('\n', '\n{W}{!} {W}   ')
+                            err = err.replace('  File', '{W}{D}File')
                             err = err.replace('  Exception: ', '{R}Exception: {O}')
                             Color.pl(err)
                     except KeyboardInterrupt:
@@ -181,8 +181,8 @@ class Wifite(object):
                     from traceback import format_exc
                     Color.p('\n{!}    ')
                     err = format_exc().strip()
-                    err = err.replace('\n', '\n{!} {C}   ')
-                    err = err.replace('  File', '{W}File')
+                    err = err.replace('\n', '\n{W}{!} {W}   ')
+                    err = err.replace('  File', '{W}{D}File')
                     err = err.replace('  Exception: ', '{R}Exception: {O}')
                     Color.pl(err)
             except KeyboardInterrupt:
@@ -243,8 +243,8 @@ def run():
             from traceback import format_exc
             Color.p('\n{!}    ')
             err = format_exc().strip()
-            err = err.replace('\n', '\n{!} {C}   ')
-            err = err.replace('  File', '{W}File')
+            err = err.replace('\n', '\n{W}{!} {W}   ')
+            err = err.replace('  File', '{W}{D}File')
             err = err.replace('  Exception: ', '{R}Exception: {O}')
             Color.pl(err)
 
