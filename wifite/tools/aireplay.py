@@ -150,7 +150,7 @@ class Aireplay(Thread):
                     matches = offset_re.match(line)
                     if matches:
                         self.xor_percent = matches.group(1)
-                        self.status = "Generating .xor (%s)..." % matches.group(1)
+                        self.status = "Generating .xor (%s)..." % self.xor_percent
 
                     # (DONE)   Saving keystream in replay_dec-0516-202246.xor
                     saving_re = re.compile(r"Saving keystream in (.*\.xor)")
@@ -207,7 +207,7 @@ class Aireplay(Thread):
                     saving_re = re.compile(r"Saving keystream in (.*\.xor)")
                     matches = saving_re.match(line)
                     if matches:
-                        self.status = 'saving keystream to %s' % saving_re.group(1)
+                        self.status = 'saving keystream to %s' % matches.group(1)
 
                     # XX:XX:XX  Now you can build a packet with packetforge-ng out of that 1500 bytes keystream
 

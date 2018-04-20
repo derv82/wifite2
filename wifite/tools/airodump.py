@@ -15,7 +15,7 @@ class Airodump(object):
 
     def __init__(self, interface=None, channel=None, encryption=None,\
                        wps=False, target_bssid=None, output_file_prefix='airodump',\
-                       ivs_only=False, skip_wps=False):
+                       ivs_only=False, skip_wps=False, delete_existing_files=True):
         '''Sets up airodump arguments, doesn't start process yet.'''
 
         Configuration.initialize()
@@ -46,6 +46,8 @@ class Airodump(object):
         self.decloaked_bssids = set()
         self.decloaked_times = {} # Map of BSSID(str) -> epoch(int) of last deauth
 
+        self.delete_existing_files = delete_existing_files
+
 
     def __enter__(self):
         '''
@@ -53,7 +55,8 @@ class Airodump(object):
         Called at start of 'with Airodump(...) as x:'
         Actually starts the airodump process.
         '''
-        self.delete_airodump_temp_files()
+        if self.delete_existing_files:
+            self.delete_airodump_temp_files(self.output_file_prefix)
 
         self.csv_file_prefix = Configuration.temp() + self.output_file_prefix
 
@@ -88,30 +91,35 @@ class Airodump(object):
         # Kill the process
         self.pid.interrupt()
 
-        # Delete temp files
-        self.delete_airodump_temp_files()
+        if self.delete_existing_files:
+            self.delete_airodump_temp_files(self.output_file_prefix)
 
 
     def find_files(self, endswith=None):
+        return self.find_files_by_output_prefix(self.output_file_prefix, endswith=endswith)
+
+    @classmethod
+    def find_files_by_output_prefix(cls, output_file_prefix, endswith=None):
         ''' Finds all files in the temp directory that start with the output_file_prefix '''
         result = []
         temp = Configuration.temp()
         for fil in os.listdir(temp):
-            if not fil.startswith(self.output_file_prefix):
+            if not fil.startswith(output_file_prefix):
                 continue
 
-            if not endswith or fil.endswith(endswith):
+            if endswith is None or fil.endswith(endswith):
                 result.append(os.path.join(temp, fil))
 
         return result
 
-    def delete_airodump_temp_files(self):
+    @classmethod
+    def delete_airodump_temp_files(cls, output_file_prefix):
         '''
         Deletes airodump* files in the temp directory.
         Also deletes replay_*.cap and *.xor files in pwd.
         '''
         # Remove all temp files
-        for fil in self.find_files():
+        for fil in cls.find_files_by_output_prefix(output_file_prefix):
             os.remove(fil)
 
         # Remove .cap and .xor files from pwd
@@ -119,12 +127,18 @@ class Airodump(object):
             if fil.startswith('replay_') and fil.endswith('.cap') or fil.endswith('.xor'):
                 os.remove(fil)
 
+        # Remove replay/cap/xor files from temp
+        temp_dir = Configuration.temp()
+        for fil in os.listdir(temp_dir):
+            if fil.startswith('replay_') and fil.endswith('.cap') or fil.endswith('.xor'):
+                os.remove(os.path.join(temp_dir, fil))
+
     def get_targets(self, apply_filter=True):
         ''' Parses airodump's CSV file, returns list of Targets '''
 
         # Find the .CSV file
         csv_filename = None
-        for fil in self.find_files(endswith='-01.csv'):
+        for fil in self.find_files(endswith='.csv'):
             csv_filename = fil  # Found the file
             break
 

