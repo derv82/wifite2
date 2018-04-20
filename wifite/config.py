@@ -62,6 +62,7 @@ class Configuration(object):
         Configuration.wep_restart_aircrack = 30  # Seconds to give aircrack to crack
                                                  # before restarting the process.
         Configuration.wep_crack_at_ivs = 10000   # Number of IVS to start cracking
+        Configuration.wep_keep_ivs = False       # Retain .ivs files across multiple attacks.
 
         # WPA variables
         Configuration.wpa_filter = False # Only attack WPA networks
@@ -187,6 +188,9 @@ class Configuration(object):
         if args.wep_restart_aircrack:
             Configuration.wep_restart_aircrack = args.wep_restart_aircrack
             Color.pl('{+} {C}option:{W} will restart aircrack every {G}%d seconds{W}' % args.wep_restart_aircrack)
+        if args.wep_keep_ivs:
+            Configuration.wep_keep_ivs = args.wep_keep_ivs
+            Color.pl('{+} {C}option:{W} keep .ivs files across multiple WEP attacks')
 
         # WPA
         if args.wpa_filter:

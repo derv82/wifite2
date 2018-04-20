@@ -37,6 +37,15 @@ class AttackWEP(Attack):
         replay_file = None
         airodump_target = None
 
+        previous_ivs = 0
+        current_ivs = 0
+        total_ivs = 0
+        keep_ivs = Configuration.wep_keep_ivs
+
+        # Clean up previous WEP sessions
+        if keep_ivs:
+            Airodump.delete_airodump_temp_files('wep')
+
         attacks_remaining = list(Configuration.wep_attacks)
         while len(attacks_remaining) > 0:
             attack_name = attacks_remaining.pop(0)
@@ -47,7 +56,8 @@ class AttackWEP(Attack):
                               target_bssid=self.target.bssid,
                               ivs_only=True, # Only capture IVs packets
                               skip_wps=True, # Don't check for WPS-compatibility
-                              output_file_prefix='wep') as airodump:
+                              output_file_prefix='wep',
+                              delete_existing_files=not keep_ivs) as airodump:
 
                     Color.clear_line()
                     Color.p('\r{+} {O}waiting{W} for target to appear...')
@@ -81,7 +91,7 @@ class AttackWEP(Attack):
                                         replay_file=replay_file)
 
                     time_unchanged_ivs = time.time() # Timestamp when IVs last changed
-                    previous_ivs = 0
+                    last_ivs_count = 0
 
                     # Loop until attack completes.
 
@@ -91,7 +101,12 @@ class AttackWEP(Attack):
                         if client_mac is None and len(airodump_target.clients) > 0:
                             client_mac = airodump_target.clients[0].station
 
-                        total_ivs = airodump_target.ivs
+                        if keep_ivs and current_ivs > airodump_target.ivs:
+                            # We now have less IVS than before; A new attack must have started.
+                            # Track how many we have in-total.
+                            previous_ivs += total_ivs
+                        current_ivs = airodump_target.ivs
+                        total_ivs = previous_ivs + current_ivs
 
                         status = "%d/{C}%d{W} IVs" % (total_ivs, Configuration.wep_crack_at_ivs)
                         if fakeauth_proc:
@@ -118,6 +133,9 @@ class AttackWEP(Attack):
                             self.crack_result = CrackResultWEP(self.target.bssid,
                                     self.target.essid, hex_key, ascii_key)
                             self.crack_result.dump()
+
+                            Airodump.delete_airodump_temp_files('wep')
+
                             self.success = True
                             return self.success
 
@@ -127,31 +145,26 @@ class AttackWEP(Attack):
 
                         # Check number of IVs, crack if necessary
                         if total_ivs > Configuration.wep_crack_at_ivs:
-                            if not aircrack:
+                            if not aircrack or not aircrack.is_running():
                                 # Aircrack hasn't started yet. Start it.
                                 ivs_files = airodump.find_files(endswith='.ivs')
+                                ivs_files.sort()
                                 if len(ivs_files) > 0:
-                                    aircrack = Aircrack(ivs_files[-1])
+                                    if not keep_ivs:
+                                        ivs_files = ivs_files[-1]  # Use most-recent .ivs file
+                                    aircrack = Aircrack(ivs_files)
 
-                            elif not aircrack.is_running():
-                                # Aircrack stopped running.
-                                #Color.pl('\n{+} {C}aircrack{W} stopped, restarting...')
-                                ivs_files = airodump.find_files(endswith='ivs')
-                                if len(ivs_files) > 0:
-                                    aircrack = Aircrack(ivs_files[-1])
-                                # TODO: Why do we need fakeauth when aircrack stops?
-                                #self.fake_auth()
-
-                            '''
                             elif Configuration.wep_restart_aircrack > 0 and \
                                     aircrack.pid.running_time() > Configuration.wep_restart_aircrack:
                                 # Restart aircrack after X seconds
+                                #Color.pl('\n{+} {C}aircrack{W} ran for more than {C}%d{W} seconds, restarting' % Configuration.wep_restart_aircrack)
                                 aircrack.stop()
                                 ivs_files = airodump.find_files(endswith='.ivs')
-                                Color.pl('\n{+} {C}aircrack{W} ran for more than {C}%d{W} seconds, restarting' % Configuration.wep_restart_aircrack)
+                                ivs_files.sort()
                                 if len(ivs_files) > 0:
-                                    aircrack = Aircrack(ivs_files[-1])
-                            '''
+                                    if not keep_ivs:
+                                        ivs_files = ivs_files[-1]  # Use most-recent .ivs file
+                                    aircrack = Aircrack(ivs_files)
 
 
                         if not aireplay.is_running():
@@ -186,6 +199,7 @@ class AttackWEP(Attack):
                                                         'forgedreplay',
                                                         client_mac=client_mac,
                                                         replay_file=replay_file)
+                                    time_unchanged_ivs = time.time()  # Reset unchanged IVs time (it may have taken a while to forge the packet)
                                     continue
                                 else:
                                     # Failed to forge packet. drop out
@@ -197,7 +211,7 @@ class AttackWEP(Attack):
                                 break # Continue to other attacks
 
                         # Check if IVs stopped flowing (same for > N seconds)
-                        if airodump_target.ivs > previous_ivs:
+                        if airodump_target.ivs > last_ivs_count:
                             time_unchanged_ivs = time.time()
                         elif Configuration.wep_restart_stale_ivs > 0 and \
                              attack_name != 'chopchop' and \
@@ -214,7 +228,7 @@ class AttackWEP(Attack):
                                                     client_mac=client_mac, \
                                                     replay_file=replay_file)
                                 time_unchanged_ivs = time.time()
-                        previous_ivs = airodump_target.ivs
+                        last_ivs_count = airodump_target.ivs
 
                         time.sleep(1)
                         continue
@@ -223,11 +237,19 @@ class AttackWEP(Attack):
             except KeyboardInterrupt:
                 if fakeauth_proc: fakeauth_proc.stop()
                 if len(attacks_remaining) == 0:
+                    if keep_ivs:
+                        Airodump.delete_airodump_temp_files('wep')
+
                     self.success = False
                     return self.success
+
                 if self.user_wants_to_stop(attack_name, attacks_remaining, airodump_target):
+                    if keep_ivs:
+                        Airodump.delete_airodump_temp_files('wep')
+
                     self.success = False
                     return self.success
+
             except Exception as e:
                 Color.pl("\n{!} {R}Error: {O}%s" % str(e))
                 if Configuration.verbose > 0 or Configuration.print_stack_traces:
@@ -242,6 +264,9 @@ class AttackWEP(Attack):
                 continue
             # End of big try-catch
         # End of for-each-attack-type loop
+
+        if keep_ivs:
+            Airodump.delete_airodump_temp_files('wep')
 
         self.success = False
         return self.success

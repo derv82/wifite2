@@ -159,6 +159,12 @@ class Arguments(object):
         wep.add_argument('--nofakeauth', help=argparse.SUPPRESS, action='store_true', dest='require_fakeauth')
         wep.add_argument('-nofakeauth', help=argparse.SUPPRESS, action='store_true', dest='require_fakeauth')
 
+        wep.add_argument('--keep-ivs',
+            action='store_true',
+            dest='wep_keep_ivs',
+            default=False,
+            help=Color.s('Retain .IVS files and reuse when cracking (default: {G}off{W})'))
+
         wep.add_argument('--pps',
             action='store',
             dest='wep_pps',
