@@ -1,4 +1,4 @@
-#!/usr/bin/python2.7
+#!/usr/bin/python3.7
 # -*- coding: utf-8 -*-
 
 try:
@@ -18,6 +18,18 @@ from .model.result import CrackResult
 from .model.handshake import Handshake
 from .tools.airmon import Airmon
 from .tools.airodump import Airodump
+from .tools.aircrack import Aircrack
+from .tools.aireplay import Aireplay
+from .tools.ifconfig import Ifconfig
+from .tools.iwconfig import Iwconfig
+from .tools.hostapd import Hostapd
+from .tools.dnsmasq import Dnsmasq
+from .tools.bully import Bully
+from .tools.reaver import Reaver
+from .tools.wash import Wash
+from .tools.pyrit import Pyrit
+from .tools.tshark import Tshark
+from .tools.macchanger import Macchanger
 
 import json
 import os
@@ -52,7 +64,18 @@ class Wifite(object):
     def dependency_check(self):
         ''' Check that required programs are installed '''
 
-        apps = [Airmon, Airodump] #, Iwconfig, Ifconfig, Aircrack, Aireplay, Airodump]
+        apps = [
+                # Aircrack
+                Airmon, Airodump, Aircrack, Aireplay, Airodump,
+                # wireless/net tools
+                Iwconfig, Ifconfig,
+                # WPS
+                Reaver, Bully,
+                # Cracking/handshakes
+                Pyrit, Tshark,
+                # Misc
+                Macchanger
+            ]
 
         if Configuration.use_eviltwin:
             apps.extend([Hostapd, Dnsmasq, Iptables])

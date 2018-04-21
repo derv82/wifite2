@@ -1,11 +1,15 @@
 #!/usr/bin/python2.7
 # -*- coding: utf-8 -*-
 
+from .dependency import Dependency
 from ..util.process import Process
 import re
 
-class Tshark(object):
+class Tshark(Dependency):
     ''' Wrapper for Tshark program. '''
+    dependency_required = False
+    dependency_name = 'tshark'
+    dependency_url = 'apt-get install wireshark'
 
     def __init__(self):
         pass

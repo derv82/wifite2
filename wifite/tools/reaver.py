@@ -1,18 +1,23 @@
 #!/usr/bin/python2.7
 # -*- coding: utf-8 -*-
 
+from .dependency import Dependency
+from .airodump import Airodump
+from .bully import Bully # for PSK retrieval
 from ..model.attack import Attack
 from ..config import Configuration
 from ..util.color import Color
 from ..util.process import Process
 from ..util.timer import Timer
-from ..tools.airodump import Airodump
-from ..tools.bully import Bully # for PSK retrieval
 from ..model.wps_result import CrackResultWPS
 
 import os, time, re
 
-class Reaver(Attack):
+class Reaver(Attack, Dependency):
+    dependency_required = False
+    dependency_name = 'reaver'
+    dependency_url = 'https://github.com/t6x/reaver-wps-fork-t6x'
+
     def __init__(self, target):
         super(Reaver, self).__init__(target)
 

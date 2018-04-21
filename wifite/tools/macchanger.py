@@ -1,10 +1,15 @@
 #!/usr/bin/python2.7
 # -*- coding: utf-8 -*-
 
+from .dependency import Dependency
 from ..tools.ifconfig import Ifconfig
 from ..util.color import Color
 
-class Macchanger(object):
+class Macchanger(Dependency):
+    dependency_required = False
+    dependency_name = 'macchanger'
+    dependency_url = 'apt-get install macchanger'
+
     is_changed = False
 
     @classmethod

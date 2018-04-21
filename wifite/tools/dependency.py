@@ -1,5 +1,5 @@
-from ..util.process import Process
-from ..util.color import Color
+#!/usr/bin/python2.7
+# -*- coding: utf-8 -*-
 
 class Dependency(object):
     required_attr_names = ['dependency_name', 'dependency_url', 'dependency_required']
@@ -16,6 +16,9 @@ class Dependency(object):
 
     @classmethod
     def fails_dependency_check(cls):
+        from ..util.color import Color
+        from ..util.process import Process
+
         if Process.exists(cls.dependency_name):
             return False
 

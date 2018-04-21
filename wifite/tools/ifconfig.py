@@ -3,7 +3,12 @@
 
 import re
 
-class Ifconfig(object):
+from .dependency import Dependency
+
+class Ifconfig(Dependency):
+    dependency_required = True
+    dependency_name = 'ifconfig'
+    dependency_url = 'apt-get install net-tools'
 
     @classmethod
     def up(cls, interface, args=[]):

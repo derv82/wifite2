@@ -1,7 +1,13 @@
 #!/usr/bin/python2.7
 # -*- coding: utf-8 -*-
 
-class Iwconfig(object):
+from .dependency import Dependency
+
+class Iwconfig(Dependency):
+    dependency_required = True
+    dependency_name = 'iwconfig'
+    dependency_url = 'apt-get install wireless-tools'
+
     @classmethod
     def exists(cls):
         from ..util.process import Process

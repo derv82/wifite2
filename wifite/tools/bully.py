@@ -1,9 +1,10 @@
 #!/usr/bin/python2.7
 # -*- coding: utf-8 -*-
 
+from .dependency import Dependency
+from .airodump import Airodump
 from ..model.attack import Attack
 from ..model.wps_result import CrackResultWPS
-from ..tools.airodump import Airodump
 from ..util.color import Color
 from ..util.timer import Timer
 from ..util.process import Process
@@ -12,7 +13,11 @@ from ..config import Configuration
 import os, time, re
 from threading import Thread
 
-class Bully(Attack):
+class Bully(Attack, Dependency):
+    dependency_required = False
+    dependency_name = 'bully'
+    dependency_url = 'https://github.com/aanarchyy/bully'
+
     def __init__(self, target):
         super(Bully, self).__init__(target)
         self.total_timeouts = 0

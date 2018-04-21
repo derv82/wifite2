@@ -57,7 +57,7 @@ class WEPAttackType(object):
 
 class Aireplay(Thread, Dependency):
     dependency_required = True
-    dependency_name = 'aircrack-ng'
+    dependency_name = 'aireplay-ng'
     dependency_url = 'https://www.aircrack-ng.org/install.html'
 
     def __init__(self, target, attack_type, client_mac=None, replay_file=None):
