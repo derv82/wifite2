@@ -1,6 +1,7 @@
 #!/usr/bin/python2.7
 # -*- coding: utf-8 -*-
 
+from .dependency import Dependency
 from ..config import Configuration
 from ..util.process import Process
 from ..util.timer import Timer
@@ -54,7 +55,11 @@ class WEPAttackType(object):
         return self.name
 
 
-class Aireplay(Thread):
+class Aireplay(Thread, Dependency):
+    dependency_required = True
+    dependency_name = 'aircrack-ng'
+    dependency_url = 'https://www.aircrack-ng.org/install.html'
+
     def __init__(self, target, attack_type, client_mac=None, replay_file=None):
         '''
             Starts aireplay process.

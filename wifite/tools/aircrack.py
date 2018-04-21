@@ -1,13 +1,18 @@
 #!/usr/bin/python2.7
 # -*- coding: utf-8 -*-
 
+from .dependency import Dependency
 from ..util.process import Process
 from ..util.input import xrange
 from ..config import Configuration
 
 import os
 
-class Aircrack(object):
+class Aircrack(Dependency):
+    dependency_required = True
+    dependency_name = 'aircrack-ng'
+    dependency_url = 'https://www.aircrack-ng.org/install.html'
+
     def __init__(self, ivs_file=None):
 
         self.cracked_file = os.path.abspath(

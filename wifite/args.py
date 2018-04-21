@@ -37,6 +37,9 @@ class Arguments(object):
         wps_group = parser.add_argument_group('WPS')
         self._add_wps_args(wps_group)
 
+        eviltwin_group = parser.add_argument_group('EVIL TWIN')
+        self._add_eviltwin_args(eviltwin_group)
+
         commands_group = parser.add_argument_group('COMMANDS')
         self._add_command_args(commands_group)
 
@@ -142,6 +145,15 @@ class Arguments(object):
             metavar="[num]",
             default=None,
             help=self._verbose('Number of deauth packets to send (default: {G}%d{W})' % self.config.num_deauths))
+
+
+    def _add_eviltwin_args(self, group):
+        group.add_argument('-ev',
+            '--eviltwin',
+            action='store_true',
+            dest='use_eviltwin',
+            help=Color.s('Use the "Evil Twin" attack against all targets (default: {G}off{W})'))
+        # TODO: Args to specify deauth interface, server port, etc.
 
 
     def _add_wep_args(self, wep):

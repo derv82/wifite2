@@ -1,8 +1,9 @@
 #!/usr/bin/python2.7
 # -*- coding: utf-8 -*-
 
-from ..tools.ifconfig import Ifconfig
-from ..tools.iwconfig import Iwconfig
+from .dependency import Dependency
+from .ifconfig import Ifconfig
+from .iwconfig import Iwconfig
 from ..util.process import Process
 from ..util.color import Color
 from ..util.input import raw_input
@@ -49,8 +50,12 @@ class AirmonIface(object):
         return s
 
 
-class Airmon(object):
+class Airmon(Dependency):
     ''' Wrapper around the 'airmon-ng' program '''
+    dependency_required = True
+    dependency_name = 'airmon-ng'
+    dependency_url = 'https://www.aircrack-ng.org/install.html'
+
     base_interface = None
     killed_network_manager = False
 
