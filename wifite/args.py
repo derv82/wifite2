@@ -148,7 +148,7 @@ class Arguments(object):
 
 
     def _add_eviltwin_args(self, group):
-        group.add_argument('-ev',
+        group.add_argument('-et',
             '--eviltwin',
             action='store_true',
             dest='use_eviltwin',

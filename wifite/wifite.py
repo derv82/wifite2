@@ -14,6 +14,7 @@ from .util.input import raw_input
 from .attack.wep import AttackWEP
 from .attack.wpa import AttackWPA
 from .attack.wps import AttackWPS
+from .attack.eviltwin import EvilTwinAttack
 from .model.result import CrackResult
 from .model.handshake import Handshake
 
@@ -158,7 +159,7 @@ class Wifite(object):
             # TODO: Check if Eviltwin attack is selected.
 
             if Configuration.use_eviltwin:
-                pass
+                attack = EvilTwinAttack(t)
 
             elif 'WEP' in t.encryption:
                 attack = AttackWEP(t)
