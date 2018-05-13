@@ -41,7 +41,7 @@ class Iwconfig(Dependency):
                 if mode is None:
                     interfaces.add(iface)
 
-            if mode is not None and 'Mode:{}'.format(mode) in line:
+            if mode is not None and 'mode:{}'.format(mode.lower()) in line.lower():
                 interfaces.add(iface)
 
         return list(interfaces)

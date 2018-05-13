@@ -4,6 +4,8 @@
 import os
 
 from .util.color import Color
+from .util.input import raw_input
+from .tools.iwconfig import Iwconfig
 from .tools.macchanger import Macchanger
 
 class Configuration(object):
@@ -55,8 +57,7 @@ class Configuration(object):
         # EvilTwin variables
         cls.use_eviltwin = False
         cls.eviltwin_port = 80
-        cls.eviltwin_deauth_iface = None
-        cls.eviltwin_fakeap_iface = None
+        cls.eviltwin_iface = None
 
         # WEP variables
         cls.wep_filter = False # Only attack WEP networks
@@ -122,9 +123,52 @@ class Configuration(object):
             if cls.random_mac:
                 Macchanger.random()
 
-    @staticmethod
-    def get_wireless_interface():
-        pass
+    @classmethod
+    def get_eviltwin_interface(cls):
+        if cls.eviltwin_iface is None:
+            Color.pl('\n{+} {G}Evil Twin attack{W}')
+            Color.p('{+} looking for wireless interfaces in "Managed" mode... ')
+
+            ifaces = Iwconfig.get_interfaces(mode='Managed')
+
+            if len(ifaces) == 0:
+                Color.pl('\n{!} {O}no other wireless interfaces in "Managed" mode!{W}')
+                raise Exception('eviltwin attack requires two wireless cards (1 monitor-mode, 1 managed-mode)')
+
+            Color.clear_entire_line()
+
+            while True:
+                # Ask user to select eviltwin interface
+                Color.pl('     select the interface for the {C}evil twin{W} access point:')
+                for index, iface in enumerate(ifaces, start=1):
+                    Color.pl('       {G}%d{W}. {C}%s{W}' % (index, iface))
+
+                question = '{+} enter number ({G}'
+                if len(ifaces) == 1:
+                    question += '1'
+                else:
+                    question += '1-%d' % len(ifaces)
+                question += '{W}): '
+                selection = raw_input(Color.s(question))
+
+                if selection.strip() in ifaces:
+                    selection = str(ifaces.index(selection.strip()) + 1)
+
+                elif not selection.isdigit():
+                    Color.pl('\n{!} {O}selection must be numeric{W}')
+                    continue
+
+                selection = int(selection)
+
+                if selection < 1 or selection > len(ifaces):
+                    Color.pl('\n{!} {O}selection must be between {R}1{O} and {R}%d{W}' % len(ifaces))
+                    continue
+
+                break
+
+            cls.eviltwin_iface = ifaces[selection - 1]
+
+        return cls.eviltwin_iface
 
     @classmethod
     def load_from_arguments(cls):
@@ -175,10 +219,23 @@ class Configuration(object):
             cls.kill_conflicting_processes = True
             Color.pl('{+} {C}option:{W} kill conflicting processes {G}enabled{W}')
 
+
         # EvilTwin
+        if args.eviltwin_iface:
+            # Check that eviltwin_iface exists in iwconfig
+            existing_ifaces = Iwconfig.get_interfaces()
+            if args.eviltwin_iface not in existing_ifaces:
+                raise Exception('Interface "%s" was not found by iwconfig (found %s)' % (args.eviltwin_iface, ','.join(existing_ifaces)))
+            # TODO: Put device into managed mode?
+
+            cls.eviltwin_iface = args.eviltwin_iface
+            Color.pl('{+} {C}option:{W} using {G}%s{W} to create fake AP for evil twin attacks' % cls.eviltwin_iface)
+
         if args.use_eviltwin:
+            # TODO: Or ask user to select a different wireless device?
             cls.use_eviltwin = True
-            Color.pl('{+} {C}option:{W} using {G}eviltwin attacks{W} against all targets')
+            Color.pl('{+} {C}option:{W} attacking all targets using {G}eviltwin attacks{W}')
+
 
         # WEP
         if args.wep_filter:

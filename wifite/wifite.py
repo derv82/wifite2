@@ -41,8 +41,10 @@ class Wifite(object):
 
         elif Configuration.check_handshake:
             self.check_handshake(Configuration.check_handshake)
+
         elif Configuration.crack_handshake:
             CrackHandshake()
+
         else:
             Configuration.get_monitor_mode_interface()
             self.run()
@@ -146,6 +148,10 @@ class Wifite(object):
         else:
             targets = s.select_targets()
 
+        if Configuration.use_eviltwin:
+            # Ask user to select interface if needed
+            Configuration.get_eviltwin_interface()
+
         attacked_targets = 0
         targets_remaining = len(targets)
         for idx, t in enumerate(targets, start=1):
@@ -159,7 +165,7 @@ class Wifite(object):
             # TODO: Check if Eviltwin attack is selected.
 
             if Configuration.use_eviltwin:
-                attack = EvilTwinAttack(t)
+                attack = EvilTwinAttack(t, Configuration.interface, Configuration.eviltwin_iface)
 
             elif 'WEP' in t.encryption:
                 attack = AttackWEP(t)

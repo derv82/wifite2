@@ -153,7 +153,15 @@ class Arguments(object):
             action='store_true',
             dest='use_eviltwin',
             help=Color.s('Use the "Evil Twin" attack against all targets (default: {G}off{W})'))
-        # TODO: Args to specify deauth interface, server port, etc.
+
+        group.add_argument('-eti',
+            '--evitwin-iface',
+            type=str,
+            dest='eviltwin_iface',
+            metavar='[iface]',
+            default=None,
+            help=Color.s('Wireless interface to use when creating the Fake AP (evil twin)'))
+        # TODO: Args to specify other options (server port, etc).
 
 
     def _add_wep_args(self, wep):

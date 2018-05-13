@@ -21,12 +21,12 @@ class AirmonIface(object):
         self.chipset = chipset
         self.mac_address = Ifconfig.get_mac(interface)
 
-    # Max length of fields.
-    # Used for printing a table of interfaces.
+    # Max length of fields. Used for printing a table of interfaces.
     INTERFACE_LEN = 12
     PHY_LEN = 6
     DRIVER_LEN = 20
     CHIPSET_LEN = 30
+
 
     def __str__(self):
         ''' Colored string representation of interface '''
@@ -36,6 +36,7 @@ class AirmonIface(object):
         s += Color.s('{C}%s' % self.driver.ljust(self.DRIVER_LEN))
         s += Color.s('{W}%s' % self.chipset.ljust(self.CHIPSET_LEN))
         return s
+
 
     @staticmethod
     def menu_header():
@@ -52,12 +53,13 @@ class AirmonIface(object):
 
 class Airmon(Dependency):
     ''' Wrapper around the 'airmon-ng' program '''
+
     dependency_required = True
     dependency_name = 'airmon-ng'
     dependency_url = 'https://www.aircrack-ng.org/install.html'
 
-    base_interface = None
-    killed_network_manager = False
+    base_interface = None  # Interface *before* it was put into monitor mode.
+    killed_network_manager = False  # If we killed network-manager
 
     # Drivers that need to be manually put into monitor mode
     BAD_DRIVERS = ['rtl8821au']
@@ -66,17 +68,15 @@ class Airmon(Dependency):
     ARPHRD_IEEE80211_RADIOTAP = 803 #monitor
 
     def __init__(self):
-        self.refresh()
-
-    def refresh(self):
-        ''' Get airmon-recognized interfaces '''
         self.interfaces = Airmon.get_interfaces()
+
 
     def print_menu(self):
         ''' Prints menu '''
         print(AirmonIface.menu_header())
         for idx, iface in enumerate(self.interfaces, start=1):
             Color.pl(" {G}%d{W}. %s" % (idx, iface))
+
 
     def get(self, index):
         ''' Gets interface at index (starts at 1) '''
@@ -105,6 +105,7 @@ class Airmon(Dependency):
 
         return interfaces
 
+
     @staticmethod
     def start_bad_driver(iface):
         '''
@@ -124,6 +125,7 @@ class Airmon(Dependency):
 
         return None
 
+
     @staticmethod
     def stop_bad_driver(iface):
         '''
@@ -142,6 +144,7 @@ class Airmon(Dependency):
                     return iface
 
         return None
+
 
     @staticmethod
     def start(iface):
@@ -197,15 +200,23 @@ class Airmon(Dependency):
 
         return enabled_iface
 
+
     @staticmethod
     def _parse_airmon_start(airmon_output):
-        '''Find the interface put into monitor mode (if any)'''
+        '''Returns the interface name that was put into monitor mode (if any)'''
 
         # airmon-ng output: (mac80211 monitor mode vif enabled for [phy10]wlan0 on [phy10]wlan0mon)
         enabled_re = re.compile(r'\s*\(mac80211 monitor mode (?:vif )?enabled for [^ ]+ on (?:\[\w+\])?(\w+)\)\s*')
 
+        # airmon-ng output from https://www.aircrack-ng.org/doku.php?id=iwlagn
+        enabled_re2 = re.compile(r'\s*\(monitor mode enabled on (\w+)\)')
+
         for line in airmon_output.split('\n'):
             matches = enabled_re.match(line)
+            if matches:
+                return matches.group(1)
+
+            matches = enabled_re2.match(line)
             if matches:
                 return matches.group(1)
 
@@ -275,15 +286,16 @@ class Airmon(Dependency):
 
         Airmon.terminate_conflicting_processes()
 
-        Color.pl('\n{+} looking for {C}wireless interfaces{W}')
+        Color.p('\n{+} looking for {C}wireless interfaces{W}... ')
         monitor_interfaces = Iwconfig.get_interfaces(mode='Monitor')
         if len(monitor_interfaces) == 1:
             # Assume we're using the device already in montior mode
             iface = monitor_interfaces[0]
-            Color.pl('     using interface {G}%s{W} (already in monitor mode)' % iface);
-            Color.pl('     you can specify the wireless interface using {C}-i wlan0{W}')
+            Color.pl('using interface {G}%s{W} (already in monitor mode)' % iface);
+            #Color.pl('     you can specify the wireless interface using {C}-i wlan0{W}')
             Airmon.base_interface = None
             return iface
+        Color.pl('')
 
         a = Airmon()
         count = len(a.interfaces)
@@ -364,6 +376,7 @@ class Airmon(Dependency):
         Ifconfig.up(iface)
         Color.pl(" {G}done{W}")
 
+
     @staticmethod
     def start_network_manager():
         Color.p("{!} {O}restarting {R}NetworkManager{O}...")
@@ -404,3 +417,4 @@ if __name__ == '__main__':
     (disabled_iface, enabled_iface) = Airmon.stop(iface)
     print("Disabled:", disabled_iface)
     print("Enabled:", enabled_iface)
+
