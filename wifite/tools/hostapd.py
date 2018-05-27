@@ -57,14 +57,13 @@ class Hostapd(Dependency):
         self.output_file = os.path.abspath(os.path.join(temp, 'hostapd.out'))
         self.output_write = open(self.output_file, 'a')
 
-        self.pid = Process([
-                self.process_name,
-                '-C', self.config_file,
-                '-i', self.interface
-            ],
-            stdout=self.output_write,
-            cwd=temp
-        )
+        command = [
+            self.process_name,
+            '-i', self.interface,
+            self.config_file
+        ]
+
+        self.pid = Process(command, stdout=self.output_write, cwd=temp)
 
 
     def stop(self):
