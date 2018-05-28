@@ -20,7 +20,8 @@ from .model.handshake import Handshake
 import json
 import os
 import sys
-
+reload(sys)
+sys.setdefaultencoding('utf-8')
 class Wifite(object):
 
     def main(self):
