@@ -55,9 +55,6 @@ class Wifite(object):
         from .tools.aireplay import Aireplay
         from .tools.ifconfig import Ifconfig
         from .tools.iwconfig import Iwconfig
-        from .tools.hostapd import Hostapd
-        from .tools.dnsmasq import Dnsmasq
-        from .tools.iptables import Iptables
         from .tools.bully import Bully
         from .tools.reaver import Reaver
         from .tools.wash import Wash
@@ -77,9 +74,6 @@ class Wifite(object):
                 # Misc
                 Macchanger
             ]
-
-        if Configuration.use_eviltwin:
-            apps.extend([Hostapd, Dnsmasq, Iptables])
 
         missing_required = any([app.fails_dependency_check() for app in apps])
 
