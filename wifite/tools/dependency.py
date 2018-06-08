@@ -9,7 +9,7 @@ class Dependency(object):
         for attr_name in cls.required_attr_names:
             if not attr_name in cls.__dict__:
                 raise NotImplementedError(
-                    "Attribute '{}' has not been overriden in class '{}'" \
+                    "Attribute '{}' has not been overridden in class '{}'" \
                     .format(attr_name, cls.__name__)
                 )
 

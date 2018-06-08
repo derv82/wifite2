@@ -11,7 +11,7 @@ When a dependency is not found, Wifite should walk the user through installing a
 
 The dependency-installation walkthrough should provide or auto-execute the install commands (`git clone`, `wget | tar && ./config`, etc).
 
-Since we have a Python script for every dependency (under `wifite/tools/` or `wifite/util/`), we use Python's multiple-inheritance to achive this.
+Since we have a Python script for every dependency (under `wifite/tools/` or `wifite/util/`), we use Python's multiple-inheritance to achieve this.
 
 Requirements:
 
@@ -243,7 +243,7 @@ Not "/py":
 
 **AIRCRACK**
 * Start aircrack-ng for WEP: Needs pcap file with IVS
-* Start aircrack-ng for WPA: Needs pcap file containig Handshake
+* Start aircrack-ng for WPA: Needs pcap file containing Handshake
 * Check status of aircrack-ng (`percenage`, `keys-tried`)
 * Return cracked key
 
