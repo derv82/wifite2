@@ -23,7 +23,7 @@ class TestHandshake(unittest.TestCase):
         hs = Handshake(hs_file, bssid='A4:2B:8C:16:6B:3A')
         try:
             hs.analyze()
-        except Exception, e:
+        except Exception:
             fail()
 
     def testHandshakeTshark(self):
