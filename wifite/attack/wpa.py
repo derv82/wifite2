@@ -187,8 +187,8 @@ class AttackWPA(Attack):
         current_key = ''
         while crack_proc.poll() is None:
             line = crack_proc.pid.stdout.readline()
-            match_nums = aircrack_nums_re.search(line)
-            match_keys = aircrack_key_re.search(line)
+            match_nums = aircrack_nums_re.search(line.decode('utf-8'))
+            match_keys = aircrack_key_re.search(line.decode('utf-8'))
             if match_nums:
                 num_tried = int(match_nums.group(1))
                 num_total = int(match_nums.group(2))
