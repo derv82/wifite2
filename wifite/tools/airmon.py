@@ -355,7 +355,10 @@ class Airmon(Dependency):
                 Airmon.killed_network_manager = True
             else:
                 Color.pl('{!} {R}terminating {O}conflicting process {R}%s{O} (PID {R}%s{O})' % (pname, pid))
-                os.kill(int(pid), signal.SIGTERM)
+                try:
+                    os.kill(int(pid), signal.SIGTERM)
+                except:
+                    pass
 
 
     @staticmethod
