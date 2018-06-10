@@ -1,4 +1,4 @@
-#!/usr/bin/python2.7
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 from wifite.tools.airodump import Airodump
