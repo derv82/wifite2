@@ -192,10 +192,9 @@ class Airodump(Dependency):
         '''Returns list of Target objects parsed from CSV file.'''
         targets = []
         import csv
-        with open(csv_filename, 'rb') as csvopen:
+        with open(csv_filename, 'r') as csvopen:
             lines = []
             for line in csvopen:
-                if type(line) is bytes: line = line.decode('utf-8')
                 line = line.replace('\0', '')
                 lines.append(line)
             csv_reader = csv.reader(lines,
