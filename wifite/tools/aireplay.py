@@ -204,7 +204,7 @@ class Aireplay(Thread, Dependency):
                     if 'Got RELAYED packet' in line:
                         self.status = 'got relayed packet'
 
-                    # XX:XX:XX  Thats our ARP packet!
+                    # XX:XX:XX  That's our ARP packet!
                     if 'Thats our ARP packet' in line:
                         self.status = 'relayed packet was our'
 

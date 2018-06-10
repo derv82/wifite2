@@ -29,7 +29,7 @@ class AttackWEP(Attack):
         '''
             Initiates full WEP attack.
             Including airodump-ng starting, cracking, etc.
-            Returns: True if attack is succesful, false otherwise
+            Returns: True if attack is successful, false otherwise
         '''
 
         aircrack = None # Aircrack process, not started yet
@@ -340,7 +340,7 @@ class AttackWEP(Attack):
         '''
             Attempts to fake-authenticate with target.
             Returns: True if successful,
-                     False is unsuccesful.
+                     False is unsuccessful.
         '''
         Color.p('\r{+} attempting {G}fake-authentication{W} with {C}%s{W}...' % self.target.bssid)
         fakeauth = Aireplay.fakeauth(self.target, timeout=AttackWEP.fakeauth_wait)
@@ -349,7 +349,7 @@ class AttackWEP(Attack):
         else:
             Color.pl(' {R}failed{W}')
             if Configuration.require_fakeauth:
-                # Fakeauth is requried, fail
+                # Fakeauth is required, fail
                 raise Exception(
                     'Fake-authenticate did not complete within' +
                     ' %d seconds' % AttackWEP.fakeauth_wait)

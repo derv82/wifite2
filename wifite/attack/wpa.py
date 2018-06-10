@@ -25,7 +25,7 @@ class AttackWPA(Attack):
 
     def run(self):
         '''
-            Initiates full WPA hanshake capture attack.
+            Initiates full WPA handshake capture attack.
         '''
 
         # Check if user only wants to run PixieDust attack
