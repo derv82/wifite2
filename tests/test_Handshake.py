@@ -5,6 +5,7 @@ import sys
 sys.path.insert(0, '..')
 
 from wifite.model.handshake import Handshake
+from wifite.util.process import Process
 
 import unittest
 
@@ -26,22 +27,26 @@ class TestHandshake(unittest.TestCase):
         except Exception:
             fail()
 
+    @unittest.skipUnless(Process.exists('tshark'), 'tshark is missing')
     def testHandshakeTshark(self):
         hs_file = self.getFile('handshake_exists.cap')
         hs = Handshake(hs_file, bssid='A4:2B:8C:16:6B:3A')
         assert(len(hs.tshark_handshakes()) > 0)
 
+    @unittest.skipUnless(Process.exists('pyrit'), 'pyrit is missing')
     def testHandshakePyrit(self):
         hs_file = self.getFile('handshake_exists.cap')
         hs = Handshake(hs_file, bssid='A4:2B:8C:16:6B:3A')
         assert(len(hs.pyrit_handshakes()) > 0)
 
+    @unittest.skipUnless(Process.exists('cowpatty'), 'cowpatty is missing')
     def testHandshakeCowpatty(self):
         hs_file = self.getFile('handshake_exists.cap')
         hs = Handshake(hs_file, bssid='A4:2B:8C:16:6B:3A')
         hs.divine_bssid_and_essid()
         assert(len(hs.cowpatty_handshakes()) > 0)
 
+    @unittest.skipUnless(Process.exists('aircrack-ng'), 'aircrack-ng is missing')
     def testHandshakeAircrack(self):
         hs_file = self.getFile('handshake_exists.cap')
         hs = Handshake(hs_file, bssid='A4:2B:8C:16:6B:3A')
