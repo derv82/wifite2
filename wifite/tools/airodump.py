@@ -149,6 +149,9 @@ class Airodump(Dependency):
         if csv_filename is None or not os.path.exists(csv_filename):
             return self.targets  # No file found
 
+        if self.pid.poll() is not None:
+            raise Exception('Airodump has stopped')
+
         targets = Airodump.get_targets_from_csv(csv_filename)
 
         # Check targets for WPS
@@ -177,9 +180,6 @@ class Airodump(Dependency):
                     # We decloaked a target!
                     new_target.decloaked = True
                     self.decloaked_bssids.add(new_target.bssid)
-
-        if self.pid.poll() is not None:
-            raise Exception('Airodump has stopped')
 
         self.targets = targets
         self.deauth_hidden_targets()
