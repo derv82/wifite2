@@ -56,9 +56,11 @@ class CrackHandshake(object):
         Color.pl("  {O}# JOHN: CPU or GPU-based cracking. Fast.")
         Color.pl("  {O}# Use --format=wpapsk-cuda (or wpapsk-opengl) to enable GPU acceleration")
         Color.pl("  {O}# See http://openwall.info/wiki/john/WPA-PSK for more info on this process")
-        Color.pl("  {G}aircrack-ng {W}-J hccap {C}%s{W}" % cap_file)
-        Color.pl("  {G}hccap2john {C}hccap.hccap {W}> {C}hccap.john{W}")
-        Color.pl("  {G}john {W}--wordlist {C}\"%s\" {W}--format=wpapsk {C}\"hccap.john\"{W}" % (self.wordlist))
+        Color.pl("  {G}aircrack-ng {W}-J hccap {C}%s{W}" % (cap_file))
+        Color.pl("  {G}hccap2john {C}hccap.hccap {W}> {C}%s.john{W}" % cap_file)
+        Color.pl("  {G}john {W}--wordlist {C}\"%s\" {W}--format=wpapsk {C}\"%s.john\"{W}" % (self.wordlist, cap_file))
+
+
 
     def print_oclhashcat(self, cap_file):
         Color.pl("")
