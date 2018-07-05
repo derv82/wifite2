@@ -34,7 +34,7 @@ What's gone in Wifite2?
 What's not new?
 ---------------
 
-* (Mostly) Backwards compatibile with the original `wifite`'s arguments.
+* (Mostly) Backwards compatible with the original `wifite`'s arguments.
 * Same text-based interface everyone knows and loves.
 
 Brief Feature List
@@ -71,7 +71,7 @@ Only the latest versions of these programs are supported:
 * `iwconfig`: For identifying wireless devices already in Monitor Mode.
 * `ifconfig`: For starting/stopping wireless devices.
 * `Aircrack-ng` suite, includes:
-   * `aircrack-ng`: For cracking WEP .cap files and and WPA handshake captures.
+   * `aircrack-ng`: For cracking WEP .cap files and WPA handshake captures.
    * `aireplay-ng`: For deauthing access points, replaying capture files, various WEP attacks.
    * `airmon-ng`: For enumerating and enabling Monitor Mode on wireless devices.
    * `airodump-ng`: For target scanning & capture file generation.
