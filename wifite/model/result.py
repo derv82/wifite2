@@ -89,6 +89,13 @@ class CrackResult(object):
                                     json['essid'],
                                     json['pin'],
                                     json['psk'])
+
+        elif json['type'] == 'PMKID':
+            from .pmkid_result import CrackResultPMKID
+            result = CrackResultPMKID(json['bssid'],
+                                      json['essid'],
+                                      json['pmkid'],
+                                      json['key'])
         result.date = json['date']
         return result
 

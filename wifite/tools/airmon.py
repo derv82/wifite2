@@ -138,7 +138,7 @@ class Airmon(Dependency):
         iface_type_path = os.path.join('/sys/class/net', iface, 'type')
         if os.path.exists(iface_type_path):
             with open(iface_type_path, 'r') as f:
-                if (int(f.read()) == Airmon.ARPHRD_ETHER): 
+                if (int(f.read()) == Airmon.ARPHRD_ETHER):
                     return iface
 
         return None
@@ -341,8 +341,11 @@ class Airmon(Dependency):
 
         if not Configuration.kill_conflicting_processes:
             # Don't kill processes, warn user
-            for pid, pname in pid_pnames:
-                Color.pl('{!} {O}conflicting process: {R}%s{O} (PID {R}%s{O})' % (pname, pid))
+            names_and_pids = ', '.join([
+                '{R}%s{O} (PID {R}%s{O})' % (pname, pid)
+                for pid, pname in pid_pnames
+            ])
+            Color.pl('{!} {O}conflicting processes: %s' % names_and_pids)
             Color.pl('{!} {O}if you have problems: {R}kill -9 PID{O} or re-run wifite with {R}--kill{O}){W}')
             return
 

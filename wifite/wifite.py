@@ -11,9 +11,7 @@ from .util.process import Process
 from .util.color import Color
 from .util.crack import CrackHandshake
 from .util.input import raw_input
-from .attack.wep import AttackWEP
-from .attack.wpa import AttackWPA
-from .attack.wps import AttackWPS
+from .attack.all import AttackAll
 from .model.result import CrackResult
 from .model.handshake import Handshake
 from .tools.dependency import Dependency
@@ -60,81 +58,7 @@ class Wifite(object):
         else:
             targets = s.select_targets()
 
-        attacked_targets = 0
-        targets_remaining = len(targets)
-        for idx, t in enumerate(targets, start=1):
-            attacked_targets += 1
-            targets_remaining -= 1
-
-            Color.pl('\n{+} ({G}%d{W}/{G}%d{W})' % (idx, len(targets)) +
-                     ' starting attacks against {C}%s{W} ({C}%s{W})'
-                % (t.bssid, t.essid if t.essid_known else "{O}ESSID unknown"))
-
-            # TODO: Check if Eviltwin attack is selected.
-
-            if Configuration.use_eviltwin:
-                pass
-
-            elif 'WEP' in t.encryption:
-                attack = AttackWEP(t)
-
-            elif 'WPA' in t.encryption:
-                # TODO: Move WPS+WPA decision to a combined attack
-                if t.wps:
-                    attack = AttackWPS(t)
-                    result = False
-                    try:
-                        result = attack.run()
-                    except Exception as e:
-                        Color.pl("\n{!} {R}Error: {O}%s" % str(e))
-                        if Configuration.verbose > 0 or Configuration.print_stack_traces:
-                            Color.pl('\n{!} {O}Full stack trace below')
-                            from traceback import format_exc
-                            Color.p('\n{!}    ')
-                            err = format_exc().strip()
-                            err = err.replace('\n', '\n{W}{!} {W}   ')
-                            err = err.replace('  File', '{W}{D}File')
-                            err = err.replace('  Exception: ', '{R}Exception: {O}')
-                            Color.pl(err)
-                    except KeyboardInterrupt:
-                        Color.pl('\n{!} {O}interrupted{W}\n')
-                        if not self.user_wants_to_continue(targets_remaining, 1):
-                            break
-
-                    if result and attack.success:
-                        # We cracked it.
-                        attack.crack_result.save()
-                        continue
-                    else:
-                        # WPS failed, try WPA handshake.
-                        attack = AttackWPA(t)
-                else:
-                    # Not using WPS, try WPA handshake.
-                    attack = AttackWPA(t)
-            else:
-                Color.pl("{!} {R}Error: {O}unable to attack: encryption not WEP or WPA")
-                continue
-
-            try:
-                attack.run()
-            except Exception as e:
-                Color.pl("\n{!} {R}Error: {O}%s" % str(e))
-                if Configuration.verbose > 0 or True:
-                    Color.pl('\n{!} {O}Full stack trace below')
-                    from traceback import format_exc
-                    Color.p('\n{!}    ')
-                    err = format_exc().strip()
-                    err = err.replace('\n', '\n{W}{!} {W}   ')
-                    err = err.replace('  File', '{W}{D}File')
-                    err = err.replace('  Exception: ', '{R}Exception: {O}')
-                    Color.pl(err)
-            except KeyboardInterrupt:
-                Color.pl('\n{!} {O}interrupted{W}\n')
-                if not self.user_wants_to_continue(targets_remaining):
-                    break
-
-            if attack.success:
-                attack.crack_result.save()
+        attacked_targets = AttackAll.attack_multiple(targets)
         Color.pl("{+} Finished attacking {C}%d{W} target(s), exiting" % attacked_targets)
 
 
