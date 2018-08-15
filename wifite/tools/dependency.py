@@ -48,6 +48,7 @@ class Dependency(object):
 
         if missing_required:
             Color.pl('{!} {R}required app(s) were not found, exiting.{W}')
+            import sys
             sys.exit(-1)
 
 
