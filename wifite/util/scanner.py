@@ -36,13 +36,16 @@ class Scanner(object):
                 while True:
                     if airodump.pid.poll() is not None:
                         # Airodump process died
-                        self.err_msg = '\r{!} {R}Airodump exited unexpectedly (Code: %d){O} Command: {W}%s' % (airodump.pid.poll(), " ".join(airodump.pid.command))
-                        raise KeyboardInterrupt
+                        return
 
-                    self.targets = airodump.get_targets()
+                    self.targets = airodump.get_targets(old_targets=self.targets)
 
                     if self.found_target():
                         # We found the target we want
+                        return
+
+                    if airodump.pid.poll() is not None:
+                        # Airodump process died
                         return
 
                     for target in self.targets:
@@ -69,6 +72,7 @@ class Scanner(object):
                         return
 
                     sleep(1)
+
         except KeyboardInterrupt:
             pass
 
@@ -193,7 +197,7 @@ class Scanner(object):
         input_str += ' or {G}all{W}: '
 
         chosen_targets = []
-    
+
         for choice in raw_input(Color.s(input_str)).split(','):
             choice = choice.strip()
             if choice.lower() == 'all':

@@ -161,7 +161,7 @@ class Tshark(Dependency):
         '''
 
         if not Tshark.exists():
-            raise Exception('Cannot detect WPS networks: Tshark does not exist')
+            raise ValueError('Cannot detect WPS networks: Tshark does not exist')
 
         command = [
             'tshark',

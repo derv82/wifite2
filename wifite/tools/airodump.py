@@ -137,7 +137,7 @@ class Airodump(Dependency):
             if fil.startswith('replay_') and fil.endswith('.cap') or fil.endswith('.xor'):
                 os.remove(os.path.join(temp_dir, fil))
 
-    def get_targets(self, apply_filter=True):
+    def get_targets(self, old_targets=[], apply_filter=True):
         ''' Parses airodump's CSV file, returns list of Targets '''
 
         # Find the .CSV file
@@ -150,13 +150,17 @@ class Airodump(Dependency):
             return self.targets  # No file found
 
         targets = Airodump.get_targets_from_csv(csv_filename)
+        for old_target in old_targets:
+            for target in targets:
+                if old_target.bssid == target.bssid:
+                    target.wps = old_target.wps
 
         # Check targets for WPS
         if not self.skip_wps:
             capfile = csv_filename[:-3] + 'cap'
             try:
                 Tshark.check_for_wps_and_update_targets(capfile, targets)
-            except Exception as e:
+            except ValueError:
                 # No tshark, or it failed. Fall-back to wash
                 Wash.check_for_wps_and_update_targets(capfile, targets)
 
@@ -177,9 +181,6 @@ class Airodump(Dependency):
                     # We decloaked a target!
                     new_target.decloaked = True
                     self.decloaked_bssids.add(new_target.bssid)
-
-        if self.pid.poll() is not None:
-            raise Exception('Airodump has stopped')
 
         self.targets = targets
         self.deauth_hidden_targets()
