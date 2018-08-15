@@ -40,6 +40,27 @@ class CrackResult(object):
             % (name, len(json)))
 
     @classmethod
+    def display(cls):
+        ''' Show cracked targets from cracked.txt '''
+        name = cls.cracked_file
+        if not os.path.exists(name):
+            Color.pl('{!} {O}file {C}%s{O} not found{W}' % name)
+            return
+
+        with open(name, 'r') as fid:
+            cracked_targets = loads(fid.read())
+
+        if len(cracked_targets) == 0:
+            Color.pl('{!} {R}no results found in {O}%s{W}' % name)
+        else:
+            Color.pl('{+} displaying {G}%d {C}cracked target(s){W}\n' % len(cracked_targets))
+            for item in cracked_targets:
+                cr = cls.load(item)
+                cr.dump()
+                Color.pl('')
+
+
+    @classmethod
     def load_all(cls):
         if not os.path.exists(cls.cracked_file): return []
         with open(cls.cracked_file, "r") as json_file:

@@ -16,8 +16,8 @@ from .attack.wpa import AttackWPA
 from .attack.wps import AttackWPS
 from .model.result import CrackResult
 from .model.handshake import Handshake
+from .tools.dependency import Dependency
 
-import json
 import os
 import sys
 
@@ -33,98 +33,19 @@ class Wifite(object):
 
         Configuration.initialize(load_interface=False)
 
-        self.dependency_check()
+        Dependency.run_dependency_check()
 
         if Configuration.show_cracked:
-            self.display_cracked()
+            CrackResult.display()
 
         elif Configuration.check_handshake:
-            self.check_handshake(Configuration.check_handshake)
+            Handshake.check()
         elif Configuration.crack_handshake:
             CrackHandshake()
         else:
             Configuration.get_monitor_mode_interface()
             self.run()
 
-
-    def dependency_check(self):
-        ''' Check that required programs are installed '''
-        from .tools.airmon import Airmon
-        from .tools.airodump import Airodump
-        from .tools.aircrack import Aircrack
-        from .tools.aireplay import Aireplay
-        from .tools.ifconfig import Ifconfig
-        from .tools.iwconfig import Iwconfig
-        from .tools.bully import Bully
-        from .tools.reaver import Reaver
-        from .tools.wash import Wash
-        from .tools.pyrit import Pyrit
-        from .tools.tshark import Tshark
-        from .tools.macchanger import Macchanger
-
-        apps = [
-                # Aircrack
-                Aircrack, #Airodump, Airmon, Aireplay,
-                # wireless/net tools
-                Iwconfig, Ifconfig,
-                # WPS
-                Reaver, Bully,
-                # Cracking/handshakes
-                Pyrit, Tshark,
-                # Misc
-                Macchanger
-            ]
-
-        missing_required = any([app.fails_dependency_check() for app in apps])
-
-        if missing_required:
-            Color.pl('{!} {R}required app(s) were not found, exiting.{W}')
-            sys.exit(-1)
-
-        #if missing_optional:
-        #    Color.pl('{!} {O}recommended app(s) were not found')
-        #    Color.pl('{!} {O}wifite may not work as expected{W}')
-
-    def display_cracked(self):
-        ''' Show cracked targets from cracked.txt '''
-        name = CrackResult.cracked_file
-        if not os.path.exists(name):
-            Color.pl('{!} {O}file {C}%s{O} not found{W}' % name)
-            return
-
-        with open(name, 'r') as fid:
-            cracked_targets = json.loads(fid.read())
-
-        if len(cracked_targets) == 0:
-            Color.pl('{!} {R}no results found in {O}%s{W}' % name)
-        else:
-            Color.pl('{+} displaying {G}%d {C}cracked target(s){W}\n' % len(cracked_targets))
-            for item in cracked_targets:
-                cr = CrackResult.load(item)
-                cr.dump()
-                Color.pl('')
-
-    def check_handshake(self, capfile):
-        ''' Analyzes .cap file for handshake '''
-        if capfile == '<all>':
-            Color.pl('{+} checking all handshakes in {G}"./hs"{W} directory\n')
-            try:
-                capfiles = [os.path.join('hs', x) for x in os.listdir('hs') if x.endswith('.cap')]
-            except OSError as e:
-                capfiles = []
-            if len(capfiles) == 0:
-                Color.pl('{!} {R}no .cap files found in {O}"./hs"{W}\n')
-        else:
-            capfiles = [capfile]
-
-        for capfile in capfiles:
-            Color.pl('{+} checking for handshake in .cap file {C}%s{W}' % capfile)
-            if not os.path.exists(capfile):
-                Color.pl('{!} {O}.cap file {C}%s{O} not found{W}' % capfile)
-                return
-            hs = Handshake(capfile, bssid=Configuration.target_bssid, essid=Configuration.target_essid)
-            hs.analyze()
-            Color.pl('')
 
     def run(self):
         '''
@@ -226,6 +147,7 @@ class Wifite(object):
 {G}`.  ·  `{GR}{D} /¯\ {W}{G}´  ·  .´  {C}{D}https://github.com/derv82/wifite2
 {G}  `     {GR}{D}/¯¯¯\{W}{G}     ´    {W}
 ''' % Configuration.version)
+
 
     def user_wants_to_continue(self, targets_remaining, attacks_remaining=0):
         ''' Asks user if attacks should continue onto other targets '''

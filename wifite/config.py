@@ -83,6 +83,7 @@ class Configuration(object):
         # Default dictionary for cracking
         cls.wordlist = None
         wordlists = [
+            './wordlist-top4800-probable.txt',
             '/usr/share/wfuzz/wordlist/fuzzdb/wordlists-user-passwd/passwds/phpbb.txt',
             '/usr/share/fuzzdb/wordlists-user-passwd/passwds/phpbb.txt',
             '/usr/share/wordlists/fern-wifi/common.txt'

@@ -14,6 +14,8 @@ import os
 class CrackHandshake(object):
     def __init__(self):
         self.wordlist = Configuration.wordlist or "path_to_wordlist_here"
+        if os.path.exists(self.wordlist):
+            self.wordlist = os.path.abspath(self.wordlist)
 
         handshake = self.choose_handshake()
         self.crack_handshake(handshake)
@@ -49,15 +51,17 @@ class CrackHandshake(object):
 
     def print_john(self, cap_file):
         Color.pl("")
-        if not Process.exists("john"):
-            Color.pl("  {R}john not found.");
-            Color.pl("  {O}More info on installing {R}John The Ripper{O} here: {C}http://www.openwall.com/john/{W}");
-            return
         Color.pl("  {O}# JOHN: CPU or GPU-based cracking. Fast.")
-        Color.pl("  {O}# Use --format=wpapsk-cuda (or wpapsk-opengl) to enable GPU acceleration")
-        Color.pl("  {O}# See http://openwall.info/wiki/john/WPA-PSK for more info on this process")
+        if not Process.exists("john"):
+            Color.pl("  {O}# {R}john{O} is not installed. More info on installing {R}John The Ripper{O} here: {C}http://www.openwall.com/john/{W}");
+        else:
+            Color.pl("  {O}# Use --format=wpapsk-cuda (or wpapsk-opengl) to enable GPU acceleration")
+            Color.pl("  {O}# See http://openwall.info/wiki/john/WPA-PSK for more info on this process")
+        Color.pl("  {O}# Generate hccap file:")
         Color.pl("  {G}aircrack-ng {W}-J hccap {C}%s{W}" % cap_file)
+        Color.pl("  {O}# Convert hccap file to john file:")
         Color.pl("  {G}hccap2john {C}hccap.hccap {W}> {C}hccap.john{W}")
+        Color.pl("  {O}# Crack john file:")
         Color.pl("  {G}john {W}--wordlist {C}\"%s\" {W}--format=wpapsk {C}\"hccap.john\"{W}" % (self.wordlist))
 
     def print_oclhashcat(self, cap_file):
@@ -67,18 +71,20 @@ class CrackHandshake(object):
             Color.pl("  {O}More info on installing {R}hashcat{O} here: {C}https://hashcat.net/hashcat/");
             return
         Color.pl("  {O}# HASHCAT: GPU-based cracking. Fast.")
-        Color.pl("  {O}# See {C}https://hashcat.net/wiki/doku.php?id=cracking_wpawpa2 {O}for more info")
+        Color.pl("  {O}#   See {C}https://hashcat.net/wiki/doku.php?id=cracking_wpawpa2 {O}for more info")
+        Color.pl("  {O}# Step 1: Generate .hccapx file")
 
         hccapx_file = "/tmp/generated.hccapx"
         cap2hccapx = "/usr/lib/hashcat-utils/cap2hccapx.bin"
         if os.path.exists(cap2hccapx):
-            Color.pl("  {G}%s {W}%s {C}%s{W}" % (cap2hccapx, cap_file, hccapx_file))
+            Color.pl("  {G}  %s {W}%s {C}%s{W}" % (cap2hccapx, cap_file, hccapx_file))
         else:
-            Color.pl("  {O}# Install hashcat-utils: {C}https://hashcat.net/wiki/doku.php?id=hashcat_utils")
-            Color.pl("  {C}cap2hccapx.bin {W}%s {C}%s{W}" % (cap_file, hccapx_file))
-            Color.pl("  {O}# OR visit https://hashcat.net/cap2hccapx to generate a .hccapx file{W}")
-            Color.pl("  {O}# Then click BROWSE -> %s -> CONVERT and save to %s" % (cap_file, hccapx_file))
+            Color.pl("  {O}#   Install {R}cap2hccapx{O}: {C}https://hashcat.net/wiki/doku.php?id=hashcat_utils")
+            Color.pl("  {G}./cap2hccapx.bin {W}%s {C}%s{W}" % (cap_file, hccapx_file))
+            Color.pl("  {O}#   OR visit https://hashcat.net/cap2hccapx to generate a .hccapx file{W}")
+            Color.pl("  {O}#   Then click BROWSE -> %s -> CONVERT and save to %s" % (cap_file, hccapx_file))
 
+        Color.pl("  {O}# Step 2: Crack the .hccapx file")
         Color.pl("  {G}hashcat {W}-m 2500 {C}%s %s{W}" % (hccapx_file, self.wordlist))
 
     def choose_handshake(self):

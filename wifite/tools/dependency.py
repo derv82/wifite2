@@ -15,6 +15,43 @@ class Dependency(object):
 
 
     @classmethod
+    def run_dependency_check(cls):
+        from ..util.color import Color
+
+        from .airmon import Airmon
+        from .airodump import Airodump
+        from .aircrack import Aircrack
+        from .aireplay import Aireplay
+        from .ifconfig import Ifconfig
+        from .iwconfig import Iwconfig
+        from .bully import Bully
+        from .reaver import Reaver
+        from .wash import Wash
+        from .pyrit import Pyrit
+        from .tshark import Tshark
+        from .macchanger import Macchanger
+
+        apps = [
+                # Aircrack
+                Aircrack, #Airodump, Airmon, Aireplay,
+                # wireless/net tools
+                Iwconfig, Ifconfig,
+                # WPS
+                Reaver, Bully,
+                # Cracking/handshakes
+                Pyrit, Tshark,
+                # Misc
+                Macchanger
+            ]
+
+        missing_required = any([app.fails_dependency_check() for app in apps])
+
+        if missing_required:
+            Color.pl('{!} {R}required app(s) were not found, exiting.{W}')
+            sys.exit(-1)
+
+
+    @classmethod
     def fails_dependency_check(cls):
         from ..util.color import Color
         from ..util.process import Process

@@ -184,6 +184,30 @@ class Handshake(object):
                 Color.pl('%s ({G}%s{W})' % (out_str, essid))
 
 
+    @staticmethod
+    def check():
+        ''' Analyzes .cap file(s) for handshake '''
+        from ..config import Configuration
+        if Configuration.check_handshake == '<all>':
+            Color.pl('{+} checking all handshakes in {G}"./hs"{W} directory\n')
+            try:
+                capfiles = [os.path.join('hs', x) for x in os.listdir('hs') if x.endswith('.cap')]
+            except OSError as e:
+                capfiles = []
+            if len(capfiles) == 0:
+                Color.pl('{!} {R}no .cap files found in {O}"./hs"{W}\n')
+        else:
+            capfiles = [Configuration.check_handshake]
+
+        for capfile in capfiles:
+            Color.pl('{+} checking for handshake in .cap file {C}%s{W}' % capfile)
+            if not os.path.exists(capfile):
+                Color.pl('{!} {O}.cap file {C}%s{O} not found{W}' % capfile)
+                return
+            hs = Handshake(capfile, bssid=Configuration.target_bssid, essid=Configuration.target_essid)
+            hs.analyze()
+            Color.pl('')
+
 if __name__ == '__main__':
     print('With BSSID & ESSID specified:')
     hs = Handshake('./tests/files/handshake_has_1234.cap', bssid='18:d6:c7:6d:6b:18', essid='YZWifi')
