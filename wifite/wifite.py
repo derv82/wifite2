@@ -64,7 +64,7 @@ class Wifite(object):
 
         apps = [
                 # Aircrack
-                Airmon, Airodump, Aircrack, Aireplay,
+                Aircrack, #Airodump, Airmon, Aireplay,
                 # wireless/net tools
                 Iwconfig, Ifconfig,
                 # WPS
