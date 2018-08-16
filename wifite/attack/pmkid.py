@@ -106,7 +106,7 @@ class AttackPMKID(Attack):
             return None  # No hash found.
 
         Color.clear_entire_line()
-        Color.pattack('PMKID', self.target, 'CAPTURE', '{G}Captured PMKID{W}\n')
+        Color.pattack('PMKID', self.target, 'CAPTURE', '{G}Captured PMKID{W}')
         pmkid_file = self.save_pmkid(pmkid_hash)
         return pmkid_file
 
@@ -118,8 +118,6 @@ class AttackPMKID(Attack):
         Returns:
             True if cracked, False otherwise.
         '''
-        with open(pmkid_file, 'r') as pmkid_handle:
-            Color.pl("\nPMKID_FILE:%s HASH:'%s'" % (pmkid_file, pmkid_handle.read()))
         # Check that wordlist exists before cracking.
         if Configuration.wordlist is None:
             Color.pl('\n{!} {O}Not cracking because {R}wordlist{O} is not found.')
@@ -140,9 +138,10 @@ class AttackPMKID(Attack):
         else:
             # Successfully cracked.
             Color.clear_entire_line()
-            Color.pattack('PMKID', self.target, 'CRACKED', '{C}Key: {G}%s{W}\n' % key)
+            Color.pattack('PMKID', self.target, 'CRACKED', '{C}Key: {G}%s{W}' % key)
             self.crack_result = CrackResultPMKID(self.target.bssid, self.target.essid,
                     pmkid_file, key)
+            Color.pl('\n')
             self.crack_result.dump()
             return True
 

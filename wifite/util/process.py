@@ -93,8 +93,11 @@ class Process(object):
             Ran when object is GC'd.
             If process is still running at this point, it should die.
         '''
-        if self.pid and self.pid.poll() is None:
-            self.interrupt()
+        try:
+            if self.pid and self.pid.poll() is None:
+                self.interrupt()
+        except AttributeError:
+            pass
 
     def stdout(self):
         ''' Waits for process to finish, returns stdout output '''
@@ -177,23 +180,30 @@ class Process(object):
 
 
 if __name__ == '__main__':
+    Configuration.initialize(False)
     p = Process('ls')
-    print(p.stdout(), p.stderr())
+    print(p.stdout())
+    print(p.stderr())
     p.interrupt()
 
     # Calling as list of arguments
     (out, err) = Process.call(['ls', '-lah'])
-    print(out, err)
+    print(out)
+    print(err)
 
     print('\n---------------------\n')
 
     # Calling as string
     (out, err) = Process.call('ls -l | head -2')
-    print(out, err)
+    print(out)
+    print(err)
 
-    print('"reaver" exists:', Process.exists('reaver'))
+    print('"reaver" exists: %s' % Process.exists('reaver'))
 
     # Test on never-ending process
     p = Process('yes')
+    print("Running yes...")
+    time.sleep(1)
+    print("yes should stop now")
     # After program loses reference to instance in 'p', process dies.
 

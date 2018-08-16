@@ -64,7 +64,7 @@ class Wifite(object):
 
     def print_banner(self):
         """ Displays ASCII art of the highest caliber.  """
-        Color.pl('''\
+        Color.pl(r'''
 {G}  .     {GR}{D}     {W}{G}     .    {W}
 {G}.´  ·  .{GR}{D}     {W}{G}.  ·  `.  {G}wifite {D}%s{W}
 {G}:  :  : {GR}{D} (¯) {W}{G} :  :  :  {W}{D}automated wireless auditor

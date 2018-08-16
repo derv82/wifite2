@@ -22,34 +22,38 @@ class Hashcat(Dependency):
             Key (str) if found; `None` if not found.
         '''
 
-        command = [
-            'hashcat',
-            '--force',
-            '--quiet',
-            '-m', '16800',
-            '-a', '0',  # TODO: Configure
-            '-w', '2',  # TODO: Configure
-            pmkid_file,
-            Configuration.wordlist
-        ]
+        # Run hashcat once normally, then with --show if it failed
+        # To catch cases where the password is already in the pot file.
+        for additional_arg in [ [], ['--show']]:
+            command = [
+                'hashcat',
+                '--force',
+                '--quiet',      # Only output the password if found.
+                '-m', '16800',  # WPA-PMKID-PBKDF2
+                '-a', '0',      # TODO: Configure
+                '-w', '2',      # TODO: Configure
+                pmkid_file,
+                Configuration.wordlist
+            ]
+            command.extend(additional_arg)
 
-        # TODO: Check status of hashcat (%); it's impossible with --quiet
+            # TODO: Check status of hashcat (%); it's impossible with --quiet
 
-        try:
-            hashcat_proc = Process(command)
-            hashcat_proc.wait()
-            stdout = hashcat_proc.stdout()
-        except KeyboardInterrupt:  # In case user gets impatient
-            Color.pl('\n{!} {O}Interrupted hashcat cracking{W}')
-            stdout = ''
+            try:
+                hashcat_proc = Process(command)
+                hashcat_proc.wait()
+                stdout = hashcat_proc.stdout()
+            except KeyboardInterrupt:  # In case user gets impatient
+                Color.pl('\n{!} {O}Interrupted hashcat cracking{W}')
+                stdout = ''
 
-        if ':' not in stdout:
-            # Failed
-            return None
-        else:
-            # Cracked
-            key = stdout.strip().split(':', 1)[1]
-            return key
+            if ':' not in stdout:
+                # Failed
+                continue
+            else:
+                # Cracked
+                key = stdout.strip().split(':', 1)[1]
+                return key
 
 
 class HcxDumpTool(Dependency):
