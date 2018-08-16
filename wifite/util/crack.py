@@ -60,9 +60,9 @@ class CrackHandshake(object):
         Color.pl("  {O}# Generate hccap file:")
         Color.pl("  {G}aircrack-ng {W}-J hccap {C}%s{W}" % cap_file)
         Color.pl("  {O}# Convert hccap file to john file:")
-        Color.pl("  {G}hccap2john {C}hccap.hccap {W}> {C}hccap.john{W}")
+        Color.pl("  {G}hccap2john {C}hccap.hccap {W}> {C}%s.john{W}" % cap_file)
         Color.pl("  {O}# Crack john file:")
-        Color.pl("  {G}john {W}--wordlist {C}\"%s\" {W}--format=wpapsk {C}\"hccap.john\"{W}" % (self.wordlist))
+        Color.pl("  {G}john {W}--wordlist {C}\"%s\" {W}--format=wpapsk {C}\"%s.john\"{W}" % (self.wordlist, cap_file))
 
     def print_oclhashcat(self, cap_file):
         Color.pl("")
