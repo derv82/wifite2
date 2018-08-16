@@ -55,7 +55,17 @@ class AttackPMKID(Attack):
 
 
     def run(self):
-        # TODO: Check ./hs/ for previously-captured PMKID, skip to crack if found.
+        # TODO: Check that we have all hashcat programs
+        dependencies = [
+            Hashcat.dependency_name,
+            HcxDumpTool.dependency_name,
+            HcxPcapTool.dependency_name
+        ]
+        missing_deps = [dep for dep in dependencies if not Process.exists(dep)]
+        if len(missing_deps) > 0:
+            Color.pl('{!} Skipping PMKID attack, missing required tools: {O}%s{W}' % ', '.join(missing_deps))
+            return False
+
         pmkid_file = None
 
         # Load exisitng has from filesystem
@@ -74,7 +84,8 @@ class AttackPMKID(Attack):
 
         # Crack it.
         self.success = self.crack_pmkid_file(pmkid_file)
-        return self.success
+
+        return True  # Even if we don't crack it, capturing a PMKID is "successful"
 
 
     def capture_pmkid(self):

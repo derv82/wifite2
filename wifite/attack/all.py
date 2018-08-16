@@ -55,8 +55,8 @@ class AttackAll(object):
         for attack in attacks:
             try:
                 result = attack.run()
-                if result and attack.success:
-                    break  # We cracked it.
+                if result:
+                    break  # Attack was successful, stop other attacks.
             except Exception as e:
                 Color.pl("\n{!} {R}Error: {O}%s" % str(e))
                 if Configuration.verbose > 0 or Configuration.print_stack_traces:

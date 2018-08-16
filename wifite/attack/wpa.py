@@ -250,7 +250,10 @@ class AttackWPA(Attack):
             os.mkdir(Configuration.wpa_handshake_dir)
 
         # Generate filesystem-safe filename from bssid, essid and date
-        essid_safe = re.sub('[^a-zA-Z0-9]', '', handshake.essid)
+        if handshake.essid and type(handshake.essid) is str:
+            essid_safe = re.sub('[^a-zA-Z0-9]', '', handshake.essid)
+        else:
+            essid_safe = 'UnknownEssid'
         bssid_safe = handshake.bssid.replace(':', '-')
         date = time.strftime('%Y-%m-%dT%H-%M-%S')
         cap_filename = 'handshake_%s_%s_%s.cap' % (essid_safe, bssid_safe, date)

@@ -30,6 +30,7 @@ class Dependency(object):
         from .pyrit import Pyrit
         from .tshark import Tshark
         from .macchanger import Macchanger
+        from .hashcat import Hashcat, HcxDumpTool, HcxPcapTool
 
         apps = [
                 # Aircrack
@@ -40,6 +41,8 @@ class Dependency(object):
                 Reaver, Bully,
                 # Cracking/handshakes
                 Pyrit, Tshark,
+                # Hashcat
+                Hashcat, HcxDumpTool, HcxPcapTool,
                 # Misc
                 Macchanger
             ]
@@ -61,11 +64,11 @@ class Dependency(object):
             return False
 
         if cls.dependency_required:
-            Color.pl('{!} {R}error: required app {O}%s{R} was not found' % cls.dependency_name)
-            Color.pl('     {W}install @ {C}%s{W}' % cls.dependency_url)
+            Color.pp('{!} {R}error: required app {O}%s{R} was not found' % cls.dependency_name)
+            Color.pl(' {W}install @ {C}%s{W}' % cls.dependency_url)
             return True
 
         else:
-            Color.pl('{!} {O}warning: recommended app {R}%s{O} was not found' % cls.dependency_name)
-            Color.pl('     {W}install @ {C}%s{W}' % cls.dependency_url)
+            Color.p('{!} {O}warning: recommended app {R}%s{O} was not found' % cls.dependency_name)
+            Color.pl(' {W}install @ {C}%s{W}' % cls.dependency_url)
             return False
