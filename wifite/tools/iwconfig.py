@@ -29,6 +29,7 @@ class Iwconfig(Dependency):
         from ..util.process import Process
 
         interfaces = set()
+        iface = ''
 
         (out, err) = Process.call('iwconfig')
         for line in out.split('\n'):
@@ -37,11 +38,16 @@ class Iwconfig(Dependency):
             if not line.startswith(' '):
                 iface = line.split(' ')[0]
                 if '\t' in iface:
-                    iface = iface.split('\t')[0]
+                    iface = iface.split('\t')[0].strip()
+
+                iface = iface.strip()
+                if len(iface) == 0:
+                    continue
+
                 if mode is None:
                     interfaces.add(iface)
 
-            if mode is not None and 'Mode:{}'.format(mode) in line:
+            if mode is not None and 'Mode:{}'.format(mode) in line and len(iface) > 0:
                 interfaces.add(iface)
 
         return list(interfaces)

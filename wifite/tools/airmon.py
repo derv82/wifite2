@@ -19,7 +19,6 @@ class AirmonIface(object):
         self.interface = interface
         self.driver = driver
         self.chipset = chipset
-        self.mac_address = Ifconfig.get_mac(interface)
 
     # Max length of fields.
     # Used for printing a table of interfaces.
@@ -100,6 +99,9 @@ class Airmon(Dependency):
             phy, interface, driver, chipset = matches.groups()
             if phy == 'PHY' or phy == 'Interface':
                 continue  # Header
+
+            if len(interface.strip()) == 0:
+                continue
 
             interfaces.append(AirmonIface(phy, interface, driver, chipset))
 

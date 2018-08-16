@@ -64,13 +64,12 @@ class Wifite(object):
 
     def print_banner(self):
         """ Displays ASCII art of the highest caliber.  """
-        Color.pl(r'''
-{G}  .     {GR}{D}     {W}{G}     .    {W}
-{G}.´  ·  .{GR}{D}     {W}{G}.  ·  `.  {G}wifite {D}%s{W}
-{G}:  :  : {GR}{D} (¯) {W}{G} :  :  :  {W}{D}automated wireless auditor
-{G}`.  ·  `{GR}{D} /¯\ {W}{G}´  ·  .´  {C}{D}https://github.com/derv82/wifite2
-{G}  `     {GR}{D}/¯¯¯\{W}{G}     ´    {W}
-''' % Configuration.version)
+        Color.pl(r'{G}  .     {GR}{D}     {W}{G}     .    {W}')
+        Color.pl(r'{G}.´  ·  .{GR}{D}     {W}{G}.  ·  `.  {G}wifite {D}%s{W}' % Configuration.version)
+        Color.pl(r'{G}:  :  : {GR}{D} (¯) {W}{G} :  :  :  {W}{D}automated wireless auditor{W}')
+        Color.pl(r'{G}`.  ·  `{GR}{D} /¯\ {W}{G}´  ·  .´  {C}{D}https://github.com/derv82/wifite2{W}')
+        Color.pl(r'{G}  `     {GR}{D}/¯¯¯\{W}{G}     ´    {W}')
+        Color.pl('')
 
 
     def user_wants_to_continue(self, targets_remaining, attacks_remaining=0):
