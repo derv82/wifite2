@@ -5,11 +5,10 @@ from ..util.color import Color
 from .result import CrackResult
 
 class CrackResultPMKID(CrackResult):
-    def __init__(self, bssid, essid, pmkid_hash, pmkid_file, key):
+    def __init__(self, bssid, essid, pmkid_file, key):
         self.result_type = 'PMKID'
         self.bssid = bssid
         self.essid = essid
-        self.pmkid_hash = pmkid_hash
         self.pmkid_file = pmkid_file
         self.key = key
         super(CrackResultPMKID, self).__init__()
@@ -23,9 +22,6 @@ class CrackResultPMKID(CrackResult):
                 ('Access Point BSSID'.rjust(19), self.bssid))
         Color.pl('{+} %s: {C}%s{W}' %
             ('Encryption'.rjust(19), self.result_type))
-        if self.pmkid_hash:
-            Color.pl('{+} %s: {C}%s{W}' %
-                ('PMKID Hash'.rjust(19), self.pmkid_hash))
         if self.pmkid_file:
             Color.pl('{+} %s: {C}%s{W}' %
                 ('PMKID File'.rjust(19), self.pmkid_file))
@@ -41,15 +37,14 @@ class CrackResultPMKID(CrackResult):
             'essid' : self.essid,
             'bssid' : self.bssid,
             'key'   : self.key,
-            'pmkid_hash' : self.pmkid_hash,
             'pmkid_file' : self.pmkid_file
         }
 
 if __name__ == '__main__':
-    w = CrackResultPMKID('AA:BB:CC:DD:EE:FF', 'Test Router', 'abc*def*ghi*jkl', 'hs/pmkid_blah-123213.16800', 'abcd1234')
+    w = CrackResultPMKID('AA:BB:CC:DD:EE:FF', 'Test Router', 'hs/pmkid_blah-123213.16800', 'abcd1234')
     w.dump()
 
-    w = CrackResultPMKID('AA:BB:CC:DD:EE:FF', 'Test Router', 'abc*def*ghi*jkl', 'hs/pmkid_blah-123213.16800', 'Key')
+    w = CrackResultPMKID('AA:BB:CC:DD:EE:FF', 'Test Router', 'hs/pmkid_blah-123213.16800', 'Key')
     print('\n')
     w.dump()
     w.save()

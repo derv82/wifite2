@@ -24,8 +24,60 @@ class AttackPMKID(Attack):
         self.pcapng_file = Configuration.temp('pmkid.pcapng')
 
 
+    def get_existing_pmkid_file(self, bssid):
+        '''
+        Load PMKID Hash from a previously-captured hash in ./hs/
+        Returns:
+            The hashcat hash (hash*bssid*station*essid) if found.
+            None if not found.
+        '''
+        if not os.path.exists(Configuration.wpa_handshake_dir):
+            return None
+
+        bssid = bssid.lower().replace(':', '')
+
+        file_re = re.compile('.*pmkid_.*\.16800')
+        for filename in os.listdir(Configuration.wpa_handshake_dir):
+            pmkid_filename = os.path.join(Configuration.wpa_handshake_dir, filename)
+            if not os.path.isfile(pmkid_filename):
+                continue
+            if not re.match(file_re, pmkid_filename):
+                continue
+
+            with open(pmkid_filename, 'r') as pmkid_handle:
+                pmkid_hash = pmkid_handle.read().strip()
+                if pmkid_hash.count('*') < 3:
+                    continue
+                existing_bssid = pmkid_hash.split('*')[1].lower().replace(':', '')
+                if existing_bssid == bssid:
+                    return pmkid_filename
+        return None
+
+
     def run(self):
         # TODO: Check ./hs/ for previously-captured PMKID, skip to crack if found.
+        pmkid_file = None
+
+        # Load exisitng has from filesystem
+        if Configuration.ignore_old_handshakes == False:
+            pmkid_file = self.get_existing_pmkid_file(self.target.bssid)
+            if pmkid_file is not None:
+                Color.pattack('PMKID', self.target, 'CAPTURE',
+                        'Loaded {C}existing{W} PMKID hash: {C}%s{W}\n' % pmkid_file)
+
+        # Capture hash from live target.
+        if pmkid_file is None:
+            pmkid_file = self.capture_pmkid()
+
+        if pmkid_file is None:
+            return False  # No hash found.
+
+        # Crack it.
+        self.success = self.crack_pmkid_file(pmkid_file)
+        return self.success
+
+
+    def capture_pmkid(self):
         self.keep_capturing = True
         self.timer = Timer(60)
 
@@ -49,36 +101,49 @@ class AttackPMKID(Attack):
 
         if pmkid_hash is None:
             Color.pattack('PMKID', self.target, 'CAPTURE',
-                    '{R}Failed{O} to capture PMKID.')
-            return False  # No hash found.
+                    '{R}Failed{O} to capture PMKID\n')
+            Color.pl("")
+            return None  # No hash found.
 
-        Color.pattack('PMKID', self.target, 'CAPTURE', '{G}Captured PMKID{W}')
+        Color.clear_entire_line()
+        Color.pattack('PMKID', self.target, 'CAPTURE', '{G}Captured PMKID{W}\n')
         pmkid_file = self.save_pmkid(pmkid_hash)
+        return pmkid_file
 
+
+    def crack_pmkid_file(self, pmkid_file):
+        '''
+        Cracks file containing PMKID hash (*.16800).
+        If cracked, saves results in self.crack_result
+        Returns:
+            True if cracked, False otherwise.
+        '''
+        with open(pmkid_file, 'r') as pmkid_handle:
+            Color.pl("\nPMKID_FILE:%s HASH:'%s'" % (pmkid_file, pmkid_handle.read()))
         # Check that wordlist exists before cracking.
         if Configuration.wordlist is None:
-            Color.pl('\n{!} {O}Not cracking because {R}wordlist{O} is not set.')
+            Color.pl('\n{!} {O}Not cracking because {R}wordlist{O} is not found.')
             Color.pl('{!} {O}Run Wifite with the {R}--crack{O} and {R}--dict{O} options to try again.')
             key = None
         else:
-            Color.pattack('PMKID', self.target, 'CRACK', 'Cracking PMKID...  ')
+            Color.clear_entire_line()
+            Color.pattack('PMKID', self.target, 'CRACK', 'Cracking PMKID...\n')
             key = Hashcat.crack_pmkid(pmkid_file)
 
         if key is None:
             # Failed to crack.
-            Color.pattack('PMKID', self.target, 'CRACK',
-                    '{R}Failed{O} to crack PMKID    ')
+            Color.clear_entire_line()
+            Color.pattack('PMKID', self.target, '{R}CRACK',
+                    '{R}Failed{O} to crack PMKID\n')
             Color.pl("")
             return False
         else:
             # Successfully cracked.
-            Color.pattack('PMKID', self.target, '',
-                    '{C}Cracked PMKID. Key: {G}%s{W}' % key)
-            Color.pl("")
+            Color.clear_entire_line()
+            Color.pattack('PMKID', self.target, 'CRACKED', '{C}Key: {G}%s{W}\n' % key)
             self.crack_result = CrackResultPMKID(self.target.bssid, self.target.essid,
-                    pmkid_hash, pmkid_file, key)
+                    pmkid_file, key)
             self.crack_result.dump()
-            self.success = True
             return True
 
 
@@ -111,6 +176,5 @@ class AttackPMKID(Attack):
         with open(pmkid_file, 'w') as pmkid_handle:
             pmkid_handle.write(pmkid_hash)
             pmkid_handle.write('\n')
-        Color.pl('{G}saved{W}')
 
         return pmkid_file

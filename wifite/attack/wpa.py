@@ -34,11 +34,8 @@ class AttackWPA(Attack):
             self.success = False
             return self.success
 
-        handshake = None
-
-        # Capture the handshake ("do it live!")
-        if handshake is None:
-            handshake = self.capture_handshake()
+        # Capture the handshake (or use an old one)
+        handshake = self.capture_handshake()
 
         if handshake is None:
             # Failed to capture handshake

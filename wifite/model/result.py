@@ -94,7 +94,6 @@ class CrackResult(object):
             from .pmkid_result import CrackResultPMKID
             result = CrackResultPMKID(json['bssid'],
                                       json['essid'],
-                                      json['pmkid_hash'],
                                       json['pmkid_file'],
                                       json['key'])
         result.date = json['date']
