@@ -9,10 +9,12 @@ from ..tools.pyrit import Pyrit
 import re, os
 
 class Handshake(object):
+
     def __init__(self, capfile, bssid=None, essid=None):
         self.capfile = capfile
         self.bssid = bssid
         self.essid = essid
+
 
     def divine_bssid_and_essid(self):
         '''
@@ -20,8 +22,10 @@ class Handshake(object):
             Sets this instances 'bssid' and 'essid' instance fields.
         '''
 
+        # We can get BSSID from the .cap filename if Wifite captured it.
+        # ESSID is stripped of non-printable characters, so we can't rely on that.
         if self.bssid is None:
-            hs_regex = re.compile(r"^.*handshake_\w+_([0-9A-F\-]{17})_.*\.cap$", re.IGNORECASE)
+            hs_regex = re.compile(r'^.*handshake_\w+_([0-9A-F\-]{17})_.*\.cap$', re.IGNORECASE)
             match = hs_regex.match(self.capfile)
             if match:
                 self.bssid = match.group(1).replace('-', ':')
@@ -33,7 +37,8 @@ class Handshake(object):
             pairs = self.pyrit_handshakes() # Find bssid/essid pairs that have handshakes in Pyrit
 
         if len(pairs) == 0 and not self.bssid and not self.essid:
-            raise Exception("Cannot find BSSID or ESSID in cap file") # Tshark and Pyrit failed us, nothing else we can do.
+            # Tshark and Pyrit failed us, nothing else we can do.
+            raise Exception('Cannot find BSSID or ESSID in cap file')
 
         if not self.essid and not self.bssid:
             # We do not know the bssid nor the essid
@@ -60,6 +65,7 @@ class Handshake(object):
                     self.essid = essid
                     break
 
+
     def has_handshake(self):
         if not self.bssid or not self.essid:
             self.divine_bssid_and_essid()
@@ -75,27 +81,26 @@ class Handshake(object):
 
 
     def tshark_handshakes(self):
-        ''' Returns True if tshark identifies a handshake, False otherwise '''
+        '''Returns list[tuple] of BSSID & ESSID pairs (ESSIDs are always `None`).'''
         tshark_bssids = Tshark.bssids_with_handshakes(self.capfile, bssid=self.bssid)
         return [(bssid, None) for bssid in tshark_bssids]
 
 
-    def cowpatty_command(self):
-        return [
+    def cowpatty_handshakes(self):
+        '''Returns list[tuple] of BSSID & ESSID pairs (BSSIDs are always `None`).'''
+        if not Process.exists('cowpatty'):
+            return []
+        if not self.essid:
+            return [] # We need a essid for cowpatty :(
+
+        command = [
             'cowpatty',
             '-r', self.capfile,
             '-s', self.essid,
             '-c' # Check for handshake
         ]
 
-    def cowpatty_handshakes(self):
-        ''' Returns True if cowpatty identifies a handshake, False otherwise '''
-        if not Process.exists('cowpatty'):
-            return []
-        if not self.essid:
-            return [] # We need a essid for cowpatty :(
-
-        proc = Process(self.cowpatty_command(), devnull=False)
+        proc = Process(command, devnull=False)
         for line in proc.stdout().split('\n'):
             if 'Collected all necessary data to mount crack against WPA' in line:
                 return [(None, self.essid)]
@@ -103,14 +108,15 @@ class Handshake(object):
 
 
     def pyrit_handshakes(self):
-        ''' Returns list of BSSID,ESSID tuples if pyrit identifies a handshake'''
-        return Pyrit.bssid_essid_with_handshakes(self.capfile, bssid=self.bssid, essid=self.essid)
+        '''Returns list[tuple] of BSSID & ESSID pairs.'''
+        return Pyrit.bssid_essid_with_handshakes(
+                self.capfile, bssid=self.bssid, essid=self.essid)
 
 
     def aircrack_handshakes(self):
         '''Returns tuple (BSSID,None) if aircrack thinks self.capfile contains a handshake / can be cracked'''
         if not self.bssid:
-            return [] # Aircrack requires BSSID
+            return []  # Aircrack requires BSSID
 
         command = 'echo "" | aircrack-ng -a 2 -w - -b %s "%s"' % (self.bssid, self.capfile)
         (stdout, stderr) = Process.call(command)
@@ -125,9 +131,15 @@ class Handshake(object):
         '''Prints analysis of handshake capfile'''
         self.divine_bssid_and_essid()
 
-        Handshake.print_pairs(self.tshark_handshakes(),   self.capfile, 'tshark')
-        Handshake.print_pairs(self.pyrit_handshakes(),    self.capfile, 'pyrit')
-        Handshake.print_pairs(self.cowpatty_handshakes(), self.capfile, 'cowpatty')
+        if Tshark.exists():
+            Handshake.print_pairs(self.tshark_handshakes(),   self.capfile, 'tshark')
+
+        if Pyrit.exists():
+            Handshake.print_pairs(self.pyrit_handshakes(),    self.capfile, 'pyrit')
+
+        if Process.exists('cowpatty'):
+            Handshake.print_pairs(self.cowpatty_handshakes(), self.capfile, 'cowpatty')
+
         Handshake.print_pairs(self.aircrack_handshakes(), self.capfile, 'aircrack')
 
 
@@ -171,7 +183,7 @@ class Handshake(object):
             tool_str = '{C}%s{W}: ' % tool.rjust(8)
 
         if len(pairs) == 0:
-            Color.pl("{!} %s.cap file {R}does not{O} contain a valid handshake{W}" % (tool_str))
+            Color.pl('{!} %s.cap file {R}does not{O} contain a valid handshake{W}' % (tool_str))
             return
 
         for (bssid, essid) in pairs:
@@ -208,24 +220,27 @@ class Handshake(object):
             hs.analyze()
             Color.pl('')
 
+
 if __name__ == '__main__':
     print('With BSSID & ESSID specified:')
     hs = Handshake('./tests/files/handshake_has_1234.cap', bssid='18:d6:c7:6d:6b:18', essid='YZWifi')
     hs.analyze()
-    print("has_hanshake() =", hs.has_handshake())
+    print('has_hanshake() =', hs.has_handshake())
 
     print('\nWith BSSID, but no ESSID specified:')
     hs = Handshake('./tests/files/handshake_has_1234.cap', bssid='18:d6:c7:6d:6b:18')
     hs.analyze()
-    print("has_hanshake() =", hs.has_handshake())
+    print('has_hanshake() =', hs.has_handshake())
 
     print('\nWith ESSID, but no BSSID specified:')
     hs = Handshake('./tests/files/handshake_has_1234.cap', essid='YZWifi')
     hs.analyze()
-    print("has_hanshake() =", hs.has_handshake())
+    print('has_hanshake() =', hs.has_handshake())
 
     print('\nWith neither BSSID nor ESSID specified:')
     hs = Handshake('./tests/files/handshake_has_1234.cap')
-    hs.analyze()
-    print("has_hanshake() =", hs.has_handshake())
-
+    try:
+        hs.analyze()
+        print('has_hanshake() =', hs.has_handshake())
+    except Exception as e:
+        Color.pl('{O}Error during Handshake.analyze(): {R}%s{W}' % e)

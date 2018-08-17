@@ -9,7 +9,8 @@ class Arguments(object):
     ''' Holds arguments used by the Wifite '''
 
     def __init__(self, configuration):
-        self.verbose = any(['-v' in word for word in sys.argv])
+        # Hack: Check for -v before parsing args; so we know which commands to display.
+        self.verbose = '-v' in sys.argv or '-hv' in sys.argv or '-vh' in sys.argv
         self.config = configuration
         self.args = self.get_arguments()
 
@@ -142,18 +143,20 @@ class Arguments(object):
             action='store',
             type=int,
             dest='num_deauths',
-            metavar="[num]",
+            metavar='[num]',
             default=None,
             help=self._verbose('Number of deauth packets to send (default: {G}%d{W})' % self.config.num_deauths))
 
 
     def _add_eviltwin_args(self, group):
-        group.add_argument('-ev',
-            '--eviltwin',
+        pass
+        '''
+        group.add_argument('--eviltwin',
             action='store_true',
             dest='use_eviltwin',
             help=Color.s('Use the "Evil Twin" attack against all targets (default: {G}off{W})'))
         # TODO: Args to specify deauth interface, server port, etc.
+        '''
 
 
     def _add_wep_args(self, wep):
@@ -345,7 +348,7 @@ class Arguments(object):
         # Alias
         wps.add_argument('-wpst', help=argparse.SUPPRESS, action='store', dest='wps_pixie_timeout', type=int)
 
-        # Maximum number of "failures" (WPSFail)
+        # Maximum number of 'failures' (WPSFail)
         wps.add_argument('--wps-fails',
             action='store',
             dest='wps_fail_threshold',
@@ -355,7 +358,7 @@ class Arguments(object):
         # Alias
         wps.add_argument('-wpsf', help=argparse.SUPPRESS, action='store', dest='wps_fail_threshold', type=int)
 
-        # Maximum number of "timeouts"
+        # Maximum number of 'timeouts'
         wps.add_argument('--wps-timeouts',
             action='store',
             dest='wps_timeout_threshold',

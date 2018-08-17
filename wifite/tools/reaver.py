@@ -81,7 +81,7 @@ class Reaver(Attack, Dependency):
                       output_file_prefix='pixie') as airodump:
 
             # Wait for target
-            self.pattack("Waiting for target to appear...")
+            self.pattack('Waiting for target to appear...')
             self.target = self.wait_for_target(airodump)
 
             # Start reaver
@@ -125,13 +125,13 @@ class Reaver(Attack, Dependency):
 
         meta_statuses = []
         if self.total_timeouts > 0:
-            meta_statuses.append("{O}Timeouts:%d{W}" % self.total_timeouts)
+            meta_statuses.append('{O}Timeouts:%d{W}' % self.total_timeouts)
 
         if self.total_wpsfails > 0:
-            meta_statuses.append("{O}WPSFail:%d{W}" % self.total_wpsfails)
+            meta_statuses.append('{O}WPSFail:%d{W}' % self.total_wpsfails)
 
         if self.locked:
-            meta_statuses.append("{R}Locked{W}")
+            meta_statuses.append('{R}Locked{W}')
 
         if len(meta_statuses) > 0:
             main_status += ' (%s)' % ', '.join(meta_statuses)
@@ -159,7 +159,7 @@ class Reaver(Attack, Dependency):
                 self.pattack('{W}Retrieving PSK using {C}bully{W}...')
                 psk = Bully.get_psk_from_pin(self.target, pin)
                 if psk is None:
-                    Color.pl("")
+                    Color.pl('')
                     self.pattack('{R}Failed {O}to get PSK using bully', newline=True)
                 else:
                     self.pattack('{G}Cracked WPS PSK: {C}%s' % psk, newline=True)
@@ -231,12 +231,12 @@ class Reaver(Attack, Dependency):
         time_left = Configuration.wps_pixie_timeout - self.running_time()
 
         Color.clear_entire_line()
-        Color.pattack("WPS",
+        Color.pattack('WPS',
                 self.target,
                 'Pixie-Dust',
                 '{W}[{C}%s{W}] %s' % (Timer.secs_to_str(time_left), message))
         if newline:
-            Color.pl("")
+            Color.pl('')
 
 
     def running_time(self):
@@ -256,19 +256,19 @@ class Reaver(Attack, Dependency):
 
         # Check for PSK.
         # Note: Reaver 1.6.x does not appear to return PSK (?)
-        regex = re.search("WPA PSK: *'(.+)'", stdout)
+        regex = re.search(r"WPA PSK: *'(.+)'", stdout)
         if regex:
             psk = regex.group(1)
 
         # Check for SSID
-        """1.x [Reaver Test] [+] AP SSID: 'Test Router' """
+        '''1.x [Reaver Test] [+] AP SSID: 'Test Router' '''
         regex = re.search(r"AP SSID:\s*'(.*)'", stdout)
         if regex:
             ssid = regex.group(1)
 
         # Check (again) for SSID
         if ssid is None:
-            """1.6.x [+] Associated with EC:1A:59:37:70:0E (ESSID: belkin.00e)"""
+            '''1.6.x [+] Associated with EC:1A:59:37:70:0E (ESSID: belkin.00e)'''
             regex = re.search(r"Associated with [0-9A-F:]+ \(ESSID: (.*)\)", stdout)
             if regex:
                 ssid = regex.group(1)
@@ -349,15 +349,15 @@ executing pixiewps -e d0141b15656e96b85fcead2e8e76330d2b1ac1576bb026e7a328c0e1ba
     (pin, psk, ssid) = Reaver.get_pin_psk_ssid(old_stdout)
     assert pin  == '12345678',    'pin was "%s", should have been "12345678"' % pin
     assert psk  == 'Test PSK',    'psk was "%s", should have been "Test PSK"' % psk
-    assert ssid == "Test Router", 'ssid was %s, should have been Test Router' % repr(ssid)
+    assert ssid == 'Test Router', 'ssid was %s, should have been Test Router' % repr(ssid)
     result = CrackResultWPS('AA:BB:CC:DD:EE:FF', ssid, pin, psk)
     result.dump()
 
-    print("")
+    print('')
 
     (pin, psk, ssid) = Reaver.get_pin_psk_ssid(new_stdout)
     assert pin  == '11867722',   'pin was "%s", should have been "11867722"' % pin
     assert psk  == None,         'psk was "%s", should have been "None"' % psk
-    assert ssid == "belkin.00e", 'ssid was "%s", should have been "belkin.00e"' % repr(ssid)
+    assert ssid == 'belkin.00e', 'ssid was "%s", should have been "belkin.00e"' % repr(ssid)
     result = CrackResultWPS('AA:BB:CC:DD:EE:FF', ssid, pin, psk)
     result.dump()

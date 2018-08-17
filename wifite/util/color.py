@@ -33,7 +33,7 @@ class Color(object):
         '''
         Prints text using colored format on same line.
         Example:
-            Color.p("{R}This text is red. {W} This text is white")
+            Color.p('{R}This text is red. {W} This text is white')
         '''
         sys.stdout.write(Color.s(text))
         sys.stdout.flush()
@@ -62,7 +62,7 @@ class Color(object):
         for (key,value) in Color.replacements.items():
             output = output.replace(key, value)
         for (key,value) in Color.colors.items():
-            output = output.replace("{%s}" % key, value)
+            output = output.replace('{%s}' % key, value)
         return output
 
     @staticmethod
@@ -76,7 +76,8 @@ class Color(object):
     def clear_entire_line():
         import os
         (rows, columns) = os.popen('stty size', 'r').read().split()
-        Color.p("\r" + (" " * int(columns)) + "\r")
+        Color.p('\r' + (' ' * int(columns)) + '\r')
+
 
     @staticmethod
     def pattack(attack_type, target, attack_name, progress):
@@ -86,13 +87,31 @@ class Color(object):
         ESSID (Pwr) Attack_Type: Progress
         e.g.: Router2G (23db) WEP replay attack: 102 IVs
         '''
-        essid = "{C}%s{W}" % target.essid if target.essid_known else "{O}unknown{W}"
-        Color.p("\r{+} {G}%s{W} ({C}%sdb{W}) {G}%s {C}%s{W}: %s " % (
+        essid = '{C}%s{W}' % target.essid if target.essid_known else '{O}unknown{W}'
+        Color.p('\r{+} {G}%s{W} ({C}%sdb{W}) {G}%s {C}%s{W}: %s ' % (
             essid, target.power, attack_type, attack_name, progress))
 
+
+    @staticmethod
+    def pexception(exception):
+        '''Prints an exception. Includes stack trace if necessary.'''
+        Color.pl('\n{!} {R}Error: {O}%s' % str(exception))
+
+        from ..config import Configuration
+        if Configuration.verbose > 0 or Configuration.print_stack_traces:
+            Color.pl('\n{!} {O}Full stack trace below')
+            from traceback import format_exc
+            Color.p('\n{!}    ')
+            err = format_exc().strip()
+            err = err.replace('\n', '\n{!} {C}   ')
+            err = err.replace('  File', '{W}File')
+            err = err.replace('  Exception: ', '{R}Exception: {O}')
+            Color.pl(err)
+
+
 if __name__ == '__main__':
-    Color.pl("{R}Testing{G}One{C}Two{P}Three{W}Done")
-    print(Color.s("{C}Testing{P}String{W}"))
-    Color.pl("{+} Good line")
-    Color.pl("{!} Danger")
+    Color.pl('{R}Testing{G}One{C}Two{P}Three{W}Done')
+    print(Color.s('{C}Testing{P}String{W}'))
+    Color.pl('{+} Good line')
+    Color.pl('{!} Danger')
 

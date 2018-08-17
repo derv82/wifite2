@@ -75,7 +75,7 @@ class Airmon(Dependency):
         ''' Prints menu '''
         print(AirmonIface.menu_header())
         for idx, iface in enumerate(self.interfaces, start=1):
-            Color.pl(" {G}%d{W}. %s" % (idx, iface))
+            Color.pl(' {G}%d{W}. %s' % (idx, iface))
 
     def get(self, index):
         ''' Gets interface at index (starts at 1) '''
@@ -166,10 +166,10 @@ class Airmon(Dependency):
             iface_name = iface
             driver = None
 
-        # Remember this as the "base" interface.
+        # Remember this as the 'base' interface.
         Airmon.base_interface = iface_name
 
-        Color.p("{+} enabling {G}monitor mode{W} on {C}%s{W}... " % iface_name)
+        Color.p('{+} enabling {G}monitor mode{W} on {C}%s{W}... ' % iface_name)
 
         airmon_output = Process(['airmon-ng', 'start', iface_name]).stdout()
 
@@ -180,22 +180,22 @@ class Airmon(Dependency):
             enabled_iface = Airmon.start_bad_driver(iface_name)
 
         if enabled_iface is None:
-            Color.pl("{R}failed{W}")
+            Color.pl('{R}failed{W}')
 
         monitor_interfaces = Iwconfig.get_interfaces(mode='Monitor')
 
         # Assert that there is an interface in monitor mode
         if len(monitor_interfaces) == 0:
-            Color.pl("{R}failed{W}")
-            raise Exception("Cannot find any interfaces in Mode:Monitor")
+            Color.pl('{R}failed{W}')
+            raise Exception('Cannot find any interfaces in Mode:Monitor')
 
         # Assert that the interface enabled by airmon-ng is in monitor mode
         if enabled_iface not in monitor_interfaces:
-            Color.pl("{R}failed{W}")
-            raise Exception("Cannot find %s with Mode:Monitor" % enabled_iface)
+            Color.pl('{R}failed{W}')
+            raise Exception('Cannot find %s with Mode:Monitor' % enabled_iface)
 
         # No errors found; the device 'enabled_iface' was put into Mode:Monitor.
-        Color.pl("{G}enabled {C}%s{W}" % enabled_iface)
+        Color.pl('{G}enabled {C}%s{W}' % enabled_iface)
 
         return enabled_iface
 
@@ -216,7 +216,7 @@ class Airmon(Dependency):
 
     @staticmethod
     def stop(iface):
-        Color.p("{!} {R}disabling {O}monitor mode{O} on {R}%s{O}... " % iface)
+        Color.p('{!} {R}disabling {O}monitor mode{O} on {R}%s{O}... ' % iface)
 
         airmon_output = Process(['airmon-ng', 'stop', iface]).stdout()
 
@@ -307,7 +307,7 @@ class Airmon(Dependency):
             choice = 1
         else:
             # Multiple interfaces found
-            question = Color.s("{+} select interface ({G}1-%d{W}): " % (count))
+            question = Color.s('{+} select interface ({G}1-%d{W}): ' % (count))
             choice = raw_input(question)
 
         iface = a.get(choice)
@@ -368,26 +368,26 @@ class Airmon(Dependency):
 
     @staticmethod
     def put_interface_up(iface):
-        Color.p("{!} {O}putting interface {R}%s up{O}..." % (iface))
+        Color.p('{!} {O}putting interface {R}%s up{O}...' % (iface))
         Ifconfig.up(iface)
-        Color.pl(" {G}done{W}")
+        Color.pl(' {G}done{W}')
 
     @staticmethod
     def start_network_manager():
-        Color.p("{!} {O}restarting {R}NetworkManager{O}...")
+        Color.p('{!} {O}restarting {R}NetworkManager{O}...')
 
         if Process.exists('service'):
             cmd = 'service network-manager start'
             proc = Process(cmd)
             (out, err) = proc.get_output()
             if proc.poll() != 0:
-                Color.pl(" {R}Error executing {O}%s{W}" % cmd)
-                if out is not None and out.strip() != "":
-                    Color.pl("{!} {O}STDOUT> %s{W}" % out)
-                if err is not None and err.strip() != "":
-                    Color.pl("{!} {O}STDERR> %s{W}" % err)
+                Color.pl(' {R}Error executing {O}%s{W}' % cmd)
+                if out is not None and out.strip() != '':
+                    Color.pl('{!} {O}STDOUT> %s{W}' % out)
+                if err is not None and err.strip() != '':
+                    Color.pl('{!} {O}STDERR> %s{W}' % err)
             else:
-                Color.pl(" {G}done{W} ({C}%s{W})" % cmd)
+                Color.pl(' {G}done{W} ({C}%s{W})' % cmd)
                 return
 
         if Process.exists('systemctl'):
@@ -395,20 +395,20 @@ class Airmon(Dependency):
             proc = Process(cmd)
             (out, err) = proc.get_output()
             if proc.poll() != 0:
-                Color.pl(" {R}Error executing {O}%s{W}" % cmd)
-                if out is not None and out.strip() != "":
-                    Color.pl("{!} {O}STDOUT> %s{W}" % out)
-                if err is not None and err.strip() != "":
-                    Color.pl("{!} {O}STDERR> %s{W}" % err)
+                Color.pl(' {R}Error executing {O}%s{W}' % cmd)
+                if out is not None and out.strip() != '':
+                    Color.pl('{!} {O}STDOUT> %s{W}' % out)
+                if err is not None and err.strip() != '':
+                    Color.pl('{!} {O}STDERR> %s{W}' % err)
             else:
-                Color.pl(" {G}done{W} ({C}%s{W})" % cmd)
+                Color.pl(' {G}done{W} ({C}%s{W})' % cmd)
                 return
         else:
-            Color.pl(" {R}can't restart NetworkManager: {O}systemctl{R} or {O}service{R} not found{W}")
+            Color.pl(' {R}cannot restart NetworkManager: {O}systemctl{R} or {O}service{R} not found{W}')
 
 if __name__ == '__main__':
     Airmon.terminate_conflicting_processes()
     iface = Airmon.ask()
     (disabled_iface, enabled_iface) = Airmon.stop(iface)
-    print("Disabled:", disabled_iface)
-    print("Enabled:", enabled_iface)
+    print('Disabled:', disabled_iface)
+    print('Enabled:', enabled_iface)

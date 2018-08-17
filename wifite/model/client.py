@@ -3,7 +3,7 @@
 
 class Client(object):
     '''
-        Holds details for a "Client" - a wireless device (e.g. computer)
+        Holds details for a 'Client' - a wireless device (e.g. computer)
         that is associated with an Access Point (e.g. router)
     '''
 

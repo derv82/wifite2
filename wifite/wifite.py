@@ -6,64 +6,56 @@ try:
 except (ValueError, ImportError) as e:
     raise Exception('You may need to run wifite from the root directory (which includes README.md)', e)
 
-from .util.scanner import Scanner
-from .util.process import Process
 from .util.color import Color
-from .util.crack import CrackHandshake
-from .util.input import raw_input
-from .attack.all import AttackAll
-from .model.result import CrackResult
-from .model.handshake import Handshake
-from .tools.dependency import Dependency
 
 import os
 import sys
 
+
 class Wifite(object):
 
-    def main(self):
-        ''' Either performs action based on arguments, or starts attack scanning '''
+    def __init__(self):
+        '''
+        Initializes Wifite. Checks for root permissions and ensures dependencies are installed.
+        '''
 
-        if os.getuid() != 0:
-            Color.pl('{!} {R}error: {O}wifite{R} must be run as {O}root{W}')
-            Color.pl('{!} {O}re-run as: sudo ./Wifite.py{W}')
-            Configuration.exit_gracefully(0)
+        self.print_banner()
 
         Configuration.initialize(load_interface=False)
 
+        if os.getuid() != 0:
+            Color.pl('{!} {R}error: {O}wifite{R} must be run as {O}root{W}')
+            Color.pl('{!} {R}re-run with {O}sudo{W}')
+            Configuration.exit_gracefully(0)
+
+        from .tools.dependency import Dependency
         Dependency.run_dependency_check()
+
+
+    def start(self):
+        '''
+        Starts target-scan + attack loop, or launches utilities dpeending on user input.
+        '''
+        from .model.result import CrackResult
+        from .model.handshake import Handshake
+        from .util.crack import CrackHandshake
 
         if Configuration.show_cracked:
             CrackResult.display()
 
         elif Configuration.check_handshake:
             Handshake.check()
+
         elif Configuration.crack_handshake:
             CrackHandshake()
+
         else:
             Configuration.get_monitor_mode_interface()
-            self.run()
-
-
-    def run(self):
-        '''
-            Main program.
-            1) Scans for targets, asks user to select targets
-            2) Attacks each target
-        '''
-        s = Scanner()
-        if s.target:
-            # We found the target we want
-            targets = [s.target]
-        else:
-            targets = s.select_targets()
-
-        attacked_targets = AttackAll.attack_multiple(targets)
-        Color.pl("{+} Finished attacking {C}%d{W} target(s), exiting" % attacked_targets)
+            self.scan_and_attack()
 
 
     def print_banner(self):
-        """ Displays ASCII art of the highest caliber.  """
+        '''Displays ASCII art of the highest caliber.'''
         Color.pl(r'{G}  .     {GR}{D}     {W}{G}     .    {W}')
         Color.pl(r'{G}.´  ·  .{GR}{D}     {W}{G}.  ·  `.  {G}wifite {D}%s{W}' % Configuration.version)
         Color.pl(r'{G}:  :  : {GR}{D} (¯) {W}{G} :  :  :  {W}{D}automated wireless auditor{W}')
@@ -72,49 +64,35 @@ class Wifite(object):
         Color.pl('')
 
 
-    def user_wants_to_continue(self, targets_remaining, attacks_remaining=0):
-        ''' Asks user if attacks should continue onto other targets '''
-        if attacks_remaining == 0 and targets_remaining == 0:
-            # No targets or attacksleft, drop out
-            return
+    def scan_and_attack(self):
+        '''
+        1) Scans for targets, asks user to select targets
+        2) Attacks each target
+        '''
+        from .util.scanner import Scanner
+        from .attack.all import AttackAll
 
-        prompt_list = []
-        if attacks_remaining > 0:
-            prompt_list.append(Color.s('{C}%d{W} attack(s)' % attacks_remaining))
-        if targets_remaining > 0:
-            prompt_list.append(Color.s('{C}%d{W} target(s)' % targets_remaining))
-        prompt = ' and '.join(prompt_list)
-        Color.pl('{+} %s remain, do you want to continue?' % prompt)
+        Color.pl('')
 
-        prompt = Color.s('{+} type {G}c{W} to {G}continue{W}' +
-                         ' or {R}s{W} to {R}stop{W}: ')
+        # Scan
+        s = Scanner()
+        targets = s.select_targets()
 
-        if raw_input(prompt).lower().startswith('s'):
-            return False
-        else:
-            return True
+        # Attack
+        attacked_targets = AttackAll.attack_multiple(targets)
+
+        Color.pl('{+} Finished attacking {C}%d{W} target(s), exiting' % attacked_targets)
 
 
-def run():
-    w = Wifite()
-    w.print_banner()
+##############################################################
 
+
+def entry_point():
     try:
-        w.main()
-
+        wifite = Wifite()
+        wifite.start()
     except Exception as e:
-        Color.pl('\n{!} {R}Error:{O} %s{W}' % str(e))
-
-        if Configuration.verbose > 0 or True:
-            Color.pl('\n{!} {O}Full stack trace below')
-            from traceback import format_exc
-            Color.p('\n{!}    ')
-            err = format_exc().strip()
-            err = err.replace('\n', '\n{W}{!} {W}   ')
-            err = err.replace('  File', '{W}{D}File')
-            err = err.replace('  Exception: ', '{R}Exception: {O}')
-            Color.pl(err)
-
+        Color.pexception(e)
         Color.pl('\n{!} {R}Exiting{W}\n')
 
     except KeyboardInterrupt:
@@ -122,5 +100,6 @@ def run():
 
     Configuration.exit_gracefully(0)
 
+
 if __name__ == '__main__':
-    run()
+    entry_point()

@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from ..tools.airodump import Airodump
 from ..util.color import Color
+from ..tools.airodump import Airodump
 from ..util.input import raw_input, xrange
 from ..model.target import Target
 from ..config import Configuration
@@ -17,16 +17,18 @@ class Scanner(object):
 
     def __init__(self):
         '''
-            Starts scan, prints as it goes.
-            Upon interrupt, sets 'targets'.
+        Scans for targets via Airodump.
+        Loops until scan is interrupted via user or config.
+        Note: Sets this object's `targets` attrbute (list[Target]) upon interruption.
         '''
         self.previous_target_count = 0
         self.targets = []
-        self.target = None # Specific target (based on ESSID/BSSID)
+        self.target = None # Target specified by user (based on ESSID/BSSID)
+
+        max_scan_time = Configuration.scan_time
 
         self.err_msg = None
 
-        Color.pl("")
         # Loads airodump with interface/channel/etc from Configuration
         try:
             with Airodump() as airodump:
@@ -35,18 +37,15 @@ class Scanner(object):
 
                 while True:
                     if airodump.pid.poll() is not None:
-                        # Airodump process died
-                        return
+                        return  # Airodump process died
 
                     self.targets = airodump.get_targets(old_targets=self.targets)
 
                     if self.found_target():
-                        # We found the target we want
-                        return
+                        return  # We found the target we want
 
                     if airodump.pid.poll() is not None:
-                        # Airodump process died
-                        return
+                        return  # Airodump process died
 
                     for target in self.targets:
                         if target.bssid in airodump.decloaked_bssids:
@@ -55,20 +54,19 @@ class Scanner(object):
                     self.print_targets()
 
                     target_count = len(self.targets)
-                    client_count = sum(
-                                       [len(t.clients)
-                                           for t in self.targets])
-                    outline = "\r{+} Scanning"
+                    client_count = sum([len(t.clients) for t in self.targets])
+
+                    outline = '\r{+} Scanning'
                     if airodump.decloaking:
-                        outline += " & decloaking"
-                    outline += ". Found"
-                    outline += " {G}%d{W} target(s)," % target_count
-                    outline += " {G}%d{W} client(s)." % client_count
-                    outline += " {O}Ctrl+C{W} when ready "
+                        outline += ' & decloaking'
+                    outline += '. Found'
+                    outline += ' {G}%d{W} target(s),' % target_count
+                    outline += ' {G}%d{W} client(s).' % client_count
+                    outline += ' {O}Ctrl+C{W} when ready '
                     Color.clear_entire_line()
                     Color.p(outline)
 
-                    if Configuration.scan_time > 0 and time() > scan_start_time + Configuration.scan_time:
+                    if max_scan_time > 0 and time() > scan_start_time + max_scan_time:
                         return
 
                     sleep(1)
@@ -76,17 +74,18 @@ class Scanner(object):
         except KeyboardInterrupt:
             pass
 
+
     def found_target(self):
         '''
-            Check if we discovered the target AP
-            Returns: the Target if found,
-                     Otherwise None.
+        Detect if we found a target specified by the user (optional).
+        Sets this object's `target` attribute if found.
+        Returns: True if target was specified and found, False otherwise.
         '''
         bssid = Configuration.target_bssid
         essid = Configuration.target_essid
 
         if bssid is None and essid is None:
-            return False
+            return False  # No specific target from user.
 
         for target in self.targets:
             if Configuration.wps_only and target.wps != True:
@@ -105,10 +104,9 @@ class Scanner(object):
 
         return False
 
+
     def print_targets(self):
-        '''
-            Prints targets to console
-        '''
+        '''Prints targets selection menu (1 target per row).'''
         if len(self.targets) == 0:
             Color.p('\r')
             return
@@ -168,7 +166,15 @@ class Scanner(object):
         return int(columns)
 
     def select_targets(self):
-        ''' Asks user to select target(s) '''
+        '''
+        Returns list(target)
+        Either a specific target if user specified -bssid or --essid.
+        Otherwise, prompts user to select targets and returns the selection.
+        '''
+
+        if self.target:
+            # When user specifies a specific target
+            return [self.target]
 
         if len(self.targets) == 0:
             if self.err_msg is not None:
@@ -178,13 +184,15 @@ class Scanner(object):
             # 1. Link to wireless drivers wiki,
             # 2. How to check if your device supporst monitor mode,
             # 3. Provide airodump-ng command being executed.
-            raise Exception("No targets found."
-                + " You may need to wait longer,"
-                + " or you may have issues with your wifi card")
+            raise Exception('No targets found.'
+                + ' You may need to wait longer,'
+                + ' or you may have issues with your wifi card')
 
+        # Return all targets if user specified a wait time ("pillage").
         if Configuration.scan_time > 0:
             return self.targets
 
+        # Ask user for targets.
         self.print_targets()
         Color.clear_entire_line()
 
@@ -211,12 +219,12 @@ class Scanner(object):
             elif choice.isdigit():
                 choice = int(choice) - 1
                 chosen_targets.append(self.targets[choice])
-            else:
-                pass
+
         return chosen_targets
 
+
 if __name__ == '__main__':
-    # Example displays targets and selects the appropriate one
+    # "Test" script will display targets and selects the appropriate one
     Configuration.initialize()
     try:
         s = Scanner()
@@ -225,6 +233,6 @@ if __name__ == '__main__':
         Color.pl('\r {!} {R}Error{W}: %s' % str(e))
         Configuration.exit_gracefully(0)
     for t in targets:
-        Color.pl("    {W}Selected: %s" % t)
+        Color.pl('    {W}Selected: %s' % t)
     Configuration.exit_gracefully(0)
 

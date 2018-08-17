@@ -1,18 +1,17 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from .wep import AttackWEP
-from .wpa import AttackWPA
-from .wps import AttackWPS
-from .pmkid import AttackPMKID
 from ..config import Configuration
 from ..util.color import Color
-from ..util.input import raw_input
 
 class AttackAll(object):
 
     @classmethod
     def attack_multiple(cls, targets):
+        '''
+        Attacks all given `targets` (list[wifite.model.target]) until user interruption.
+        Returns: Number of targets that were attacked (int)
+        '''
         attacked_targets = 0
         targets_remaining = len(targets)
         for index, target in enumerate(targets, start=1):
@@ -33,19 +32,35 @@ class AttackAll(object):
 
     @classmethod
     def attack_single(cls, target, targets_remaining):
+        '''
+        Attacks a single `target` (wifite.model.target).
+        Returns: True if attacks should continue, False otherwise.
+        '''
+        from .wep import AttackWEP
+        from .wpa import AttackWPA
+        from .wps import AttackWPS
+        from .pmkid import AttackPMKID
+
         attacks = []
 
         if Configuration.use_eviltwin:
-            pass  # TODO:EvilTwin attack
+            # TODO: EvilTwin attack
+            pass
 
         elif 'WEP' in target.encryption:
             attacks.append(AttackWEP(target))
 
         elif 'WPA' in target.encryption:
-            # WPA can have multiple attack vectors
+            # WPA can have multiple attack vectors:
+
             if target.wps:
+                # WPS
                 attacks.append(AttackWPS(target))
+
+            # PMKID
             attacks.append(AttackPMKID(target))
+
+            # Handshake capture
             attacks.append(AttackWPA(target))
 
         if len(attacks) == 0:
@@ -58,16 +73,7 @@ class AttackAll(object):
                 if result:
                     break  # Attack was successful, stop other attacks.
             except Exception as e:
-                Color.pl("\n{!} {R}Error: {O}%s" % str(e))
-                if Configuration.verbose > 0 or Configuration.print_stack_traces:
-                    Color.pl('\n{!} {O}Full stack trace below')
-                    from traceback import format_exc
-                    Color.p('\n{!}    ')
-                    err = format_exc().strip()
-                    err = err.replace('\n', '\n{W}{!} {W}   ')
-                    err = err.replace('  File', '{W}{D}File')
-                    err = err.replace('  Exception: ', '{R}Exception: {O}')
-                    Color.pl(err)
+                Color.pexception(e)
                 continue
             except KeyboardInterrupt:
                 Color.pl('\n{!} {O}interrupted{W}\n')
@@ -82,10 +88,13 @@ class AttackAll(object):
 
     @classmethod
     def user_wants_to_continue(cls, targets_remaining, attacks_remaining=0):
-        ''' Asks user if attacks should continue onto other targets '''
+        '''
+        Asks user if attacks should continue onto other targets
+        Returns:
+            True if user wants to continue, False otherwise.
+        '''
         if attacks_remaining == 0 and targets_remaining == 0:
-            # No targets or attacksleft, drop out
-            return
+            return  # No targets or attacksleft, drop out
 
         prompt_list = []
         if attacks_remaining > 0:
@@ -98,6 +107,7 @@ class AttackAll(object):
         prompt = Color.s('{+} type {G}c{W} to {G}continue{W}' +
                          ' or {R}s{W} to {R}stop{W}: ')
 
+        from ..util.input import raw_input
         if raw_input(prompt).lower().startswith('s'):
             return False
         else:

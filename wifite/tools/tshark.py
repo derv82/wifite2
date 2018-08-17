@@ -20,7 +20,7 @@ class Tshark(Dependency):
 
     @staticmethod
     def _extract_src_dst_index_total(line):
-        # Extract BSSIDs, handshake # (1-4) and handshake "total" (4)
+        # Extract BSSIDs, handshake # (1-4) and handshake 'total' (4)
         mac_regex = ('[a-zA-Z0-9]{2}:' * 6)[:-1]
         match = re.search('(%s)\s*.*\s*(%s).*Message.*(\d).*of.*(\d)' % (mac_regex, mac_regex), line)
         if match is None:
@@ -135,7 +135,7 @@ class Tshark(Dependency):
 
             (src, dst, essid) = match.groups()
 
-            if dst.lower() == "ff:ff:ff:ff:ff:ff":
+            if dst.lower() == 'ff:ff:ff:ff:ff:ff':
                 continue # Skip broadcast packets
 
             if bssid is not None:

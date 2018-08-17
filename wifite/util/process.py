@@ -29,11 +29,11 @@ class Process(object):
         if type(command) is not str or ' ' in command or shell:
             shell = True
             if Configuration.verbose > 1:
-                Color.pe("\n {C}[?] {W} Executing (Shell): {B}%s{W}" % command)
+                Color.pe('\n {C}[?] {W} Executing (Shell): {B}%s{W}' % command)
         else:
             shell = False
             if Configuration.verbose > 1:
-                Color.pe("\n {C}[?]{W} Executing: {B}%s{W}" % command)
+                Color.pe('\n {C}[?]{W} Executing: {B}%s{W}' % command)
 
         pid = Popen(command, cwd=cwd, stdout=PIPE, stderr=PIPE, shell=shell)
         pid.wait()
@@ -45,9 +45,9 @@ class Process(object):
 
 
         if Configuration.verbose > 1 and stdout is not None and stdout.strip() != '':
-            Color.pe("{P} [stdout] %s{W}" % '\n [stdout] '.join(stdout.strip().split('\n')))
+            Color.pe('{P} [stdout] %s{W}' % '\n [stdout] '.join(stdout.strip().split('\n')))
         if Configuration.verbose > 1 and stderr is not None and stderr.strip() != '':
-            Color.pe("{P} [stderr] %s{W}" % '\n [stderr] '.join(stderr.strip().split('\n')))
+            Color.pe('{P} [stderr] %s{W}' % '\n [stderr] '.join(stderr.strip().split('\n')))
 
         return (stdout, stderr)
 
@@ -73,7 +73,7 @@ class Process(object):
         self.command = command
 
         if Configuration.verbose > 1:
-            Color.pe("\n {C}[?] {W} Executing: {B}%s{W}" % ' '.join(command))
+            Color.pe('\n {C}[?] {W} Executing: {B}%s{W}' % ' '.join(command))
 
         self.out = None
         self.err = None
@@ -103,14 +103,14 @@ class Process(object):
         ''' Waits for process to finish, returns stdout output '''
         self.get_output()
         if Configuration.verbose > 1 and self.out is not None and self.out.strip() != '':
-            Color.pe("{P} [stdout] %s{W}" % '\n [stdout] '.join(self.out.strip().split('\n')))
+            Color.pe('{P} [stdout] %s{W}' % '\n [stdout] '.join(self.out.strip().split('\n')))
         return self.out
 
     def stderr(self):
         ''' Waits for process to finish, returns stderr output '''
         self.get_output()
         if Configuration.verbose > 1 and self.err is not None and self.err.strip() != '':
-            Color.pe("{P} [stderr] %s{W}" % '\n [stderr] '.join(self.err.strip().split('\n')))
+            Color.pe('{P} [stderr] %s{W}' % '\n [stderr] '.join(self.err.strip().split('\n')))
         return self.err
 
     def stdoutln(self):
@@ -135,7 +135,7 @@ class Process(object):
         return (self.out, self.err)
 
     def poll(self):
-        ''' Returns exit code if process is dead, otherwise "None" '''
+        ''' Returns exit code if process is dead, otherwise 'None' '''
         return self.pid.poll()
 
     def wait(self):
@@ -202,8 +202,8 @@ if __name__ == '__main__':
 
     # Test on never-ending process
     p = Process('yes')
-    print("Running yes...")
+    print('Running yes...')
     time.sleep(1)
-    print("yes should stop now")
+    print('yes should stop now')
     # After program loses reference to instance in 'p', process dies.
 

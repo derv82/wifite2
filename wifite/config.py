@@ -66,7 +66,7 @@ class Configuration(object):
         cls.require_fakeauth = False
         cls.wep_restart_stale_ivs = 11 # Seconds to wait before restarting
                                                  # Aireplay if IVs don't increaes.
-                                                 # "0" means never restart.
+                                                 # '0' means never restart.
         cls.wep_restart_aircrack = 30  # Seconds to give aircrack to crack
                                                  # before restarting the process.
         cls.wep_crack_at_ivs = 10000   # Number of IVS to start cracking
@@ -76,7 +76,7 @@ class Configuration(object):
         cls.wpa_filter = False # Only attack WPA networks
         cls.wpa_deauth_timeout = 15 # Wait time between deauths
         cls.wpa_attack_timeout = 500 # Wait time before failing
-        cls.wpa_handshake_dir = "hs" # Dir to store handshakes
+        cls.wpa_handshake_dir = 'hs' # Dir to store handshakes
         cls.wpa_strip_handshake = False # Strip non-handshake packets
         cls.ignore_old_handshakes = False # Always fetch a new handshake
 
@@ -177,9 +177,11 @@ class Configuration(object):
             Color.pl('{+} {C}option:{W} kill conflicting processes {G}enabled{W}')
 
         # EvilTwin
+        '''
         if args.use_eviltwin:
             cls.use_eviltwin = True
             Color.pl('{+} {C}option:{W} using {G}eviltwin attacks{W} against all targets')
+        '''
 
         # WEP
         if args.wep_filter:
@@ -224,13 +226,13 @@ class Configuration(object):
             Color.pl('{+} {C}option:{W} will stop WPA handshake capture after {G}%d seconds{W}' % args.wpa_attack_timeout)
         if args.ignore_old_handshakes:
             cls.ignore_old_handshakes = True
-            Color.pl("{+} {C}option:{W} will {O}ignore{W} existing handshakes (force capture)")
+            Color.pl('{+} {C}option:{W} will {O}ignore{W} existing handshakes (force capture)')
         if args.wpa_handshake_dir:
             cls.wpa_handshake_dir = args.wpa_handshake_dir
             Color.pl('{+} {C}option:{W} will store handshakes to {G}%s{W}' % args.wpa_handshake_dir)
         if args.wpa_strip_handshake:
             cls.wpa_strip_handshake = True
-            Color.pl("{+} {C}option:{W} will {G}strip{W} non-handshake packets")
+            Color.pl('{+} {C}option:{W} will {G}strip{W} non-handshake packets')
 
         # WPS
         if args.wps_filter:
@@ -364,7 +366,7 @@ class Configuration(object):
         for (key,val) in sorted(cls.__dict__.items()):
             if key.startswith('__') or type(val) == staticmethod or val is None:
                 continue
-            result += Color.s("{G}%s {W} {C}%s{W}\n" % (key.ljust(max_len),val))
+            result += Color.s('{G}%s {W} {C}%s{W}\n' % (key.ljust(max_len),val))
         return result
 
 if __name__ == '__main__':

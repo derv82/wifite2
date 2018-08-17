@@ -11,16 +11,16 @@ class CrackResult(object):
     ''' Abstract class containing results from a crack session '''
 
     # File to save cracks to, in PWD
-    cracked_file = "cracked.txt"
+    cracked_file = 'cracked.txt'
 
     def __init__(self):
         self.date = int(time.time())
 
     def dump(self):
-        raise Exception("Unimplemented method: dump()")
+        raise Exception('Unimplemented method: dump()')
 
     def to_dict(self):
-        raise Exception("Unimplemented method: to_dict()")
+        raise Exception('Unimplemented method: to_dict()')
 
     def save(self):
         ''' Adds this crack result to the cracked file and saves it. '''
@@ -63,7 +63,7 @@ class CrackResult(object):
     @classmethod
     def load_all(cls):
         if not os.path.exists(cls.cracked_file): return []
-        with open(cls.cracked_file, "r") as json_file:
+        with open(cls.cracked_file, 'r') as json_file:
             json = loads(json_file.read())
         return json
 

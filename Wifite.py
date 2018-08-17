@@ -1,5 +1,4 @@
 #!/usr/bin/env python
 
 from wifite import wifite
-
-wifite.run()
+wifite.entry_point()

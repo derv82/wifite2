@@ -32,8 +32,8 @@ class Timer(object):
         mins = (rem % 3600) / 60
         secs = rem % 60
         if hours > 0:
-            return "%dh%dm%ds" % (hours, mins, secs)
+            return '%dh%dm%ds' % (hours, mins, secs)
         elif mins > 0:
-            return "%dm%ds" % (mins, secs)
+            return '%dm%ds' % (mins, secs)
         else:
-            return "%ds" % secs
+            return '%ds' % secs

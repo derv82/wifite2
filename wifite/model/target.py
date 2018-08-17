@@ -7,7 +7,7 @@ import re
 
 class Target(object):
     '''
-        Holds details for a "Target" aka Access Point (e.g. router).
+        Holds details for a 'Target' aka Access Point (e.g. router).
     '''
 
     def __init__(self, fields):
@@ -56,7 +56,7 @@ class Target(object):
         if self.essid == '\\x00' * self.essid_len or \
                 self.essid == 'x00' * self.essid_len or \
                 self.essid.strip() == '':
-            # Don't display "\x00..." for hidden ESSIDs
+            # Don't display '\x00...' for hidden ESSIDs
             self.essid = None # '(%s)' % self.bssid
             self.essid_known = False
 
@@ -70,26 +70,26 @@ class Target(object):
 
     def validate(self):
         ''' Checks that the target is valid. '''
-        if self.channel == "-1":
-            raise Exception("Ignoring target with Negative-One (-1) channel")
+        if self.channel == '-1':
+            raise Exception('Ignoring target with Negative-One (-1) channel')
 
         # Filter broadcast/multicast BSSIDs, see https://github.com/derv82/wifite2/issues/32
-        bssid_broadcast = re.compile(r"^(ff:ff:ff:ff:ff:ff|00:00:00:00:00:00)$", re.IGNORECASE)
+        bssid_broadcast = re.compile(r'^(ff:ff:ff:ff:ff:ff|00:00:00:00:00:00)$', re.IGNORECASE)
         if bssid_broadcast.match(self.bssid):
-            raise Exception("Ignoring target with Broadcast BSSID (%s)" % self.bssid)
+            raise Exception('Ignoring target with Broadcast BSSID (%s)' % self.bssid)
 
-        bssid_multicast = re.compile(r"^(01:00:5e|01:80:c2|33:33)", re.IGNORECASE)
+        bssid_multicast = re.compile(r'^(01:00:5e|01:80:c2|33:33)', re.IGNORECASE)
         if bssid_multicast.match(self.bssid):
-            raise Exception("Ignoring target with Multicast BSSID (%s)" % self.bssid)
+            raise Exception('Ignoring target with Multicast BSSID (%s)' % self.bssid)
 
     def to_str(self, show_bssid=False):
         '''
             *Colored* string representation of this Target.
-            Specifically formatted for the "scanning" table view.
+            Specifically formatted for the 'scanning' table view.
         '''
 
         max_essid_len = 24
-        essid = self.essid if self.essid_known else "(%s)" % self.bssid
+        essid = self.essid if self.essid_known else '(%s)' % self.bssid
         # Trim ESSID (router name) if needed
         if len(essid) > max_essid_len:
             essid = essid[0:max_essid_len-3] + '...'
@@ -98,30 +98,30 @@ class Target(object):
 
         if self.essid_known:
             # Known ESSID
-            essid = Color.s("{C}%s" % essid)
+            essid = Color.s('{C}%s' % essid)
         else:
             # Unknown ESSID
-            essid = Color.s("{O}%s" % essid)
+            essid = Color.s('{O}%s' % essid)
 
-        # Add a "*" if we decloaked the ESSID
+        # Add a '*' if we decloaked the ESSID
         decloaked_char = '*' if self.decloaked else ' '
-        essid += Color.s("{P}%s" % decloaked_char)
+        essid += Color.s('{P}%s' % decloaked_char)
 
         if show_bssid:
             bssid = Color.s('{O}%s  ' % self.bssid)
         else:
             bssid = ''
 
-        channel_color = "{G}"
+        channel_color = '{G}'
         if int(self.channel) > 14:
-            channel_color = "{C}"
-        channel = Color.s("%s%s" % (channel_color, str(self.channel).rjust(3)))
+            channel_color = '{C}'
+        channel = Color.s('%s%s' % (channel_color, str(self.channel).rjust(3)))
 
         encryption = self.encryption.rjust(4)
         if 'WEP' in encryption:
-            encryption = Color.s("{G}%s" % encryption)
+            encryption = Color.s('{G}%s' % encryption)
         elif 'WPA' in encryption:
-            encryption = Color.s("{O}%s" % encryption)
+            encryption = Color.s('{O}%s' % encryption)
 
         power = '%sdb' % str(self.power).rjust(3)
         if self.power > 50:
@@ -146,14 +146,14 @@ class Target(object):
 
         result = '%s  %s%s  %s  %s  %s  %s' % (
                 essid, bssid, channel, encryption, power, wps, clients)
-        result += Color.s("{W}")
+        result += Color.s('{W}')
         return result
 
 
 if __name__ == '__main__':
     fields = 'AA:BB:CC:DD:EE:FF,2015-05-27 19:28:44,2015-05-27 19:28:46,1,54,WPA2,CCMP TKIP,PSK,-58,2,0,0.0.0.0,9,HOME-ABCD,'.split(',')
     t = Target(fields)
-    t.clients.append("asdf")
-    t.clients.append("asdf")
+    t.clients.append('asdf')
+    t.clients.append('asdf')
     print(t.to_str())
 

@@ -56,7 +56,7 @@ class Pyrit(Dependency):
 
             elif current_bssid is not None and current_essid is not None:
                 # We hit an AP that we care about.
-                # Line does not contain AccessPoint, see if it's "good"
+                # Line does not contain AccessPoint, see if it's 'good'
                 if ', good' in line:
                     bssid_essid_pairs.add( (current_bssid, current_essid) )
 

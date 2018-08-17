@@ -18,7 +18,7 @@ class AttackWEP(Attack):
         Contains logic for attacking a WEP-encrypted access point.
     '''
 
-    fakeauth_wait = 5
+    fakeauth_wait = 5  # TODO: Configuration?
 
     def __init__(self, target):
         super(AttackWEP, self).__init__(target)
@@ -251,16 +251,7 @@ class AttackWEP(Attack):
                     return self.success
 
             except Exception as e:
-                Color.pl("\n{!} {R}Error: {O}%s" % str(e))
-                if Configuration.verbose > 0 or Configuration.print_stack_traces:
-                    Color.pl('\n{!} {O}Full stack trace below')
-                    from traceback import format_exc
-                    Color.p('\n{!}    ')
-                    err = format_exc().strip()
-                    err = err.replace('\n', '\n{!} {C}   ')
-                    err = err.replace('  File', '{W}File')
-                    err = err.replace('  Exception: ', '{R}Exception: {O}')
-                    Color.pl(err)
+                Color.pexception(e)
                 continue
             # End of big try-catch
         # End of for-each-attack-type loop
@@ -273,8 +264,8 @@ class AttackWEP(Attack):
 
     def user_wants_to_stop(self, current_attack, attacks_remaining, target):
         '''
-            Ask user what attack to perform next (re-orders attacks_remaining, returns False),
-            or if we should stop attacking this target (returns True).
+        Ask user what attack to perform next (re-orders attacks_remaining, returns False),
+        or if we should stop attacking this target (returns True).
         '''
         if target is None:
             Color.pl("")
@@ -336,11 +327,11 @@ class AttackWEP(Attack):
             attacks_remaining.insert(0, attacks_remaining.pop(answer-2))
             return False # Don't stop
 
+
     def fake_auth(self):
         '''
-            Attempts to fake-authenticate with target.
-            Returns: True if successful,
-                     False is unsuccessful.
+        Attempts to fake-authenticate with target.
+        Returns: True if successful, False is unsuccessful.
         '''
         Color.p('\r{+} attempting {G}fake-authentication{W} with {C}%s{W}...' % self.target.bssid)
         fakeauth = Aireplay.fakeauth(self.target, timeout=AttackWEP.fakeauth_wait)
@@ -361,7 +352,6 @@ class AttackWEP(Attack):
                 Color.pl('{!} continuing attacks because' +
                     ' {G}--require-fakeauth{W} was not set')
         return fakeauth
-
 
 
 if __name__ == '__main__':

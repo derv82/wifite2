@@ -9,7 +9,7 @@ class Dependency(object):
         for attr_name in cls.required_attr_names:
             if not attr_name in cls.__dict__:
                 raise NotImplementedError(
-                    "Attribute '{}' has not been overridden in class '{}'" \
+                    'Attribute "{}" has not been overridden in class "{}"' \
                     .format(attr_name, cls.__name__)
                 )
 
@@ -65,10 +65,10 @@ class Dependency(object):
 
         if cls.dependency_required:
             Color.pp('{!} {R}error: required app {O}%s{R} was not found' % cls.dependency_name)
-            Color.pl(' {W}install @ {C}%s{W}' % cls.dependency_url)
+            Color.pl('. {W}install @ {C}%s{W}' % cls.dependency_url)
             return True
 
         else:
             Color.p('{!} {O}warning: recommended app {R}%s{O} was not found' % cls.dependency_name)
-            Color.pl(' {W}install @ {C}%s{W}' % cls.dependency_url)
+            Color.pl('. {W}install @ {C}%s{W}' % cls.dependency_url)
             return False

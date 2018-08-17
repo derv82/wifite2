@@ -27,7 +27,7 @@ class Airodump(Dependency):
         if interface is None:
             interface = Configuration.interface
         if interface is None:
-            raise Exception("Wireless interface must be defined (-i)")
+            raise Exception('Wireless interface must be defined (-i)')
         self.interface = interface
 
         self.targets = []
@@ -206,22 +206,22 @@ class Airodump(Dependency):
 
             hit_clients = False
             for row in csv_reader:
-                # Each "row" is a list of fields for a target/client
+                # Each 'row' is a list of fields for a target/client
 
                 if len(row) == 0: continue
 
                 if row[0].strip() == 'BSSID':
-                    # This is the "header" for the list of Targets
+                    # This is the 'header' for the list of Targets
                     hit_clients = False
                     continue
 
                 elif row[0].strip() == 'Station MAC':
-                    # This is the "header" for the list of Clients
+                    # This is the 'header' for the list of Clients
                     hit_clients = True
                     continue
 
                 if hit_clients:
-                    # The current row corresponds to a "Client" (computer)
+                    # The current row corresponds to a 'Client' (computer)
                     try:
                         client = Client(row)
                     except (IndexError, ValueError) as e:
@@ -239,7 +239,7 @@ class Airodump(Dependency):
                             break
 
                 else:
-                    # The current row corresponds to a "Target" (router)
+                    # The current row corresponds to a 'Target' (router)
                     try:
                         target = Target(row)
                         targets.append(target)

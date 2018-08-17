@@ -71,12 +71,12 @@ class HcxDumpTool(Dependency):
             os.remove(pcapng_file)
 
         command = [
-            "hcxdumptool",
-            "-i", Configuration.interface,
-            "--filterlist", filterlist,
-            "--filtermode", "2",
-            "-c", str(target.channel),
-            "-o", pcapng_file
+            'hcxdumptool',
+            '-i', Configuration.interface,
+            '--filterlist', filterlist,
+            '--filtermode', '2',
+            '-c', str(target.channel),
+            '-o', pcapng_file
         ]
 
         self.proc = Process(command)
