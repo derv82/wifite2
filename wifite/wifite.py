@@ -38,7 +38,7 @@ class Wifite(object):
         '''
         from .model.result import CrackResult
         from .model.handshake import Handshake
-        from .util.crack import CrackHandshake
+        from .util.crack import CrackHelper
 
         if Configuration.show_cracked:
             CrackResult.display()
@@ -47,7 +47,7 @@ class Wifite(object):
             Handshake.check()
 
         elif Configuration.crack_handshake:
-            CrackHandshake()
+            CrackHelper.run()
 
         else:
             Configuration.get_monitor_mode_interface()

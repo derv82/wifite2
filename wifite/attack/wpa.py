@@ -149,7 +149,8 @@ class AttackWPA(Attack):
             self.save_handshake(handshake)
             return handshake
 
-    def crack_handshake(self, handshake, wordlist):
+    @staticmethod
+    def crack_handshake(handshake, wordlist, verbose=False):
         '''Tries to crack a handshake. Returns WPA key if found, otherwise None.'''
         if wordlist is None:
             Color.pl('{!} {O}Not cracking handshake because' +
@@ -160,8 +161,9 @@ class AttackWPA(Attack):
                      ' wordlist {R}%s{O} was not found' % wordlist)
             return None
 
-        Color.pl('\n{+} {C}Cracking WPA Handshake:{W} Using {C}aircrack-ng{W} via' +
-                ' {C}%s{W} wordlist' % os.path.split(wordlist)[-1])
+        if not verbose:
+            Color.pl('\n{+} {C}Cracking WPA Handshake:{W} Using {C}aircrack-ng{W} via' +
+                    ' {C}%s{W} wordlist' % os.path.split(wordlist)[-1])
 
         key_file = Configuration.temp('wpakey.txt')
         command = [
@@ -172,6 +174,8 @@ class AttackWPA(Attack):
             '-l', key_file,
             handshake.capfile
         ]
+        if verbose:
+            Color.pl('{+} {D}Running: {W}{P}%s{W}' % ' '.join(command))
         crack_proc = Process(command)
 
         # Report progress of cracking
@@ -202,21 +206,25 @@ class AttackWPA(Attack):
             status += ' @ {C}%0.1fkps{W}' % num_kps
             #status += ' ({C}%d{W}/{C}%d{W} keys)' % (num_tried, num_total)
             status += ' (current key: {C}%s{W})' % current_key
-            Color.clear_entire_line()
-            Color.p(status)
+            if not verbose:
+                Color.clear_entire_line()
+                Color.p(status)
 
-        Color.pl('')
+        if not verbose:
+            Color.pl('')
+
         # Check crack result
         if os.path.exists(key_file):
             with open(key_file, 'r') as fid:
                 key = fid.read().strip()
             os.remove(key_file)
 
-            Color.pl('{+} {G}Cracked WPA Handshake{W} PSK: {G}%s{W}\n' % key)
+            if not verbose:
+                Color.pl('{+} {G}Cracked WPA Handshake{W} PSK: {G}%s{W}\n' % key)
             return key
         else:
-            Color.pl('{!} {R}Failed to crack handshake:' +
-                     ' {O}%s{R} did not contain password{W}' % wordlist.split(os.sep)[-1])
+            if not verbose:
+                Color.pl('{!} {R}Failed to crack handshake: {O}%s{R} did not contain password{W}' % wordlist.split(os.sep)[-1])
             return None
 
     def load_handshake(self, bssid, essid):

@@ -15,7 +15,7 @@ class Hashcat(Dependency):
     dependency_url = 'https://hashcat.net/hashcat/'
 
     @staticmethod
-    def crack_pmkid(pmkid_file):
+    def crack_pmkid(pmkid_file, verbose=False):
         '''
         Cracks a given pmkid_file using the PMKID/WPA2 attack (-m 16800)
         Returns:
@@ -36,6 +36,8 @@ class Hashcat(Dependency):
                 Configuration.wordlist
             ]
             command.extend(additional_arg)
+            if verbose and additional_arg == []:
+                Color.pl('{+} {D}Running: {W}{P}%s{W}' % ' '.join(command))
 
             # TODO: Check status of hashcat (%); it's impossible with --quiet
 

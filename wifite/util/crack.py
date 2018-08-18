@@ -5,139 +5,205 @@ from ..util.process import Process
 from ..util.color import Color
 from ..util.input import raw_input
 from ..config import Configuration
-from ..model.result import CrackResult
 
 from datetime import datetime
 
 import os
 
 
-class CrackHandshake(object):
-    def __init__(self):
-        self.wordlist = Configuration.wordlist or 'path_to_wordlist_here'
-        if os.path.exists(self.wordlist):
-            self.wordlist = os.path.abspath(self.wordlist)
+# TODO: Bring back the 'print' option, for easy copy/pasting.
+# Just one-liners people can paste into terminal.
 
-        handshake = self.choose_handshake()
-        self.crack_handshake(handshake)
+class CrackHelper:
+    '''Manages handshake retrieval, selection, and running the cracking commands.'''
 
-    def crack_handshake(self, handshake):
-        cap_file = handshake['handshake_file']
-        bssid = handshake['bssid']
-        Color.pl('\n  Below are commands to crack the handshake {C}%s{W}:' % cap_file)
-        self.print_aircrack(cap_file, bssid)
-        self.print_pyrit(cap_file, bssid)
-        self.print_john(cap_file)
-        self.print_oclhashcat(cap_file)
-        # TODO: cowpatty
-        Color.pl('')
+    TYPES = {
+        '4-WAY': 'WPA 4-Way Handshake',
+        'PMKID': 'WPA PKID Hash'
+    }
 
-    def print_aircrack(self, cap_file, bssid):
-        Color.pl('')
-        if not Process.exists('aircrack-ng'):
-            Color.pl('  {R}aircrack-ng not found.');
-            Color.pl('  {O}More info on installing {R}Aircrack{O} here: {C}https://www.aircrack-ng.org/downloads.html{W}');
-            return
-        Color.pl('  {O}# AIRCRACK: CPU-based cracking. Slow.')
-        Color.pl('  {G}aircrack-ng {W}-a {C}2 {W}-b {C}%s {W}-w {C}%s %s{W}' % (bssid, self.wordlist, cap_file))
 
-    def print_pyrit(self, cap_file, bssid):
-        Color.pl('')
-        if not Process.exists('pyrit'):
-            Color.pl('  {R}pyrit not found.');
-            Color.pl('  {O}More info on installing {R}Pyrit{O} here: {C}https://github.com/JPaulMora/Pyrit{W}');
-            return
-        Color.pl('  {O}# PYRIT: GPU-based cracking. Fast.')
-        Color.pl('  {G}pyrit {W}-b {C}%s {W}-i {C}%s {W}-r {C}%s {W}attack_passthrough{W}' % (bssid, self.wordlist, cap_file))
+    @classmethod
+    def run(cls):
+        Configuration.initialize(False)
 
-    def print_john(self, cap_file):
-        Color.pl('')
-        Color.pl('  {O}# JOHN: CPU or GPU-based cracking. Fast.')
-        if not Process.exists('john'):
-            Color.pl('  {O}# {R}john{O} is not installed. More info on installing {R}John The Ripper{O} here: {C}http://www.openwall.com/john/{W}');
-        else:
-            Color.pl('  {O}# Use --format=wpapsk-cuda (or wpapsk-opengl) to enable GPU acceleration')
-            Color.pl('  {O}# See http://openwall.info/wiki/john/WPA-PSK for more info on this process')
-        Color.pl('  {O}# Generate hccap file:')
-        Color.pl('  {G}aircrack-ng {W}-J hccap {C}%s{W}' % cap_file)
-        Color.pl('  {O}# Convert hccap file to john file:')
-        Color.pl('  {G}hccap2john {C}hccap.hccap {W}> {C}%s.john{W}' % cap_file)
-        Color.pl('  {O}# Crack john file:')
-        Color.pl('  {G}john {W}--wordlist {C}"%s" {W}--format=wpapsk {C}"%s.john"{W}' % (self.wordlist, cap_file))
+        if not Configuration.wordlist:
+            Color.p('\n{+} Enter wordlist file to use for cracking: {G}')
+            Configuration.wordlist = raw_input()
+            if not os.path.exists(Configuration.wordlist):
+                Color.pl('{!} {R}Wordlist {O}%s{R} not found. Exiting.' % Configuration.wordlist)
+                return
+            Color.pl('')
 
-    def print_oclhashcat(self, cap_file):
-        Color.pl('')
-        if not Process.exists('hashcat'):
-            Color.pl('  {R}hashcat {O}not found.');
-            Color.pl('  {O}More info on installing {R}hashcat{O} here: {C}https://hashcat.net/hashcat/');
-            return
-        Color.pl('  {O}# HASHCAT: GPU-based cracking. Fast.')
-        Color.pl('  {O}#   See {C}https://hashcat.net/wiki/doku.php?id=cracking_wpawpa2 {O}for more info')
-        Color.pl('  {O}# Step 1: Generate .hccapx file')
+        handshakes = cls.get_handshakes()
+        hs_to_crack = cls.get_user_selection(handshakes)
 
-        hccapx_file = '/tmp/generated.hccapx'
-        cap2hccapx = '/usr/lib/hashcat-utils/cap2hccapx.bin'
-        if os.path.exists(cap2hccapx):
-            Color.pl('  {G}  %s {W}%s {C}%s{W}' % (cap2hccapx, cap_file, hccapx_file))
-        else:
-            Color.pl('  {O}#   Install {R}cap2hccapx{O}: {C}https://hashcat.net/wiki/doku.php?id=hashcat_utils')
-            Color.pl('  {G}./cap2hccapx.bin {W}%s {C}%s{W}' % (cap_file, hccapx_file))
-            Color.pl('  {O}#   OR visit https://hashcat.net/cap2hccapx to generate a .hccapx file{W}')
-            Color.pl('  {O}#   Then click BROWSE -> %s -> CONVERT and save to %s' % (cap_file, hccapx_file))
+        # TODO: Ask what method to use for WPA (aircrack, pyrit, john, hashcat, cowpatty)
 
-        Color.pl('  {O}# Step 2: Crack the .hccapx file')
-        Color.pl('  {G}hashcat {W}-m 2500 {C}%s %s{W}' % (hccapx_file, self.wordlist))
+        for hs in hs_to_crack:
+            cls.crack(hs)
 
-    def choose_handshake(self):
-        hs_dir = Configuration.wpa_handshake_dir
-        Color.pl('{+} Listing captured handshakes from {C}%s{W}\n' % os.path.realpath(hs_dir))
+    @classmethod
+    def get_handshakes(cls):
         handshakes = []
+
+        skipped_pmkid_files = 0
+
+        hs_dir = Configuration.wpa_handshake_dir
+        Color.pl('\n{+} Listing captured handshakes from {C}%s{W} ...\n' % os.path.abspath(hs_dir))
         for hs_file in os.listdir(hs_dir):
-            if not hs_file.endswith('.cap') or hs_file.count('_') != 3:
+            if hs_file.count('_') != 3:
+                continue
+
+            if hs_file.endswith('.cap'):
+                # WPA Handshake
+                hs_type = '4-WAY'
+            elif hs_file.endswith('.16800'):
+                # PMKID hash
+                if not Process.exists('hashcat'):
+                    skipped_pmkid_files += 1
+                    continue
+                hs_type = 'PMKID'
+            else:
                 continue
 
             name, essid, bssid, date = hs_file.split('_')
+            date = date.rsplit('.', 1)[0]
+            days,hours = date.split('T')
+            hours = hours.replace('-', ':')
+            date = '%s %s' % (days, hours)
 
-            if name != 'handshake':
+            handshake = {
+                'filename': os.path.join(hs_dir, hs_file),
+                'bssid': bssid.replace('-', ':'),
+                'essid': essid,
+                'date': date,
+                'type': hs_type
+            }
+
+            if hs_file.endswith('.cap'):
+                # WPA Handshake
+                handshake['type'] = '4-WAY'
+            elif hs_file.endswith('.16800'):
+                # PMKID hash
+                handshake['type'] = 'PMKID'
+            else:
                 continue
 
-            handshakes.append({
-                'essid': essid,
-                'bssid': bssid.replace('-', ':'),
-                'date': date.replace('.cap', '').replace('T', ' '),
-                'handshake_file': os.path.realpath(os.path.join(hs_dir, hs_file))
-            })
+            handshakes.append(handshake)
 
-        handshakes.sort(key=lambda x: x['date'], reverse=True)
+        if skipped_pmkid_files > 0:
+            Color.pl('{!} {O}Skipping %d {R}*.16800{O} files because {R}hashcat{O} is missing.' % skipped_pmkid_files)
 
-        if len(handshakes) == 0:
-            raise Exception('No handshakes found in %s' % os.path.realpath(hs_dir))
+        # Sort by Date (Descending)
+        return sorted(handshakes, key=lambda x: x.get('date'), reverse=True)
 
-        # Handshakes Header
-        max_essid_len = max(max([len(hs['essid']) for hs in handshakes]), len('(truncated) ESSDID'))
-        Color.p('  NUM')
-        Color.p('  ' + 'ESSID (truncated)'.ljust(max_essid_len))
-        Color.p('  ' + 'BSSID'.ljust(17))
+
+    @classmethod
+    def print_handshakes(cls, handshakes):
+        # Header
+        max_essid_len = max(max([len(hs['essid']) for hs in handshakes]), len('ESSID (truncated)'))
+        Color.p('{D}  NUM')
+        Color.p('  ESSID (truncated)'.ljust(max_essid_len))
+        Color.p('  BSSID'.ljust(19))
+        Color.p('  TYPE'.ljust(7))
         Color.p('  DATE CAPTURED\n')
         Color.p('  ---')
         Color.p('  ' + ('-' * max_essid_len))
         Color.p('  ' + ('-' * 17))
-        Color.p('  ' + ('-' * 19) + '\n')
-        # Print all handshakes
-        for idx, hs in enumerate(handshakes, start=1):
-            bssid = hs['bssid']
-            essid = hs['essid']
-            date  = hs['date']
-            Color.p('  {G}%s{W}' % str(idx).rjust(3))
-            Color.p('  {C}%s{W}' % essid.ljust(max_essid_len))
-            Color.p('  {O}%s{W}' % bssid)
-            Color.p('  {W}%s{W}\n' % date)
-        # Get number from user
-        hs_index = raw_input(Color.s('\n{+} Select handshake num to crack ({G}1-%d{W}): ' % len(handshakes)))
-        if not hs_index.isdigit():
-            raise ValueError('Handshake NUM must be numeric, got (%s)' % hs_index)
-        hs_index = int(hs_index)
-        if hs_index < 1 or hs_index > len(handshakes):
-            raise Exception('Handshake NUM must be between 1 and %d' % len(handshakes))
+        Color.p('  ' + ('-' * 6))
+        Color.p('  ' + ('-' * 19) + '{W}\n')
+        # Handshakes
+        for index, handshake in enumerate(handshakes, start=1):
+            bssid = handshake['bssid']
+            date  = handshake['date']
+            Color.p('  {G}%s{W}' % str(index).rjust(3))
+            Color.p('  {C}%s{W}' % handshake['essid'].ljust(max_essid_len))
+            Color.p('  {O}%s{W}' % handshake['bssid'].ljust(17))
+            Color.p('  {C}%s{W}' % handshake['type'].ljust(5))
+            Color.p('  {W}%s{W}\n' % handshake['date'])
 
-        return handshakes[hs_index - 1]
+
+    @classmethod
+    def get_user_selection(cls, handshakes):
+        cls.print_handshakes(handshakes)
+
+        Color.p('{+} Select handshake(s) to crack ({G}%d{W}-{G}%d{W}, select multiple with {C},{W} or {C}-{W}): {G}' % (1, len(handshakes)))
+        choices = raw_input()
+
+        selection = []
+        for choice in choices.split(','):
+            if '-' in choice:
+                first, last = [int(x) for x in choice.split('-')]
+                for index in range(first, last + 1):
+                    selection.append(handshakes[index-1])
+            else:
+                index = int(choice)
+                selection.append(handshakes[index-1])
+
+        return selection
+
+
+    @classmethod
+    def crack(cls, hs):
+        Color.pl('\n{+} Cracking {C}%s{W} ({C}%s{W}) using {G}%s{W} method' % (hs['essid'], hs['bssid'], hs['type']))
+        if hs['type'] == 'PMKID':
+            crack_result = cls.crack_pmkid(hs)
+        elif hs['type'] == '4-WAY':
+            crack_result = cls.crack_4way(hs)
+        else:
+            raise ValueError('Cannot crack handshake: Type is not PMKID or 4-WAY. Handshake=%s' % hs)
+
+        if crack_result is None:
+            # Failed to crack
+            Color.pl('{!} {R}Failed to crack {O}%s{R} ({O}%s{R}): Passphrase not in dictionary' % (
+                hs['essid'], hs['bssid']))
+        else:
+            # Cracked, replace existing entry (if any), or add to
+            Color.pl('{+} {G}Cracked{W} {C}%s{W} ({C}%s{W}). Key: "{G}%s{W}"' % (
+                hs['essid'], hs['bssid'], crack_result.key))
+            crack_result.save()
+
+
+    @classmethod
+    def crack_4way(cls, hs):
+        from ..attack.wpa import AttackWPA
+        from ..model.handshake import Handshake
+        from ..model.wpa_result import CrackResultWPA
+
+        handshake = Handshake(hs['filename'],
+                bssid=hs['bssid'],
+                essid=hs['essid'])
+
+        key = None
+        try:
+            key = AttackWPA.crack_handshake(handshake, Configuration.wordlist, verbose=True)
+        except KeyboardInterrupt:
+            Color.pl('\n{!} Interrupted')
+
+        if key is not None:
+            return CrackResultWPA(hs['bssid'], hs['essid'], hs['filename'], key)
+        else:
+            return None
+
+
+    @classmethod
+    def crack_pmkid(cls, hs):
+        from ..tools.hashcat import Hashcat
+        from ..model.pmkid_result import CrackResultPMKID
+
+        key = None
+        try:
+            key = Hashcat.crack_pmkid(hs['filename'], verbose=True)
+        except KeyboardInterrupt:
+            Color.pl('\n{!} Interrupted')
+
+        if key is not None:
+            return CrackResultPMKID(hs['bssid'], hs['essid'], hs['filename'], key)
+        else:
+            return None
+
+
+if __name__ == '__main__':
+    CrackHelper.run()
+
