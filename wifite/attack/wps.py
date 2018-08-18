@@ -43,7 +43,7 @@ class AttackWPS(Attack):
         from ..tools.reaver import Reaver
         reaver = Reaver(self.target)
         if not reaver.is_pixiedust_supported():
-            Color.pl("{!} {R}your version of 'reaver' does not support the {O}WPS pixie-dust attack{W}")
+            Color.pl('{!} {R}your version of "reaver" does not support the {O}WPS pixie-dust attack{W}')
             return False
         else:
             # Reaver: Pixie-dust

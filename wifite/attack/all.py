@@ -19,7 +19,7 @@ class AttackAll(object):
             targets_remaining -= 1
 
             bssid = target.bssid
-            essid = target.essid if target.essid_known else "{O}ESSID unknown{W}"
+            essid = target.essid if target.essid_known else '{O}ESSID unknown{W}'
 
             Color.pl('\n{+} ({G}%d{W}/{G}%d{W})' % (index, len(targets)) +
                      ' starting attacks against {C}%s{W} ({C}%s{W})' % (bssid, essid))
@@ -64,7 +64,7 @@ class AttackAll(object):
             attacks.append(AttackWPA(target))
 
         if len(attacks) == 0:
-            Color.pl("{!} {R}Error: {O}unable to attack: encryption not WEP or WPA")
+            Color.pl('{!} {R}Error: {O}unable to attack: encryption not WEP or WPA')
             return
 
         for attack in attacks:

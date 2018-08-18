@@ -112,7 +112,7 @@ class Scanner(object):
             return
 
         if self.previous_target_count > 0:
-            # We need to "overwrite" the previous list of targets.
+            # We need to 'overwrite' the previous list of targets.
             if Configuration.verbose <= 1:
                 # Don't clear screen buffer in verbose mode.
                 if self.previous_target_count > len(self.targets) or \
@@ -125,7 +125,7 @@ class Scanner(object):
                     Process.call('clear')
                 else:
                     # We can fit the targets in the terminal without scrolling
-                    # "Move" cursor up so we will print over the previous list
+                    # 'Move' cursor up so we will print over the previous list
                     Color.pl(Scanner.UP_CHAR * (3 + self.previous_target_count))
 
         self.previous_target_count = len(self.targets)
@@ -188,7 +188,7 @@ class Scanner(object):
                 + ' You may need to wait longer,'
                 + ' or you may have issues with your wifi card')
 
-        # Return all targets if user specified a wait time ("pillage").
+        # Return all targets if user specified a wait time ('pillage').
         if Configuration.scan_time > 0:
             return self.targets
 
@@ -224,7 +224,7 @@ class Scanner(object):
 
 
 if __name__ == '__main__':
-    # "Test" script will display targets and selects the appropriate one
+    # 'Test' script will display targets and selects the appropriate one
     Configuration.initialize()
     try:
         s = Scanner()

