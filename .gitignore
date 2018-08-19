@@ -5,3 +5,7 @@ hs/
 *.bak
 .idea/
 cracked.txt
+MANIFEST
+dist/
+build/
+files.txt

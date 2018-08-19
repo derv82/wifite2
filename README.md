@@ -5,6 +5,31 @@ A complete re-write of [`wifite`](https://github.com/derv82/wifite), a Python sc
 
 Wifite runs existing wireless-auditing tools for you. Stop memorizing command arguments & switches!
 
+This version is compatible with both `python2` and `python3`.
+
+Installation
+------------
+
+From the root directory of this package:
+
+Run *wifite* using: `python -m wifite`
+
+To install onto your computer (so you can just run `wifite` from any terminal), run:
+
+```bash
+sudo python setup.py install
+```
+
+----
+
+Note: Uninstalling is [not as easy](https://stackoverflow.com/questions/1550226/python-setup-py-uninstall#1550235). The only way to uninstall is to record the files installed by the above command and *remove* those files:
+
+```bash
+sudo python setup.py install --record files.txt
+cat files.txt | xargs sudo rm -f
+sudo rm -f files.txt
+```
+
 What's new in Wifite2?
 ----------------------
 
