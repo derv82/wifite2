@@ -113,7 +113,7 @@ class CrackHandshake(object):
             raise Exception("No handshakes found in %s" % os.path.realpath(hs_dir))
 
         # Handshakes Header
-        max_essid_len = max(max(len(hs["essid"]) for hs in handshakes), len('(truncated) ESSDID'))
+        max_essid_len = max(max([len(hs["essid"]) for hs in handshakes]), len('(truncated) ESSDID'))
         Color.p("  NUM")
         Color.p("  " + "ESSID (truncated)".ljust(max_essid_len))
         Color.p("  " + "BSSID".ljust(17))
