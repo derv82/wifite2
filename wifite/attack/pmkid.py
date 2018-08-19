@@ -62,6 +62,12 @@ class AttackPMKID(Attack):
         Returns:
             True if handshake is captured. False otherwise.
         '''
+        # Skip if user only wants to run PixieDust attack
+        if Configuration.wps_only and self.target.wps:
+            Color.pl('\r{!} {O}Skipping PMKID attack on {R}%s{O} because {R}--wps-only{O} is set{W}' % self.target.essid)
+            self.success = False
+            return False
+
         from ..util.process import Process
         # Check that we have all hashcat programs
         dependencies = [
@@ -103,7 +109,7 @@ class AttackPMKID(Attack):
             The PMKID hash (str) if found, otherwise None.
         '''
         self.keep_capturing = True
-        self.timer = Timer(60)
+        self.timer = Timer(15)
 
         # Start hcxdumptool
         t = Thread(target=self.dumptool_thread)
@@ -159,10 +165,11 @@ class AttackPMKID(Attack):
 
         if key is None:
             # Failed to crack.
-            Color.clear_entire_line()
-            Color.pattack('PMKID', self.target, '{R}CRACK',
-                    '{R}Failed{O}: passphrase not found in dictionary.\n')
-            Color.pl('')
+            if Configuration.wordlist is not None:
+                Color.clear_entire_line()
+                Color.pattack('PMKID', self.target, '{R}CRACK',
+                        '{R}Failed {O}Passphrase not found in dictionary.\n')
+                Color.pl('')
             return False
         else:
             # Successfully cracked.

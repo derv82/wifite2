@@ -15,12 +15,26 @@ class CrackResult(object):
 
     def __init__(self):
         self.date = int(time.time())
+        self.readable_date = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(self.date))
 
     def dump(self):
         raise Exception('Unimplemented method: dump()')
 
     def to_dict(self):
         raise Exception('Unimplemented method: to_dict()')
+
+    def print_single_line(self, longest_essid):
+        raise Exception('Unimplemented method: print_single_line()')
+
+    def print_single_line_prefix(self, longest_essid):
+        essid = self.essid if self.essid else 'N/A'
+        Color.p('{W} ')
+        Color.p('{C}%s{W}' % essid.ljust(longest_essid))
+        Color.p('  ')
+        Color.p('{GR}%s{W}' % self.bssid.ljust(17))
+        Color.p('  ')
+        Color.p('{D}%s{W}' % self.readable_date.ljust(19))
+        Color.p('  ')
 
     def save(self):
         ''' Adds this crack result to the cracked file and saves it. '''
@@ -52,12 +66,32 @@ class CrackResult(object):
 
         if len(cracked_targets) == 0:
             Color.pl('{!} {R}no results found in {O}%s{W}' % name)
-        else:
-            Color.pl('{+} displaying {G}%d {C}cracked target(s){W}\n' % len(cracked_targets))
-            for item in cracked_targets:
-                cr = cls.load(item)
-                cr.dump()
-                Color.pl('')
+            return
+
+        Color.pl('\n{+} Displaying {G}%d{W} cracked target(s) from {C}%s{W}\n' % (
+            len(cracked_targets), name))
+
+        results = sorted([cls.load(item) for item in cracked_targets], key=lambda x: x.date, reverse=True)
+        longest_essid = max([len(result.essid or 'ESSID') for result in results])
+
+        # Header
+        Color.p('{D} ')
+        Color.p('ESSID'.ljust(longest_essid))
+        Color.p('  ')
+        Color.p('BSSID'.ljust(17))
+        Color.p('  ')
+        Color.p('DATE'.ljust(19))
+        Color.p('  ')
+        Color.p('TYPE'.ljust(5))
+        Color.p('  ')
+        Color.p('KEY')
+        Color.pl('{D}')
+        Color.p(' ' + '-' * (longest_essid + 17 + 19 + 5 + 11 + 12))
+        Color.pl('{W}')
+        # Results
+        for result in results:
+            result.print_single_line(longest_essid)
+        Color.pl('')
 
 
     @classmethod
@@ -97,6 +131,7 @@ class CrackResult(object):
                                       json['pmkid_file'],
                                       json['key'])
         result.date = json['date']
+        result.readable_date = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(result.date))
         return result
 
 if __name__ == '__main__':

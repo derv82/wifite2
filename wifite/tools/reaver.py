@@ -157,7 +157,11 @@ class Reaver(Attack, Dependency):
 
                 # Try to derive PSK from PIN using Bully
                 self.pattack('{W}Retrieving PSK using {C}bully{W}...')
-                psk = Bully.get_psk_from_pin(self.target, pin)
+                psk = None
+                try:
+                    psk = Bully.get_psk_from_pin(self.target, pin)
+                except KeyboardInterrupt:
+                    pass
                 if psk is None:
                     Color.pl('')
                     self.pattack('{R}Failed {O}to get PSK using bully', newline=True)

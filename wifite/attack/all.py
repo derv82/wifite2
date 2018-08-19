@@ -67,7 +67,8 @@ class AttackAll(object):
             Color.pl('{!} {R}Error: {O}unable to attack: encryption not WEP or WPA')
             return
 
-        for attack in attacks:
+        while len(attacks) > 0:
+            attack = attacks.pop(0)
             try:
                 result = attack.run()
                 if result:
@@ -77,7 +78,7 @@ class AttackAll(object):
                 continue
             except KeyboardInterrupt:
                 Color.pl('\n{!} {O}interrupted{W}\n')
-                if not cls.user_wants_to_continue(targets_remaining, 1):
+                if not cls.user_wants_to_continue(targets_remaining, len(attacks)):
                     return False  # Stop attacking other targets
 
         if attack.success:

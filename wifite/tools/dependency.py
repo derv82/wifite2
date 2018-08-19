@@ -50,7 +50,7 @@ class Dependency(object):
         missing_required = any([app.fails_dependency_check() for app in apps])
 
         if missing_required:
-            Color.pl('{!} {R}required app(s) were not found, exiting.{W}')
+            Color.pl('{!} {O}At least 1 Required app is missing. Wifite needs Required apps to run{W}')
             import sys
             sys.exit(-1)
 
@@ -64,11 +64,11 @@ class Dependency(object):
             return False
 
         if cls.dependency_required:
-            Color.pp('{!} {R}error: required app {O}%s{R} was not found' % cls.dependency_name)
+            Color.p('{!} {O}Error: Required app {R}%s{O} was not found' % cls.dependency_name)
             Color.pl('. {W}install @ {C}%s{W}' % cls.dependency_url)
             return True
 
         else:
-            Color.p('{!} {O}warning: recommended app {R}%s{O} was not found' % cls.dependency_name)
+            Color.p('{!} {O}Warning: Recommended app {R}%s{O} was not found' % cls.dependency_name)
             Color.pl('. {W}install @ {C}%s{W}' % cls.dependency_url)
             return False

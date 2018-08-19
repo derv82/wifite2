@@ -29,7 +29,14 @@ class CrackResultWPA(CrackResult):
             Color.pl('{+} %s: {G}%s{W}' % ('PSK (password)'.rjust(19), self.key))
         else:
             Color.pl('{!} %s  {O}key unknown{W}' % ''.rjust(19))
-    
+
+    def print_single_line(self, longest_essid):
+        self.print_single_line_prefix(longest_essid)
+        Color.p('{G}%s{W}' % 'WPA'.ljust(5))
+        Color.p('  ')
+        Color.p('Key: {G}%s{W}' % self.key)
+        Color.pl('')
+
     def to_dict(self):
         return {
             'type'  : self.result_type,

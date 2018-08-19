@@ -280,6 +280,12 @@ class Arguments(object):
             help=self._verbose('Time to wait before failing WPA attack (default: {G}%d sec{W})' % self.config.wpa_attack_timeout))
         wpa.add_argument('-wpat', help=argparse.SUPPRESS, action='store', dest='wpa_attack_timeout', type=int)
 
+        wpa.add_argument('--pmkid',
+            '-pmkid',
+            action='store_true',
+            dest='use_pmkid_only',
+            help=Color.s('ONLY use PMKID capture on WPA endpoints (default: {G}off{W})'))
+
         wpa.add_argument('--new-hs',
             action='store_true',
             dest='ignore_old_handshakes',

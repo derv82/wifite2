@@ -11,8 +11,9 @@ from datetime import datetime
 import os
 
 
-# TODO: Bring back the 'print' option, for easy copy/pasting.
-# Just one-liners people can paste into terminal.
+# TODO: Bring back the 'print' option, for easy copy/pasting. Just one-liners people can paste into terminal.
+
+# TODO: Do not show handshake files that are in cracked.txt with a key (match on filename).
 
 class CrackHelper:
     '''Manages handshake retrieval, selection, and running the cracking commands.'''
@@ -36,6 +37,9 @@ class CrackHelper:
             Color.pl('')
 
         handshakes = cls.get_handshakes()
+        if len(handshakes) == 0:
+            Color.pl('{!} {O}No handshakes found{W}')
+            return
         hs_to_crack = cls.get_user_selection(handshakes)
 
         # TODO: Ask what method to use for WPA (aircrack, pyrit, john, hashcat, cowpatty)
@@ -50,6 +54,10 @@ class CrackHelper:
         skipped_pmkid_files = 0
 
         hs_dir = Configuration.wpa_handshake_dir
+        if not os.path.exists(hs_dir) or not os.path.isdir(hs_dir):
+            Color.pl('\n{!} {O}directory not found: {R}%s{W}' % hs_dir)
+            return []
+
         Color.pl('\n{+} Listing captured handshakes from {C}%s{W} ...\n' % os.path.abspath(hs_dir))
         for hs_file in os.listdir(hs_dir):
             if hs_file.count('_') != 3:
@@ -102,12 +110,12 @@ class CrackHelper:
     @classmethod
     def print_handshakes(cls, handshakes):
         # Header
-        max_essid_len = max(max([len(hs['essid']) for hs in handshakes]), len('ESSID (truncated)'))
+        max_essid_len = max([len(hs['essid']) for hs in handshakes] + [len('ESSID (truncated)')])
         Color.p('{D}  NUM')
-        Color.p('  ESSID (truncated)'.ljust(max_essid_len))
-        Color.p('  BSSID'.ljust(19))
-        Color.p('  TYPE'.ljust(7))
-        Color.p('  DATE CAPTURED\n')
+        Color.p('  ' + 'ESSID (truncated)'.ljust(max_essid_len))
+        Color.p('  ' + 'BSSID'.ljust(17))
+        Color.p('  ' + 'TYPE'.ljust(5))
+        Color.p('  ' + 'DATE CAPTURED\n')
         Color.p('  ---')
         Color.p('  ' + ('-' * max_essid_len))
         Color.p('  ' + ('-' * 17))

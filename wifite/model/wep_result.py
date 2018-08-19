@@ -23,7 +23,16 @@ class CrackResultWEP(CrackResult):
         Color.pl('{+}    Hex Key: {G}%s{W}' % self.hex_key)
         if self.ascii_key:
             Color.pl('{+}  Ascii Key: {G}%s{W}' % self.ascii_key)
-    
+
+    def print_single_line(self, longest_essid):
+        self.print_single_line_prefix(longest_essid)
+        Color.p('{G}%s{W}' % 'WEP'.ljust(5))
+        Color.p('  ')
+        Color.p('Hex: {G}%s{W}' % self.hex_key.replace(':', ''))
+        if self.ascii_key:
+            Color.p(' (ASCII: {G}%s{W})' % self.ascii_key)
+        Color.pl('')
+
     def to_dict(self):
         return {
             'type'      : self.result_type,

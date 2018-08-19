@@ -27,6 +27,15 @@ class CrackResultWPS(CrackResult):
         Color.pl('{+} %s: {G}%s{W}'     % (     'WPS PIN'.rjust(12), self.pin))
         Color.pl('{+} %s: {G}%s{W}'     % ('PSK/Password'.rjust(12), psk))
 
+    def print_single_line(self, longest_essid):
+        self.print_single_line_prefix(longest_essid)
+        Color.p('{G}%s{W}' % 'WPS'.ljust(5))
+        Color.p('  ')
+        if self.psk:
+            Color.p('Key: {G}%s{W} ' % self.psk)
+        Color.p('PIN: {G}%s{W}' % self.pin)
+        Color.pl('')
+
     def to_dict(self):
         return {
             'type'  : self.result_type,

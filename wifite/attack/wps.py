@@ -15,10 +15,14 @@ class AttackWPS(Attack):
         ''' Run all WPS-related attacks '''
 
         # Drop out if user specified to not use Reaver/Bully
+        if Configuration.use_pmkid_only:
+            self.success = False
+            return False
+
         if Configuration.no_wps:
             Color.pl('\r{!} {O}--no-wps{R} set, ignoring WPS attack on {O}%s{W}' % self.target.essid)
             self.success = False
-            return self.success
+            return False
 
         if Configuration.use_bully:
             return self.run_bully()
