@@ -64,7 +64,7 @@ class Dependency(object):
             return False
 
         if cls.dependency_required:
-            Color.pp('{!} {R}error: required app {O}%s{R} was not found' % cls.dependency_name)
+            Color.p('{!} {R}error: required app {O}%s{R} was not found' % cls.dependency_name)
             Color.pl(' {W}install @ {C}%s{W}' % cls.dependency_url)
             return True
 
