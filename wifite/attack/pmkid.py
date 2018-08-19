@@ -161,7 +161,7 @@ class AttackPMKID(Attack):
         dumptool = HcxDumpTool(self.target, self.pcapng_file)
 
         # Let the dump tool run until we have the hash.
-        while self.keep_capturing and dumptool.poll() == None:
+        while self.keep_capturing and dumptool.poll() is None:
             time.sleep(0.5)
 
         dumptool.interrupt()
