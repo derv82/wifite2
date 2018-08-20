@@ -16,7 +16,7 @@ setup(
         'wifite/util',
     ],
     data_files=[
-        ('share/wordlists', ['wordlist-top4800-probable.txt'])
+        ('share/dict', ['wordlist-top4800-probable.txt'])
     ],
     entry_points={
         'console_scripts': [
