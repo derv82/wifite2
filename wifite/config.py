@@ -85,6 +85,8 @@ class Configuration(object):
         cls.wordlist = None
         wordlists = [
             './wordlist-top4800-probable.txt',
+            '/usr/share/wordlists/wordlist-top4800-probable.txt',
+            '/usr/local/share/wordlists/wordlist-top4800-probable.txt',
             '/usr/share/wfuzz/wordlist/fuzzdb/wordlists-user-passwd/passwds/phpbb.txt',
             '/usr/share/fuzzdb/wordlists-user-passwd/passwds/phpbb.txt',
             '/usr/share/wordlists/fern-wifi/common.txt'

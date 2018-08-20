@@ -4,7 +4,6 @@ from wifite.config import Configuration
 
 setup(
     name='wifite',
-    #version='2.1.9',
     version=Configuration.version,
     author='derv82',
     author_email='derv82@gmail.com',
@@ -17,7 +16,7 @@ setup(
         'wifite/util',
     ],
     data_files=[
-        ('', ['wordlist-top4800-probable.txt'])
+        ('share/wordlists', ['wordlist-top4800-probable.txt'])
     ],
     entry_points={
         'console_scripts': [
