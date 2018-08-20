@@ -173,7 +173,7 @@ class AttackPMKID(Attack):
         '''
         # Create handshake dir
         if not os.path.exists(Configuration.wpa_handshake_dir):
-            os.mkdir(Configuration.wpa_handshake_dir)
+            os.makedirs(Configuration.wpa_handshake_dir)
 
         # Generate filesystem-safe filename from bssid, essid and date
         essid_safe = re.sub('[^a-zA-Z0-9]', '', self.target.essid)
