@@ -61,11 +61,11 @@ class AttackWPA(Attack):
             self.success = False
             return False
 
-        Color.pl('\n{+} {C}Cracking WPA Handshake:{W} Using {C}aircrack-ng{W} via' +
+        Color.pl('\n{+} {C}Cracking WPA Handshake:{W} Running {C}aircrack-ng{W} with' +
                 ' {C}%s{W} wordlist' % os.path.split(Configuration.wordlist)[-1])
 
         # Crack it
-        key = Aircrack.crack_handshake(handshake, Configuration.wordlist)
+        key = Aircrack.crack_handshake(handshake, show_command=False)
         if key is None:
             Color.pl('{!} {R}Failed to crack handshake: {O}%s{R} did not contain password{W}' % Configuration.wordlist.split(os.sep)[-1])
             self.success = False

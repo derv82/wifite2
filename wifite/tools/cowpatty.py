@@ -28,7 +28,7 @@ class Cowpatty(Dependency):
             '-s', handshake.essid
         ]
         if show_command:
-            Color.pl('{+} {D}{C}Running %s{W}' % ' '.join(command))
+            Color.pl('{+} {D}Running: {W}{P}%s{W}' % ' '.join(command))
         process = Process(command)
         stdout, stderr = process.get_output()
 

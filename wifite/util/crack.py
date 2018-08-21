@@ -53,6 +53,7 @@ class CrackHelper:
             return
 
         hs_to_crack = cls.get_user_selection(handshakes)
+        any_pmkid = any([hs['type'] == 'PMKID' for hs in hs_to_crack])
 
         # Tools for cracking & their dependencies.
         available_tools = {
@@ -84,6 +85,8 @@ class CrackHelper:
         if tool_name not in available_tools:
             Color.pl('{!} {R}"%s"{O} tool not found, defaulting to {C}aircrack{W}' % tool_name)
             tool_name = 'aircrack'
+        elif any_pmkid and tool_name != 'hashcat':
+            Color.pl('{!} {O}Note: PMKID hashes will be cracked using {C}hashcat{W}')
 
         try:
             for hs in hs_to_crack:
@@ -251,9 +254,6 @@ class CrackHelper:
 
     @classmethod
     def crack_pmkid(cls, hs, tool_name):
-        if tool_name != 'hashcat':
-            Color.pl('{!} {O}Note: PMKIDs can only be cracked using hashcat{W}')
-
         key = Hashcat.crack_pmkid(hs['filename'], verbose=True)
 
         if key is not None:

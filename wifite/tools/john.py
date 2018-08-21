@@ -33,20 +33,20 @@ class John(Dependency):
         # Crack john file
         command = [
             'john',
-            '--format', john_format,
+            '--format=%s' % john_format,
             '--wordlist', Configuration.wordlist,
             john_file
         ]
 
         if show_command:
-            Color.pl('{+} {D}{C}Running %s{W}' % ' '.join(command))
+            Color.pl('{+} {D}Running: {W}{P}%s{W}' % ' '.join(command))
         process = Process(command)
         process.wait()
 
         # Run again with --show to consistently get the password
         command = ['john', '--show', john_file]
         if show_command:
-            Color.pl('{+} {D}{C}Running %s{W}' % ' '.join(command))
+            Color.pl('{+} {D}Running: {W}{P}%s{W}' % ' '.join(command))
         process = Process(command)
         stdout, stderr = process.get_output()
 

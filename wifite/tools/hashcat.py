@@ -40,7 +40,7 @@ class Hashcat(Dependency):
                 command.append('--force')
             command.extend(additional_arg)
             if show_command:
-                Color.pl('{+} {D}{C}Running %s{W}' % ' '.join(command))
+                Color.pl('{+} {D}Running: {W}{P}%s{W}' % ' '.join(command))
             process = Process(command)
             stdout, stderr = process.get_output()
             if ':' not in stdout:
@@ -150,7 +150,7 @@ class HcxPcapTool(Dependency):
         ]
 
         if show_command:
-            Color.pl('{+} {D}{C}Running %s{W}' % ' '.join(command))
+            Color.pl('{+} {D}Running: {W}{P}%s{W}' % ' '.join(command))
 
         process = Process(command)
         stdout, stderr = process.get_output()
@@ -173,7 +173,7 @@ class HcxPcapTool(Dependency):
         ]
 
         if show_command:
-            Color.pl('{+} {D}{C}Running %s{W}' % ' '.join(command))
+            Color.pl('{+} {D}Running: {W}{P}%s{W}' % ' '.join(command))
 
         process = Process(command)
         stdout, stderr = process.get_output()
