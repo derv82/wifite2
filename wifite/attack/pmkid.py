@@ -97,7 +97,12 @@ class AttackPMKID(Attack):
             return False  # No hash found.
 
         # Crack it.
-        self.success = self.crack_pmkid_file(pmkid_file)
+        try:
+            self.success = self.crack_pmkid_file(pmkid_file)
+        except KeyboardInterrupt:
+            Color.pl('\n{!} {R}Failed to crack PMKID: {O}Cracking interrupted by user{W}')
+            self.success = False
+            return False
 
         return True  # Even if we don't crack it, capturing a PMKID is 'successful'
 

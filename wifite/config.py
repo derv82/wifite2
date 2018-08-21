@@ -84,9 +84,10 @@ class Configuration(object):
         # Default dictionary for cracking
         cls.wordlist = None
         wordlists = [
-            './wordlist-top4800-probable.txt',
-            '/usr/share/wordlists/wordlist-top4800-probable.txt',
-            '/usr/local/share/wordlists/wordlist-top4800-probable.txt',
+            './wordlist-top4800-probable.txt',  # Local file (ran from cloned repo)
+            '/usr/dict/wordlists/wordlist-top4800-probable.txt',  # setup.py with prefix=/usr
+            '/usr/local/dict/wordlists/wordlist-top4800-probable.txt',  # setup.py with prefix=/usr/local
+            # Other passwords found on Kali
             '/usr/share/wfuzz/wordlist/fuzzdb/wordlists-user-passwd/passwds/phpbb.txt',
             '/usr/share/fuzzdb/wordlists-user-passwd/passwds/phpbb.txt',
             '/usr/share/wordlists/fern-wifi/common.txt'

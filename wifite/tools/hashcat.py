@@ -15,6 +15,47 @@ class Hashcat(Dependency):
     dependency_url = 'https://hashcat.net/hashcat/'
 
     @staticmethod
+    def should_use_force():
+        command = ['hashcat', '-I']
+        stderr = Process(command).stderr()
+        return 'No devices found/left' in stderr
+
+    @staticmethod
+    def crack_handshake(handshake, show_command=False):
+        # Generate hccapx
+        hccapx_file = HcxPcapTool.generate_hccapx_file(
+                handshake, show_command=show_command)
+
+        key = None
+        # Crack hccapx
+        for additional_arg in [ [], ['--show']]:
+            command = [
+                'hashcat',
+                '--quiet',
+                '-m', '2500',
+                hccapx_file,
+                Configuration.wordlist
+            ]
+            if Hashcat.should_use_force():
+                command.append('--force')
+            command.extend(additional_arg)
+            if show_command:
+                Color.pl('{+} {D}{C}Running %s{W}' % ' '.join(command))
+            process = Process(command)
+            stdout, stderr = process.get_output()
+            if ':' not in stdout:
+                continue
+            else:
+                key = stdout.split(':', 5)[-1].strip()
+                break
+
+        if os.path.exists(hccapx_file):
+            os.remove(hccapx_file)
+
+        return key
+
+
+    @staticmethod
     def crack_pmkid(pmkid_file, verbose=False):
         '''
         Cracks a given pmkid_file using the PMKID/WPA2 attack (-m 16800)
@@ -27,27 +68,23 @@ class Hashcat(Dependency):
         for additional_arg in [ [], ['--show']]:
             command = [
                 'hashcat',
-                '--force',
                 '--quiet',      # Only output the password if found.
                 '-m', '16800',  # WPA-PMKID-PBKDF2
-                '-a', '0',      # TODO: Configure
-                '-w', '2',      # TODO: Configure
+                '-a', '0',      # Wordlist attack-mode
                 pmkid_file,
                 Configuration.wordlist
             ]
+            if Hashcat.should_use_force():
+                command.append('--force')
             command.extend(additional_arg)
             if verbose and additional_arg == []:
                 Color.pl('{+} {D}Running: {W}{P}%s{W}' % ' '.join(command))
 
             # TODO: Check status of hashcat (%); it's impossible with --quiet
 
-            try:
-                hashcat_proc = Process(command)
-                hashcat_proc.wait()
-                stdout = hashcat_proc.stdout()
-            except KeyboardInterrupt:  # In case user gets impatient
-                Color.pl('\n{!} {O}Interrupted hashcat cracking{W}')
-                stdout = ''
+            hashcat_proc = Process(command)
+            hashcat_proc.wait()
+            stdout = hashcat_proc.stdout()
 
             if ':' not in stdout:
                 # Failed
@@ -99,6 +136,52 @@ class HcxPcapTool(Dependency):
         self.target = target
         self.bssid = self.target.bssid.lower().replace(':', '')
         self.pmkid_file = Configuration.temp('pmkid-%s.16800' % self.bssid)
+
+    @staticmethod
+    def generate_hccapx_file(handshake, show_command=False):
+        hccapx_file = Configuration.temp('generated.hccapx')
+        if os.path.exists(hccapx_file):
+            os.remove(hccapx_file)
+
+        command = [
+            'hcxpcaptool',
+            '-o', hccapx_file,
+            handshake.capfile
+        ]
+
+        if show_command:
+            Color.pl('{+} {D}{C}Running %s{W}' % ' '.join(command))
+
+        process = Process(command)
+        stdout, stderr = process.get_output()
+        if not os.path.exists(hccapx_file):
+            raise ValueError('Failed to generate .hccapx file, output: \n%s\n%s' % (
+                stdout, stderr))
+
+        return hccapx_file
+
+    @staticmethod
+    def generate_john_file(handshake, show_command=False):
+        john_file = Configuration.temp('generated.john')
+        if os.path.exists(john_file):
+            os.remove(john_file)
+
+        command = [
+            'hcxpcaptool',
+            '-j', john_file,
+            handshake.capfile
+        ]
+
+        if show_command:
+            Color.pl('{+} {D}{C}Running %s{W}' % ' '.join(command))
+
+        process = Process(command)
+        stdout, stderr = process.get_output()
+        if not os.path.exists(john_file):
+            raise ValueError('Failed to generate .john file, output: \n%s\n%s' % (
+                stdout, stderr))
+
+        return john_file
 
     def get_pmkid_hash(self, pcapng_file):
         if os.path.exists(self.pmkid_file):

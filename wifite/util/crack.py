@@ -1,10 +1,17 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from ..config import Configuration
+from ..model.handshake import Handshake
+from ..model.wpa_result import CrackResultWPA
+from ..model.pmkid_result import CrackResultPMKID
 from ..util.process import Process
 from ..util.color import Color
 from ..util.input import raw_input
-from ..config import Configuration
+from ..tools.aircrack import Aircrack
+from ..tools.cowpatty import Cowpatty
+from ..tools.hashcat import Hashcat, HcxPcapTool
+from ..tools.john import John
 
 from datetime import datetime
 
@@ -19,8 +26,8 @@ class CrackHelper:
     '''Manages handshake retrieval, selection, and running the cracking commands.'''
 
     TYPES = {
-        '4-WAY': 'WPA 4-Way Handshake',
-        'PMKID': 'WPA PKID Hash'
+        '4-WAY': '4-Way Handshake',
+        'PMKID': 'PMKID Hash'
     }
 
 
@@ -28,6 +35,7 @@ class CrackHelper:
     def run(cls):
         Configuration.initialize(False)
 
+        # Get wordlist
         if not Configuration.wordlist:
             Color.p('\n{+} Enter wordlist file to use for cracking: {G}')
             Configuration.wordlist = raw_input()
@@ -36,16 +44,35 @@ class CrackHelper:
                 return
             Color.pl('')
 
+        # Get handshakes
         handshakes = cls.get_handshakes()
         if len(handshakes) == 0:
             Color.pl('{!} {O}No handshakes found{W}')
             return
+
         hs_to_crack = cls.get_user_selection(handshakes)
 
-        # TODO: Ask what method to use for WPA (aircrack, pyrit, john, hashcat, cowpatty)
+        # Get tool
+        available_tools = ['aircrack', 'hashcat', 'john', 'cowpatty']
+        if not Process.exists(HcxPcapTool.dependency_name):
+            Color.pl('{!} {R}Unable to use hashcat: {O}missing required hcxpcaptool{W}')
+            available_tools.remove('hashcat')
+        if not Process.exists(John.dependency_name):
+            Color.pl('{!} {R}Unable to use john: {O}missing required "john" program{W}')
+            available_tools.remove('john')
 
-        for hs in hs_to_crack:
-            cls.crack(hs)
+        Color.p('{+} Enter the {C}cracking tool{W} to use ({C}%s{W}): {G}' % (
+            '{W}, {C}'.join(available_tools)))
+        tool_name = raw_input()
+        if tool_name not in available_tools:
+            Color.pl('{!} {O}%s not found, defaulting to aircrack' % tool_name)
+            tool_name = 'aircrack'
+
+        try:
+            for hs in hs_to_crack:
+                cls.crack(hs, tool_name)
+        except KeyboardInterrupt:
+            Color.pl('\n{!} {O}Interrupted{W}')
 
     @classmethod
     def get_handshakes(cls):
@@ -136,7 +163,7 @@ class CrackHelper:
     def get_user_selection(cls, handshakes):
         cls.print_handshakes(handshakes)
 
-        Color.p('{+} Select handshake(s) to crack ({G}%d{W}-{G}%d{W}, select multiple with {C},{W} or {C}-{W}): {G}' % (1, len(handshakes)))
+        Color.p('{+} Select handshake(s) to crack ({G}%d{W}-{G}%d{W}, select multiple with {C},{W} or {C}-{W} or {C}all{W}): {G}' % (1, len(handshakes)))
         choices = raw_input()
 
         selection = []
@@ -145,7 +172,10 @@ class CrackHelper:
                 first, last = [int(x) for x in choice.split('-')]
                 for index in range(first, last + 1):
                     selection.append(handshakes[index-1])
-            else:
+            elif choice.strip().lower() == 'all':
+                selection = handshakes[:]
+                break
+            elif [c.isdigit() for c in choice]:
                 index = int(choice)
                 selection.append(handshakes[index-1])
 
@@ -153,12 +183,14 @@ class CrackHelper:
 
 
     @classmethod
-    def crack(cls, hs):
-        Color.pl('\n{+} Cracking {C}%s{W} ({C}%s{W}) using {G}%s{W} method' % (hs['essid'], hs['bssid'], hs['type']))
+    def crack(cls, hs, tool):
+        Color.pl('\n{+} Cracking {G}%s {C}%s{W} ({C}%s{W})' % (
+            cls.TYPES[hs['type']], hs['essid'], hs['bssid']))
+
         if hs['type'] == 'PMKID':
-            crack_result = cls.crack_pmkid(hs)
+            crack_result = cls.crack_pmkid(hs, tool)
         elif hs['type'] == '4-WAY':
-            crack_result = cls.crack_4way(hs)
+            crack_result = cls.crack_4way(hs, tool)
         else:
             raise ValueError('Cannot crack handshake: Type is not PMKID or 4-WAY. Handshake=%s' % hs)
 
@@ -174,20 +206,25 @@ class CrackHelper:
 
 
     @classmethod
-    def crack_4way(cls, hs):
-        from ..attack.wpa import AttackWPA
-        from ..model.handshake import Handshake
-        from ..model.wpa_result import CrackResultWPA
+    def crack_4way(cls, hs, tool):
 
         handshake = Handshake(hs['filename'],
                 bssid=hs['bssid'],
                 essid=hs['essid'])
-
-        key = None
         try:
-            key = AttackWPA.crack_handshake(handshake, Configuration.wordlist, verbose=True)
-        except KeyboardInterrupt:
-            Color.pl('\n{!} Interrupted')
+            handshake.divine_bssid_and_essid()
+        except ValueError as e:
+            Color.pl('{!} {R}Error: {O}%s{W}' % e)
+            return None
+
+        if tool == 'aircrack':
+            key = Aircrack.crack_handshake(handshake, show_command=True)
+        elif tool == 'hashcat':
+            key = Hashcat.crack_handshake(handshake, show_command=True)
+        elif tool == 'john':
+            key = John.crack_handshake(handshake, show_command=True)
+        elif tool == 'cowpatty':
+            key = Cowpatty.crack_handshake(handshake, show_command=True)
 
         if key is not None:
             return CrackResultWPA(hs['bssid'], hs['essid'], hs['filename'], key)
@@ -196,15 +233,11 @@ class CrackHelper:
 
 
     @classmethod
-    def crack_pmkid(cls, hs):
-        from ..tools.hashcat import Hashcat
-        from ..model.pmkid_result import CrackResultPMKID
+    def crack_pmkid(cls, hs, tool_name):
+        if tool_name != 'hashcat':
+            Color.pl('{!} {O}Note: PMKIDs can only be cracked using hashcat{W}')
 
-        key = None
-        try:
-            key = Hashcat.crack_pmkid(hs['filename'], verbose=True)
-        except KeyboardInterrupt:
-            Color.pl('\n{!} Interrupted')
+        key = Hashcat.crack_pmkid(hs['filename'], verbose=True)
 
         if key is not None:
             return CrackResultPMKID(hs['bssid'], hs['essid'], hs['filename'], key)

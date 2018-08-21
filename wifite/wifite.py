@@ -81,7 +81,7 @@ class Wifite(object):
         # Attack
         attacked_targets = AttackAll.attack_multiple(targets)
 
-        Color.pl('{+} Finished attacking {C}%d{W} target(s), exiting' % attacked_targets)
+        Color.pl('\n{+} Finished attacking {C}%d{W} target(s), exiting' % attacked_targets)
 
 
 ##############################################################

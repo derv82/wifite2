@@ -38,7 +38,7 @@ class Handshake(object):
 
         if len(pairs) == 0 and not self.bssid and not self.essid:
             # Tshark and Pyrit failed us, nothing else we can do.
-            raise Exception('Cannot find BSSID or ESSID in cap file')
+            raise ValueError('Cannot find BSSID or ESSID in cap file %s' % self.capfile)
 
         if not self.essid and not self.bssid:
             # We do not know the bssid nor the essid
