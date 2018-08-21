@@ -8,7 +8,7 @@ from .tools.macchanger import Macchanger
 
 class Configuration(object):
     ''' Stores configuration variables and functions for Wifite. '''
-    version = '2.2.1'
+    version = '2.2.2'
 
     initialized = False # Flag indicating config has been initialized
     temp_dir = None     # Temporary directory
@@ -85,8 +85,8 @@ class Configuration(object):
         cls.wordlist = None
         wordlists = [
             './wordlist-top4800-probable.txt',  # Local file (ran from cloned repo)
-            '/usr/dict/wordlists/wordlist-top4800-probable.txt',  # setup.py with prefix=/usr
-            '/usr/local/dict/wordlists/wordlist-top4800-probable.txt',  # setup.py with prefix=/usr/local
+            '/usr/share/dict/wordlist-top4800-probable.txt',  # setup.py with prefix=/usr
+            '/usr/local/share/dict/wordlist-top4800-probable.txt',  # setup.py with prefix=/usr/local
             # Other passwords found on Kali
             '/usr/share/wfuzz/wordlist/fuzzdb/wordlists-user-passwd/passwds/phpbb.txt',
             '/usr/share/fuzzdb/wordlists-user-passwd/passwds/phpbb.txt',
