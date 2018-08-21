@@ -21,27 +21,39 @@ class John(Dependency):
     def crack_handshake(handshake, show_command=False):
         john_file = HcxPcapTool.generate_john_file(handshake, show_command=show_command)
 
+        # Use `john --list=formats` to find if OpenCL or CUDA is supported.
+        formats_stdout = Process(['john', '--list=formats']).stdout()
+        if 'wpapsk-opencl' in formats_stdout:
+            john_format = 'wpapsk-opencl'
+        elif 'wpapsk-cuda' in formats_stdout:
+            john_format = 'wpapsk-cuda'
+        else:
+            john_format = 'wpapsk'
+
         # Crack john file
         command = [
             'john',
-            '--format=wpapsk', # wpapsk-cuda or wpapsk-opencl
+            '--format', john_format,
             '--wordlist', Configuration.wordlist,
             john_file
         ]
+
         if show_command:
             Color.pl('{+} {D}{C}Running %s{W}' % ' '.join(command))
         process = Process(command)
         process.wait()
 
-        # Show the password (if found)
+        # Run again with --show to consistently get the password
         command = ['john', '--show', john_file]
         if show_command:
             Color.pl('{+} {D}{C}Running %s{W}' % ' '.join(command))
         process = Process(command)
         stdout, stderr = process.get_output()
 
-        key = None
-        if not '0 password hashes cracked' in stdout:
+        # Parse password (regex doesn't work for some reason)
+        if '0 password hashes cracked' in stdout:
+            key = None
+        else:
             for line in stdout.split('\n'):
                 if handshake.capfile in line:
                     key = line.split(':')[1]

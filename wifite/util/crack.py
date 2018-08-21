@@ -22,6 +22,8 @@ import os
 
 # TODO: Do not show handshake files that are in cracked.txt with a key (match on filename).
 
+# TODO: --no-crack option while attacking targets (implies user will run --crack later)
+
 class CrackHelper:
     '''Manages handshake retrieval, selection, and running the cracking commands.'''
 
@@ -52,20 +54,35 @@ class CrackHelper:
 
         hs_to_crack = cls.get_user_selection(handshakes)
 
-        # Get tool
-        available_tools = ['aircrack', 'hashcat', 'john', 'cowpatty']
-        if not Process.exists(HcxPcapTool.dependency_name):
-            Color.pl('{!} {R}Unable to use hashcat: {O}missing required hcxpcaptool{W}')
-            available_tools.remove('hashcat')
-        if not Process.exists(John.dependency_name):
-            Color.pl('{!} {R}Unable to use john: {O}missing required "john" program{W}')
-            available_tools.remove('john')
+        # Tools for cracking & their dependencies.
+        available_tools = {
+            'aircrack': [Aircrack],
+            'hashcat':  [Hashcat, HcxPcapTool],
+            'john':     [John, HcxPcapTool],
+            'cowpatty': [Cowpatty]
+        }
+        # Identify missing tools
+        missing_tools = []
+        for tool, dependencies in available_tools.items():
+            missing = [
+                dep for dep in dependencies
+                if not Process.exists(dep.dependency_name)
+            ]
+            if len(missing) > 0:
+                available_tools.pop(tool)
+                missing_tools.append( (tool, missing) )
 
-        Color.p('{+} Enter the {C}cracking tool{W} to use ({C}%s{W}): {G}' % (
-            '{W}, {C}'.join(available_tools)))
+        if len(missing_tools) > 0:
+            Color.pl('\n{!} {O}Unavailable tools (install to enable):{W}')
+            for tool, deps in missing_tools:
+                dep_list = ', '.join([dep.dependency_name for dep in deps])
+                Color.pl('     {R}* {R}%s {W}({O}%s{W})' % (tool, dep_list))
+
+        Color.p('\n{+} Enter the {C}cracking tool{W} to use ({C}%s{W}): {G}' % (
+            '{W}, {C}'.join(available_tools.keys())))
         tool_name = raw_input()
         if tool_name not in available_tools:
-            Color.pl('{!} {O}%s not found, defaulting to aircrack' % tool_name)
+            Color.pl('{!} {R}"%s"{O} tool not found, defaulting to {C}aircrack{W}' % tool_name)
             tool_name = 'aircrack'
 
         try:
@@ -85,7 +102,7 @@ class CrackHelper:
             Color.pl('\n{!} {O}directory not found: {R}%s{W}' % hs_dir)
             return []
 
-        Color.pl('\n{+} Listing captured handshakes from {C}%s{W} ...\n' % os.path.abspath(hs_dir))
+        Color.pl('\n{+} Listing captured handshakes from {C}%s{W}:\n' % os.path.abspath(hs_dir))
         for hs_file in os.listdir(hs_dir):
             if hs_file.count('_') != 3:
                 continue
@@ -146,7 +163,7 @@ class CrackHelper:
         Color.p('  ---')
         Color.p('  ' + ('-' * max_essid_len))
         Color.p('  ' + ('-' * 17))
-        Color.p('  ' + ('-' * 6))
+        Color.p('  ' + ('-' * 5))
         Color.p('  ' + ('-' * 19) + '{W}\n')
         # Handshakes
         for index, handshake in enumerate(handshakes, start=1):

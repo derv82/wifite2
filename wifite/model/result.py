@@ -39,19 +39,31 @@ class CrackResult(object):
     def save(self):
         ''' Adds this crack result to the cracked file and saves it. '''
         name = CrackResult.cracked_file
-        json = []
+        saved_results = []
         if os.path.exists(name):
             with open(name, 'r') as fid:
                 text = fid.read()
             try:
-                json = loads(text)
+                saved_results = loads(text)
             except Exception as e:
                 Color.pl('{!} error while loading %s: %s' % (name, str(e)))
-        json.append(self.to_dict())
+
+        # Check for duplicates
+        this_dict = self.to_dict()
+        this_dict.pop('date')
+        for entry in saved_results:
+            this_dict['date'] = entry.get('date')
+            if entry == this_dict:
+                # Skip if we already saved this BSSID+ESSID+TYPE+KEY
+                Color.pl('{+} {C}%s{O} already exists in {G}cracked.txt{O}, skipping.' % (
+                    self.essid))
+                return
+
+        saved_results.append(self.to_dict())
         with open(name, 'w') as fid:
-            fid.write(dumps(json, indent=2))
+            fid.write(dumps(saved_results, indent=2))
         Color.pl('{+} saved crack result to {C}%s{W} ({G}%d total{W})'
-            % (name, len(json)))
+            % (name, len(saved_results)))
 
     @classmethod
     def display(cls):
