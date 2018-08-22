@@ -63,7 +63,7 @@ class Process(object):
 
         return True
 
-    def __init__(self, command, devnull=False, stdout=PIPE, stderr=PIPE, cwd=None, bufsize=0):
+    def __init__(self, command, devnull=False, stdout=PIPE, stderr=PIPE, cwd=None, bufsize=0, stdin=PIPE):
         ''' Starts executing command '''
 
         if type(command) is str:
@@ -86,7 +86,7 @@ class Process(object):
 
         self.start_time = time.time()
 
-        self.pid = Popen(command, stdout=sout, stderr=serr, cwd=cwd, bufsize=bufsize)
+        self.pid = Popen(command, stdout=sout, stderr=serr, stdin=stdin, cwd=cwd, bufsize=bufsize)
 
     def __del__(self):
         '''
@@ -118,6 +118,11 @@ class Process(object):
 
     def stderrln(self):
         return self.pid.stderr.readline()
+
+    def stdin(self, text):
+        if self.pid.stdin:
+            self.pid.stdin.write(text)
+            self.pid.stdin.flush()
 
     def get_output(self):
         ''' Waits for process to finish, sets stdout & stderr '''

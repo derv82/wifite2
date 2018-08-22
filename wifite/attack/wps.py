@@ -40,6 +40,10 @@ class AttackWPS(Attack):
         bully.stop()
         self.crack_result = bully.crack_result
         self.success = self.crack_result is not None
+        if self.success:
+            return True
+
+        # Bully: WPS PIN Attack
         return self.success
 
 
@@ -49,11 +53,22 @@ class AttackWPS(Attack):
         if not reaver.is_pixiedust_supported():
             Color.pl('{!} {R}your version of "reaver" does not support the {O}WPS pixie-dust attack{W}')
             return False
-        else:
-            # Reaver: Pixie-dust
-            reaver = Reaver(self.target)
-            reaver.run()
+
+        # Reaver: PixieDust then WPS PIN attack.
+        for pixie_dust in [True, False]:
+            if pixie_dust and not reaver.is_pixiedust_supported():
+                Color.pl('{!} {R}your version of "reaver" does not support the {O}WPS pixie-dust attack{W}')
+                continue
+            reaver = Reaver(self.target, pixie_dust=pixie_dust)
+            try:
+                reaver.run()
+            except KeyboardInterrupt:
+                Color.pl('\n{!} {O}Interrupted{W}')
+                continue
             self.crack_result = reaver.crack_result
             self.success = self.crack_result is not None
-            return self.success
+            if self.success:
+                return True
+
+        return False
 
