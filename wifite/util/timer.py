@@ -28,8 +28,8 @@ class Timer(object):
             return '-%ds' % seconds
 
         rem = int(seconds)
-        hours = rem / 3600
-        mins = (rem % 3600) / 60
+        hours = int(rem / 3600)
+        mins = int((rem % 3600) / 60)
         secs = rem % 60
         if hours > 0:
             return '%dh%dm%ds' % (hours, mins, secs)

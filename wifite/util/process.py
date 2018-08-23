@@ -121,7 +121,7 @@ class Process(object):
 
     def stdin(self, text):
         if self.pid.stdin:
-            self.pid.stdin.write(text)
+            self.pid.stdin.write(text.encode('utf-8'))
             self.pid.stdin.flush()
 
     def get_output(self):
