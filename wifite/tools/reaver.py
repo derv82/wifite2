@@ -66,7 +66,6 @@ class Reaver(Attack, Dependency):
         except Exception as e:
             # Failed with error
             self.pattack('{R}Failed:{O} %s' % str(e), newline=True)
-            Color.pexception(e)
             return self.crack_result is not None
 
         # Stop reaver if it's still running
@@ -220,25 +219,31 @@ class Reaver(Attack, Dependency):
         # Check last line for current status
         stdout_last_line = stdout.split('\n')[-1]
 
+        # [+] Waiting for beacon from AA:BB:CC:DD:EE:FF
         if 'Waiting for beacon from' in stdout_last_line:
             state = 'Waiting for beacon'
 
+        # [+] Associated with AA:BB:CC:DD:EE:FF (ESSID: NETGEAR07)
         elif 'Associated with' in stdout_last_line:
             state = 'Associated'
 
         elif 'Starting Cracking Session.' in stdout_last_line:
             state = 'Started Cracking'
 
+        # [+] Trying pin "01235678"
         elif 'Trying pin' in stdout_last_line:
             state = 'Trying PIN'
 
+        # [+] Sending EAPOL START request
         elif 'Sending EAPOL START request' in stdout_last_line:
             state = 'Sending EAPOL'
 
+        # [+] Sending identity response
         elif 'Sending identity response' in stdout_last_line:
             state = 'Sending ID'
             self.locked = False
 
+        # [+] Sending M2 message
         elif 'Sending M' in stdout_last_line:
             for num in ['2', '4', '6']:
                 if 'Sending M%s message' % num in stdout_last_line:
@@ -247,12 +252,14 @@ class Reaver(Attack, Dependency):
                         state += ' / Running pixiewps'
                     self.locked = False
 
+        # [+] Received M1 message
         elif 'Received M' in stdout_last_line:
             for num in ['1', '3', '5', '7']:
                 if 'Received M%s message' % num in stdout_last_line:
                     state = 'Received M%s' % num
                     self.locked = False
 
+        # [!] WARNING: Detected AP rate limiting, waiting 60 seconds before re-checking
         elif 'Detected AP rate limiting,' in stdout_last_line:
             state = 'Rate-Limited by AP'
             self.locked = True
@@ -262,15 +269,18 @@ class Reaver(Attack, Dependency):
         self.last_line_number = len(stdout)
 
         # Detect percentage complete
+        # [+] 0.05% complete @ 2018-08-23 15:17:23 (42 seconds/pin)
         percentages = re.findall(
                 r"([0-9.]+%) complete .* \(([0-9.]+) seconds/pin\)", stdout_diff)
         if len(percentages) > 0:
             self.progress = percentages[-1][0]
 
         # Calculate number of PINs tried
+        # [+] Trying pin "01235678"
         new_pins = set(re.findall(r'Trying pin "([0-9]+)"', stdout_diff))
-        self.total_attempts += len(new_pins.difference(self.last_pins))
-        self.last_pins = new_pins
+        if len(new_pins) > 0:
+            self.total_attempts += len(new_pins.difference(self.last_pins))
+            self.last_pins = new_pins
 
         # TODO: Look for "Sending M6 message" which indicates first 4 digits are correct.
 
