@@ -23,7 +23,7 @@ class Reaver(Attack, Dependency):
 
         self.pixie_dust = pixie_dust
 
-        self.progress = '0%'
+        self.progress = '0.00%'
         self.state = 'Initializing'
         self.locked = False
         self.total_attempts = 0
@@ -51,7 +51,8 @@ class Reaver(Attack, Dependency):
 
         self.reaver_proc = None
 
-    def is_pixiedust_supported(self):
+    @staticmethod
+    def is_pixiedust_supported():
         ''' Checks if 'reaver' supports WPS Pixie-Dust attack '''
         output = Process(['reaver', '-h']).stderr()
         return '--pixie-dust' in output
@@ -63,6 +64,7 @@ class Reaver(Attack, Dependency):
         except Exception as e:
             # Failed with error
             self.pattack('{R}Failed:{O} %s' % str(e), newline=True)
+            Color.pexception(e)
             return self.crack_result is not None
 
         # Stop reaver if it's still running
@@ -138,7 +140,7 @@ class Reaver(Attack, Dependency):
 
         # Counters, timeouts, failures, locked.
         meta_statuses = []
-        if self.total_attempts > 0:
+        if self.total_attempts > 0 and not self.pixie_dust:
             meta_statuses.append('{C}PINs:%s{W}' % self.total_attempts)
 
         if self.total_timeouts > 0:
@@ -198,7 +200,7 @@ class Reaver(Attack, Dependency):
             raise Exception('Reaver says "WPS pin not found"')
 
         # Running-time failure
-        if self.running_time() > Configuration.wps_pixie_timeout:
+        if self.pixie_dust and self.running_time() > Configuration.wps_pixie_timeout:
             raise Exception('Timeout after %d seconds' % Configuration.wps_pixie_timeout)
 
         # WPSFail count
@@ -224,16 +226,16 @@ class Reaver(Attack, Dependency):
             state = 'Associated'
 
         elif 'Starting Cracking Session.' in stdout_last_line:
-            state = 'Waiting to try PIN'
+            state = 'Started Cracking'
 
         elif 'Trying pin' in stdout_last_line:
             state = 'Trying PIN'
 
         elif 'Sending EAPOL START request' in stdout_last_line:
-            state = 'Sending EAPOL Start request'
+            state = 'Sending EAPOL'
 
         elif 'Sending identity response' in stdout_last_line:
-            state = 'Sending identity response'
+            state = 'Sending ID'
             self.locked = False
 
         elif 'Sending M' in stdout_last_line:
@@ -267,7 +269,10 @@ class Reaver(Attack, Dependency):
 
     def pattack(self, message, newline=False):
         # Print message with attack information.
-        time_left = Configuration.wps_pixie_timeout - self.running_time()
+        if self.pixie_dust:
+            time_left = Configuration.wps_pixie_timeout - self.running_time()
+        else:
+            time_left = self.running_time()
 
         Color.clear_entire_line()
         Color.pattack('WPS',
