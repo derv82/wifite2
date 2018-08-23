@@ -29,6 +29,8 @@ class Reaver(Attack, Dependency):
         self.total_attempts = 0
         self.total_timeouts = 0
         self.total_wpsfails = 0
+        self.last_pins = set()
+        self.last_line_number = 0
 
         self.crack_result = None
 
@@ -129,25 +131,23 @@ class Reaver(Attack, Dependency):
 
 
     def get_status(self):
-        # Include percentage
-        if not self.pixie_dust:
-            main_status = '({G}%s{W}) ' % self.progress
-        else:
+        if self.pixie_dust:
             main_status = ''
+        else:
+            # Include percentage
+            main_status = '({G}%s{W}) ' % self.progress
 
-        # Current state
+        # Current state (set in parse_* methods)
         main_status += self.state
 
         # Counters, timeouts, failures, locked.
         meta_statuses = []
-        if self.total_attempts > 0 and not self.pixie_dust:
-            meta_statuses.append('{C}PINs:%s{W}' % self.total_attempts)
 
         if self.total_timeouts > 0:
             meta_statuses.append('{O}Timeouts:%d{W}' % self.total_timeouts)
 
         if self.total_wpsfails > 0:
-            meta_statuses.append('{O}WPSFail:%d{W}' % self.total_wpsfails)
+            meta_statuses.append('{O}Fails:%d{W}' % self.total_wpsfails)
 
         if self.locked:
             meta_statuses.append('{R}Locked{W}')
@@ -217,6 +217,7 @@ class Reaver(Attack, Dependency):
     def parse_state(self, stdout):
         state = self.state
 
+        # Check last line for current status
         stdout_last_line = stdout.split('\n')[-1]
 
         if 'Waiting for beacon from' in stdout_last_line:
@@ -256,13 +257,20 @@ class Reaver(Attack, Dependency):
             state = 'Rate-Limited by AP'
             self.locked = True
 
+        # Parse all lines since last check
+        stdout_diff = stdout[self.last_line_number:]
+        self.last_line_number = len(stdout)
+
         # Detect percentage complete
-        percentages = re.findall(r"([0-9.]+%) complete .* \(([0-9.]+) seconds/pin\)", stdout_last_line)
+        percentages = re.findall(
+                r"([0-9.]+%) complete .* \(([0-9.]+) seconds/pin\)", stdout_diff)
         if len(percentages) > 0:
             self.progress = percentages[-1][0]
 
-        tried_pins = set(re.findall(r'Trying pin "([0-9]+)"', stdout))
-        self.total_attempts = len(tried_pins)
+        # Calculate number of PINs tried
+        new_pins = set(re.findall(r'Trying pin "([0-9]+)"', stdout_diff))
+        self.total_attempts += len(new_pins.difference(self.last_pins))
+        self.last_pins = new_pins
 
         # TODO: Look for "Sending M6 message" which indicates first 4 digits are correct.
 
@@ -273,14 +281,19 @@ class Reaver(Attack, Dependency):
         # Print message with attack information.
         if self.pixie_dust:
             time_left = Configuration.wps_pixie_timeout - self.running_time()
+            time_msg = '{O}%s{W}' % Timer.secs_to_str(time_left)
+            attack_name = 'Pixie-Dust'
         else:
             time_left = self.running_time()
+            time_msg = '{C}%s{W}' % Timer.secs_to_str(time_left)
+            attack_name = 'PIN Attack'
+
+        if self.total_attempts > 0 and not self.pixie_dust:
+            time_msg += ' {D}PINs:{W}{C}%d{W}' % self.total_attempts
 
         Color.clear_entire_line()
-        Color.pattack('WPS',
-                self.target,
-                'Pixie-Dust' if self.pixie_dust else 'PIN Attack',
-                '{W}[{C}%s{W}] %s' % (Timer.secs_to_str(time_left), message))
+        Color.pattack('WPS', self.target, attack_name,
+                '{W}[%s] %s' % (time_msg, message))
         if newline:
             Color.pl('')
 
