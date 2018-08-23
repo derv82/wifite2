@@ -264,6 +264,8 @@ class Reaver(Attack, Dependency):
         tried_pins = set(re.findall(r'Trying pin "([0-9]+)"', stdout))
         self.total_attempts = len(tried_pins)
 
+        # TODO: Look for "Sending M6 message" which indicates first 4 digits are correct.
+
         return state
 
 

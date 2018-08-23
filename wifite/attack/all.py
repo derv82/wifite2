@@ -53,9 +53,12 @@ class AttackAll(object):
         elif 'WPA' in target.encryption:
             # WPA can have multiple attack vectors:
 
+            # WPS
             if target.wps:
-                # WPS
-                attacks.append(AttackWPS(target))
+                if Configuration.wps_pixie:
+                    attacks.append(AttackWPS(target, pixie_dust=True))
+                if Configuration.wps_pin:
+                    attacks.append(AttackWPS(target, pixie_dust=False))
 
             # PMKID
             attacks.append(AttackPMKID(target))
