@@ -105,7 +105,7 @@ class Bully(Attack, Dependency):
             # Update status
             self.pattack(self.get_status())
 
-                # Thresholds only apply to Pixie-Dust
+            # Thresholds only apply to Pixie-Dust
             if self.pixie_dust:
                 # Check if entire attack timed out.
                 if self.running_time() > Configuration.wps_pixie_timeout:
@@ -127,6 +127,12 @@ class Bully(Attack, Dependency):
                         Configuration.wps_fail_threshold), newline=True)
                     self.stop()
                     return
+            else:
+                if self.locked and not Configuration.wps_ignore_lock:
+                    self.pattack('{R}Failed: {O}AP became {R}Locked{O}', newline=True)
+                    self.stop()
+                    return
+
 
             time.sleep(0.5)
 
