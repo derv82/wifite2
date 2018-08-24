@@ -159,6 +159,7 @@ class Tshark(Dependency):
                 capfile - .cap file from airodump containing packets
                 targets - list of Targets from scan, to be updated
         '''
+        from ..config import Configuration
 
         if not Tshark.exists():
             raise ValueError('Cannot detect WPS networks: Tshark does not exist')
@@ -183,24 +184,32 @@ class Tshark(Dependency):
             # Failure is acceptable
             return
 
-        bssids = set()
+        wps_bssids = set()
+        locked_bssids = set()
         for line in lines.split('\n'):
             if ',' not in line:
                 continue
             bssid, locked = line.split(',')
             # Ignore if WPS is locked?
             if '1' not in locked:
-                bssids.add(bssid.upper())
+                wps_bssids.add(bssid.upper())
+            else:
+                locked_bssids.add(bssid.upper())
 
         for t in targets:
-            t.wps = t.bssid.upper() in bssids
+            target_bssid = t.bssid.upper()
+            if target_bssid in wps_bssids:
+                t.wps = True
+            elif target_bssid in locked_bssids:
+                t.wps = None
+            else:
+                t.wps = False
 
 
 if __name__ == '__main__':
     test_file = './tests/files/contains_wps_network.cap'
 
     target_bssid = 'A4:2B:8C:16:6B:3A'
-    '''
     from ..model.target import Target
     fields = [
         'A4:2B:8C:16:6B:3A', # BSSID
@@ -219,6 +228,5 @@ if __name__ == '__main__':
 
     print('Target(BSSID={}).wps = {} (Expected: True)'.format(targets[0].bssid, targets[0].wps))
     assert targets[0].wps == True
-    '''
 
     print(Tshark.bssids_with_handshakes(test_file, bssid=target_bssid))

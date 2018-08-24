@@ -62,8 +62,8 @@ class AttackPMKID(Attack):
         Returns:
             True if handshake is captured. False otherwise.
         '''
-        # Skip if user only wants to run PixieDust attack
-        if Configuration.wps_only and self.target.wps:
+        # Skip if user only wants to attack WPS targets
+        if Configuration.wps_only and self.target.wps == False:
             Color.pl('\r{!} {O}Skipping PMKID attack on {R}%s{O} because {R}--wps-only{O} is set{W}' % self.target.essid)
             self.success = False
             return False

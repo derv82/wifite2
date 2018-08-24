@@ -54,7 +54,7 @@ class AttackAll(object):
             # WPA can have multiple attack vectors:
 
             # WPS
-            if target.wps:
+            if target.wps != False:
                 if Configuration.wps_pixie:
                     attacks.append(AttackWPS(target, pixie_dust=True))
                 if Configuration.wps_pin:

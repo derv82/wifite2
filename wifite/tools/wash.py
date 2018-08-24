@@ -36,22 +36,31 @@ class Wash(Dependency):
         except:
             # Failure is acceptable
             return
-        
+
         # Find all BSSIDs
-        bssids = set()
+        wps_bssids = set()
+        locked_bssids = set()
         for line in lines.split('\n'):
             try:
                 obj = json.loads(line)
                 bssid = obj['bssid']
                 locked = obj['wps_locked']
                 if locked != True:
-                    bssids.add(bssid)
+                    wps_bssids.add(bssid)
+                else:
+                    locked_bssids.add(bssid)
             except:
                 pass
 
         # Update targets
         for t in targets:
-            t.wps = t.bssid.upper() in bssids
+            target_bssid = t.bssid.upper()
+            if target_bssid in wps_bssids:
+                t.wps = True
+            elif target_bssid in locked_bssids:
+                t.wps = None
+            else:
+                t.wps = False
 
 if __name__ == '__main__':
     test_file = './tests/files/contains_wps_network.cap'

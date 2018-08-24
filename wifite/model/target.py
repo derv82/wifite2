@@ -60,7 +60,8 @@ class Target(object):
             self.essid = None # '(%s)' % self.bssid
             self.essid_known = False
 
-        self.wps = None
+        # False=No WPS, None=Locked WPS, True=Unlocked WPS
+        self.wps = False
 
         self.decloaked = False # If ESSID was hidden but we decloaked it.
 
@@ -136,9 +137,9 @@ class Target(object):
         if self.wps == True:
             wps = Color.s('{G} yes')
         elif self.wps == False:
-            wps = Color.s('{R}  no')
-        else:
-            wps = Color.s('{O} n/a')
+            wps = Color.s('{O}  no')
+        elif self.wps is None:
+            wps = Color.s('{R}lock')
 
         clients = '       '
         if len(self.clients) > 0:

@@ -27,14 +27,16 @@ class AttackWPA(Attack):
     def run(self):
         '''Initiates full WPA handshake capture attack.'''
 
-        if Configuration.use_pmkid_only:
-            self.success = False
-            return False
-        # Skip if user only wants to run PixieDust attack
-        if Configuration.wps_only and self.target.wps:
+        # Skip if target is not WPS
+        if Configuration.wps_only and self.target.wps == False:
             Color.pl('\r{!} {O}Skipping WPA-Handshake attack on {R}%s{O} because {R}--wps-only{O} is set{W}' % self.target.essid)
             self.success = False
             return self.success
+
+        # Skip if user only wants to run PMKID attack
+        if Configuration.use_pmkid_only:
+            self.success = False
+            return False
 
         # Capture the handshake (or use an old one)
         handshake = self.capture_handshake()
