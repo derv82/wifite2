@@ -115,6 +115,10 @@ class Reaver(Attack, Dependency):
                 # Check if we cracked it
                 self.crack_result = self.parse_crack_result(stdout)
 
+                # Check if locked
+                if self.locked and not Configuration.wps_ignore_lock:
+                    raise Exception('{O}Because access point is {R}Locked{W}')
+
                 time.sleep(0.5)
 
             # Check if crack result is in output

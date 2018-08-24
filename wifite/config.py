@@ -103,6 +103,7 @@ class Configuration(object):
         cls.use_bully   = False  # Use bully instead of reaver
         cls.wps_pixie   = True
         cls.wps_pin     = True
+        cls.wps_ignore_lock = False  # Skip WPS PIN attack if AP is locked.
         cls.wps_pixie_timeout = 300      # Seconds to wait for PIN before WPS Pixie attack fails
         cls.wps_fail_threshold = 100     # Max number of failures
         cls.wps_timeout_threshold = 100  # Max number of timeouts
@@ -359,6 +360,10 @@ class Configuration(object):
             cls.wps_timeout_threshold = args.wps_timeout_threshold
             Color.pl('{+} {C}option:{W} will stop WPS attack after ' +
                     '{O}%d timeouts{W}' % args.wps_timeout_threshold)
+
+        if args.wps_ignore_lock:
+            cls.wps_ignore_lock = True
+            Color.pl('{+} {C}option:{W} will {O}ignore{W} WPS lock-outs')
 
     @classmethod
     def parse_encryption(cls):
