@@ -88,7 +88,7 @@ class Scanner(object):
             return False  # No specific target from user.
 
         for target in self.targets:
-            if Configuration.wps_only and target.wps == False:
+            if Configuration.wps_only and not target.wps:
                 continue
             if bssid and target.bssid and bssid.lower() == target.bssid.lower():
                 self.target = target

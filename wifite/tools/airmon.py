@@ -344,10 +344,8 @@ class Airmon(Dependency):
 
         if not Configuration.kill_conflicting_processes:
             # Don't kill processes, warn user
-            names_and_pids = ', '.join([
-                '{R}%s{O} (PID {R}%s{O})' % (pname, pid)
-                for pid, pname in pid_pnames
-            ])
+            names_and_pids = ', '.join('{R}%s{O} (PID {R}%s{O})' % (pname, pid)
+                for pid, pname in pid_pnames)
             Color.pl('{!} {O}Conflicting processes: %s' % names_and_pids)
             Color.pl('{!} {O}If you have problems: {R}kill -9 PID{O} or re-run wifite with {R}--kill{O}){W}')
             return

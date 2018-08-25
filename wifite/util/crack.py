@@ -53,7 +53,7 @@ class CrackHelper:
             return
 
         hs_to_crack = cls.get_user_selection(handshakes)
-        any_pmkid = any([hs['type'] == 'PMKID' for hs in hs_to_crack])
+        any_pmkid = any(hs['type'] == 'PMKID' for hs in hs_to_crack)
 
         # Tools for cracking & their dependencies.
         available_tools = {
@@ -76,7 +76,7 @@ class CrackHelper:
         if len(missing_tools) > 0:
             Color.pl('\n{!} {O}Unavailable tools (install to enable):{W}')
             for tool, deps in missing_tools:
-                dep_list = ', '.join([dep.dependency_name for dep in deps])
+                dep_list = ', '.join(dep.dependency_name for dep in deps)
                 Color.pl('     {R}* {R}%s {W}({O}%s{W})' % (tool, dep_list))
 
         Color.p('\n{+} Enter the {C}cracking tool{W} to use ({C}%s{W}): {G}' % (
