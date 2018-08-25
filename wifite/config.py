@@ -446,8 +446,9 @@ class Configuration(object):
         Macchanger.reset_if_changed()
         from .tools.airmon import Airmon
         if cls.interface is not None and Airmon.base_interface is not None:
-            Color.pl('{!} Leaving interface {C}%s{W} in Monitor Mode.' % cls.interface)
-            Color.pl('{!} You can disable Monitor Mode when finished ({C}airmon-ng stop %s{W})' % cls.interface)
+            Color.pl('{!} {O}Note:{W} Leaving interface in Monitor Mode!')
+            Color.pl('{!} To disable Monitor Mode when finished: ' +
+                    '{C}airmon-ng stop %s{W}' % cls.interface)
 
             # Stop monitor mode
             #Airmon.stop(cls.interface)

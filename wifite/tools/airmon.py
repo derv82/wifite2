@@ -277,27 +277,28 @@ class Airmon(Dependency):
 
         Airmon.terminate_conflicting_processes()
 
-        Color.pl('\n{+} looking for {C}wireless interfaces{W}')
+        Color.p('\n{+} Looking for {C}wireless interfaces{W}...')
         monitor_interfaces = Iwconfig.get_interfaces(mode='Monitor')
         if len(monitor_interfaces) == 1:
             # Assume we're using the device already in montior mode
             iface = monitor_interfaces[0]
-            Color.pl('     using interface {G}%s{W} (already in monitor mode)' % iface);
-            Color.pl('     you can specify the wireless interface using {C}-i wlan0{W}')
+            Color.clear_entire_line()
+            Color.pl('{+} Using {G}%s{W} already in monitor mode' % iface);
             Airmon.base_interface = None
             return iface
 
+        Color.clear_entire_line()
+        Color.p('{+} Checking {C}airmon-ng{W}...')
         a = Airmon()
         count = len(a.interfaces)
         if count == 0:
             # No interfaces found
             Color.pl('\n{!} {O}airmon-ng did not find {R}any{O} wireless interfaces')
-            Color.pl('{!} {O}make sure your wireless device is connected')
-            Color.pl('{!} {O}see {C}http://www.aircrack-ng.org/doku.php?id=airmon-ng{O} for more info{W}')
+            Color.pl('{!} {O}Make sure your wireless device is connected')
+            Color.pl('{!} {O}See {C}http://www.aircrack-ng.org/doku.php?id=airmon-ng{O} for more info{W}')
             raise Exception('airmon-ng did not find any wireless interfaces')
 
-        Color.pl('')
-
+        Color.clear_entire_line()
         a.print_menu()
 
         Color.pl('')
@@ -307,7 +308,7 @@ class Airmon(Dependency):
             choice = 1
         else:
             # Multiple interfaces found
-            question = Color.s('{+} select interface ({G}1-%d{W}): ' % (count))
+            question = Color.s('{+} Select wireless interface ({G}1-%d{W}): ' % (count))
             choice = raw_input(question)
 
         iface = a.get(choice)
@@ -347,11 +348,11 @@ class Airmon(Dependency):
                 '{R}%s{O} (PID {R}%s{O})' % (pname, pid)
                 for pid, pname in pid_pnames
             ])
-            Color.pl('{!} {O}conflicting processes: %s' % names_and_pids)
-            Color.pl('{!} {O}if you have problems: {R}kill -9 PID{O} or re-run wifite with {R}--kill{O}){W}')
+            Color.pl('{!} {O}Conflicting processes: %s' % names_and_pids)
+            Color.pl('{!} {O}If you have problems: {R}kill -9 PID{O} or re-run wifite with {R}--kill{O}){W}')
             return
 
-        Color.pl('{!} {O}killing {R}%d {O}conflicting processes' % len(pid_pnames))
+        Color.pl('{!} {O}Killing {R}%d {O}conflicting processes' % len(pid_pnames))
         for pid, pname in pid_pnames:
             if pname == 'NetworkManager' and Process.exists('service'):
                 Color.pl('{!} {O}stopping network-manager ({R}service network-manager stop{O})')
@@ -359,7 +360,7 @@ class Airmon(Dependency):
                 Process(['service', 'network-manager', 'stop']).wait()
                 Airmon.killed_network_manager = True
             else:
-                Color.pl('{!} {R}terminating {O}conflicting process {R}%s{O} (PID {R}%s{O})' % (pname, pid))
+                Color.pl('{!} {R}Terminating {O}conflicting process {R}%s{O} (PID {R}%s{O})' % (pname, pid))
                 try:
                     os.kill(int(pid), signal.SIGTERM)
                 except:

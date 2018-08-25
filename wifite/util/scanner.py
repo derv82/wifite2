@@ -131,7 +131,7 @@ class Scanner(object):
         self.previous_target_count = len(self.targets)
 
         # Overwrite the current line
-        Color.p('\r')
+        Color.p('\r{W}{D}')
 
         # First row: columns
         Color.p('   NUM')
@@ -145,7 +145,7 @@ class Scanner(object):
         Color.p('  -------------------------')
         if Configuration.show_bssids:
             Color.p('  -----------------')
-        Color.pl('  ---  ----  -----  ----  ------')
+        Color.pl('  ---  ----  -----  ----  ------{W}')
 
         # Remaining rows: targets
         for idx, target in enumerate(self.targets, start=1):

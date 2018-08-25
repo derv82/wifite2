@@ -96,7 +96,7 @@ def entry_point():
         Color.pl('\n{!} {R}Exiting{W}\n')
 
     except KeyboardInterrupt:
-        Color.pl('\n{!} {O}interrupted, shutting down...{W}')
+        Color.pl('\n{!} {O}Interrupted, Shutting down...{W}')
 
     Configuration.exit_gracefully(0)
 
