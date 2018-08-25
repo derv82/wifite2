@@ -260,7 +260,7 @@ class Airodump(Dependency):
                 result.append(target)
             elif 'WPA' in Configuration.encryption_filter and 'WPA' in target.encryption:
                     result.append(target)
-            elif 'WPS' in Configuration.encryption_filter and target.wps != False:
+            elif 'WPS' in Configuration.encryption_filter and target.wps:
                 result.append(target)
             elif skip_wps:
                 result.append(target)

@@ -63,7 +63,7 @@ class AttackPMKID(Attack):
             True if handshake is captured. False otherwise.
         '''
         # Skip if user only wants to attack WPS targets
-        if Configuration.wps_only and self.target.wps == False:
+        if Configuration.wps_only and not self.target.wps:
             Color.pl('\r{!} {O}Skipping PMKID attack on {R}%s{O} because {R}--wps-only{O} is set{W}' % self.target.essid)
             self.success = False
             return False
@@ -82,7 +82,7 @@ class AttackPMKID(Attack):
 
         pmkid_file = None
 
-        if Configuration.ignore_old_handshakes == False:
+        if not Configuration.ignore_old_handshakes:
             # Load exisitng PMKID hash from filesystem
             pmkid_file = self.get_existing_pmkid_file(self.target.bssid)
             if pmkid_file is not None:

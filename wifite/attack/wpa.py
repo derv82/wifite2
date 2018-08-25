@@ -28,7 +28,7 @@ class AttackWPA(Attack):
         '''Initiates full WPA handshake capture attack.'''
 
         # Skip if target is not WPS
-        if Configuration.wps_only and self.target.wps == False:
+        if Configuration.wps_only and not self.target.wps:
             Color.pl('\r{!} {O}Skipping WPA-Handshake attack on {R}%s{O} because {R}--wps-only{O} is set{W}' % self.target.essid)
             self.success = False
             return self.success
@@ -96,7 +96,7 @@ class AttackWPA(Attack):
             self.clients = []
 
             # Try to load existing handshake
-            if Configuration.ignore_old_handshakes == False:
+            if not Configuration.ignore_old_handshakes:
                 bssid = airodump_target.bssid
                 essid = airodump_target.essid if airodump_target.essid_known else None
                 handshake = self.load_handshake(bssid=bssid, essid=essid)
