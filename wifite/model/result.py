@@ -84,7 +84,7 @@ class CrackResult(object):
             len(cracked_targets), name))
 
         results = sorted([cls.load(item) for item in cracked_targets], key=lambda x: x.date, reverse=True)
-        longest_essid = max([len(result.essid or 'ESSID') for result in results])
+        longest_essid = max(len(result.essid or 'ESSID') for result in results)
 
         # Header
         Color.p('{D} ')

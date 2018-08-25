@@ -47,7 +47,7 @@ class Dependency(object):
                 Macchanger
             ]
 
-        missing_required = any([app.fails_dependency_check() for app in apps])
+        missing_required = any(app.fails_dependency_check() for app in apps)
 
         if missing_required:
             Color.pl('{!} {O}At least 1 Required app is missing. Wifite needs Required apps to run{W}')
