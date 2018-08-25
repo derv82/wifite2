@@ -28,7 +28,7 @@ class Hashcat(Dependency):
 
         key = None
         # Crack hccapx
-        for additional_arg in [ [], ['--show']]:
+        for additional_arg in ([], ['--show']):
             command = [
                 'hashcat',
                 '--quiet',
@@ -65,7 +65,7 @@ class Hashcat(Dependency):
 
         # Run hashcat once normally, then with --show if it failed
         # To catch cases where the password is already in the pot file.
-        for additional_arg in [ [], ['--show']]:
+        for additional_arg in ([], ['--show']):
             command = [
                 'hashcat',
                 '--quiet',      # Only output the password if found.

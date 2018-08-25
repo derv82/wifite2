@@ -192,7 +192,7 @@ class AttackPMKID(Attack):
         dumptool = HcxDumpTool(self.target, self.pcapng_file)
 
         # Let the dump tool run until we have the hash.
-        while self.keep_capturing and dumptool.poll() == None:
+        while self.keep_capturing and dumptool.poll() is None:
             time.sleep(0.5)
 
         dumptool.interrupt()
@@ -202,7 +202,7 @@ class AttackPMKID(Attack):
         '''Saves a copy of the pmkid (handshake) to hs/ directory.'''
         # Create handshake dir
         if not os.path.exists(Configuration.wpa_handshake_dir):
-            os.mkdir(Configuration.wpa_handshake_dir)
+            os.makedirs(Configuration.wpa_handshake_dir)
 
         # Generate filesystem-safe filename from bssid, essid and date
         essid_safe = re.sub('[^a-zA-Z0-9]', '', self.target.essid)

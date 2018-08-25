@@ -54,7 +54,7 @@ class Scanner(object):
                     self.print_targets()
 
                     target_count = len(self.targets)
-                    client_count = sum([len(t.clients) for t in self.targets])
+                    client_count = sum(len(t.clients) for t in self.targets)
 
                     outline = '\r{+} Scanning'
                     if airodump.decloaking:

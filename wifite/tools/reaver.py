@@ -443,7 +443,7 @@ executing pixiewps -e d0141b15656e96b85fcead2e8e76330d2b1ac1576bb026e7a328c0e1ba
 
     (pin, psk, ssid) = Reaver.get_pin_psk_ssid(new_stdout)
     assert pin  == '11867722',   'pin was "%s", should have been "11867722"' % pin
-    assert psk  == None,         'psk was "%s", should have been "None"' % psk
+    assert psk  is None,         'psk was "%s", should have been "None"' % psk
     assert ssid == 'belkin.00e', 'ssid was "%s", should have been "belkin.00e"' % repr(ssid)
     result = CrackResultWPS('AA:BB:CC:DD:EE:FF', ssid, pin, psk)
     result.dump()

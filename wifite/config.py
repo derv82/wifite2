@@ -316,7 +316,8 @@ class Configuration(object):
 
         if args.wps_only:
             cls.wps_only = True
-            Color.pl('{+} {C}option:{W} will *only* attack non-WEP networks with ' +
+            cls.wps_filter = True  # Also only show WPS networks
+            Color.pl('{+} {C}option:{W} will *only* attack WPS networks with ' +
                     '{G}WPS attacks{W} (avoids handshake and PMKID)')
 
         if args.no_wps:

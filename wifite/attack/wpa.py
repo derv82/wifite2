@@ -205,7 +205,7 @@ class AttackWPA(Attack):
         '''
         # Create handshake dir
         if not os.path.exists(Configuration.wpa_handshake_dir):
-            os.mkdir(Configuration.wpa_handshake_dir)
+            os.makedirs(Configuration.wpa_handshake_dir)
 
         # Generate filesystem-safe filename from bssid, essid and date
         if handshake.essid and type(handshake.essid) is str:

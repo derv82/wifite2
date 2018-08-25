@@ -17,26 +17,22 @@ class AttackWPS(Attack):
 
         # Drop out if user specified to not use Reaver/Bully
         if Configuration.use_pmkid_only:
-            Color.pl('\r{!} {O}--pmkid{R} set, ignoring WPS attack on ' +
-                    '{O}%s{W}' % self.target.essid)
             self.success = False
             return False
 
         if Configuration.no_wps:
-            Color.pl('\r{!} {O}--no-wps{R} set, ignoring WPS attack on ' +
-                    '{O}%s{W}' % self.target.essid)
             self.success = False
             return False
 
         if not Configuration.wps_pixie and self.pixie_dust:
-            Color.pl('\r{!} {O}--no-pixie{R} set, ignoring WPS attack on ' +
+            Color.pl('\r{!} {O}--no-pixie{R} was given, ignoring WPS PIN Attack on ' +
                     '{O}%s{W}' % self.target.essid)
             self.success = False
             return False
 
         if not Configuration.wps_pin and not self.pixie_dust:
-            Color.pl('\r{!} {O}--no-pin{R} set, ignoring WPS attack on ' +
-                    '{O}%s{W}' % self.target.essid)
+            Color.pl('\r{!} {O}--no-pin{R} was given, ignoring WPS Pixie-Dust Attack ' +
+                    'on {O}%s{W}' % self.target.essid)
             self.success = False
             return False
 

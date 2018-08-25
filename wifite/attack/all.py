@@ -22,7 +22,7 @@ class AttackAll(object):
             essid = target.essid if target.essid_known else '{O}ESSID unknown{W}'
 
             Color.pl('\n{+} ({G}%d{W}/{G}%d{W})' % (index, len(targets)) +
-                     ' starting attacks against {C}%s{W} ({C}%s{W})' % (bssid, essid))
+                     ' Starting attacks against {C}%s{W} ({C}%s{W})' % (bssid, essid))
 
             should_continue = cls.attack_single(target, targets_remaining)
             if not should_continue:
@@ -67,7 +67,7 @@ class AttackAll(object):
             attacks.append(AttackWPA(target))
 
         if len(attacks) == 0:
-            Color.pl('{!} {R}Error: {O}unable to attack: encryption not WEP or WPA')
+            Color.pl('{!} {R}Error: {O}Unable to attack: encryption not WEP or WPA')
             return
 
         while len(attacks) > 0:
@@ -80,7 +80,7 @@ class AttackAll(object):
                 Color.pexception(e)
                 continue
             except KeyboardInterrupt:
-                Color.pl('\n{!} {O}interrupted{W}\n')
+                Color.pl('\n{!} {O}Interrupted{W}\n')
                 if not cls.user_wants_to_continue(targets_remaining, len(attacks)):
                     return False  # Stop attacking other targets
 
@@ -106,9 +106,9 @@ class AttackAll(object):
         if targets_remaining > 0:
             prompt_list.append(Color.s('{C}%d{W} target(s)' % targets_remaining))
         prompt = ' and '.join(prompt_list)
-        Color.pl('{+} %s remain, do you want to continue?' % prompt)
+        Color.pl('{+} %s remain, Do you want to continue?' % prompt)
 
-        prompt = Color.s('{+} type {G}c{W} to {G}continue{W}' +
+        prompt = Color.s('{+} Type {G}c{W} to {G}continue{W}' +
                          ' or {R}s{W} to {R}stop{W}: ')
 
         from ..util.input import raw_input
