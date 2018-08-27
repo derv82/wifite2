@@ -15,6 +15,12 @@ class Dependency(object):
 
 
     @classmethod
+    def exists(cls):
+        from ..util.process import Process
+        return Process.exists(cls.dependency_name)
+
+
+    @classmethod
     def run_dependency_check(cls):
         from ..util.color import Color
 

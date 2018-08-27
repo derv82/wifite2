@@ -3,9 +3,17 @@
 
 from ..model.attack import Attack
 from ..util.color import Color
+from ..util.process import Process
 from ..config import Configuration
+from ..tools.bully import Bully
+from ..tools.reaver import Reaver
 
 class AttackWPS(Attack):
+
+    @staticmethod
+    def can_attack_wps():
+        return Reaver.exists() or Bully.exists()
+
     def __init__(self, target, pixie_dust=False):
         super(AttackWPS, self).__init__(target)
         self.success = False
@@ -36,16 +44,17 @@ class AttackWPS(Attack):
             self.success = False
             return False
 
-        if Configuration.use_bully:
+        if Configuration.use_bully and Bully.exists() or not Reaver.exists():
             return self.run_bully()
-        else:
+
+        elif Reaver.exists():
             return self.run_reaver()
 
-        return False
+        else:
+            return False
 
 
     def run_bully(self):
-        from ..tools.bully import Bully
         bully = Bully(self.target, pixie_dust=self.pixie_dust)
         bully.run()
         bully.stop()
@@ -55,8 +64,6 @@ class AttackWPS(Attack):
 
 
     def run_reaver(self):
-        from ..tools.reaver import Reaver
-
         reaver = Reaver(self.target, pixie_dust=self.pixie_dust)
         reaver.run()
         self.crack_result = reaver.crack_result

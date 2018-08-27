@@ -1,6 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from .wep import AttackWEP
+from .wpa import AttackWPA
+from .wps import AttackWPS
+from .pmkid import AttackPMKID
 from ..config import Configuration
 from ..util.color import Color
 
@@ -12,6 +16,10 @@ class AttackAll(object):
         Attacks all given `targets` (list[wifite.model.target]) until user interruption.
         Returns: Number of targets that were attacked (int)
         '''
+        if any(t.wps for t in targets) and not AttackWPS.can_attack_wps():
+            # Warn that WPS attacks are not available.
+            Color.pl('{!} {O}Note: WPS attacks are not possible because you do not have {C}reaver{O} nor {C}bully{W}')
+
         attacked_targets = 0
         targets_remaining = len(targets)
         for index, target in enumerate(targets, start=1):
@@ -36,10 +44,6 @@ class AttackAll(object):
         Attacks a single `target` (wifite.model.target).
         Returns: True if attacks should continue, False otherwise.
         '''
-        from .wep import AttackWEP
-        from .wpa import AttackWPA
-        from .wps import AttackWPS
-        from .pmkid import AttackPMKID
 
         attacks = []
 
@@ -54,7 +58,7 @@ class AttackAll(object):
             # WPA can have multiple attack vectors:
 
             # WPS
-            if target.wps != False:
+            if target.wps != False and AttackWPS.can_attack_wps():
                 if Configuration.wps_pixie:
                     attacks.append(AttackWPS(target, pixie_dust=True))
                 if Configuration.wps_pin:

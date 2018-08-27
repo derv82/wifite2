@@ -14,9 +14,6 @@ class Pyrit(Dependency):
     def __init__(self):
         pass
 
-    @staticmethod
-    def exists():
-        return Process.exists('pyrit')
 
     @staticmethod
     def bssid_essid_with_handshakes(capfile, bssid=None, essid=None):

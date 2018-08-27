@@ -14,9 +14,6 @@ class Wash(Dependency):
     def __init__(self):
         pass
 
-    @staticmethod
-    def exists():
-        return Process.exists('wash')
 
     @staticmethod
     def check_for_wps_and_update_targets(capfile, targets):
@@ -61,6 +58,7 @@ class Wash(Dependency):
                 t.wps = None
             else:
                 t.wps = False
+
 
 if __name__ == '__main__':
     test_file = './tests/files/contains_wps_network.cap'

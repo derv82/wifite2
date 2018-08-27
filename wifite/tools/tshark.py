@@ -14,9 +14,6 @@ class Tshark(Dependency):
     def __init__(self):
         pass
 
-    @staticmethod
-    def exists():
-        return Process.exists('tshark')
 
     @staticmethod
     def _extract_src_dst_index_total(line):
@@ -28,6 +25,7 @@ class Tshark(Dependency):
             return None, None, None, None
         (src, dst, index, total) = match.groups()
         return src, dst, index, total
+
 
     @staticmethod
     def _build_target_client_handshake_map(output, bssid=None):
