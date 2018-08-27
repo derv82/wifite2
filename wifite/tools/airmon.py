@@ -204,7 +204,7 @@ class Airmon(Dependency):
         '''Find the interface put into monitor mode (if any)'''
 
         # airmon-ng output: (mac80211 monitor mode vif enabled for [phy10]wlan0 on [phy10]wlan0mon)
-        enabled_re = re.compile(r'\s*\(mac80211 monitor mode (?:vif )?enabled for [^ ]+ on (?:\[\w+\])?(\w+)\)\s*')
+        enabled_re = re.compile(r'.*\(mac80211 monitor mode (?:vif )?enabled (?:for [^ ]+ )?on (?:\[\w+\])?(\w+)\)?.*')
 
         for line in airmon_output.split('\n'):
             matches = enabled_re.match(line)
@@ -359,6 +359,10 @@ class Airmon(Dependency):
                 # Can't just pkill network manager; it's a service
                 Process(['service', 'network-manager', 'stop']).wait()
                 Airmon.killed_network_manager = True
+            elif pname == 'avahi-daemon' and Process.exists('service'):
+                Color.pl('{!} {O}stopping avahi-daemon ({R}service avahi-daemon stop{O})')
+                # Can't just pkill avahi-daemon; it's a service
+                Process(['service', 'avahi-daemon', 'stop']).wait()
             else:
                 Color.pl('{!} {R}Terminating {O}conflicting process {R}%s{O} (PID {R}%s{O})' % (pname, pid))
                 try:
@@ -408,7 +412,27 @@ class Airmon(Dependency):
             Color.pl(' {R}cannot restart NetworkManager: {O}systemctl{R} or {O}service{R} not found{W}')
 
 if __name__ == '__main__':
-    Airmon.terminate_conflicting_processes()
+    stdout = '''
+Found 2 processes that could cause trouble.
+If airodump-ng, aireplay-ng or airtun-ng stops working after
+a short period of time, you may want to run 'airmon-ng check kill'
+
+  PID Name
+ 5563 avahi-daemon
+ 5564 avahi-daemon
+
+PHY	Interface	Driver		Chipset
+
+phy0	wlx00c0ca4ecae0	rtl8187		Realtek Semiconductor Corp. RTL8187
+Interface 15mon is too long for linux so it will be renamed to the old style (wlan#) name.
+
+		(mac80211 monitor mode vif enabled on [phy0]wlan0mon
+		(mac80211 station mode vif disabled for [phy0]wlx00c0ca4ecae0)
+    '''
+    start_iface = Airmon._parse_airmon_start(stdout)
+    print('start_iface from stdout:', start_iface)
+
+    Configuration.initialize(False)
     iface = Airmon.ask()
     (disabled_iface, enabled_iface) = Airmon.stop(iface)
     print('Disabled:', disabled_iface)
