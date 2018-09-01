@@ -343,9 +343,14 @@ class Configuration(object):
                     '(no {O}Pixie-Dust{W}) on targets')
 
         if args.use_bully:
-            cls.use_bully = args.use_bully
-            Color.pl('{+} {C}option:{W} use {C}bully{W} instead of {C}reaver{W} ' +
-                    'for WPS Attacks')
+            from tools.bully import Bully
+            if not Bully.exists():
+                Color.pl('{!} {R}Bully not found. Defaulting to {O}reaver{W}')
+                cls.use_bully = False
+            else:
+                cls.use_bully = args.use_bully
+                Color.pl('{+} {C}option:{W} use {C}bully{W} instead of {C}reaver{W} ' +
+                        'for WPS Attacks')
 
         if args.wps_pixie_timeout:
             cls.wps_pixie_timeout = args.wps_pixie_timeout
