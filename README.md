@@ -127,20 +127,25 @@ What's not new?
 
 Screenshots
 -----------
-Cracking WPS PIN using `reaver`'s Pixie-Dust attack, then retrieving WPA PSK using `bully`:
-![Pixie-Dust with Reaver to get PIN and Bully to get PSK](https://i.imgur.com/I2W0wND.gif)
+Cracking WPS PIN using `reaver`'s Pixie-Dust attack, then fetching WPA key using `bully`:
+![Pixie-Dust with Reaver to get PIN and Bully to get PSK](https://i.imgur.com/Q5KSDbg.gif)
+
+-------------
+
+Cracking WPA key using PMKID attack:
+![PMKID attack](https://i.imgur.com/CR8oOp0.gif)
 
 -------------
 
 Decloaking & cracking a hidden access point (via the WPA Handshake attack):
-![Decloaking and Cracking a hidden access point](http://i.imgur.com/MTMwSzM.gif)
+![Decloaking and Cracking a hidden access point](https://i.imgur.com/F6VPhbm.gif)
 
 -------------
 
 Cracking a weak WEP password (using the WEP Replay attack):
-![Cracking a weak WEP password](http://i.imgur.com/VIeltx9.gif)
+![Cracking a weak WEP password](https://i.imgur.com/jP72rVo.gif)
 
 -------------
 
-Various cracking options (using `--crack` option):
-![--crack option](http://i.imgur.com/rydOakW.png)
+Cracking a pre-captured handshake using John The Ripper (via the `--crack` option):
+![--crack option](https://i.imgur.com/iHcfCjp.gif)
