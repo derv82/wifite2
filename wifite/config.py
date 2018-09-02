@@ -8,7 +8,7 @@ from .tools.macchanger import Macchanger
 
 class Configuration(object):
     ''' Stores configuration variables and functions for Wifite. '''
-    version = '2.2.3'
+    version = '2.2.4'
 
     initialized = False # Flag indicating config has been initialized
     temp_dir = None     # Temporary directory
