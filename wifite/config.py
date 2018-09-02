@@ -148,13 +148,21 @@ class Configuration(object):
             Color.pl('{+} {C}option:{W} using {G}eviltwin attacks{W} against all targets')
         '''
 
-        # Adjust WEP attack list
         cls.parse_wep_attacks()
+
+        cls.validate()
 
         # Commands
         if args.cracked:         cls.show_cracked = True
         if args.check_handshake: cls.check_handshake = args.check_handshake
         if args.crack_handshake: cls.crack_handshake = True
+
+
+    @classmethod
+    def validate(cls):
+        if cls.use_pmkid_only and cls.wps_only:
+            Color.pl('{!} {R}Bad Configuration:{O} --pmkid and --wps-only are not compatible')
+            raise RuntimeError('Unable to attack networks: --pmkid and --wps-only are not compatible together')
 
 
     @classmethod

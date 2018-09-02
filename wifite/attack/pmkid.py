@@ -62,12 +62,6 @@ class AttackPMKID(Attack):
         Returns:
             True if handshake is captured. False otherwise.
         '''
-        # Skip if user only wants to attack WPS targets
-        if Configuration.wps_only and self.target.wps == False:
-            Color.pl('\r{!} {O}Skipping PMKID attack on {R}%s{O} because {R}--wps-only{O} is set{W}' % self.target.essid)
-            self.success = False
-            return False
-
         from ..util.process import Process
         # Check that we have all hashcat programs
         dependencies = [
@@ -174,7 +168,6 @@ class AttackPMKID(Attack):
                 Color.clear_entire_line()
                 Color.pattack('PMKID', self.target, '{R}CRACK',
                         '{R}Failed {O}Passphrase not found in dictionary.\n')
-                Color.pl('')
             return False
         else:
             # Successfully cracked.

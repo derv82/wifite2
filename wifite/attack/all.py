@@ -58,21 +58,27 @@ class AttackAll(object):
             # WPA can have multiple attack vectors:
 
             # WPS
-            if target.wps != False and AttackWPS.can_attack_wps():
-                if Configuration.wps_pixie:
-                    attacks.append(AttackWPS(target, pixie_dust=True))
-                if Configuration.wps_pin:
-                    attacks.append(AttackWPS(target, pixie_dust=False))
+            if not Configuration.use_pmkid_only:
+                if target.wps != False and AttackWPS.can_attack_wps():
+                    # Pixie-Dust
+                    if Configuration.wps_pixie:
+                        attacks.append(AttackWPS(target, pixie_dust=True))
 
-            # PMKID
-            attacks.append(AttackPMKID(target))
+                    # PIN attack
+                    if Configuration.wps_pin:
+                        attacks.append(AttackWPS(target, pixie_dust=False))
 
-            # Handshake capture
-            attacks.append(AttackWPA(target))
+            if not Configuration.wps_only:
+                # PMKID
+                attacks.append(AttackPMKID(target))
+
+                # Handshake capture
+                if not Configuration.use_pmkid_only:
+                    attacks.append(AttackWPA(target))
 
         if len(attacks) == 0:
-            Color.pl('{!} {R}Error: {O}Unable to attack: encryption not WEP or WPA')
-            return
+            Color.pl('{!} {R}Error: {O}Unable to attack: no attacks available')
+            return True  # Keep attacking other targets (skip)
 
         while len(attacks) > 0:
             attack = attacks.pop(0)
