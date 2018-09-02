@@ -85,8 +85,13 @@ class AttackAll(object):
                 continue
             except KeyboardInterrupt:
                 Color.pl('\n{!} {O}Interrupted{W}\n')
-                if not cls.user_wants_to_continue(targets_remaining, len(attacks)):
-                    return False  # Stop attacking other targets
+                answer = cls.user_wants_to_continue(targets_remaining, len(attacks))
+                if answer is True:
+                    continue  # Keep attacking the same target (continue)
+                elif answer is None:
+                    return True  # Keep attacking other targets (skip)
+                else:
+                    return False  # Stop all attacks (exit)
 
         if attack.success:
             attack.crack_result.save()
@@ -109,15 +114,30 @@ class AttackAll(object):
             prompt_list.append(Color.s('{C}%d{W} attack(s)' % attacks_remaining))
         if targets_remaining > 0:
             prompt_list.append(Color.s('{C}%d{W} target(s)' % targets_remaining))
-        prompt = ' and '.join(prompt_list)
-        Color.pl('{+} %s remain, Do you want to continue?' % prompt)
+        prompt = ' and '.join(prompt_list) + ' remain'
+        Color.pl('{+} %s' % prompt)
 
-        prompt = Color.s('{+} Type {G}c{W} to {G}continue{W}' +
-                         ' or {R}s{W} to {R}stop{W}: ')
+        prompt = '{+} Do you want to'
+        options = '('
+
+        if attacks_remaining > 0:
+            prompt += ' {G}continue{W} attacking,'
+            options += '{G}C{W}{D}, {W}'
+
+        if targets_remaining > 0:
+            prompt += ' {O}skip{W} to the next target,'
+            options += '{O}s{W}{D}, {W}'
+
+        options += '{R}e{W})'
+        prompt += ' or {R}exit{W} %s? {C}' % options
 
         from ..util.input import raw_input
-        if raw_input(prompt).lower().startswith('s'):
-            return False
+        answer = raw_input(Color.s(prompt)).lower()
+
+        if answer.startswith('s'):
+            return None  # Skip
+        elif answer.startswith('e'):
+            return False  # Exit
         else:
-            return True
+            return True  # Continue
 
