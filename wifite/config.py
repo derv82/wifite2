@@ -81,6 +81,7 @@ class Configuration(object):
         cls.use_pmkid_only = False  # Only use PMKID Capture+Crack attack
 
         # Default dictionary for cracking
+        cls.cracked_file = 'cracked.txt'
         cls.wordlist = None
         wordlists = [
             './wordlist-top4800-probable.txt',  # Local file (ran from cloned repo)
