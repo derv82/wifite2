@@ -108,7 +108,7 @@ class AttackPMKID(Attack):
             The PMKID hash (str) if found, otherwise None.
         '''
         self.keep_capturing = True
-        self.timer = Timer(15)
+        self.timer = Timer(Configuration.pmkid_timeout)
 
         # Start hcxdumptool
         t = Thread(target=self.dumptool_thread)
