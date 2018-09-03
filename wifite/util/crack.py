@@ -20,8 +20,6 @@ import os
 
 # TODO: Bring back the 'print' option, for easy copy/pasting. Just one-liners people can paste into terminal.
 
-# TODO: Add an ability to select multiple dictionaries from a directory (the directory may possibly be an argument to the script --wordlist-dir).
-
 # TODO: --no-crack option while attacking targets (implies user will run --crack later)
 
 class CrackHelper:
