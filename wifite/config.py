@@ -78,6 +78,8 @@ class Configuration(object):
         cls.wpa_handshake_dir = 'hs' # Dir to store handshakes
         cls.wpa_strip_handshake = False # Strip non-handshake packets
         cls.ignore_old_handshakes = False # Always fetch a new handshake
+
+        # PMKID variables
         cls.use_pmkid_only = False  # Only use PMKID Capture+Crack attack
         cls.pmkid_timeout = 30  # Time to wait for PMKID capture
 
@@ -141,6 +143,7 @@ class Configuration(object):
         cls.parse_wep_args(args)
         cls.parse_wpa_args(args)
         cls.parse_wps_args(args)
+        cls.parse_pmkid_args(args)
         cls.parse_encryption()
 
         # EvilTwin
@@ -305,14 +308,6 @@ class Configuration(object):
             Color.pl('{+} {C}option:{W} will {O}ignore{W} existing handshakes ' +
                     '(force capture)')
 
-        if args.use_pmkid_only:
-            cls.use_pmkid_only = True
-            Color.pl('{+} {C}option:{W} will ONLY use {C}PMKID{W} attack on WPA networks')
-
-        if args.pmkid_timeout:
-            cls.pmkid_timeout = args.pmkid_timeout
-            Color.pl('{+} {C}option:{W} will wait {G}%d{W} seconds during {C}PMKID{W} capture')
-
         if args.wpa_handshake_dir:
             cls.wpa_handshake_dir = args.wpa_handshake_dir
             Color.pl('{+} {C}option:{W} will store handshakes to ' +
@@ -384,6 +379,16 @@ class Configuration(object):
         if args.wps_ignore_lock:
             cls.wps_ignore_lock = True
             Color.pl('{+} {C}option:{W} will {O}ignore{W} WPS lock-outs')
+
+    @classmethod
+    def parse_pmkid_args(cls, args):
+        if args.use_pmkid_only:
+            cls.use_pmkid_only = True
+            Color.pl('{+} {C}option:{W} will ONLY use {C}PMKID{W} attack on WPA networks')
+
+        if args.pmkid_timeout:
+            cls.pmkid_timeout = args.pmkid_timeout
+            Color.pl('{+} {C}option:{W} will wait {G}%d seconds{W} during {C}PMKID{W} capture' % args.pmkid_timeout)
 
     @classmethod
     def parse_encryption(cls):
