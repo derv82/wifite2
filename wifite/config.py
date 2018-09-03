@@ -8,7 +8,7 @@ from .tools.macchanger import Macchanger
 
 class Configuration(object):
     ''' Stores configuration variables and functions for Wifite. '''
-    version = '2.2.4'
+    version = '2.2.5'
 
     initialized = False # Flag indicating config has been initialized
     temp_dir = None     # Temporary directory
@@ -79,6 +79,7 @@ class Configuration(object):
         cls.wpa_strip_handshake = False # Strip non-handshake packets
         cls.ignore_old_handshakes = False # Always fetch a new handshake
         cls.use_pmkid_only = False  # Only use PMKID Capture+Crack attack
+        cls.pmkid_timeout = 30  # Time to wait for PMKID capture
 
         # Default dictionary for cracking
         cls.wordlist = None
@@ -306,6 +307,10 @@ class Configuration(object):
         if args.use_pmkid_only:
             cls.use_pmkid_only = True
             Color.pl('{+} {C}option:{W} will ONLY use {C}PMKID{W} attack on WPA networks')
+
+        if args.pmkid_timeout:
+            cls.pmkid_timeout = args.pmkid_timeout
+            Color.pl('{+} {C}option:{W} will wait {G}%d{W} seconds during {C}PMKID{W} capture')
 
         if args.wpa_handshake_dir:
             cls.wpa_handshake_dir = args.wpa_handshake_dir

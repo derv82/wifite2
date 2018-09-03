@@ -301,11 +301,13 @@ class Arguments(object):
         wpa.add_argument('-pmkid', action='store_true', dest='use_pmkid_only',
             help=argparse.SUPPRESS)
 
-        wpa.add_argument('--new-hs',
-            action='store_true',
-            dest='ignore_old_handshakes',
-            help=Color.s('Captures new handshakes, ignores existing handshakes ' +
-                'in ./hs (default: {G}off{W})'))
+        wpa.add_argument('--pmkid-timeout',
+            action='store',
+            dest='pmkid_timeout',
+            metavar='[sec]',
+            type=int,
+            help=self._verbose('Time to wait for PMKID capture ' +
+                '(default: {G}%d{W} seconds)' % self.config.pmkid_timeout))
 
         wpa.add_argument('--hs-dir',
             action='store',
@@ -316,6 +318,12 @@ class Arguments(object):
                 '(default: {G}%s{W})' % self.config.wpa_handshake_dir))
         wpa.add_argument('-hs-dir', help=argparse.SUPPRESS, action='store',
                 dest='wpa_handshake_dir', type=str)
+
+        wpa.add_argument('--new-hs',
+            action='store_true',
+            dest='ignore_old_handshakes',
+            help=Color.s('Captures new handshakes, ignores existing handshakes ' +
+                'in {C}%s{W} (default: {G}off{W})' % self.config.wpa_handshake_dir))
 
         wpa.add_argument('--dict',
             action='store',
