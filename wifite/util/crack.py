@@ -52,7 +52,7 @@ class CrackHelper:
             return
 
         hs_to_crack = cls.get_user_selection(handshakes)
-        any_pmkid = any([hs['type'] == 'PMKID' for hs in hs_to_crack])
+        all_pmkid = all([hs['type'] == 'PMKID' for hs in hs_to_crack])
 
         # Tools for cracking & their dependencies.
         available_tools = {
@@ -78,7 +78,7 @@ class CrackHelper:
                 dep_list = ', '.join([dep.dependency_name for dep in deps])
                 Color.pl('     {R}* {R}%s {W}({O}%s{W})' % (tool, dep_list))
 
-        if any_pmkid:
+        if all_pmkid:
             Color.pl('{!} {O}Note: PMKID hashes will be cracked using {C}hashcat{W}')
             tool_name = 'hashcat'
         else:
@@ -91,6 +91,8 @@ class CrackHelper:
 
         try:
             for hs in hs_to_crack:
+                if tool_name != 'hashcat' and hs['type'] == 'PMKID':
+                    cls.crack(hs, 'hashcat')
                 cls.crack(hs, tool_name)
         except KeyboardInterrupt:
             Color.pl('\n{!} {O}Interrupted{W}')
@@ -106,7 +108,7 @@ class CrackHelper:
         for result in json:
             for k in result.keys():
                 v = result[k]
-                if 'file' in k and v.split('/')[1] == file:
+                if 'file' in k and os.path.basename(v) == file:
                     return True
         return False
 
