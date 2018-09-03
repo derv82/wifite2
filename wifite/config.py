@@ -78,6 +78,8 @@ class Configuration(object):
         cls.wpa_handshake_dir = 'hs' # Dir to store handshakes
         cls.wpa_strip_handshake = False # Strip non-handshake packets
         cls.ignore_old_handshakes = False # Always fetch a new handshake
+
+        # PMKID variables
         cls.use_pmkid_only = False  # Only use PMKID Capture+Crack attack
         cls.pmkid_timeout = 30  # Time to wait for PMKID capture
 
@@ -311,7 +313,7 @@ class Configuration(object):
 
         if args.pmkid_timeout:
             cls.pmkid_timeout = args.pmkid_timeout
-            Color.pl('{+} {C}option:{W} will wait {G}%d{W} seconds during {C}PMKID{W} capture')
+            Color.pl('{+} {C}option:{W} will wait {G}%d seconds{W} during {C}PMKID{W} capture' % args.pmkid_timeout)
 
         if args.wpa_handshake_dir:
             cls.wpa_handshake_dir = args.wpa_handshake_dir
