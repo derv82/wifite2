@@ -77,7 +77,7 @@ class CrackHelper:
                 Color.pl('     {R}* {R}%s {W}({O}%s{W})' % (tool, dep_list))
 
         if all_pmkid:
-            Color.pl('{!} {O}Note: PMKID hashes will be cracked using {C}hashcat{W}')
+            Color.pl('{!} {O}Note: PMKID hashes can only be cracked using {C}hashcat{W}')
             tool_name = 'hashcat'
         else:
             Color.p('\n{+} Enter the {C}cracking tool{W} to use ({C}%s{W}): {G}' % (
@@ -92,8 +92,6 @@ class CrackHelper:
                 if tool_name != 'hashcat' and hs['type'] == 'PMKID':
                     if 'hashcat' in missing_tools:
                         Color.pl('{!} {O}Hashcat is missing, therefore we cannot crack PMKID hash{W}')
-                    else:
-                        cls.crack(hs, 'hashcat')
                 cls.crack(hs, tool_name)
         except KeyboardInterrupt:
             Color.pl('\n{!} {O}Interrupted{W}')
@@ -171,9 +169,9 @@ class CrackHelper:
             handshakes.append(handshake)
 
         if skipped_pmkid_files > 0:
-            Color.pl('{!} {O}Skipping %d {R}*.16800{O} files because {R}hashcat{O} is missing.\n' % skipped_pmkid_files)
+            Color.pl('{!} {O}Skipping %d {R}*.16800{O} files because {R}hashcat{O} is missing.{W}\n' % skipped_pmkid_files)
         if skipped_cracked_files > 0:
-            Color.pl('{!} {O}Skipping %d already cracked files.\n' % skipped_cracked_files)
+            Color.pl('{!} {O}Skipping %d already cracked files.{W}\n' % skipped_cracked_files)
 
         # Sort by Date (Descending)
         return sorted(handshakes, key=lambda x: x.get('date'), reverse=True)
@@ -183,7 +181,7 @@ class CrackHelper:
     def print_handshakes(cls, handshakes):
         # Header
         max_essid_len = max([len(hs['essid']) for hs in handshakes] + [len('ESSID (truncated)')])
-        Color.p('{D}  NUM')
+        Color.p('{W}{D}  NUM')
         Color.p('  ' + 'ESSID (truncated)'.ljust(max_essid_len))
         Color.p('  ' + 'BSSID'.ljust(17))
         Color.p('  ' + 'TYPE'.ljust(5))
@@ -231,7 +229,7 @@ class CrackHelper:
             cls.TYPES[hs['type']], hs['essid'], hs['bssid']))
 
         if hs['type'] == 'PMKID':
-            crack_result = cls.crack_pmkid(hs)
+            crack_result = cls.crack_pmkid(hs, tool)
         elif hs['type'] == '4-WAY':
             crack_result = cls.crack_4way(hs, tool)
         else:
@@ -276,7 +274,10 @@ class CrackHelper:
 
 
     @classmethod
-    def crack_pmkid(cls, hs):
+    def crack_pmkid(cls, hs, tool):
+        if tool != 'hashcat':
+            Color.pl('{!} {O}Note: PMKID hashes can only be cracked using {C}hashcat{W}')
+
         key = Hashcat.crack_pmkid(hs['filename'], verbose=True)
 
         if key is not None:
