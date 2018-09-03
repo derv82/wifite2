@@ -428,11 +428,13 @@ class Arguments(object):
                 dest='wps_timeout_threshold', type=int)
 
     def _add_pmkid_args(self, pmkid):
-        pmkid.add_argument('-pmkid', '--pmkid',
+        pmkid.add_argument('--pmkid',
                          action='store_true',
                          dest='use_pmkid_only',
                          help=Color.s('{O}Only{W} use {C}PMKID capture{W}, avoids other WPS & ' +
                                       'WPA attacks (default: {G}off{W})'))
+        # An alias
+        pmkid.add_argument('-pmkid', action='store_true', dest='use_pmkid_only', help=argparse.SUPPRESS)
 
         pmkid.add_argument('--pmkid-timeout',
                          action='store',

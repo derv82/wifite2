@@ -352,7 +352,7 @@ class Configuration(object):
                     '(no {O}Pixie-Dust{W}) on targets')
 
         if args.use_bully:
-            from tools.bully import Bully
+            from .tools.bully import Bully
             if not Bully.exists():
                 Color.pl('{!} {R}Bully not found. Defaulting to {O}reaver{W}')
                 cls.use_bully = False
@@ -412,9 +412,9 @@ class Configuration(object):
     def parse_wep_attacks(cls):
         '''Parses and sets WEP-specific args (-chopchop, -fragment, etc)'''
         cls.wep_attacks = []
-        import sys
+        from sys import argv
         seen = set()
-        for arg in sys.argv:
+        for arg in argv:
             if arg in seen: continue
             seen.add(arg)
             if arg == '-arpreplay':  cls.wep_attacks.append('replay')
