@@ -82,6 +82,7 @@ class Configuration(object):
         cls.pmkid_timeout = 30  # Time to wait for PMKID capture
 
         # Default dictionary for cracking
+        cls.cracked_file = 'cracked.txt'
         cls.wordlist = None
         wordlists = [
             './wordlist-top4800-probable.txt',  # Local file (ran from cloned repo)
