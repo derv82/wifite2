@@ -433,8 +433,8 @@ class Arguments(object):
                          dest='use_pmkid_only',
                          help=Color.s('{O}Only{W} use {C}PMKID capture{W}, avoids other WPS & ' +
                                       'WPA attacks (default: {G}off{W})'))
-        # An alias
-        pmkid.add_argument('-pmkid', action='store_true', dest='use_pmkid_only', help=argparse.SUPPRESS)
+        # Alias
+        pmkid.add_argument('-pmkid', help=argparse.SUPPRESS, action='store_true', dest='use_pmkid_only')
 
         pmkid.add_argument('--pmkid-timeout',
                          action='store',
