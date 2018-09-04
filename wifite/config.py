@@ -117,6 +117,9 @@ class Configuration(object):
         cls.check_handshake = None
         cls.crack_handshake = False
 
+        # A list to cache all checked commands (e.g. `which hashcat` will execute only once)
+        cls.existing_commands = {}
+
         # Overwrite config values with arguments (if defined)
         cls.load_from_arguments()
 
