@@ -38,6 +38,8 @@ class CrackHelper:
         if not Configuration.wordlist:
             Color.p('\n{+} Enter wordlist file to use for cracking: {G}')
             Configuration.wordlist = raw_input()
+            Color.p('{W}')
+
             if not os.path.exists(Configuration.wordlist):
                 Color.pl('{!} {R}Wordlist {O}%s{R} not found. Exiting.' % Configuration.wordlist)
                 return
@@ -83,6 +85,8 @@ class CrackHelper:
             Color.p('\n{+} Enter the {C}cracking tool{W} to use ({C}%s{W}): {G}' % (
                 '{W}, {C}'.join(available_tools.keys())))
             tool_name = raw_input()
+            Color.p('{W}')
+
             if tool_name not in available_tools:
                 Color.pl('{!} {R}"%s"{O} tool not found, defaulting to {C}aircrack{W}' % tool_name)
                 tool_name = 'aircrack'
@@ -92,6 +96,7 @@ class CrackHelper:
                 if tool_name != 'hashcat' and hs['type'] == 'PMKID':
                     if 'hashcat' in missing_tools:
                         Color.pl('{!} {O}Hashcat is missing, therefore we cannot crack PMKID hash{W}')
+                        continue
                 cls.crack(hs, tool_name)
         except KeyboardInterrupt:
             Color.pl('\n{!} {O}Interrupted{W}')
@@ -206,6 +211,7 @@ class CrackHelper:
 
         Color.p('{+} Select handshake(s) to crack ({G}%d{W}-{G}%d{W}, select multiple with {C},{W} or {C}-{W} or {C}all{W}): {G}' % (1, len(handshakes)))
         choices = raw_input()
+        Color.p('{W}')
 
         selection = []
         for choice in choices.split(','):
