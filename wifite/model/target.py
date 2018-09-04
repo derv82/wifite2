@@ -134,9 +134,9 @@ class Target(object):
         power = Color.s('{%s}%s' % (color, power))
 
         wps = Color.s('{O} n/a')
-        if self.wps == True:
+        if self.wps:
             wps = Color.s('{G} yes')
-        elif self.wps == False:
+        elif not self.wps:
             wps = Color.s('{O}  no')
         elif self.wps is None:
             wps = Color.s('{R}lock')
