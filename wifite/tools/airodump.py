@@ -17,8 +17,8 @@ class Airodump(Dependency):
     dependency_name = 'airodump-ng'
     dependency_url = 'https://www.aircrack-ng.org/install.html'
 
-    def __init__(self, interface=None, channel=None, encryption=None,\
-                       wps=False, target_bssid=None, output_file_prefix='airodump',\
+    def __init__(self, interface=None, channel=None, encryption=None,
+                       wps=False, target_bssid=None, output_file_prefix='airodump',
                        ivs_only=False, skip_wps=False, delete_existing_files=True):
         '''Sets up airodump arguments, doesn't start process yet.'''
 
@@ -224,7 +224,7 @@ class Airodump(Dependency):
                     # The current row corresponds to a 'Client' (computer)
                     try:
                         client = Client(row)
-                    except (IndexError, ValueError) as e:
+                    except (IndexError, ValueError):
                         # Skip if we can't parse the client row
                         continue
 

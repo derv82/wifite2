@@ -171,7 +171,7 @@ class AttackWPA(Attack):
 
         if handshake is None:
             # No handshake, attack failed.
-            Color.pl('\n{!} {O}WPA handshake capture {R}FAILED:{O} Timed out after %d seconds' % (Configuration.wpa_attack_timeout))
+            Color.pl('\n{!} {O}WPA handshake capture {R}FAILED:{O} Timed out after %d seconds' % Configuration.wpa_attack_timeout)
             return handshake
         else:
             # Save copy of handshake to ./hs/

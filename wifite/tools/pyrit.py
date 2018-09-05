@@ -39,7 +39,7 @@ class Pyrit(Dependency):
 
         for line in pyrit.stdout().split('\n'):
             mac_regex = ('[a-zA-Z0-9]{2}:' * 6)[:-1]
-            match = re.search("^#\d+: AccessPoint (%s) \('(.*)'\):$" % (mac_regex), line)
+            match = re.search("^#\d+: AccessPoint (%s) \('(.*)'\):$" % mac_regex, line)
             if match:
                 # We found a new BSSID and ESSID
                 (current_bssid, current_essid) = match.groups()

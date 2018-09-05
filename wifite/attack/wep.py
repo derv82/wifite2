@@ -222,9 +222,9 @@ class AttackWEP(Attack):
                                 Color.pl('\n{!} restarting {C}aireplay{W} after' +
                                          ' {C}%d{W} seconds of no new IVs'
                                              % stale_seconds)
-                                aireplay = Aireplay(self.target, \
-                                                    wep_attack_type, \
-                                                    client_mac=client_mac, \
+                                aireplay = Aireplay(self.target,
+                                                    wep_attack_type,
+                                                    client_mac=client_mac,
                                                     replay_file=replay_file)
                                 time_unchanged_ivs = time.time()
                         last_ivs_count = airodump_target.ivs

@@ -121,7 +121,7 @@ class Airmon(Dependency):
         iface_type_path = os.path.join('/sys/class/net', iface, 'type')
         if os.path.exists(iface_type_path):
             with open(iface_type_path, 'r') as f:
-                if (int(f.read()) == Airmon.ARPHRD_IEEE80211_RADIOTAP):
+                if int(f.read()) == Airmon.ARPHRD_IEEE80211_RADIOTAP:
                     return iface
 
         return None
@@ -140,7 +140,7 @@ class Airmon(Dependency):
         iface_type_path = os.path.join('/sys/class/net', iface, 'type')
         if os.path.exists(iface_type_path):
             with open(iface_type_path, 'r') as f:
-                if (int(f.read()) == Airmon.ARPHRD_ETHER):
+                if int(f.read()) == Airmon.ARPHRD_ETHER:
                     return iface
 
         return None
@@ -283,7 +283,7 @@ class Airmon(Dependency):
             # Assume we're using the device already in montior mode
             iface = monitor_interfaces[0]
             Color.clear_entire_line()
-            Color.pl('{+} Using {G}%s{W} already in monitor mode' % iface);
+            Color.pl('{+} Using {G}%s{W} already in monitor mode' % iface)
             Airmon.base_interface = None
             return iface
 
@@ -308,7 +308,7 @@ class Airmon(Dependency):
             choice = 1
         else:
             # Multiple interfaces found
-            question = Color.s('{+} Select wireless interface ({G}1-%d{W}): ' % (count))
+            question = Color.s('{+} Select wireless interface ({G}1-%d{W}): ' % count)
             choice = raw_input(question)
 
         iface = a.get(choice)
@@ -373,7 +373,7 @@ class Airmon(Dependency):
 
     @staticmethod
     def put_interface_up(iface):
-        Color.p('{!} {O}putting interface {R}%s up{O}...' % (iface))
+        Color.p('{!} {O}putting interface {R}%s up{O}...' % iface)
         Ifconfig.up(iface)
         Color.pl(' {G}done{W}')
 
