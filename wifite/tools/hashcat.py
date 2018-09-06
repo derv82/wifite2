@@ -27,6 +27,7 @@ class Hashcat(Dependency):
                 handshake, show_command=show_command)
 
         # Crack hccapx
+        key = None  # Avoid unresolved reference when hccapx not cracked
         for additional_arg in ([], ['--show']):
             command = [
                 'hashcat',
