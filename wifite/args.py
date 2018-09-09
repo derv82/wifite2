@@ -31,6 +31,7 @@ class Arguments(object):
         self._add_wep_args(parser.add_argument_group(Color.s('{C}WEP{W}')))
         self._add_wpa_args(parser.add_argument_group(Color.s('{C}WPA{W}')))
         self._add_wps_args(parser.add_argument_group(Color.s('{C}WPS{W}')))
+        self._add_pmkid_args(parser.add_argument_group(Color.s('{C}PMKID{W}')))
         self._add_eviltwin_args(parser.add_argument_group(Color.s('{C}EVIL TWIN{W}')))
         self._add_command_args(parser.add_argument_group(Color.s('{C}COMMANDS{W}')))
 
@@ -292,23 +293,6 @@ class Arguments(object):
         wpa.add_argument('-wpa', help=argparse.SUPPRESS, action='store_true',
                 dest='wpa_filter')
 
-        wpa.add_argument('--pmkid',
-            action='store_true',
-            dest='use_pmkid_only',
-            help=Color.s('{O}Only{W} use {C}PMKID capture{W}, avoids other WPS & ' +
-                'WPA attacks (default: {G}off{W})'))
-        # Alias
-        wpa.add_argument('-pmkid', action='store_true', dest='use_pmkid_only',
-            help=argparse.SUPPRESS)
-
-        wpa.add_argument('--pmkid-timeout',
-            action='store',
-            dest='pmkid_timeout',
-            metavar='[sec]',
-            type=int,
-            help=self._verbose('Time to wait for PMKID capture ' +
-                '(default: {G}%d{W} seconds)' % self.config.pmkid_timeout))
-
         wpa.add_argument('--hs-dir',
             action='store',
             dest='wpa_handshake_dir',
@@ -443,6 +427,22 @@ class Arguments(object):
         wps.add_argument('-wpsto', help=argparse.SUPPRESS, action='store',
                 dest='wps_timeout_threshold', type=int)
 
+    def _add_pmkid_args(self, pmkid):
+        pmkid.add_argument('--pmkid',
+                         action='store_true',
+                         dest='use_pmkid_only',
+                         help=Color.s('{O}Only{W} use {C}PMKID capture{W}, avoids other WPS & ' +
+                                      'WPA attacks (default: {G}off{W})'))
+        # Alias
+        pmkid.add_argument('-pmkid', help=argparse.SUPPRESS, action='store_true', dest='use_pmkid_only')
+
+        pmkid.add_argument('--pmkid-timeout',
+                         action='store',
+                         dest='pmkid_timeout',
+                         metavar='[sec]',
+                         type=int,
+                         help=Color.s('Time to wait for PMKID capture ' +
+                                      '(default: {G}%d{W} seconds)' % self.config.pmkid_timeout))
 
     def _add_command_args(self, commands):
         commands.add_argument('--cracked',
@@ -470,7 +470,7 @@ class Arguments(object):
 
 if __name__ == '__main__':
     from .util.color import Color
-    from config import Configuration
+    from .config import Configuration
     Configuration.initialize(False)
     a = Arguments(Configuration)
     args = a.args
