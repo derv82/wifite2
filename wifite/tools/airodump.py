@@ -6,7 +6,7 @@ from .tshark import Tshark
 from .wash import Wash
 from ..util.process import Process
 from ..config import Configuration
-from ..model.target import Target
+from ..model.target import Target, WPSState
 from ..model.client import Client
 
 import os, time
@@ -18,7 +18,8 @@ class Airodump(Dependency):
     dependency_url = 'https://www.aircrack-ng.org/install.html'
 
     def __init__(self, interface=None, channel=None, encryption=None,\
-                       wps=False, target_bssid=None, output_file_prefix='airodump',\
+                       wps=WPSState.UNKNOWN, target_bssid=None,
+                       output_file_prefix='airodump',\
                        ivs_only=False, skip_wps=False, delete_existing_files=True):
         '''Sets up airodump arguments, doesn't start process yet.'''
 
@@ -260,7 +261,7 @@ class Airodump(Dependency):
                 result.append(target)
             elif 'WPA' in Configuration.encryption_filter and 'WPA' in target.encryption:
                     result.append(target)
-            elif 'WPS' in Configuration.encryption_filter and target.wps != False:
+            elif 'WPS' in Configuration.encryption_filter and target.wps in [WPSState.UNLOCKED, WPSState.LOCKED]:
                 result.append(target)
             elif skip_wps:
                 result.append(target)

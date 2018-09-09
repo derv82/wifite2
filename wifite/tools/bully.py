@@ -134,7 +134,8 @@ class Bully(Attack, Dependency):
                     return
             else:
                 if self.locked and not Configuration.wps_ignore_lock:
-                    self.pattack('{R}Failed: {O}AP became {R}Locked{O}', newline=True)
+                    self.pattack('{R}Failed: {O}Access point is {R}Locked{O}',
+                            newline=True)
                     self.stop()
                     return
 

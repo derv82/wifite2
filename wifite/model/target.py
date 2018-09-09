@@ -5,6 +5,11 @@ from ..util.color import Color
 
 import re
 
+
+class WPSState:
+    NONE, UNLOCKED, LOCKED, UNKNOWN = range(0, 4)
+
+
 class Target(object):
     '''
         Holds details for a 'Target' aka Access Point (e.g. router).
@@ -60,8 +65,7 @@ class Target(object):
             self.essid = None # '(%s)' % self.bssid
             self.essid_known = False
 
-        # False=No WPS, None=Locked WPS, True=Unlocked WPS
-        self.wps = False
+        self.wps = WPSState.UNKNOWN
 
         self.decloaked = False # If ESSID was hidden but we decloaked it.
 
@@ -133,13 +137,14 @@ class Target(object):
             color = 'R'
         power = Color.s('{%s}%s' % (color, power))
 
-        wps = Color.s('{O} n/a')
-        if self.wps == True:
+        if self.wps == WPSState.UNLOCKED:
             wps = Color.s('{G} yes')
-        elif self.wps == False:
+        elif self.wps == WPSState.NONE:
             wps = Color.s('{O}  no')
-        elif self.wps is None:
+        elif self.wps == WPSState.LOCKED:
             wps = Color.s('{R}lock')
+        elif self.wps == WPSState.UNKNOWN:
+            wps = Color.s('{O} n/a')
 
         clients = '       '
         if len(self.clients) > 0:
