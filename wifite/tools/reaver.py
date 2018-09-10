@@ -117,7 +117,7 @@ class Reaver(Attack, Dependency):
 
                 # Check if locked
                 if self.locked and not Configuration.wps_ignore_lock:
-                    raise Exception('{O}Because access point is {R}Locked{W}')
+                    raise Exception('{O}Access point is {R}Locked{W}')
 
                 time.sleep(0.5)
 

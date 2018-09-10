@@ -4,7 +4,7 @@
 from ..util.color import Color
 from ..tools.airodump import Airodump
 from ..util.input import raw_input, xrange
-from ..model.target import Target
+from ..model.target import Target, WPSState
 from ..config import Configuration
 
 from time import sleep, time
@@ -88,7 +88,7 @@ class Scanner(object):
             return False  # No specific target from user.
 
         for target in self.targets:
-            if Configuration.wps_only and target.wps == False:
+            if Configuration.wps_only and target.wps not in [WPSState.UNLOCKED, WPSState.LOCKED]:
                 continue
             if bssid and target.bssid and bssid.lower() == target.bssid.lower():
                 self.target = target

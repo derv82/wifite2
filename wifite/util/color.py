@@ -97,6 +97,10 @@ class Color(object):
         '''Prints an exception. Includes stack trace if necessary.'''
         Color.pl('\n{!} {R}Error: {O}%s' % str(exception))
 
+        # Don't dump trace for the "no targets found" case.
+        if 'No targets found' in str(exception):
+            return
+
         from ..config import Configuration
         if Configuration.verbose > 0 or Configuration.print_stack_traces:
             Color.pl('\n{!} {O}Full stack trace below')

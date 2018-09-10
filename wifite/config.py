@@ -289,12 +289,15 @@ class Configuration(object):
             cls.wpa_filter = args.wpa_filter
 
         if args.wordlist:
-            if os.path.exists(args.wordlist):
-                cls.wordlist = args.wordlist
-                Color.pl('{+} {C}option:{W} using wordlist {G}%s{W} to crack WPA handshakes' % args.wordlist)
-            else:
+            if not os.path.exists(args.wordlist):
                 cls.wordlist = None
                 Color.pl('{+} {C}option:{O} wordlist {R}%s{O} was not found, wifite will NOT attempt to crack handshakes' % args.wordlist)
+            elif os.path.isfile(args.wordlist):
+                cls.wordlist = args.wordlist
+                Color.pl('{+} {C}option:{W} using wordlist {G}%s{W} to crack WPA handshakes' % args.wordlist)
+            elif os.path.isdir(args.wordlist):
+                cls.wordlist = None
+                Color.pl('{+} {C}option:{O} wordlist {R}%s{O} is a directory, not a file. Wifite will NOT attempt to crack handshakes' % args.wordlist)
 
         if args.wpa_deauth_timeout:
             cls.wpa_deauth_timeout = args.wpa_deauth_timeout
