@@ -225,7 +225,7 @@ class Airodump(Dependency):
                     # The current row corresponds to a 'Client' (computer)
                     try:
                         client = Client(row)
-                    except (IndexError, ValueError) as e:
+                    except (IndexError, ValueError):
                         # Skip if we can't parse the client row
                         continue
 

@@ -96,7 +96,7 @@ class AttackWPA(Attack):
             self.clients = []
 
             # Try to load existing handshake
-            if Configuration.ignore_old_handshakes == False:
+            if not Configuration.ignore_old_handshakes:
                 bssid = airodump_target.bssid
                 essid = airodump_target.essid if airodump_target.essid_known else None
                 handshake = self.load_handshake(bssid=bssid, essid=essid)
@@ -171,7 +171,7 @@ class AttackWPA(Attack):
 
         if handshake is None:
             # No handshake, attack failed.
-            Color.pl('\n{!} {O}WPA handshake capture {R}FAILED:{O} Timed out after %d seconds' % (Configuration.wpa_attack_timeout))
+            Color.pl('\n{!} {O}WPA handshake capture {R}FAILED:{O} Timed out after %d seconds' % Configuration.wpa_attack_timeout)
             return handshake
         else:
             # Save copy of handshake to ./hs/

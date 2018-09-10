@@ -44,7 +44,7 @@ RUN make install
 # Workdir /
 WORKDIR /
 
-#Install and configure hashcat
+# Install and configure hashcat
 RUN mkdir hashcat && \
     cd hashcat && \
     wget https://hashcat.net/files_legacy/${HASHCAT_VERSION}.7z && \
@@ -54,6 +54,14 @@ RUN mkdir hashcat && \
 #Add link for binary
 RUN ln -s /hashcat/hashcat-cli64.bin /usr/bin/hashcat
 
+# Install hcxtools
+RUN git clone https://github.com/ZerBea/hcxtools.git
+WORKDIR /hcxtools/
+RUN make
+RUN make install
+
+# Workdir /
+WORKDIR /
 
 # Install reaver
 RUN git clone https://github.com/gabrielrcouto/reaver-wps.git

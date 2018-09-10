@@ -9,7 +9,6 @@ except (ValueError, ImportError) as e:
 from .util.color import Color
 
 import os
-import sys
 
 
 class Wifite(object):
@@ -53,8 +52,8 @@ class Wifite(object):
             Configuration.get_monitor_mode_interface()
             self.scan_and_attack()
 
-
-    def print_banner(self):
+    @staticmethod
+    def print_banner():
         '''Displays ASCII art of the highest caliber.'''
         Color.pl(r' {G}  .     {GR}{D}     {W}{G}     .    {W}')
         Color.pl(r' {G}.´  ·  .{GR}{D}     {W}{G}.  ·  `.  {G}wifite {D}%s{W}' % Configuration.version)
@@ -63,8 +62,8 @@ class Wifite(object):
         Color.pl(r' {G}  `     {GR}{D}/¯¯¯\{W}{G}     ´    {W}')
         Color.pl('')
 
-
-    def scan_and_attack(self):
+    @staticmethod
+    def scan_and_attack():
         '''
         1) Scans for targets, asks user to select targets
         2) Attacks each target

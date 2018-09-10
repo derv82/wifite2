@@ -26,8 +26,8 @@ class Hashcat(Dependency):
         hccapx_file = HcxPcapTool.generate_hccapx_file(
                 handshake, show_command=show_command)
 
-        key = None
         # Crack hccapx
+        key = None  # Avoid unresolved reference when hccapx not cracked
         for additional_arg in ([], ['--show']):
             command = [
                 'hashcat',

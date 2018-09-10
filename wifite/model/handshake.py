@@ -183,7 +183,7 @@ class Handshake(object):
             tool_str = '{C}%s{W}: ' % tool.rjust(8)
 
         if len(pairs) == 0:
-            Color.pl('{!} %s.cap file {R}does not{O} contain a valid handshake{W}' % (tool_str))
+            Color.pl('{!} %s.cap file {R}does not{O} contain a valid handshake{W}' % capfile)
             return
 
         for (bssid, essid) in pairs:

@@ -76,7 +76,7 @@ class AttackPMKID(Attack):
 
         pmkid_file = None
 
-        if Configuration.ignore_old_handshakes == False:
+        if not Configuration.ignore_old_handshakes:
             # Load exisitng PMKID hash from filesystem
             pmkid_file = self.get_existing_pmkid_file(self.target.bssid)
             if pmkid_file is not None:

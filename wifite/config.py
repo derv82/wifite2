@@ -117,6 +117,9 @@ class Configuration(object):
         cls.check_handshake = None
         cls.crack_handshake = False
 
+        # A list to cache all checked commands (e.g. `which hashcat` will execute only once)
+        cls.existing_commands = {}
+
         # Overwrite config values with arguments (if defined)
         cls.load_from_arguments()
 
@@ -193,15 +196,15 @@ class Configuration(object):
             Color.pl('{+} {C}option:{W} targeting BSSID ' +
                     '{G}%s{W}' % args.target_bssid)
 
-        if args.five_ghz == True:
+        if args.five_ghz:
             cls.five_ghz = True
             Color.pl('{+} {C}option:{W} including {G}5Ghz networks{W} in scans')
 
-        if args.show_bssids == True:
+        if args.show_bssids:
             cls.show_bssids = True
             Color.pl('{+} {C}option:{W} showing {G}bssids{W} of targets during scan')
 
-        if args.no_deauth == True:
+        if args.no_deauth:
             cls.no_deauth = True
             Color.pl('{+} {C}option:{W} will {R}not{W} {O}deauth{W} clients ' +
                     'during scans or captures')
@@ -220,7 +223,7 @@ class Configuration(object):
             Color.pl('{+} {C}option:{W} {O}ignoring ESSIDs that include {R}%s{W}' % (
                 args.ignore_essid))
 
-        if args.clients_only == True:
+        if args.clients_only:
             cls.clients_only = True
             Color.pl('{+} {C}option:{W} {O}ignoring targets that do not have ' +
                 'associated clients')

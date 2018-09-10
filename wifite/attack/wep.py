@@ -154,8 +154,7 @@ class AttackWEP(Attack):
                                         ivs_files = ivs_files[-1]  # Use most-recent .ivs file
                                     aircrack = Aircrack(ivs_files)
 
-                            elif Configuration.wep_restart_aircrack > 0 and \
-                                    aircrack.pid.running_time() > Configuration.wep_restart_aircrack:
+                            elif 0 < Configuration.wep_restart_aircrack < aircrack.pid.running_time():
                                 # Restart aircrack after X seconds
                                 #Color.pl('\n{+} {C}aircrack{W} ran for more than {C}%d{W} seconds, restarting' % Configuration.wep_restart_aircrack)
                                 aircrack.stop()
@@ -223,9 +222,9 @@ class AttackWEP(Attack):
                                 Color.pl('\n{!} restarting {C}aireplay{W} after' +
                                          ' {C}%d{W} seconds of no new IVs'
                                              % stale_seconds)
-                                aireplay = Aireplay(self.target, \
-                                                    wep_attack_type, \
-                                                    client_mac=client_mac, \
+                                aireplay = Aireplay(self.target,
+                                                    wep_attack_type,
+                                                    client_mac=client_mac,
                                                     replay_file=replay_file)
                                 time_unchanged_ivs = time.time()
                         last_ivs_count = airodump_target.ivs

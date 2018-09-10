@@ -250,8 +250,7 @@ class Aireplay(Thread, Dependency):
         if Configuration.interface is None:
             raise Exception('Wireless interface must be defined (-i)')
 
-        cmd = ['aireplay-ng']
-        cmd.append('--ignore-negative-one')
+        cmd = ['aireplay-ng', '--ignore-negative-one']
 
         if client_mac is None and len(target.clients) > 0:
             # Client MAC wasn't specified, but there's an associated client. Use that.

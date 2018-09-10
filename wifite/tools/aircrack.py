@@ -101,7 +101,6 @@ class Aircrack(Dependency):
         # Report progress of cracking
         aircrack_nums_re = re.compile(r'(\d+)/(\d+) keys tested.*\(([\d.]+)\s+k/s')
         aircrack_key_re  = re.compile(r'Current passphrase:\s*([^\s].*[^\s])\s*$')
-        num_tried = num_total = 0
         percent = num_kps = 0.0
         eta_str = 'unknown'
         current_key = ''

@@ -59,7 +59,7 @@ class AttackAll(object):
 
             # WPS
             if not Configuration.use_pmkid_only:
-                if target.wps != False and AttackWPS.can_attack_wps():
+                if not target.wps and AttackWPS.can_attack_wps():
                     # Pixie-Dust
                     if Configuration.wps_pixie:
                         attacks.append(AttackWPS(target, pixie_dust=True))
