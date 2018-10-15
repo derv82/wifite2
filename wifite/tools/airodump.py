@@ -48,7 +48,6 @@ class Airodump(Dependency):
 
         # For tracking decloaked APs (previously were hidden)
         self.decloaking = False
-        self.decloaked_bssids = set()
         self.decloaked_times = {} # Map of BSSID(str) -> epoch(int) of last deauth
 
         self.delete_existing_files = delete_existing_files
@@ -138,7 +137,7 @@ class Airodump(Dependency):
             if fil.startswith('replay_') and fil.endswith('.cap') or fil.endswith('.xor'):
                 os.remove(os.path.join(temp_dir, fil))
 
-    def get_targets(self, old_targets=[], apply_filter=True):
+    def get_targets(self, old_targets=[], apply_filter=True, target_archives={}):
         ''' Parses airodump's CSV file, returns list of Targets '''
 
         # Find the .CSV file
@@ -150,40 +149,46 @@ class Airodump(Dependency):
         if csv_filename is None or not os.path.exists(csv_filename):
             return self.targets  # No file found
 
-        targets = Airodump.get_targets_from_csv(csv_filename)
-        for old_target in old_targets:
-            for target in targets:
-                if old_target.bssid == target.bssid:
-                    target.wps = old_target.wps
+        new_targets = Airodump.get_targets_from_csv(csv_filename)
+
+        # Check if one of the targets is also contained in the old_targets
+        for new_target in new_targets:
+            just_found = True
+            for old_target in old_targets:
+                # If the new_target is found in old_target copy attributes from old target
+                if old_target == new_target:
+                    # Identify decloaked targets
+                    if new_target.essid_known and not old_target.essid_known:
+                        # We decloaked a target!
+                        new_target.decloaked = True
+
+                    old_target.transfer_info(new_target)
+                    just_found = False
+                    break;
+
+            # If the new_target is not in old_targets, check target_archives
+            # and copy attributes from there
+            if just_found and new_target.bssid in target_archives:
+                target_archives[new_target.bssid].transfer_info(new_target)
+
 
         # Check targets for WPS
         if not self.skip_wps:
             capfile = csv_filename[:-3] + 'cap'
             try:
-                Tshark.check_for_wps_and_update_targets(capfile, targets)
+                Tshark.check_for_wps_and_update_targets(capfile, new_targets)
             except ValueError:
                 # No tshark, or it failed. Fall-back to wash
-                Wash.check_for_wps_and_update_targets(capfile, targets)
+                Wash.check_for_wps_and_update_targets(capfile, new_targets)
 
         if apply_filter:
             # Filter targets based on encryption & WPS capability
-            targets = Airodump.filter_targets(targets, skip_wps=self.skip_wps)
+            new_targets = Airodump.filter_targets(new_targets, skip_wps=self.skip_wps)
 
         # Sort by power
-        targets.sort(key=lambda x: x.power, reverse=True)
+        new_targets.sort(key=lambda x: x.power, reverse=True)
 
-        # Identify decloaked targets
-        for old_target in self.targets:
-            for new_target in targets:
-                if old_target.bssid != new_target.bssid:
-                    continue
-
-                if new_target.essid_known and not old_target.essid_known:
-                    # We decloaked a target!
-                    new_target.decloaked = True
-                    self.decloaked_bssids.add(new_target.bssid)
-
-        self.targets = targets
+        self.targets = new_targets
         self.deauth_hidden_targets()
 
         return self.targets

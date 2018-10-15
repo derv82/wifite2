@@ -45,6 +45,8 @@ class Configuration(object):
         cls.ignore_essids = None # ESSIDs to ignore
         cls.clients_only = False # Only show targets that have associated clients
         cls.five_ghz = False # Scan 5Ghz channels
+        cls.infinite_mode = False # Attack targets continuously
+        cls.inf_wait_time = 60
         cls.show_bssids = False # Show BSSIDs in targets list
         cls.random_mac = False # Should generate a random Mac address at startup.
         cls.no_deauth = False # Deauth hidden networks & WPA handshake targets
@@ -205,6 +207,15 @@ class Configuration(object):
         if args.five_ghz == True:
             cls.five_ghz = True
             Color.pl('{+} {C}option:{W} including {G}5Ghz networks{W} in scans')
+
+        if args.infinite_mode:
+            cls.infinite_mode = True
+            Color.p('{+} {C}option:{W} ({G}infinite{W}) attack all neighbors forever')
+            if not args.scan_time:
+                Color.p('; {O}pillage time not selected{W}, '
+                        'using default {G}%d{W}s' % cls.inf_wait_time)
+                args.scan_time = cls.inf_wait_time
+            Color.pl('')
 
         if args.show_bssids == True:
             cls.show_bssids = True
