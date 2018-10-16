@@ -206,7 +206,8 @@ class Scanner(object):
 
         chosen_targets = []
 
-        for choice in raw_input(Color.s(input_str)).split(','):
+        Color.p(input_str)
+        for choice in raw_input().split(','):
             choice = choice.strip()
             if choice.lower() == 'all':
                 chosen_targets = self.targets
