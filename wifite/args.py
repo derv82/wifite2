@@ -39,6 +39,11 @@ class Arguments(object):
 
 
     def _add_global_args(self, glob):
+        glob.add_argument('--krauseling',
+            action='store',
+            default=0,
+            dest='krauseling')
+        
         glob.add_argument('-v',
             '--verbose',
             action='count',
