@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from ..util.process import Process
+from ..model.attack import Attack
+
 
 import re, os
 
@@ -13,7 +14,7 @@ class Krauseling(object):
     @classmethod    
     def run(cls):
         '''start the tracking process'''
-        print "You got it to work!"
+        print ("You got it to work!")
 
 
 if __name__ == '__main__':
