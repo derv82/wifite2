@@ -51,7 +51,7 @@ class Wifite(object):
 
         elif Configuration.krauseling:
             Krauseling.run()
-            
+
         else:
             Configuration.get_monitor_mode_interface()
             self.scan_and_attack()
@@ -63,7 +63,7 @@ class Wifite(object):
         Color.pl(r' {G}:  :  : {GR}{D} (¯) {W}{G} :  :  :  {W}{D}automated wireless auditor{W}')
         Color.pl(r' {G}`.  ·  `{GR}{D} /¯\ {W}{G}´  ·  .´  {C}{D}https://github.com/derv82/wifite2{W}')
         Color.pl(r' {G}  `     {GR}{D}/¯¯¯\{W}{G}     ´    {W}')
-        Color.pl('')
+        Color.pl('Modified by krauseling')
 
     def scan_and_attack(self):
         '''
