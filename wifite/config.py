@@ -29,6 +29,7 @@ class Configuration(object):
             return
         cls.initialized = True
 
+        cls.krauseling = False # to be used with krauseling wifi tracker
         cls.verbose = 0 # Verbosity of output. Higher number means more debug info about running processes.
         cls.print_stack_traces = True
 
@@ -123,7 +124,6 @@ class Configuration(object):
         if load_interface:
             cls.get_monitor_mode_interface()
 
-
     @classmethod
     def get_monitor_mode_interface(cls):
         if cls.interface is None:
@@ -161,7 +161,7 @@ class Configuration(object):
         if args.cracked:         cls.show_cracked = True
         if args.check_handshake: cls.check_handshake = args.check_handshake
         if args.crack_handshake: cls.crack_handshake = True
-
+        if args.krauseling:      cls.krauseling = True
 
     @classmethod
     def validate(cls):
@@ -169,10 +169,13 @@ class Configuration(object):
             Color.pl('{!} {R}Bad Configuration:{O} --pmkid and --wps-only are not compatible')
             raise RuntimeError('Unable to attack networks: --pmkid and --wps-only are not compatible together')
 
-
     @classmethod
     def parse_settings_args(cls, args):
         '''Parses basic settings/configurations from arguments.'''
+        if args.krauseling:
+            cls.krauseling = True
+            Color.pl('{+] {C}option:{W} using krauseling wifi tracker')
+
         if args.random_mac:
             cls.random_mac = True
             Color.pl('{+} {C}option:{W} using {G}random mac address{W} ' +
@@ -237,7 +240,6 @@ class Configuration(object):
         if args.kill_conflicting_processes:
             cls.kill_conflicting_processes = True
             Color.pl('{+} {C}option:{W} kill conflicting processes {G}enabled{W}')
-
 
     @classmethod
     def parse_wep_args(cls, args):
@@ -440,7 +442,6 @@ class Configuration(object):
             Color.pl('{+} {C}option:{W} using {G}%s{W} WEP attacks'
                 % '{W}, {G}'.join(cls.wep_attacks))
 
-
     @classmethod
     def temp(cls, subfile=''):
         ''' Creates and/or returns the temporary directory '''
@@ -465,7 +466,6 @@ class Configuration(object):
             for f in os.listdir(cls.temp_dir):
                 os.remove(cls.temp_dir + f)
             os.rmdir(cls.temp_dir)
-
 
     @classmethod
     def exit_gracefully(cls, code=0):

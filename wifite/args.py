@@ -40,9 +40,9 @@ class Arguments(object):
 
     def _add_global_args(self, glob):
         glob.add_argument('--krauseling',
-            action='store',
-            default=0,
-            dest='krauseling')
+            action='store_true',
+            dest='krauseling',
+            help=Color.s('Activates krauseling mode for use with krauseling wifi tracker (default {G}off{W}'))
         
         glob.add_argument('-v',
             '--verbose',

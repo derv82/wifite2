@@ -31,13 +31,13 @@ class Wifite(object):
         from .tools.dependency import Dependency
         Dependency.run_dependency_check()
 
-
     def start(self):
         '''
         Starts target-scan + attack loop, or launches utilities dpeending on user input.
         '''
         from .model.result import CrackResult
         from .model.handshake import Handshake
+        from .model.krauseling import Krauseling
         from .util.crack import CrackHelper
 
         if Configuration.show_cracked:
@@ -49,10 +49,12 @@ class Wifite(object):
         elif Configuration.crack_handshake:
             CrackHelper.run()
 
+        elif Configuration.krauseling:
+            Krauseling.run()
+            
         else:
             Configuration.get_monitor_mode_interface()
             self.scan_and_attack()
-
 
     def print_banner(self):
         '''Displays ASCII art of the highest caliber.'''
@@ -62,7 +64,6 @@ class Wifite(object):
         Color.pl(r' {G}`.  ·  `{GR}{D} /¯\ {W}{G}´  ·  .´  {C}{D}https://github.com/derv82/wifite2{W}')
         Color.pl(r' {G}  `     {GR}{D}/¯¯¯\{W}{G}     ´    {W}')
         Color.pl('')
-
 
     def scan_and_attack(self):
         '''
