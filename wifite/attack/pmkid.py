@@ -62,6 +62,12 @@ class AttackPMKID(Attack):
         Returns:
             True if handshake is captured. False otherwise.
         '''
+
+        # Skip if user doesn't want to run PMKID attack 
+        if Configuration.dont_use_pmkid:
+            self.success = False
+            return False
+
         from ..util.process import Process
         # Check that we have all hashcat programs
         dependencies = [
