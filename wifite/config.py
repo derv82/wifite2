@@ -29,7 +29,7 @@ class Configuration(object):
             return
         cls.initialized = True
 
-        cls.krauseling = True # to be used with krauseling wifi tracker
+        cls.krauseling = False # to be used with krauseling wifi tracker
         cls.verbose = 0 # Verbosity of output. Higher number means more debug info about running processes.
         cls.print_stack_traces = True
 

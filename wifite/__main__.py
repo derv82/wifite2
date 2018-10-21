@@ -7,6 +7,7 @@ except (ValueError, ImportError) as e:
     raise Exception('You may need to run wifite from the root directory (which includes README.md)', e)
 
 from .util.color import Color
+from .model.krauseling import Krauseling
 
 import os
 import sys
@@ -50,6 +51,7 @@ class Wifite(object):
             CrackHelper.run()
 
         elif Configuration.krauseling:
+            Color.pl(':-) Configuration for krauseling established')
             Krauseling.run()
 
         else:

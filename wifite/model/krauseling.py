@@ -1,19 +1,20 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from ..model.attack import Attack
-
+#from ..model.attack import Attack
 
 import re, os
 
+from ..util.color import Color
+
 class Krauseling(object):
     def __init__(self):
-        print("You did it!")
+        Color.s('You init"d!')
     
-    @classmethod
-    def run(cls):
-        print ("You got it to work!")
+    @staticmethod
+    def run():
+        Color.pl('You ran!')
 
 
 if __name__ == '__main__':
-    print('it was executed outside of wifite')
+    Color.s('You did it outside of wifite!')
