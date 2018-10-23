@@ -6,6 +6,9 @@
 import re, os
 
 from ..util.color import Color
+from ..tools.airmon import Airmon
+from ..util.scanner import Scanner
+
 
 class Krauseling(object):
     def __init__(self):
@@ -14,6 +17,12 @@ class Krauseling(object):
     @staticmethod
     def run():
         Color.pl('You ran!')
+        interface = Airmon.ask()
+        scanner = Scanner()
+        targets = scanner.select_targets()
+        #with Airodump....
+        
+
 
 
 if __name__ == '__main__':
