@@ -82,6 +82,9 @@ class Airodump(Dependency):
         if self.ivs_only: command.extend(['--output-format', 'ivs,csv'])
         else:             command.extend(['--output-format', 'pcap,csv'])
 
+        # Store value for debugging
+        self.command = command
+
         # Start the process
         self.pid = Process(command, devnull=True)
         return self
