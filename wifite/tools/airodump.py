@@ -66,21 +66,13 @@ class Airodump(Dependency):
         self.csv_file_prefix = Configuration.temp() + self.output_file_prefix
 
         # Build the command
-        if Configuration.krauseling:
-            command = [
+        command = [
             'airodump-ng',
             self.interface,
+            '-a', # Only show associated clients
             '-w', self.csv_file_prefix, # Output file prefix
-            ]
-        else:
-            command = [
-                'airodump-ng',
-                self.interface,
-                '-a', # Only show associated clients
-                '-w', self.csv_file_prefix, # Output file prefix
-                '--write-interval', '1' # Write every second
-            ]
-
+            '--write-interval', '1' # Write every second
+        ]
         if self.channel:    command.extend(['-c', str(self.channel)])
         elif self.five_ghz: command.extend(['--band', 'a'])
 
@@ -90,8 +82,6 @@ class Airodump(Dependency):
 
         if self.ivs_only: command.extend(['--output-format', 'ivs,csv'])
         else:             command.extend(['--output-format', 'pcap,csv'])
-        
-        if Configuration.krauseling: command.extend(['']) #add in airodump with grep to filter just RSSI
 
         # Start the process
         self.pid = Process(command, devnull=True)
