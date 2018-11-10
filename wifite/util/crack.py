@@ -30,6 +30,14 @@ class CrackHelper:
         'PMKID': 'PMKID Hash'
     }
 
+    # Tools for cracking & their dependencies.
+    possible_tools = [
+        ('aircrack', [Aircrack]),
+        ('hashcat', [Hashcat, HcxPcapTool]),
+        ('john', [John, HcxPcapTool]),
+        ('cowpatty', [Cowpatty])
+    ]
+
     @classmethod
     def run(cls):
         Configuration.initialize(False)
@@ -52,23 +60,18 @@ class CrackHelper:
         hs_to_crack = cls.get_user_selection(handshakes)
         all_pmkid = all([hs['type'] == 'PMKID' for hs in hs_to_crack])
 
-        # Tools for cracking & their dependencies.
-        available_tools = {
-            'aircrack': [Aircrack],
-            'hashcat':  [Hashcat, HcxPcapTool],
-            'john':     [John, HcxPcapTool],
-            'cowpatty': [Cowpatty]
-        }
         # Identify missing tools
         missing_tools = []
-        for tool, dependencies in available_tools.items():
+        available_tools = []
+        for tool, dependencies in cls.possible_tools:
             missing = [
                 dep for dep in dependencies
                 if not Process.exists(dep.dependency_name)
             ]
             if len(missing) > 0:
-                available_tools.pop(tool)
-                missing_tools.append( (tool, missing) )
+                missing_tools.append((tool, missing))
+            else:
+                available_tools.append(tool)
 
         if len(missing_tools) > 0:
             Color.pl('\n{!} {O}Unavailable tools (install to enable):{W}')
@@ -81,7 +84,7 @@ class CrackHelper:
             tool_name = 'hashcat'
         else:
             Color.p('\n{+} Enter the {C}cracking tool{W} to use ({C}%s{W}): {G}' % (
-                '{W}, {C}'.join(available_tools.keys())))
+                '{W}, {C}'.join(available_tools)))
             tool_name = raw_input()
             if tool_name not in available_tools:
                 Color.pl('{!} {R}"%s"{O} tool not found, defaulting to {C}aircrack{W}' % tool_name)
