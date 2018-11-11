@@ -101,6 +101,14 @@ class Arguments(object):
             help=Color.s('Kill processes that conflict with Airmon/Airodump ' +
                 '(default: {G}off{W})'))
 
+        glob.add_argument('-pow',
+            '--power',
+            action='store',
+            dest='min_power',
+            metavar='[min_power]',
+            type=int,
+            help=Color.s('Attacks any targets with at least {C}min_power{W} signal strength'))
+
         glob.add_argument('-b',
             action='store',
             dest='target_bssid',

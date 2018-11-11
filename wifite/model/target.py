@@ -89,6 +89,7 @@ class Target(object):
         self.power      = int(fields[8].strip())
         if self.power < 0:
             self.power += 100
+        self.max_power = self.power
 
         self.beacons    = int(fields[9].strip())
         self.ivs        = int(fields[10].strip())
@@ -126,6 +127,9 @@ class Target(object):
         '''
         other.wps = self.wps
         other.attacked = self.attacked
+
+        if other.max_power < self.max_power:
+            other.max_power = self.max_power
 
         # If both targets know the essid, keep decloacked value
         if self.essid_known and other.essid_known:
