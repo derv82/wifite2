@@ -39,6 +39,7 @@ class Configuration(object):
 
         cls.tx_power = 0 # Wifi transmit power (0 is default)
         cls.interface = None
+        cls.min_power = 0  # Minimum power for an access point to be considered a target. Default is 0
         cls.target_channel = None # User-defined channel to scan
         cls.target_essid = None # User-defined AP name
         cls.target_bssid = None # User-defined AP BSSID
@@ -230,6 +231,11 @@ class Configuration(object):
             cls.num_deauths = args.num_deauths
             Color.pl('{+} {C}option:{W} send {G}%d{W} deauth packets when deauthing' % (
                 cls.num_deauths))
+
+        if args.min_power and args.min_power > 0:
+            cls.min_power = args.min_power
+            Color.pl('{+} {C}option:{W} Minimum power {G}%d{W} for target to be shown' %
+                     cls.min_power)
 
         if args.target_essid:
             cls.target_essid = args.target_essid

@@ -185,7 +185,7 @@ class Airodump(Dependency):
                 Wash.check_for_wps_and_update_targets(capfile, new_targets)
 
         if apply_filter:
-            # Filter targets based on encryption & WPS capability
+            # Filter targets based on encryption, WPS capability & power
             new_targets = Airodump.filter_targets(new_targets, skip_wps=self.skip_wps)
 
         # Sort by power
@@ -263,6 +263,12 @@ class Airodump(Dependency):
         result = []
         # Filter based on Encryption
         for target in targets:
+            # Filter targets if --power
+            # TODO Filter a target based on the current power - not on the max power
+            # as soon as losing targets in a single scan does not cause excessive output
+            if Configuration.min_power > 0 and target.max_power < Configuration.min_power:
+                continue
+
             if Configuration.clients_only and len(target.clients) == 0:
                 continue
             if 'WEP' in Configuration.encryption_filter and 'WEP' in target.encryption:
