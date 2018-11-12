@@ -1,6 +1,13 @@
 Wifite
 ======
 
+[![Rawsec's CyberSecurity Inventory](https://inventory.rawsec.ml/img/badges/Rawsec-inventoried-FF5050_flat.svg)](https://inventory.rawsec.ml/tools.html#wifite2)
+[![GitHub version](https://badge.fury.io/gh/derv82%2Fwifite2.svg)](https://badge.fury.io/gh/derv82%2Fwifite2)
+[![GitHub issues](https://img.shields.io/github/issues/derv82/wifite2.svg)](https://github.com/derv82/wifite2/issues)
+[![GitHub forks](https://img.shields.io/github/forks/derv82/wifite2.svg)](https://github.com/derv82/wifite2/network)
+[![GitHub stars](https://img.shields.io/github/stars/derv82/wifite2.svg)](https://github.com/derv82/wifite2/stargazers)
+[![GitHub license](https://img.shields.io/github/license/derv82/wifite2.svg)](https://github.com/derv82/wifite2/blob/master/LICENSE)
+
 This repo is a complete re-write of [`wifite`](https://github.com/derv82/wifite), a Python script for auditing wireless networks.
 
 Wifite runs existing wireless-auditing tools for you. Stop memorizing command arguments & switches!
