@@ -3,6 +3,8 @@
 
 import re, os, csv, time, signal, sys
 
+from krauseling import rssiStreamHandler
+
 from ..util.color import Color
 from ..tools.airmon import Airmon
 from ..tools.airodump import Airodump
@@ -15,9 +17,6 @@ from multiprocessing import Process, Pipe
 class Krauseling(object):
     def __init__(self):
         Color.s('You init"d!')
-    
-    def getMultipleInterfaces():
-        Color.pl('Getting more than one interface for monitor mode.')
 
     @staticmethod
     def getTargetAP():
@@ -32,7 +31,7 @@ class Krauseling(object):
         return targets[0]
 
     @staticmethod
-    def rssiStream(target, interface, conn):
+    def rssiStream(target, interface, pipedConnection):
         targetArg = 'wlan.sa==' + target.bssid
         # camp the interface on desired channel
         channelCommand = ['iwconfig', Configuration.interface, 'channel', target.channel]
@@ -50,7 +49,8 @@ class Krauseling(object):
             Color.pe('\n {C}[?] {W} Executing: {B}%s{W}' % command)
         streamProcess = Popen(command, stderr=PIPE)
         while True:
-            conn.send(streamProcess.stderr.readline(1))
+            pipedConnection.send(streamProcess.stderr)
+            # clean up output once handler is implemented 
 
     @staticmethod
     def run():
@@ -67,6 +67,11 @@ class Krauseling(object):
             Color.pl(Configuration.interface)
             stream1 = Process(target=Krauseling.rssiStream, args=(target, Configuration.interface, child_conn,))
             stream1.start()
+
+            rssiHandler1 = rssiStreamHandler()
+
+            output1 = parent_conn.recv() # pass to rssi Handler
+            
             while True:
                 sys.stderr.write(parent_conn.recv())
         except KeyboardInterrupt:
