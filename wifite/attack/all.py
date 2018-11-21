@@ -81,6 +81,8 @@ class AttackAll(object):
             return True  # Keep attacking other targets (skip)
 
         while len(attacks) > 0:
+            # Needed by infinite attack mode in order to count how many targets were attacked
+            target.attacked = True
             attack = attacks.pop(0)
             try:
                 result = attack.run()
@@ -110,7 +112,9 @@ class AttackAll(object):
         '''
         Asks user if attacks should continue onto other targets
         Returns:
-            True if user wants to continue, False otherwise.
+            None if the user wants to skip the current target
+            True if the user wants to continue to the next attack on the current target
+            False if the user wants to stop the remaining attacks
         '''
         if attacks_remaining == 0 and targets_remaining == 0:
             return  # No targets or attacksleft, drop out
@@ -128,22 +132,27 @@ class AttackAll(object):
 
         if attacks_remaining > 0:
             prompt += ' {G}continue{W} attacking,'
-            options += '{G}C{W}{D}, {W}'
+            options += '{G}c{W}{D}, {W}'
 
         if targets_remaining > 0:
             prompt += ' {O}skip{W} to the next target,'
             options += '{O}s{W}{D}, {W}'
 
-        options += '{R}e{W})'
-        prompt += ' or {R}exit{W} %s? {C}' % options
+        if Configuration.infinite_mode:
+            options += '{R}r{W})'
+            prompt += ' or {R}return{W} to scanning %s? {C}' % options
+        else:
+            options += '{R}e{W})'
+            prompt += ' or {R}exit{W} %s? {C}' % options
 
         from ..util.input import raw_input
-        answer = raw_input(Color.s(prompt)).lower()
+        Color.p(prompt)
+        answer = raw_input().lower()
 
         if answer.startswith('s'):
             return None  # Skip
-        elif answer.startswith('e'):
-            return False  # Exit
+        elif answer.startswith('e') or answer.startswith('r'):
+            return False  # Exit/Return
         else:
             return True  # Continue
 

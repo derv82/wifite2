@@ -8,7 +8,7 @@ from .tools.macchanger import Macchanger
 
 class Configuration(object):
     ''' Stores configuration variables and functions for Wifite. '''
-    version = '2.2.5'
+    version = '2.2.6'
 
     initialized = False # Flag indicating config has been initialized
     temp_dir = None     # Temporary directory
@@ -38,12 +38,15 @@ class Configuration(object):
 
         cls.tx_power = 0 # Wifi transmit power (0 is default)
         cls.interface = None
+        cls.min_power = 0  # Minimum power for an access point to be considered a target. Default is 0
         cls.target_channel = None # User-defined channel to scan
         cls.target_essid = None # User-defined AP name
         cls.target_bssid = None # User-defined AP BSSID
         cls.ignore_essid = None # ESSIDs to ignore
         cls.clients_only = False # Only show targets that have associated clients
         cls.five_ghz = False # Scan 5Ghz channels
+        cls.infinite_mode = False # Attack targets continuously
+        cls.inf_wait_time = 60
         cls.show_bssids = False # Show BSSIDs in targets list
         cls.random_mac = False # Should generate a random Mac address at startup.
         cls.no_deauth = False # Deauth hidden networks & WPA handshake targets
@@ -197,6 +200,15 @@ class Configuration(object):
             cls.five_ghz = True
             Color.pl('{+} {C}option:{W} including {G}5Ghz networks{W} in scans')
 
+        if args.infinite_mode:
+            cls.infinite_mode = True
+            Color.p('{+} {C}option:{W} ({G}infinite{W}) attack all neighbors forever')
+            if not args.scan_time:
+                Color.p('; {O}pillage time not selected{W}, '
+                        'using default {G}%d{W}s' % cls.inf_wait_time)
+                args.scan_time = cls.inf_wait_time
+            Color.pl('')
+
         if args.show_bssids == True:
             cls.show_bssids = True
             Color.pl('{+} {C}option:{W} showing {G}bssids{W} of targets during scan')
@@ -210,6 +222,11 @@ class Configuration(object):
             cls.num_deauths = args.num_deauths
             Color.pl('{+} {C}option:{W} send {G}%d{W} deauth packets when deauthing' % (
                 cls.num_deauths))
+
+        if args.min_power and args.min_power > 0:
+            cls.min_power = args.min_power
+            Color.pl('{+} {C}option:{W} Minimum power {G}%d{W} for target to be shown' %
+                     cls.min_power)
 
         if args.target_essid:
             cls.target_essid = args.target_essid

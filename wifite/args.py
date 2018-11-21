@@ -70,6 +70,12 @@ class Arguments(object):
             dest='five_ghz',
             help=self._verbose('Include 5Ghz channels (default: {G}off{W})'))
 
+        glob.add_argument('-inf',
+            '--infinite',
+            action='store_true',
+            dest='infinite_mode',
+            help=Color.s('Enable infinite attack mode. Modify scanning time with '
+                         '{C}-p{W} (default: {G}off{W})'))
 
         glob.add_argument('-mac',
             '--random-mac',
@@ -94,6 +100,14 @@ class Arguments(object):
             dest='kill_conflicting_processes',
             help=Color.s('Kill processes that conflict with Airmon/Airodump ' +
                 '(default: {G}off{W})'))
+
+        glob.add_argument('-pow',
+            '--power',
+            action='store',
+            dest='min_power',
+            metavar='[min_power]',
+            type=int,
+            help=Color.s('Attacks any targets with at least {C}min_power{W} signal strength'))
 
         glob.add_argument('-b',
             action='store',
