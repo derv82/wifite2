@@ -143,7 +143,7 @@ class Scanner(object):
             Color.p('           MANUFACTURER')
 
 
-        Color.pl('   CH  ENCR  POWER  WPS?  CLIENT')
+        Color.pl('   CH   ENCR   POWER  WPS?  CLIENT')
 
         # Second row: separator
         Color.p('   ---')
@@ -154,7 +154,7 @@ class Scanner(object):
         if Configuration.show_manufacturers:
             Color.p('  ---------------------')
 
-        Color.pl('  ---  ----  -----  ----  ------{W}')
+        Color.pl('  ---  -----  -----  ----  ------{W}')
 
         # Remaining rows: targets
         for idx, target in enumerate(self.targets, start=1):
@@ -227,7 +227,7 @@ class Scanner(object):
                 break
             if '-' in choice:
                 # User selected a range
-                (lower,upper) = [int(x) - 1 for x in choice.split('-')]
+                (lower, upper) = [int(x) - 1 for x in choice.split('-')]
                 for i in xrange(lower, min(len(self.targets), upper + 1)):
                     chosen_targets.append(self.targets[i])
             elif choice.isdigit():

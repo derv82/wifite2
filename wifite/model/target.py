@@ -38,10 +38,10 @@ class Target(object):
                     13 ESSID          (HOME-ABCD)
                     14 Key            ()
         '''
-        self.bssid      =     fields[0].strip()
-        self.channel    =     fields[3].strip()
-
-        self.encryption =     fields[5].strip()
+        self.bssid          =     fields[0].strip()
+        self.channel        =     fields[3].strip()
+        self.encryption     =     fields[5].strip()
+        self.authentication =     fields[7].strip()
         if 'WPA' in self.encryption:
             self.encryption = 'WPA'
         elif 'WEP' in self.encryption:
@@ -137,11 +137,16 @@ class Target(object):
             channel_color = '{C}'
         channel = Color.s('%s%s' % (channel_color, str(self.channel).rjust(3)))
 
-        encryption = self.encryption.rjust(4)
+        encryption = self.encryption.rjust(3)
         if 'WEP' in encryption:
             encryption = Color.s('{G}%s' % encryption)
         elif 'WPA' in encryption:
-            encryption = Color.s('{O}%s' % encryption)
+            if 'PSK' in self.authentication:
+                encryption = Color.s('{O}%s-P' % encryption)
+            elif 'MGT' in self.authentication:
+                encryption = Color.s('{R}%s-E' % encryption)
+            else:
+                encryption = Color.s('{O}%s  ' % encryption)
 
         power = '%sdb' % str(self.power).rjust(3)
         if self.power > 50:
