@@ -105,6 +105,16 @@ class Arguments(object):
         glob.add_argument('--bssid', help=argparse.SUPPRESS, action='store',
                 dest='target_bssid', type=str)
 
+        glob.add_argument('-m',
+            action='store',
+            dest='target_manufacturer',
+            metavar='[manufacturer]',
+            type=str,
+            help=self._verbose('Manufacturer (e.g. {GR}D-Link{W}) of access ' +
+                'point to match'))
+        glob.add_argument('--manufacturer', help=argparse.SUPPRESS, action='store',
+                dest='target_manufacturer', type=str)
+
         glob.add_argument('-e',
             action='store',
             dest='target_essid',

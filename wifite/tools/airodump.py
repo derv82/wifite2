@@ -11,6 +11,7 @@ from ..model.client import Client
 
 import os, time
 
+
 class Airodump(Dependency):
     ''' Wrapper around airodump-ng program '''
     dependency_required = True
@@ -20,7 +21,7 @@ class Airodump(Dependency):
     def __init__(self, interface=None, channel=None, encryption=None,\
                        wps=WPSState.UNKNOWN, target_bssid=None,
                        output_file_prefix='airodump',\
-                       ivs_only=False, skip_wps=False, delete_existing_files=True):
+                       ivs_only=False, target_oui=False, skip_wps=False, delete_existing_files=True):
         '''Sets up airodump arguments, doesn't start process yet.'''
 
         Configuration.initialize()
@@ -40,6 +41,7 @@ class Airodump(Dependency):
 
         self.encryption = encryption
         self.wps = wps
+        self.target_oui = target_oui
 
         self.target_bssid = target_bssid
         self.output_file_prefix = output_file_prefix
@@ -269,6 +271,8 @@ class Airodump(Dependency):
         # Filter based on BSSID/ESSID
         bssid = Configuration.target_bssid
         essid = Configuration.target_essid
+        manufacturer = Configuration.target_manufacturer
+
         i = 0
         while i < len(result):
             if result[i].essid is not None and Configuration.ignore_essid is not None and Configuration.ignore_essid.lower() in result[i].essid.lower():
@@ -277,6 +281,12 @@ class Airodump(Dependency):
                 result.pop(i)
             elif essid and result[i].essid and result[i].essid.lower() != essid.lower():
                 result.pop(i)
+            elif manufacturer and result[i].bssid:
+                o = Configuration.manufacturers.get(''.join(result[i].bssid.split(':')[:3]), '')
+                if manufacturer.lower() not in o.lower():
+                    result.pop(i)
+                else:
+                    i += 1
             else:
                 i += 1
         return result
