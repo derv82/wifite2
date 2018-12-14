@@ -284,8 +284,9 @@ class Airodump(Dependency):
             elif essid and result[i].essid and result[i].essid != essid:
                 result.pop(i)
             elif manufacturer and result[i].bssid:
-                o = Configuration.manufacturers.get(''.join(result[i].bssid.split(':')[:3]), '')
-                if manufacturer.lower() not in o.lower():
+                oui = ''.join(result[i].bssid.split(':')[:3])
+                man = Configuration.manufacturers.get(oui, '')
+                if manufacturer.lower() not in man.lower():
                     result.pop(i)
                 else:
                     i += 1
