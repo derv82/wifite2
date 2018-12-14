@@ -125,14 +125,15 @@ class Arguments(object):
                 dest='target_essid', type=str)
 
         glob.add_argument('-E',
-            action='store',
-            dest='ignore_essid',
+            action='append',
+            dest='ignore_essids',
             metavar='[text]',
             type=str,
             default=None,
-            help=self._verbose('Hides targets with ESSIDs that match the given text'))
-        glob.add_argument('--ignore-essid', help=argparse.SUPPRESS, action='store',
-                dest='ignore_essid', type=str)
+            help=self._verbose('Hides targets with ESSIDs that match the given text. '
+                               'Can be used more than once.'))
+        glob.add_argument('--ignore-essid', help=argparse.SUPPRESS, action='append',
+                dest='ignore_essids', type=str)
 
         glob.add_argument('--clients-only',
             action='store_true',

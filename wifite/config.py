@@ -42,7 +42,7 @@ class Configuration(object):
         cls.target_channel = None # User-defined channel to scan
         cls.target_essid = None # User-defined AP name
         cls.target_bssid = None # User-defined AP BSSID
-        cls.ignore_essid = None # ESSIDs to ignore
+        cls.ignore_essids = None # ESSIDs to ignore
         cls.clients_only = False # Only show targets that have associated clients
         cls.five_ghz = False # Scan 5Ghz channels
         cls.show_bssids = False # Show BSSIDs in targets list
@@ -245,10 +245,10 @@ class Configuration(object):
             cls.target_essid = args.target_essid
             Color.pl('{+} {C}option:{W} targeting ESSID {G}%s{W}' % args.target_essid)
 
-        if args.ignore_essid is not None:
-            cls.ignore_essid = args.ignore_essid
-            Color.pl('{+} {C}option:{W} {O}ignoring ESSIDs that include {R}%s{W}' % (
-                args.ignore_essid))
+        if args.ignore_essids is not None:
+            cls.ignore_essids = args.ignore_essids
+            Color.pl('{+} {C}option: {O}ignoring ESSID(s): {R}%s{W}' %
+                     ', '.join(args.ignore_essids))
 
         if args.clients_only == True:
             cls.clients_only = True
