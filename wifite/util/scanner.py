@@ -138,6 +138,11 @@ class Scanner(object):
         Color.p('                      ESSID')
         if Configuration.show_bssids:
             Color.p('              BSSID')
+
+        if Configuration.show_manufacturers:
+            Color.p('           MANUFACTURER')
+
+
         Color.pl('   CH  ENCR  POWER  WPS?  CLIENT')
 
         # Second row: separator
@@ -145,13 +150,21 @@ class Scanner(object):
         Color.p('  -------------------------')
         if Configuration.show_bssids:
             Color.p('  -----------------')
+
+        if Configuration.show_manufacturers:
+            Color.p('  ---------------------')
+
         Color.pl('  ---  ----  -----  ----  ------{W}')
 
         # Remaining rows: targets
         for idx, target in enumerate(self.targets, start=1):
             Color.clear_entire_line()
             Color.p('   {G}%s  ' % str(idx).rjust(3))
-            Color.pl(target.to_str(Configuration.show_bssids))
+            Color.pl(target.to_str(
+                    Configuration.show_bssids,
+                    Configuration.show_manufacturers
+                    )
+                )
 
     @staticmethod
     def get_terminal_height():

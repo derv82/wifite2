@@ -45,6 +45,7 @@ class Configuration(object):
         cls.clients_only = False # Only show targets that have associated clients
         cls.five_ghz = False # Scan 5Ghz channels
         cls.show_bssids = False # Show BSSIDs in targets list
+        cls.show_manufacturers = False # Show manufacturers in targets list
         cls.random_mac = False # Should generate a random Mac address at startup.
         cls.no_deauth = False # Deauth hidden networks & WPA handshake targets
         cls.num_deauths = 1 # Number of deauth packets to send to each target.
@@ -99,6 +100,16 @@ class Configuration(object):
             if os.path.exists(wlist):
                 cls.wordlist = wlist
                 break
+
+        manufacturers = './ieee-oui.txt'
+
+        if os.path.exists(manufacturers):
+            with open(manufacturers, "r") as f:
+                # Parse txt format into dict
+                lines = f.read().splitlines()
+                k = lambda line: line.split()[0]
+                v = lambda line: ' '.join(line.split()[1:3]).rstrip('.')
+                cls.manufacturers = {k(line):v(line) for line in lines}
 
         # WPS variables
         cls.wps_filter  = False  # Only attack WPS networks
@@ -200,6 +211,10 @@ class Configuration(object):
         if args.show_bssids == True:
             cls.show_bssids = True
             Color.pl('{+} {C}option:{W} showing {G}bssids{W} of targets during scan')
+
+        if args.show_manufacturers == True:
+            cls.show_manufacturers = True
+            Color.pl('{+} {C}option:{W} showing {G}manufacturers{W} of targets during scan')
 
         if args.no_deauth == True:
             cls.no_deauth = True
