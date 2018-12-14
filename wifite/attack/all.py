@@ -156,4 +156,3 @@ class AttackAll(object):
             return False  # Exit
         else:
             return True  # Continue
-
