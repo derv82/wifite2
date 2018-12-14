@@ -85,6 +85,7 @@ class Configuration(object):
         # PMKID variables
         cls.use_pmkid_only = False  # Only use PMKID Capture+Crack attack
         cls.pmkid_timeout = 30  # Time to wait for PMKID capture
+        cls.dont_use_pmkid = False # Don't use PMKID attack
 
         # Default dictionary for cracking
         cls.cracked_file = 'cracked.txt'
@@ -181,6 +182,9 @@ class Configuration(object):
         if cls.use_pmkid_only and cls.wps_only:
             Color.pl('{!} {R}Bad Configuration:{O} --pmkid and --wps-only are not compatible')
             raise RuntimeError('Unable to attack networks: --pmkid and --wps-only are not compatible together')
+        if cls.use_pmkid_only and cls.dont_use_pmkid:
+            Color.pl('{!} {R}Bad Configuration:{O} --pmkid and --no-pmkid are not compatible')
+            raise RuntimeError('Unable to attack networks: --pmkid and --no-pmkid are not compatible together')
 
 
     @classmethod
@@ -418,6 +422,10 @@ class Configuration(object):
         if args.pmkid_timeout:
             cls.pmkid_timeout = args.pmkid_timeout
             Color.pl('{+} {C}option:{W} will wait {G}%d seconds{W} during {C}PMKID{W} capture' % args.pmkid_timeout)
+
+        if args.dont_use_pmkid:
+            cls.dont_use_pmkid = True
+            Color.pl('{+} {C}option:{W} will NOT use {C}PMKID{W} attack on WPA networks')
 
     @classmethod
     def parse_encryption(cls):

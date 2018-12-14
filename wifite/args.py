@@ -448,6 +448,11 @@ class Arguments(object):
                          dest='use_pmkid_only',
                          help=Color.s('{O}Only{W} use {C}PMKID capture{W}, avoids other WPS & ' +
                                       'WPA attacks (default: {G}off{W})'))
+        pmkid.add_argument('--no-pmkid',
+                         action='store_true',
+                         dest='dont_use_pmkid',
+                         help=Color.s('{O}Don\'t{W} use {C}PMKID capture{W} ' +
+                                      '(default: {G}off{W})'))
         # Alias
         pmkid.add_argument('-pmkid', help=argparse.SUPPRESS, action='store_true', dest='use_pmkid_only')
 
