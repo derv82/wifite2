@@ -34,7 +34,7 @@ class Wifite(object):
 
     def start(self):
         '''
-        Starts target-scan + attack loop, or launches utilities dpeending on user input.
+        Starts target-scan + attack loop, or launches utilities depending on user input.
         '''
         from .model.result import CrackResult
         from .model.handshake import Handshake
