@@ -52,6 +52,7 @@ class Target(object):
         self.power      = int(fields[8].strip())
         if self.power < 0:
             self.power += 100
+        self.max_power = self.power
 
         self.beacons    = int(fields[9].strip())
         self.ivs        = int(fields[10].strip())
@@ -108,6 +109,9 @@ class Target(object):
         else:
             # Unknown ESSID
             essid = Color.s('{O}%s' % essid)
+
+        if other.max_power < self.max_power:
+            other.max_power = self.max_power
 
         # Add a '*' if we decloaked the ESSID
         decloaked_char = '*' if self.decloaked else ' '
