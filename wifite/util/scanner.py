@@ -93,7 +93,7 @@ class Scanner(object):
             if bssid and target.bssid and bssid.lower() == target.bssid.lower():
                 self.target = target
                 break
-            if essid and target.essid and essid.lower() == target.essid.lower():
+            if essid and target.essid and essid == target.essid:
                 self.target = target
                 break
 
@@ -138,20 +138,33 @@ class Scanner(object):
         Color.p('                      ESSID')
         if Configuration.show_bssids:
             Color.p('              BSSID')
-        Color.pl('   CH  ENCR  POWER  WPS?  CLIENT')
+
+        if Configuration.show_manufacturers:
+            Color.p('           MANUFACTURER')
+
+
+        Color.pl('   CH   ENCR   POWER  WPS?  CLIENT')
 
         # Second row: separator
         Color.p('   ---')
         Color.p('  -------------------------')
         if Configuration.show_bssids:
             Color.p('  -----------------')
-        Color.pl('  ---  ----  -----  ----  ------{W}')
+
+        if Configuration.show_manufacturers:
+            Color.p('  ---------------------')
+
+        Color.pl('  ---  -----  -----  ----  ------{W}')
 
         # Remaining rows: targets
         for idx, target in enumerate(self.targets, start=1):
             Color.clear_entire_line()
             Color.p('   {G}%s  ' % str(idx).rjust(3))
-            Color.pl(target.to_str(Configuration.show_bssids))
+            Color.pl(target.to_str(
+                    Configuration.show_bssids,
+                    Configuration.show_manufacturers
+                    )
+                )
 
     @staticmethod
     def get_terminal_height():
@@ -206,14 +219,15 @@ class Scanner(object):
 
         chosen_targets = []
 
-        for choice in raw_input(Color.s(input_str)).split(','):
+        Color.p(input_str)
+        for choice in raw_input().split(','):
             choice = choice.strip()
             if choice.lower() == 'all':
                 chosen_targets = self.targets
                 break
             if '-' in choice:
                 # User selected a range
-                (lower,upper) = [int(x) - 1 for x in choice.split('-')]
+                (lower, upper) = [int(x) - 1 for x in choice.split('-')]
                 for i in xrange(lower, min(len(self.targets), upper + 1)):
                     chosen_targets.append(self.targets[i])
             elif choice.isdigit():
