@@ -88,6 +88,8 @@ class AttackAll(object):
             return True  # Keep attacking other targets (skip)
 
         while len(attacks) > 0:
+            # Needed by infinite attack mode in order to count how many targets were attacked
+            target.attacked = True
             attack = attacks.pop(0)
             try:
                 result = attack.run()
@@ -137,14 +139,18 @@ class AttackAll(object):
 
         if attacks_remaining > 0:
             prompt += ' {G}continue{W} attacking,'
-            options += '{G}C{W}{D}, {W}'
+            options += '{G}c{W}{D}, {W}'
 
         if targets_remaining > 0:
             prompt += ' {O}skip{W} to the next target,'
             options += '{O}s{W}{D}, {W}'
 
-        options += '{R}e{W})'
-        prompt += ' or {R}exit{W} %s? {C}' % options
+        if Configuration.infinite_mode:
+            options += '{R}r{W})'
+            prompt += ' or {R}return{W} to scanning %s? {C}' % options
+        else:
+            options += '{R}e{W})'
+            prompt += ' or {R}exit{W} %s? {C}' % options
 
         from ..util.input import raw_input
         Color.p(prompt)
@@ -152,7 +158,7 @@ class AttackAll(object):
 
         if answer.startswith('s'):
             return None  # Skip
-        elif answer.startswith('e'):
-            return False  # Exit
+        elif answer.startswith('e') or answer.startswith('r'):
+            return False  # Exit/Return
         else:
             return True  # Continue

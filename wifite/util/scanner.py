@@ -5,10 +5,11 @@ from ..util.color import Color
 from ..tools.airodump import Airodump
 from ..tools.airmon import Airmon
 from ..util.input import raw_input, xrange
-from ..model.target import Target, WPSState
+from ..model.target import Target, WPSState, ArchivedTarget
 from ..config import Configuration
 
 from time import sleep, time
+
 
 class Scanner(object):
     ''' Scans wifi networks & provides menu for selecting targets '''
@@ -17,17 +18,18 @@ class Scanner(object):
     UP_CHAR = '\x1B[1F'
 
     def __init__(self):
+        self.previous_target_count = 0
+        self.target_archives = {}
+        self.targets = []
+        self.target = None  # Target specified by user (based on ESSID/BSSID)
+        self.err_msg = None
+    def find_targets(self):
         '''
         Scans for targets via Airodump.
         Loops until scan is interrupted via user or config.
         Note: Sets this object's `targets` attrbute (list[Target]) upon interruption.
         '''
-        self.previous_target_count = 0
-        self.targets = []
-        self.target = None # Target specified by user (based on ESSID/BSSID)
-
         max_scan_time = Configuration.scan_time
-        self.err_msg = None
         self.airodump_iface = None
 
     def check_running(self, airodump):
@@ -47,19 +49,17 @@ class Scanner(object):
 
                 while True:
                     if not self.check_running(airodump):
-                        return  # Airodump process died
+                        return True # Airodump process died
 
-                    self.targets = airodump.get_targets(old_targets=self.targets)
+                    self.targets = airodump.get_targets(old_targets=self.targets,
+                                                        target_archives=self.target_archives)
+
 
                     if self.found_target():
-                        return  # We found the target we want
+                        return True # We found the target we want
 
                     if not self.check_running(airodump):
-                        return  # Airodump process died
-
-                    for target in self.targets:
-                        if target.bssid in airodump.decloaked_bssids:
-                            target.decloaked = True
+                        return True  # Airodump process died
 
                     self.print_targets()
 
@@ -77,12 +77,52 @@ class Scanner(object):
                     Color.p(outline)
 
                     if max_scan_time > 0 and time() > scan_start_time + max_scan_time:
-                        return
+                        return True
 
                     sleep(1)
 
         except KeyboardInterrupt:
-            pass
+            if not Configuration.infinite_mode:
+                return True
+
+            from ..util.input import raw_input
+
+            options = '({G}s{W}{D}, {W}{R}e{W})'
+            prompt = '{+} Do you want to {G}start attacking{W} or {R}exit{W}%s?' % options
+
+            self.print_targets()
+            Color.clear_entire_line()
+            Color.p(prompt)
+            answer = raw_input().lower()
+
+            if answer.startswith('e'):
+                return False
+
+            return True
+
+    def update_targets(self):
+        '''
+        Archive all the old targets
+        Returns: True if user wants to stop attack, False otherwise
+        '''
+        self.previous_target_count = 0
+        for target in self.targets:
+            self.target_archives[target.bssid] = ArchivedTarget(target)
+
+        self.targets = []
+        do_continue = self.find_targets()
+        return do_continue
+
+    def get_num_attacked(self):
+        '''
+        Returns: number of attacked targets by this scanner
+        '''
+        attacked_targets = 0
+        for target in self.target_archives.values():
+            if target.attacked:
+                attacked_targets += 1
+
+        return attacked_targets
 
 
     def found_target(self):
@@ -192,6 +232,7 @@ class Scanner(object):
         '''
         Returns list(target)
         Either a specific target if user specified -bssid or --essid.
+	If the user used pillage or infinite attack mode retuns all the targets
         Otherwise, prompts user to select targets and returns the selection.
         '''
 
@@ -218,6 +259,7 @@ class Scanner(object):
             return []
 
         # Return all targets if user specified a wait time ('pillage').
+        # A scan time is always set if run in infinite mode
         if Configuration.scan_time > 0:
             return self.targets
 
@@ -257,8 +299,10 @@ class Scanner(object):
 if __name__ == '__main__':
     # 'Test' script will display targets and selects the appropriate one
     Configuration.initialize()
+    targets = []
     try:
         s = Scanner()
+        s.find_targets()
         targets = s.select_targets()
     except Exception as e:
         Color.pl('\r {!} {R}Error{W}: %s' % str(e))
