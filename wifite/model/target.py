@@ -2,12 +2,50 @@
 # -*- coding: utf-8 -*-
 
 from ..util.color import Color
+from ..config import Configuration
 
 import re
 
 
 class WPSState:
     NONE, UNLOCKED, LOCKED, UNKNOWN = range(0, 4)
+
+
+class ArchivedTarget(object):
+    '''
+        Holds information between scans from a previously found target
+    '''
+    def __init__(self, target):
+        self.bssid = target.bssid
+        self.channel = target.channel
+        self.decloaked = target.decloaked
+        self.attacked = target.attacked
+        self.essid = target.essid
+        self.essid_known = target.essid_known
+        self.essid_len = target.essid_len
+
+    def transfer_info(self, other):
+        '''
+            Helper function to transfer relevant fields into another Target or ArchivedTarget
+        '''
+        other.attacked = self.attacked
+
+        # If both targets know the essid, keep decloacked value
+        if self.essid_known and other.essid_known:
+            other.decloaked = self.decloaked
+
+        # The destination target does not know the essid but the source
+        # does, copy that information
+        if self.essid_known and not other.essid_known:
+            other.decloaked = self.decloaked
+            other.essid = self.essid
+            other.essid_known = self.essid_known
+            other.essid_len = self.essid_len
+
+    def __eq__(self, other):
+        # Check if the other class type is either ArchivedTarget or Target
+        return (isinstance(other, self.__class__) or isinstance(other, Target)) \
+               and self.bssid == other.bssid
 
 
 class Target(object):
@@ -37,10 +75,10 @@ class Target(object):
                     13 ESSID          (HOME-ABCD)
                     14 Key            ()
         '''
-        self.bssid      =     fields[0].strip()
-        self.channel    =     fields[3].strip()
-
-        self.encryption =     fields[5].strip()
+        self.bssid          =     fields[0].strip()
+        self.channel        =     fields[3].strip()
+        self.encryption     =     fields[5].strip()
+        self.authentication =     fields[7].strip()
         if 'WPA' in self.encryption:
             self.encryption = 'WPA'
         elif 'WEP' in self.encryption:
@@ -51,6 +89,7 @@ class Target(object):
         self.power      = int(fields[8].strip())
         if self.power < 0:
             self.power += 100
+        self.max_power = self.power
 
         self.beacons    = int(fields[9].strip())
         self.ivs        = int(fields[10].strip())
@@ -69,9 +108,41 @@ class Target(object):
 
         self.decloaked = False # If ESSID was hidden but we decloaked it.
 
+        # Will be set to true once this target will be attacked
+        # Needed to count targets in infinite attack mode
+        self.attacked = False
+
         self.clients = []
 
         self.validate()
+
+    def __eq__(self, other):
+        # Check if the other class type is either ArchivedTarget or Target
+        return (isinstance(other, self.__class__) or isinstance(other, ArchivedTarget)) \
+               and self.bssid == other.bssid
+
+    def transfer_info(self, other):
+        '''
+            Helper function to transfer relevant fields into another Target or ArchivedTarget
+        '''
+        other.wps = self.wps
+        other.attacked = self.attacked
+
+        if other.max_power < self.max_power:
+            other.max_power = self.max_power
+
+        # If both targets know the essid, keep decloacked value
+        if self.essid_known and other.essid_known:
+            other.decloaked = self.decloaked
+
+        # The destination target does not know the essid but the source
+        # does, copy that information
+        if self.essid_known and not other.essid_known:
+            other.decloaked = self.decloaked
+            other.essid = self.essid
+            other.essid_known = self.essid_known
+            other.essid_len = self.essid_len
+
 
     def validate(self):
         ''' Checks that the target is valid. '''
@@ -122,11 +193,16 @@ class Target(object):
             channel_color = '{C}'
         channel = Color.s('%s%s' % (channel_color, str(self.channel).rjust(3)))
 
-        encryption = self.encryption.rjust(4)
+        encryption = self.encryption.rjust(3)
         if 'WEP' in encryption:
             encryption = Color.s('{G}%s' % encryption)
         elif 'WPA' in encryption:
-            encryption = Color.s('{O}%s' % encryption)
+            if 'PSK' in self.authentication:
+                encryption = Color.s('{O}%s-P' % encryption)
+            elif 'MGT' in self.authentication:
+                encryption = Color.s('{R}%s-E' % encryption)
+            else:
+                encryption = Color.s('{O}%s  ' % encryption)
 
         power = '%sdb' % str(self.power).rjust(3)
         if self.power > 50:
@@ -145,6 +221,8 @@ class Target(object):
             wps = Color.s('{R}lock')
         elif self.wps == WPSState.UNKNOWN:
             wps = Color.s('{O} n/a')
+        else:
+            wps = ' ERR'
 
         clients = '       '
         if len(self.clients) > 0:

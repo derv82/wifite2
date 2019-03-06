@@ -59,10 +59,10 @@ class Arguments(object):
             action='store',
             dest='channel',
             metavar='[channel]',
-            type=int,
-            help=Color.s('Wireless channel to scan (default: {G}all 2Ghz channels{W})'))
+            help=Color.s('Wireless channel to scan e.g. {C}1,3-6{W} ' +
+                '(default: {G}all 2Ghz channels{W})'))
         glob.add_argument('--channel', help=argparse.SUPPRESS, action='store',
-                dest='channel', type=int)
+            dest='channel')
 
         glob.add_argument('-5',
             '--5ghz',
@@ -70,6 +70,12 @@ class Arguments(object):
             dest='five_ghz',
             help=self._verbose('Include 5Ghz channels (default: {G}off{W})'))
 
+        glob.add_argument('-inf',
+            '--infinite',
+            action='store_true',
+            dest='infinite_mode',
+            help=Color.s('Enable infinite attack mode. Modify scanning time with '
+                         '{C}-p{W} (default: {G}off{W})'))
 
         glob.add_argument('-mac',
             '--random-mac',
@@ -95,6 +101,14 @@ class Arguments(object):
             help=Color.s('Kill processes that conflict with Airmon/Airodump ' +
                 '(default: {G}off{W})'))
 
+        glob.add_argument('-pow',
+            '--power',
+            action='store',
+            dest='min_power',
+            metavar='[min_power]',
+            type=int,
+            help=Color.s('Attacks any targets with at least {C}min_power{W} signal strength'))
+
         glob.add_argument('-b',
             action='store',
             dest='target_bssid',
@@ -115,14 +129,15 @@ class Arguments(object):
                 dest='target_essid', type=str)
 
         glob.add_argument('-E',
-            action='store',
-            dest='ignore_essid',
+            action='append',
+            dest='ignore_essids',
             metavar='[text]',
             type=str,
             default=None,
-            help=self._verbose('Hides targets with ESSIDs that match the given text'))
-        glob.add_argument('--ignore-essid', help=argparse.SUPPRESS, action='store',
-                dest='ignore_essid', type=str)
+            help=self._verbose('Hides targets with ESSIDs that match the given text. '
+                               'Can be used more than once.'))
+        glob.add_argument('--ignore-essid', help=argparse.SUPPRESS, action='append',
+                dest='ignore_essids', type=str)
 
         glob.add_argument('--clients-only',
             action='store_true',
@@ -433,6 +448,11 @@ class Arguments(object):
                          dest='use_pmkid_only',
                          help=Color.s('{O}Only{W} use {C}PMKID capture{W}, avoids other WPS & ' +
                                       'WPA attacks (default: {G}off{W})'))
+        pmkid.add_argument('--no-pmkid',
+                         action='store_true',
+                         dest='dont_use_pmkid',
+                         help=Color.s('{O}Don\'t{W} use {C}PMKID capture{W} ' +
+                                      '(default: {G}off{W})'))
         # Alias
         pmkid.add_argument('-pmkid', help=argparse.SUPPRESS, action='store_true', dest='use_pmkid_only')
 

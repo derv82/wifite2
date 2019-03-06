@@ -55,6 +55,8 @@ class Airmon(Dependency):
     dependency_name = 'airmon-ng'
     dependency_url = 'https://www.aircrack-ng.org/install.html'
 
+    chipset_table = 'https://wikidevi.com/wiki/Wireless_adapters/Chipset_table'
+
     base_interface = None
     killed_network_manager = False
 
@@ -106,6 +108,19 @@ class Airmon(Dependency):
             interfaces.append(AirmonIface(phy, interface, driver, chipset))
 
         return interfaces
+
+    @staticmethod
+    def get_iface_info(interface_name):
+        '''
+        Get interface info (driver, chipset), based on interface name.
+        Returns an AirmonIface if interface name is found by airmon-ng or None
+        '''
+        for iface in Airmon.get_interfaces():
+            if iface.interface == interface_name:
+                return iface
+
+        return None
+
 
     @staticmethod
     def start_bad_driver(iface):
@@ -308,8 +323,8 @@ class Airmon(Dependency):
             choice = 1
         else:
             # Multiple interfaces found
-            question = Color.s('{+} Select wireless interface ({G}1-%d{W}): ' % (count))
-            choice = raw_input(question)
+            Color.p('{+} Select wireless interface ({G}1-%d{W}): ' % (count))
+            choice = raw_input()
 
         iface = a.get(choice)
 
@@ -349,7 +364,7 @@ class Airmon(Dependency):
                 for pid, pname in pid_pnames
             ])
             Color.pl('{!} {O}Conflicting processes: %s' % names_and_pids)
-            Color.pl('{!} {O}If you have problems: {R}kill -9 PID{O} or re-run wifite with {R}--kill{O}){W}')
+            Color.pl('{!} {O}If you have problems: {R}kill -9 PID{O} or re-run wifite with {R}--kill{O}{W}')
             return
 
         Color.pl('{!} {O}Killing {R}%d {O}conflicting processes' % len(pid_pnames))
