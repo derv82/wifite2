@@ -62,7 +62,7 @@ This will install `wifite` to `/usr/sbin/wifite`
 ```
 ----------
 
-Run Wifite from any terminal), execute:
+Run Wifite from your terminal, execute:
 ----------
 ```
 wifite
