@@ -16,7 +16,7 @@ Run wifite, select your targets, and Wifite will automatically start trying to c
 
 Supported Operating Systems
 ---------------------------
-Wifite is designed specifically for the latest version of [**Kali** Linux](https://www.kali.org/). [ParrotSec](https://www.parrotsec.org/) is also supported.
+Wifite is designed specifically for the latest version of [**Kali** Linux](https://www.kali.org/). [ParrotSec](https://www.parrotsec.org/). [Ubuntu](http://releases.ubuntu.com/disco/) is also supported.
 
 Other pen-testing distributions (such as BackBox or Ubuntu) have outdated versions of the tools used by Wifite. Do not expect support unless you are using the latest versions of the *Required Tools*, and also [patched wireless drivers that support injection]().
 
@@ -52,11 +52,12 @@ Second, only the latest versions of these programs are supported and must be ins
    * [`hcxdumptool`](https://github.com/ZerBea/hcxdumptool): For capturing PMKID hashes.
    * [`hcxpcaptool`](https://github.com/ZerBea/hcxtools): For converting PMKID packet captures into `hashcat`'s format.
 
+     cd /usr/share && git clone https://github.com/ZerBea/hcxtools.git && cd hcxtools && make && make install && cd /usr/share && git clone https://github.com/ZerBea/hcxdumptool.git  && cd hcxdumptool && make && make install && cd /usr/share && git clone https://github.com/joswr1ght/cowpatty.git && cd cowpatty && make && make install && cd /usr/share && git clone https://github.com/aanarchyy/bully.git && cd bully && make && make install && cd /root && neofetch
 
 Run Wifite
 ----------
 ```
-git clone https://github.com/derv82/wifite2.git
+git clone https://github.com/4k4xs4pH1r3/wifite2.git
 cd wifite2
 sudo ./Wifite.py
 ```
