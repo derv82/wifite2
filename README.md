@@ -51,9 +51,10 @@ Second, only the latest versions of these programs are supported and must be ins
 * [`hashcat`](https://hashcat.net/): For cracking PMKID hashes.
    * [`hcxdumptool`](https://github.com/ZerBea/hcxdumptool): For capturing PMKID hashes.
    * [`hcxpcaptool`](https://github.com/ZerBea/hcxtools): For converting PMKID packet captures into `hashcat`'s format.
-
+----------
+```
      cd /usr/share && git clone https://github.com/ZerBea/hcxtools.git && cd hcxtools && make && make install && cd /usr/share && git clone https://github.com/ZerBea/hcxdumptool.git  && cd hcxdumptool && make && make install && cd /usr/share && git clone https://github.com/joswr1ght/cowpatty.git && cd cowpatty && make && make install && cd /usr/share && git clone https://github.com/aanarchyy/bully.git && cd bully && make && make install && cd /root && neofetch
-
+```
 Run Wifite
 ----------
 ```
