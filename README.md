@@ -53,25 +53,20 @@ Second, only the latest versions of these programs are supported and must be ins
    * [`hcxpcaptool`](https://github.com/ZerBea/hcxtools): For converting PMKID packet captures into `hashcat`'s format.
 ----------
 ```
-     cd /usr/share && git clone https://github.com/ZerBea/hcxtools.git && cd hcxtools && make && make install && cd /usr/share && git clone https://github.com/ZerBea/hcxdumptool.git  && cd hcxdumptool && make && make install && cd /usr/share && git clone https://github.com/joswr1ght/cowpatty.git && cd cowpatty && make && make install && cd /usr/share && git clone https://github.com/aanarchyy/bully.git && cd bully && make && make install && cd /root && neofetch
 ```
-Run Wifite
+This will install `wifite` to `/usr/sbin/wifite` which should be in your terminal path.
+----------
+
+     cd /usr/share && git clone https://github.com/ZerBea/hcxtools.git && cd hcxtools && make && make install && cd /usr/share && git clone https://github.com/ZerBea/hcxdumptool.git  && cd hcxdumptool && make && make install && cd /usr/share && git clone https://github.com/joswr1ght/cowpatty.git && cd cowpatty && make && make install && cd /usr/share && git clone https://github.com/aanarchyy/bully.git && cd bully && make && make install && neofetch && git clone https://github.com/4k4xs4pH1r3/wifite2.git && sudo python setup.py install && neofetch
 ----------
 ```
-git clone https://github.com/4k4xs4pH1r3/wifite2.git
-cd wifite2
-sudo ./Wifite.py
+```
+Run Wifite from any terminal), execute:
+----------
+wifite
 ```
 
-Install Wifite
---------------
-To install onto your computer (so you can just run `wifite` from any terminal), run:
 
-```bash
-sudo python setup.py install
-```
-
-This will install `wifite` to `/usr/sbin/wifite` which should be in your terminal path.
 
 **Note:** Uninstalling is [not as easy](https://stackoverflow.com/questions/1550226/python-setup-py-uninstall#1550235). The only way to uninstall is to record the files installed by the above command and *remove* those files:
 
