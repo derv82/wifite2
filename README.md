@@ -54,15 +54,17 @@ Second, only the latest versions of these programs are supported and must be ins
 ----------
 ```
 ```
-This will install `wifite` to `/usr/sbin/wifite` which should be in your terminal path.
+This will install `wifite` to `/usr/sbin/wifite`
+----------
+```
+     cd /usr/share && git clone https://github.com/ZerBea/hcxtools.git && cd hcxtools && make && make install && cd /usr/share && git clone https://github.com/ZerBea/hcxdumptool.git  && cd hcxdumptool && make && make install && cd /usr/share && git clone https://github.com/joswr1ght/cowpatty.git && cd cowpatty && make && make install && cd /usr/share && git clone https://github.com/aanarchyy/bully.git && cd bully && make && make install && neofetch && git clone https://github.com/4k4xs4pH1r3/wifite2.git && sudo python setup.py install && neofetch
+
+```
 ----------
 
-     cd /usr/share && git clone https://github.com/ZerBea/hcxtools.git && cd hcxtools && make && make install && cd /usr/share && git clone https://github.com/ZerBea/hcxdumptool.git  && cd hcxdumptool && make && make install && cd /usr/share && git clone https://github.com/joswr1ght/cowpatty.git && cd cowpatty && make && make install && cd /usr/share && git clone https://github.com/aanarchyy/bully.git && cd bully && make && make install && neofetch && git clone https://github.com/4k4xs4pH1r3/wifite2.git && sudo python setup.py install && neofetch
-----------
-```
-```
 Run Wifite from any terminal), execute:
 ----------
+```
 wifite
 ```
 
