@@ -57,7 +57,7 @@ Second, only the latest versions of these programs are supported and must be ins
 This will install `wifite` to `/usr/sbin/wifite`
 ----------
 ```
-     cd /usr/share && git clone https://github.com/ZerBea/hcxtools.git && cd hcxtools && make && make install && cd /usr/share && git clone https://github.com/ZerBea/hcxdumptool.git  && cd hcxdumptool && make && make install && cd /usr/share && git clone https://github.com/joswr1ght/cowpatty.git && cd cowpatty && make && make install && cd /usr/share && git clone https://github.com/aanarchyy/bully.git && cd bully && make && make install && neofetch && git clone https://github.com/4k4xs4pH1r3/wifite2.git && sudo python setup.py install && neofetch
+     apt install libssl-dev libcurl4-openssl-dev libpcap0.8-dev -y && rm -r /usr/share cd /usr/share/hcxdumptool && git clone https://github.com/ZerBea/hcxtools.git && cd hcxtools && make && make install && cd /usr/share && git clone https://github.com/ZerBea/hcxdumptool.git  && cd hcxdumptool && make && make install && cd /usr/share && git clone https://github.com/joswr1ght/cowpatty.git && cd cowpatty && make && make install && cd /usr/share && git clone https://github.com/aanarchyy/bully.git && cd bully && make && make install && neofetch && git clone https://github.com/4k4xs4pH1r3/wifite2.git && sudo python setup.py install && neofetch
 
 ```
 ----------
