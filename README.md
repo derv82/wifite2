@@ -54,6 +54,15 @@ Second, only the latest versions of these programs are supported and must be ins
 ----------
 ```
 ```
+
+----------
+
+Clean the Enviroment:
+----------
+```
+rm -r /usr/share/hcxtools/ /usr/share/hcxdumptool/ /usr/share/cowpatty/ /usr/share/bully/ /usr/share/wifite2/
+```
+
 This will install `wifite` to `/usr/sbin/wifite`
 ----------
 ```
