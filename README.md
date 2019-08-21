@@ -5,6 +5,37 @@ This repo is a complete re-write of [`wifite`](https://github.com/derv82/wifite)
 
 Wifite runs existing wireless-auditing tools for you. Stop memorizing command arguments & switches!
 
+
+----------
+
+Install Realtek / Alfa Drivers Cards:
+----------
+RTL8812AU/21AU and RTL8814AU driver with monitor mode and frame injection
+
+https://github.com/4k4xs4pH1r3/realtek
+----------
+
+Clean the Enviroment:
+----------
+```
+rm -r /usr/share/hcxtools/ /usr/share/hcxdumptool/ /usr/share/cowpatty/ /usr/share/bully/ /usr/share/wifite2/
+```
+
+This will install `wifite` to `/usr/sbin/wifite`
+----------
+```
+apt install neofetch git make clang libpcap-dev reaver pyrit tshark wireshark aircrack-ng pixiewps libssl-dev libcurl4-openssl-dev libpcap0.8-dev libcurl4-doc libidn11-dev libkrb5-dev libldap2-dev librtmp-dev libssh2-1-dev libssl-doc -y && cd /usr/share/ && git clone https://github.com/ZerBea/hcxtools.git && cd hcxtools && make && make install && cd /usr/share && git clone https://github.com/ZerBea/hcxdumptool.git  && cd hcxdumptool && make && make install && cd /usr/share && git clone https://github.com/joswr1ght/cowpatty.git && cd cowpatty && make && make install && cd /usr/share && git clone https://github.com/aanarchyy/bully.git && cd bully/src && make && make install && neofetch && cd /usr/share && git clone https://github.com/4k4xs4pH1r3/wifite2.git && cd wifite2 && sudo python setup.py install && neofetch
+
+```
+----------
+
+Run Wifite from your terminal, execute:
+----------
+```
+wifite
+```
+
+
 Wifite is designed to use all known methods for retrieving the password of a wireless access point (router).  These methods include:
 1. WPS: The [Offline Pixie-Dust attack](https://en.wikipedia.org/wiki/Wi-Fi_Protected_Setup#Offline_brute-force_attack)
 1. WPS: The [Online Brute-Force PIN attack](https://en.wikipedia.org/wiki/Wi-Fi_Protected_Setup#Online_brute-force_attack)
@@ -54,39 +85,6 @@ Second, only the latest versions of these programs are supported and must be ins
 ----------
 ```
 ```
-
-
-
-----------
-
-Install Realtek / Alfa Drivers Cards:
-----------
-RTL8812AU/21AU and RTL8814AU driver with monitor mode and frame injection
-
-https://github.com/4k4xs4pH1r3/realtek
-----------
-
-Clean the Enviroment:
-----------
-```
-rm -r /usr/share/hcxtools/ /usr/share/hcxdumptool/ /usr/share/cowpatty/ /usr/share/bully/ /usr/share/wifite2/
-```
-
-This will install `wifite` to `/usr/sbin/wifite`
-----------
-```
-apt install neofetch git make clang libpcap-dev reaver pyrit tshark wireshark aircrack-ng pixiewps libssl-dev libcurl4-openssl-dev libpcap0.8-dev libcurl4-doc libidn11-dev libkrb5-dev libldap2-dev librtmp-dev libssh2-1-dev libssl-doc -y && cd /usr/share/ && git clone https://github.com/ZerBea/hcxtools.git && cd hcxtools && make && make install && cd /usr/share && git clone https://github.com/ZerBea/hcxdumptool.git  && cd hcxdumptool && make && make install && cd /usr/share && git clone https://github.com/joswr1ght/cowpatty.git && cd cowpatty && make && make install && cd /usr/share && git clone https://github.com/aanarchyy/bully.git && cd bully/src && make && make install && neofetch && cd /usr/share && git clone https://github.com/4k4xs4pH1r3/wifite2.git && cd wifite2 && sudo python setup.py install && neofetch
-
-```
-----------
-
-Run Wifite from your terminal, execute:
-----------
-```
-wifite
-```
-
-
 
 **Note:** Uninstalling is [not as easy](https://stackoverflow.com/questions/1550226/python-setup-py-uninstall#1550235). The only way to uninstall is to record the files installed by the above command and *remove* those files:
 
