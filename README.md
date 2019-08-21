@@ -31,10 +31,10 @@ apt install neofetch git make clang libpcap-dev reaver pyrit tshark wireshark ai
 ```
 ----------
 
-Run Wifite from your terminal, execute:
+To start Wifite in Ninja Mode
 ----------
 ```
-wifite
+wifite -v -mac -nodeauths
 ```
 
 
@@ -46,6 +46,39 @@ Wifite is designed to use all known methods for retrieving the password of a wir
 4. WEP: Various known attacks against WEP, including *fragmentation*, *chop-chop*, *aireplay*, etc.
 
 Run wifite, select your targets, and Wifite will automatically start trying to capture or crack the password.
+#
+#
+#
+
+
+Screenshots
+-----------
+Cracking WPS PIN using `reaver`'s Pixie-Dust attack, then fetching WPA key using `bully`:
+![Pixie-Dust with Reaver to get PIN and Bully to get PSK](https://i.imgur.com/Q5KSDbg.gif)
+
+-------------
+
+Cracking WPA key using PMKID attack:
+![PMKID attack](https://i.imgur.com/CR8oOp0.gif)
+
+-------------
+
+Decloaking & cracking a hidden access point (via the WPA Handshake attack):
+![Decloaking and Cracking a hidden access point](https://i.imgur.com/F6VPhbm.gif)
+
+-------------
+
+Cracking a weak WEP password (using the WEP Replay attack):
+![Cracking a weak WEP password](https://i.imgur.com/jP72rVo.gif)
+
+-------------
+
+Cracking a pre-captured handshake using John The Ripper (via the `--crack` option):
+![--crack option](https://i.imgur.com/iHcfCjp.gif)
+
+#
+#
+#
 
 Supported Operating Systems
 ---------------------------
@@ -133,33 +166,9 @@ What's not new?
 * (Mostly) Backwards compatible with the original `wifite`'s arguments.
 * Same text-based interface everyone knows and loves.
 
-Screenshots
------------
-Cracking WPS PIN using `reaver`'s Pixie-Dust attack, then fetching WPA key using `bully`:
-![Pixie-Dust with Reaver to get PIN and Bully to get PSK](https://i.imgur.com/Q5KSDbg.gif)
-
--------------
-
-Cracking WPA key using PMKID attack:
-![PMKID attack](https://i.imgur.com/CR8oOp0.gif)
-
--------------
-
-Decloaking & cracking a hidden access point (via the WPA Handshake attack):
-![Decloaking and Cracking a hidden access point](https://i.imgur.com/F6VPhbm.gif)
-
--------------
-
-Cracking a weak WEP password (using the WEP Replay attack):
-![Cracking a weak WEP password](https://i.imgur.com/jP72rVo.gif)
-
--------------
-
-Cracking a pre-captured handshake using John The Ripper (via the `--crack` option):
-![--crack option](https://i.imgur.com/iHcfCjp.gif)
-
-
-
+#
+#
+#
 **Note:** Uninstalling is [not as easy](https://stackoverflow.com/questions/1550226/python-setup-py-uninstall#1550235). The only way to uninstall is to record the files installed by the above command and *remove* those files:
 
 ```bash
