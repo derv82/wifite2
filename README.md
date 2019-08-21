@@ -53,13 +53,12 @@ Wifite is designed specifically for the latest version of [**Kali** Linux](https
 
 Other pen-testing distributions (such as BackBox or Ubuntu) have outdated versions of the tools used by Wifite. Do not expect support unless you are using the latest versions of the *Required Tools*, and also [patched wireless drivers that support injection]().
 
-Required Tools
+Components that use Wifite
 --------------
 First and foremost, you will need a wireless card capable of "Monitor Mode" and packet injection (see [this tutorial for checking if your wireless card is compatible](http://www.aircrack-ng.org/doku.php?id=compatible_cards) and also [this guide](https://en.wikipedia.org/wiki/Wi-Fi_Protected_Setup#Offline_brute-force_attack)). There are many cheap wireless cards that plug into USB available from online stores.
 
-Second, only the latest versions of these programs are supported and must be installed for Wifite to work properly:
+Second, only the latest versions of these programs are supported and Wifite needs to work properly:
 
-**Required:**
 
 * `python`: Wifite is compatible with both `python2` and `python3`.
 * [`iwconfig`](https://wiki.debian.org/iwconfig): For identifying wireless devices already in Monitor Mode.
@@ -70,8 +69,6 @@ Second, only the latest versions of these programs are supported and must be ins
    * [`aireplay-ng`](https://tools.kali.org/wireless-attacks/aireplay-ng): For deauthing access points, replaying capture files, various WEP attacks.
    * [`airodump-ng`](https://tools.kali.org/wireless-attacks/airodump-ng): For target scanning & capture file generation.
    * [`packetforge-ng`](https://tools.kali.org/wireless-attacks/packetforge-ng): For forging capture files.
-
-**Optional, but Recommended:**
 
 * [`tshark`](https://www.wireshark.org/docs/man-pages/tshark.html): For detecting WPS networks and inspecting handshake capture files.
 * [`reaver`](https://github.com/t6x/reaver-wps-fork-t6x): For WPS Pixie-Dust & brute-force attacks.
@@ -88,13 +85,7 @@ Second, only the latest versions of these programs are supported and must be ins
 ```
 ```
 
-**Note:** Uninstalling is [not as easy](https://stackoverflow.com/questions/1550226/python-setup-py-uninstall#1550235). The only way to uninstall is to record the files installed by the above command and *remove* those files:
 
-```bash
-sudo python setup.py install --record files.txt \
-  && cat files.txt | xargs sudo rm \
-  && rm -f files.txt
-```
 
 Brief Feature List
 ------------------
@@ -166,3 +157,13 @@ Cracking a weak WEP password (using the WEP Replay attack):
 
 Cracking a pre-captured handshake using John The Ripper (via the `--crack` option):
 ![--crack option](https://i.imgur.com/iHcfCjp.gif)
+
+
+
+**Note:** Uninstalling is [not as easy](https://stackoverflow.com/questions/1550226/python-setup-py-uninstall#1550235). The only way to uninstall is to record the files installed by the above command and *remove* those files:
+
+```bash
+sudo python setup.py install --record files.txt \
+  && cat files.txt | xargs sudo rm \
+  && rm -f files.txt
+```
