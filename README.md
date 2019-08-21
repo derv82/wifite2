@@ -36,17 +36,25 @@ Set interface down + monitor mode + activate interface + TX power
   ```
   airmon-ng check kill && sudo service NetworkManager restart && sudo ip link set wlan0 down && sudo iw dev wlan0 set type monitor && sudo ip link set wlan0 up && sudo iw wlan0 set txpower fixed 3737373737373
   ```
+  
   You may also uncheck the box "Automatically connect to this network when it is avaiable" in nm-connection-editor. This only works if you have a saved wifi connection.
+
 
 ----------
 
 To start Wifite in Ninja Mode
 ----------
+
+Run wifite, select your targets, and Wifite will automatically start trying to capture or crack the password.
+
+
 ```
 wifite -v -mac -nodeauths
 ```
 
-
+#
+#
+#
 Wifite is designed to use all known methods for retrieving the password of a wireless access point (router).  These methods include:
 1. WPS: The [Offline Pixie-Dust attack](https://en.wikipedia.org/wiki/Wi-Fi_Protected_Setup#Offline_brute-force_attack)
 1. WPS: The [Online Brute-Force PIN attack](https://en.wikipedia.org/wiki/Wi-Fi_Protected_Setup#Online_brute-force_attack)
@@ -54,7 +62,6 @@ Wifite is designed to use all known methods for retrieving the password of a wir
 3. WPA: The [PMKID Hash Capture](https://hashcat.net/forum/thread-7717.html) + offline crack.
 4. WEP: Various known attacks against WEP, including *fragmentation*, *chop-chop*, *aireplay*, etc.
 
-Run wifite, select your targets, and Wifite will automatically start trying to capture or crack the password.
 #
 #
 #
