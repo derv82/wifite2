@@ -1,8 +1,18 @@
 
 
   -----------------[ experimental ] -----------------
+  * util/crack: Fix python3 --crack crash
+
+     "Wifite would crash if run with python3 and the parameter --crack
+      if a dependency was missing, just after selecting a target.
+      This was caused by popping from a dictionary while iterating on
+      it, an operation forbidden in python3."
+
+  * model/handshake: Handshake detection for aircrack-ng 1.5.x
+
   * Fix python3 crash in "cracking" session
   * Updated Dockerfile
+
 
 
 
