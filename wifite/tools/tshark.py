@@ -179,7 +179,12 @@ class Tshark(Dependency):
         try:
             p.wait()
             lines = p.stdout()
-        except:
+        except Exception as e:
+            # Manually check for keyboard interrupt as only python 3.x throws
+            # exceptions for subprocess.wait()
+            if isinstance(e, KeyboardInterrupt):
+                raise KeyboardInterrupt
+
             # Failure is acceptable
             return
 
