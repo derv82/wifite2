@@ -28,7 +28,7 @@ Second, only the latest versions of these programs are supported and must be ins
 
 **Required:**
 
-* `python`: Wifite is compatible with both `python2` and `python3`.
+* `python`: It's recommended to use `python3`.
 * [`iwconfig`](https://wiki.debian.org/iwconfig): For identifying wireless devices already in Monitor Mode.
 * [`ifconfig`](https://en.wikipedia.org/wiki/Ifconfig): For starting/stopping wireless devices.
 * [`Aircrack-ng`](http://aircrack-ng.org/) suite, includes:
