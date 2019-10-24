@@ -391,6 +391,15 @@ class Arguments(object):
         wps.add_argument('-bully', help=argparse.SUPPRESS, action='store_true',
                 dest='use_bully')
 
+        wps.add_argument('--reaver',
+            action='store_true',
+            dest='use_reaver',
+            help=Color.s('Use {G}reaver{W} program for WPS PIN & Pixie-Dust attacks ' +
+                '(default: {G}reaver{W})'))
+        # Alias
+        wps.add_argument('-reaver', help=argparse.SUPPRESS, action='store_true',
+                dest='use_reaver')
+
         # Ignore lock-outs
         wps.add_argument('--ignore-locks', action='store_true', dest='wps_ignore_lock',
             help=Color.s('Do {O}not{W} stop WPS PIN attack if AP becomes {O}locked{W} ' +

@@ -117,9 +117,10 @@ class Configuration(object):
         cls.no_wps      = False  # Do not use WPS attacks (Pixie-Dust & PIN attacks)
         cls.wps_only    = False  # ONLY use WPS attacks on non-WEP networks
         cls.use_bully   = False  # Use bully instead of reaver
+	cls.use_reaver  = False  # Use reaver instead of bully
         cls.wps_pixie   = True
         cls.wps_pin     = True
-        cls.wps_ignore_lock = False  # Skip WPS PIN attack if AP is locked.
+        cls.wps_ignore_lock = False      # Skip WPS PIN attack if AP is locked.
         cls.wps_pixie_timeout = 300      # Seconds to wait for PIN before WPS Pixie attack fails
         cls.wps_fail_threshold = 100     # Max number of failures
         cls.wps_timeout_threshold = 100  # Max number of timeouts
@@ -382,6 +383,16 @@ class Configuration(object):
             else:
                 cls.use_bully = args.use_bully
                 Color.pl('{+} {C}option:{W} use {C}bully{W} instead of {C}reaver{W} ' +
+                        'for WPS Attacks')
+
+        if args.use_reaver:
+            from .tools.reaver import Reaver
+            if not Reaver.exists():
+                Color.pl('{!} {R}Reaver not found. Defaulting to {O}bully{W}')
+                cls.use_reaver = False
+            else:
+                cls.use_reaver = args.use_reaver
+                Color.pl('{+} {C}option:{W} use {C}reaver{W} instead of {C}bully{W} ' +
                         'for WPS Attacks')
 
         if args.wps_pixie_timeout:
