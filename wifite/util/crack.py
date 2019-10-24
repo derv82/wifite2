@@ -61,7 +61,7 @@ class CrackHelper:
         }
         # Identify missing tools
         missing_tools = []
-        for tool, dependencies in available_tools.items():
+        for tool, dependencies in list(available_tools.items()):
             missing = [
                 dep for dep in dependencies
                 if not Process.exists(dep.dependency_name)

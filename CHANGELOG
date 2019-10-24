@@ -1,6 +1,7 @@
 
 
   -----------------[ experimental ] -----------------
+  * Fix python3 crash in "cracking" session
   * Updated Dockerfile
 
 
