@@ -8,8 +8,14 @@
       This was caused by popping from a dictionary while iterating on
       it, an operation forbidden in python3."
 
-  * model/handshake: Handshake detection for aircrack-ng 1.5.x
+  * args.py: Select multiple scan channels
 
+     "Remove the integer restriction for selecting a channel.
+      Doing so we pass the argument from wifite directly to airodump which does support the format -c 1,3-7,11-13.
+
+      Added a regex check for validity because airodump would crash if an invalid channel argument would be sent."
+
+  * model/handshake: Handshake detection for aircrack-ng 1.5.x
   * Fix python3 crash in "cracking" session
   * Updated Dockerfile
 
