@@ -135,6 +135,11 @@ class Arguments(object):
             dest='show_bssids',
             help=self._verbose('Show BSSIDs of targets while scanning'))
 
+        glob.add_argument('--showm',
+            action='store_true',
+            dest='show_manufacturers',
+            help=self._verbose('Show manufacturers of targets while scanning'))
+
         glob.add_argument('--nodeauths',
             action='store_true',
             dest='no_deauth',

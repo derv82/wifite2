@@ -15,6 +15,7 @@
 
       Added a regex check for validity because airodump would crash if an invalid channel argument would be sent."
 
+  * Added show manufacturers/OUIs option "--showm"
   * model/handshake: Handshake detection for aircrack-ng 1.5.x
   * Fix python3 crash in "cracking" session
   * Updated Dockerfile
