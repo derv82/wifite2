@@ -118,7 +118,7 @@ class Configuration(object):
         cls.no_wps      = False  # Do not use WPS attacks (Pixie-Dust & PIN attacks)
         cls.wps_only    = False  # ONLY use WPS attacks on non-WEP networks
         cls.use_bully   = False  # Use bully instead of reaver
-	cls.use_reaver  = False  # Use reaver instead of bully
+        cls.use_reaver  = False  # Use reaver instead of bully
         cls.wps_pixie   = True
         cls.wps_pin     = True
         cls.wps_ignore_lock = False      # Skip WPS PIN attack if AP is locked.

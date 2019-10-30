@@ -3,7 +3,7 @@
 
 from .dependency import Dependency
 from .ifconfig import Ifconfig
-from .iwconfig import Iwconfig
+from .iw import Iw
 from ..util.process import Process
 from ..util.color import Color
 from ..util.input import raw_input
@@ -114,7 +114,7 @@ class Airmon(Dependency):
         Fix for bad drivers like the rtl8812AU.
         '''
         Ifconfig.down(iface)
-        Iwconfig.mode(iface, 'monitor')
+        Iw.mode(iface, 'monitor')
         Ifconfig.up(iface)
 
         # /sys/class/net/wlan0/type
@@ -133,7 +133,7 @@ class Airmon(Dependency):
         Fix for bad drivers like the rtl8812AU.
         '''
         Ifconfig.down(iface)
-        Iwconfig.mode(iface, 'managed')
+        Iw.mode(iface, 'managed')
         Ifconfig.up(iface)
 
         # /sys/class/net/wlan0/type
@@ -182,17 +182,17 @@ class Airmon(Dependency):
         if enabled_iface is None:
             Color.pl('{R}failed{W}')
 
-        monitor_interfaces = Iwconfig.get_interfaces(mode='Monitor')
+        monitor_interfaces = Iw.get_interfaces(mode='monitor')
 
         # Assert that there is an interface in monitor mode
         if len(monitor_interfaces) == 0:
             Color.pl('{R}failed{W}')
-            raise Exception('Cannot find any interfaces in Mode:Monitor')
+            raise Exception('Cannot find any interfaces in monitor mode')
 
         # Assert that the interface enabled by airmon-ng is in monitor mode
         if enabled_iface not in monitor_interfaces:
             Color.pl('{R}failed{W}')
-            raise Exception('Cannot find %s with Mode:Monitor' % enabled_iface)
+            raise Exception('Cannot find %s with type:monitor' % enabled_iface)
 
         # No errors found; the device 'enabled_iface' was put into Mode:Monitor.
         Color.pl('{G}enabled {C}%s{W}' % enabled_iface)
@@ -278,7 +278,7 @@ class Airmon(Dependency):
         Airmon.terminate_conflicting_processes()
 
         Color.p('\n{+} Looking for {C}wireless interfaces{W}...')
-        monitor_interfaces = Iwconfig.get_interfaces(mode='Monitor')
+        monitor_interfaces = Iw.get_interfaces(mode='monitor')
         if len(monitor_interfaces) == 1:
             # Assume we're using the device already in montior mode
             iface = monitor_interfaces[0]
