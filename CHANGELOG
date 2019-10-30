@@ -19,6 +19,7 @@
   * model/handshake: Handshake detection for aircrack-ng 1.5.x
   * Fix python3 crash in "cracking" session
   * Added option to select "--reaver" as default WPS tool. We've already got "--bully".
+  * Added "--deamon" mode
   * Print more helpful airodumo traceback/debug
   * Updated Dockerfile
 

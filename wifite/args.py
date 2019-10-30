@@ -160,6 +160,12 @@ class Arguments(object):
                 '{G}%d{W})' % self.config.num_deauths))
 
 
+        glob.add_argument('--demon',
+            action='store_true',
+            dest='demon',
+            help=Color.s('Puts device back in managed mode after quitting (default: '+
+                '{G}off{W})'))
+
     def _add_eviltwin_args(self, group):
         pass
         '''

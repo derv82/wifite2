@@ -50,6 +50,7 @@ class Configuration(object):
         cls.random_mac = False # Should generate a random Mac address at startup.
         cls.no_deauth = False # Deauth hidden networks & WPA handshake targets
         cls.num_deauths = 1 # Number of deauth packets to send to each target.
+        cls.demon = False # Don't put back interface back in managed mode
 
         cls.encryption_filter = ['WEP', 'WPA', 'WPS']
 
@@ -186,6 +187,7 @@ class Configuration(object):
     @classmethod
     def parse_settings_args(cls, args):
         '''Parses basic settings/configurations from arguments.'''
+
         if args.random_mac:
             cls.random_mac = True
             Color.pl('{+} {C}option:{W} using {G}random mac address{W} ' +
@@ -226,6 +228,10 @@ class Configuration(object):
             cls.no_deauth = True
             Color.pl('{+} {C}option:{W} will {R}not{W} {O}deauth{W} clients ' +
                     'during scans or captures')
+
+        if args.demon == True:
+            cls.demon = True
+            Color.pl('{+} {C}option:{W} will put interface back to managed mode')
 
         if args.num_deauths and args.num_deauths > 0:
             cls.num_deauths = args.num_deauths
@@ -505,14 +511,16 @@ class Configuration(object):
         Macchanger.reset_if_changed()
         from .tools.airmon import Airmon
         if cls.interface is not None and Airmon.base_interface is not None:
-            Color.pl('{!} {O}Note:{W} Leaving interface in Monitor Mode!')
-            Color.pl('{!} To disable Monitor Mode when finished: ' +
+            if not cls.demon:
+                Color.pl('{!} {O}Note:{W} Leaving interface in Monitor Mode!')
+                Color.pl('{!} To disable Monitor Mode when finished: ' +
                     '{C}airmon-ng stop %s{W}' % cls.interface)
 
-            # Stop monitor mode
-            #Airmon.stop(cls.interface)
-            # Bring original interface back up
-            #Airmon.put_interface_up(Airmon.base_interface)
+            else:
+                # Stop monitor mode
+                Airmon.stop(cls.interface)
+                # Bring original interface back up
+                Airmon.put_interface_up(Airmon.base_interface)
 
         if Airmon.killed_network_manager:
             Color.pl('{!} You can restart NetworkManager when finished ({C}service network-manager start{W})')

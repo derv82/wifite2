@@ -216,20 +216,20 @@ class Airmon(Dependency):
 
     @staticmethod
     def stop(iface):
-        Color.p('{!} {R}disabling {O}monitor mode{O} on {R}%s{O}... ' % iface)
+        Color.p('{!}{W} Disabling {O}monitor{W} mode on {R}%s{W}...\n' % iface)
 
         airmon_output = Process(['airmon-ng', 'stop', iface]).stdout()
 
         (disabled_iface, enabled_iface) = Airmon._parse_airmon_stop(airmon_output)
 
         if not disabled_iface and iface in Airmon.BAD_DRIVERS:
-            Color.p('{O}"bad driver" detected{W} ')
+            Color.p('{!} {O}"bad driver" detected{W} ')
             disabled_iface = Airmon.stop_bad_driver(iface)
 
         if disabled_iface:
-            Color.pl('{G}disabled %s{W}' % disabled_iface)
+            Color.pl('{+}{W} Disabled monitor mode on {G}%s{W}' % disabled_iface)
         else:
-            Color.pl('{O}could not disable on {R}%s{W}' % iface)
+            Color.pl('{!} {O}Could not disable {R}%s{W}' % iface)
 
         return (disabled_iface, enabled_iface)
 
@@ -373,9 +373,9 @@ class Airmon(Dependency):
 
     @staticmethod
     def put_interface_up(iface):
-        Color.p('{!} {O}putting interface {R}%s up{O}...' % (iface))
-        Ifconfig.up(iface)
-        Color.pl(' {G}done{W}')
+        Color.p('{!}{W} Putting interface {R}%s{W} {G}up{W}...\n' % (iface))
+        Ip.up(iface)
+        Color.pl('{+}{W} Done !')
 
     @staticmethod
     def start_network_manager():
