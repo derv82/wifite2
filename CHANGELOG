@@ -20,6 +20,7 @@
   * Fix python3 crash in "cracking" session
   * Added option to select "--reaver" as default WPS tool. We've already got "--bully".
   * Added "--deamon" mode
+  * Migrated from "iwconfig" to "iw" due to deprecation of iwconfig
   * Print more helpful airodumo traceback/debug
   * Updated Dockerfile
 
