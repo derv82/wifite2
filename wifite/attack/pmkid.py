@@ -19,7 +19,7 @@ class AttackPMKID(Attack):
 
     def __init__(self, target):
         super(AttackPMKID, self).__init__(target)
-        self.do_airCRACK = True
+        self.do_airCRACK = False
         self.crack_result = None
         self.success = False
         self.pcapng_file = Configuration.temp('pmkid.pcapng')
