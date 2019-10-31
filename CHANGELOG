@@ -22,6 +22,7 @@
   * Added "--deamon" mode
   * Migrated from "iwconfig" to "iw" due to deprecation of iwconfig
   * Standard wordlist contains more passwords then the previous wordlist
+  * Added a few more vendors to ieee-oui.txt
   * Print more helpful airodumo traceback/debug
   * Updated Dockerfile
 
