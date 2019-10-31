@@ -44,7 +44,7 @@ class Configuration(object):
         cls.target_bssid = None # User-defined AP BSSID
         cls.ignore_essid = None # ESSIDs to ignore
         cls.clients_only = False # Only show targets that have associated clients
-        cls.five_ghz = False # Scan 5Ghz channels
+        cls.five_ghz = True # Scan 5Ghz channels
         cls.show_bssids = False # Show BSSIDs in targets list
         cls.show_manufacturers = False # Show manufacturers in targets list
         cls.random_mac = False # Should generate a random Mac address at startup.
