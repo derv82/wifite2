@@ -21,6 +21,7 @@
   * Added option to select "--reaver" as default WPS tool. We've already got "--bully".
   * Added "--deamon" mode
   * Migrated from "iwconfig" to "iw" due to deprecation of iwconfig
+  * Standard wordlist contains more passwords then the previous wordlist
   * Print more helpful airodumo traceback/debug
   * Updated Dockerfile
 
