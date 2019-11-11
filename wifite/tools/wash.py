@@ -47,7 +47,7 @@ class Wash(Dependency):
                 obj = json.loads(line)
                 bssid = obj['bssid']
                 locked = obj['wps_locked']
-                if locked != True:
+                if not locked:
                     wps_bssids.add(bssid)
                 else:
                     locked_bssids.add(bssid)
