@@ -73,7 +73,6 @@ class AttackPMKID(Attack):
         from ..util.process import Process
         # Check that we have all hashcat programs
         dependencies = [
-            Hashcat.dependency_name,
             HcxDumpTool.dependency_name,
             HcxPcapTool.dependency_name
         ]
@@ -99,21 +98,25 @@ class AttackPMKID(Attack):
             return False  # No hash found.
 
         # Crack it.
-        try:
-            self.success = self.crack_pmkid_file(pmkid_file)
-        except KeyboardInterrupt:
-            Color.pl('\n{!} {R}Failed to crack PMKID: {O}Cracking interrupted by user{W}')
+        if Process.exists(Hashcat.dependency_name):
+            try:
+                self.success = self.crack_pmkid_file(pmkid_file)
+            except KeyboardInterrupt:
+                Color.pl('\n{!} {R}Failed to crack PMKID: {O}Cracking interrupted by user{W}')
+                self.success = False
+                return True
+        else:
             self.success = False
-            return False
+            Color.pl('\n {O}[{R}!{O}] Note: PMKID attacks are not possible because you do not have {C}%s{O}.{W}'
+                     % Hashcat.dependency_name)
 
         return True  # Even if we don't crack it, capturing a PMKID is 'successful'
 
     def run(self):
-        if self.do_airCRACK: 
+        if self.do_airCRACK:
             self.run_aircrack()
         else:
             self.run_hashcat()
-
 
     def run_aircrack(self):
         with Airodump(channel=self.target.channel,
@@ -161,7 +164,6 @@ class AttackPMKID(Attack):
                 bssid = airodump_target.bssid
                 essid = airodump_target.essid if airodump_target.essid_known else None
 
-
                 # AttackPMKID.check_pmkid(temp_file, self.target.bssid)
                 if self.check_pmkid(temp_file):
                     # We got a handshake
@@ -173,7 +175,6 @@ class AttackPMKID(Attack):
                     Color.pl('')
                     capture = temp_file
                     break
-
 
                 # There is no handshake
                 capture = None
@@ -212,7 +213,6 @@ class AttackPMKID(Attack):
             self.save_pmkid(capture)
 
         return self.success
-
 
     def check_pmkid(self, filename):
         '''Returns tuple (BSSID,None) if aircrack thinks self.capfile contains a handshake / can be cracked'''
@@ -266,7 +266,6 @@ class AttackPMKID(Attack):
         pmkid_file = self.save_pmkid(pmkid_hash)
         return pmkid_file
 
-
     def crack_pmkid_file(self, pmkid_file):
         '''
         Runs hashcat containing PMKID hash (*.16800).
@@ -306,7 +305,6 @@ class AttackPMKID(Attack):
             self.crack_result.dump()
             return True
 
-
     def dumptool_thread(self):
         '''Runs hashcat's hcxdumptool until it dies or `keep_capturing == False`'''
         dumptool = HcxDumpTool(self.target, self.pcapng_file)
@@ -316,7 +314,6 @@ class AttackPMKID(Attack):
             time.sleep(0.5)
 
         dumptool.interrupt()
-
 
     def save_pmkid(self, pmkid_hash):
         '''Saves a copy of the pmkid (handshake) to hs/ directory.'''
@@ -351,4 +348,3 @@ class AttackPMKID(Attack):
             pmkid_handle.write('\n')
 
         return pmkid_file
-

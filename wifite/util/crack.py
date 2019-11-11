@@ -17,7 +17,6 @@ from json import loads
 
 import os
 
-
 # TODO: Bring back the 'print' option, for easy copy/pasting. Just one-liners people can paste into terminal.
 
 # TODO: --no-crack option while attacking targets (implies user will run --crack later)
@@ -46,6 +45,8 @@ class CrackHelper:
         if not Configuration.wordlist:
             Color.p('\n{+} Enter wordlist file to use for cracking: {G}')
             Configuration.wordlist = raw_input()
+            Color.p('{W}')
+
             if not os.path.exists(Configuration.wordlist):
                 Color.pl('{!} {R}Wordlist {O}%s{R} not found. Exiting.' % Configuration.wordlist)
                 return
@@ -86,6 +87,8 @@ class CrackHelper:
             Color.p('\n{+} Enter the {C}cracking tool{W} to use ({C}%s{W}): {G}' % (
                 '{W}, {C}'.join(available_tools)))
             tool_name = raw_input()
+            Color.p('{W}')
+
             if tool_name not in available_tools:
                 Color.pl('{!} {R}"%s"{O} tool not found, defaulting to {C}aircrack{W}' % tool_name)
                 tool_name = 'aircrack'
@@ -95,6 +98,7 @@ class CrackHelper:
                 if tool_name != 'hashcat' and hs['type'] == 'PMKID':
                     if 'hashcat' in missing_tools:
                         Color.pl('{!} {O}Hashcat is missing, therefore we cannot crack PMKID hash{W}')
+                        continue
                 cls.crack(hs, tool_name)
         except KeyboardInterrupt:
             Color.pl('\n{!} {O}Interrupted{W}')
@@ -179,7 +183,6 @@ class CrackHelper:
         # Sort by Date (Descending)
         return sorted(handshakes, key=lambda x: x.get('date'), reverse=True)
 
-
     @classmethod
     def print_handshakes(cls, handshakes):
         # Header
@@ -202,13 +205,13 @@ class CrackHelper:
             Color.p('  {C}%s{W}' % handshake['type'].ljust(5))
             Color.p('  {W}%s{W}\n' % handshake['date'])
 
-
     @classmethod
     def get_user_selection(cls, handshakes):
         cls.print_handshakes(handshakes)
 
         Color.p('{+} Select handshake(s) to crack ({G}%d{W}-{G}%d{W}, select multiple with {C},{W} or {C}-{W} or {C}all{W}): {G}' % (1, len(handshakes)))
         choices = raw_input()
+        Color.p('{W}')
 
         selection = []
         for choice in choices.split(','):
@@ -224,7 +227,6 @@ class CrackHelper:
                 selection.append(handshakes[index-1])
 
         return selection
-
 
     @classmethod
     def crack(cls, hs, tool):
@@ -247,7 +249,6 @@ class CrackHelper:
             Color.pl('{+} {G}Cracked{W} {C}%s{W} ({C}%s{W}). Key: "{G}%s{W}"' % (
                 hs['essid'], hs['bssid'], crack_result.key))
             crack_result.save()
-
 
     @classmethod
     def crack_4way(cls, hs, tool):
@@ -275,7 +276,6 @@ class CrackHelper:
         else:
             return None
 
-
     @classmethod
     def crack_pmkid(cls, hs, tool):
         if tool != 'hashcat':
@@ -288,7 +288,5 @@ class CrackHelper:
         else:
             return None
 
-
 if __name__ == '__main__':
     CrackHelper.run()
-
