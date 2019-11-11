@@ -15,7 +15,6 @@ class Tshark(Dependency):
     def __init__(self):
         pass
 
-
     @staticmethod
     def _extract_src_dst_index_total(line):
         # Extract BSSIDs, handshake # (1-4) and handshake 'total' (4)
@@ -26,7 +25,6 @@ class Tshark(Dependency):
             return None, None, None, None
         (src, dst, index, total) = match.groups()
         return src, dst, index, total
-
 
     @staticmethod
     def _build_target_client_handshake_map(output, bssid=None):
@@ -78,7 +76,6 @@ class Tshark(Dependency):
 
         return target_client_msg_nums
 
-
     @staticmethod
     def bssids_with_handshakes(capfile, bssid=None):
         if not Tshark.exists():
@@ -104,7 +101,6 @@ class Tshark(Dependency):
                 bssids.add(this_bssid)
 
         return list(bssids)
-
 
     @staticmethod
     def bssid_essid_pairs(capfile, bssid):
@@ -145,7 +141,6 @@ class Tshark(Dependency):
                 ssid_pairs.add((src, essid)) # We do not know BSSID, add it.
 
         return list(ssid_pairs)
-
 
     @staticmethod
     def check_for_wps_and_update_targets(capfile, targets):
@@ -207,7 +202,6 @@ class Tshark(Dependency):
                 t.wps = WPSState.LOCKED
             else:
                 t.wps = WPSState.NONE
-
 
 if __name__ == '__main__':
     test_file = './tests/files/contains_wps_network.cap'

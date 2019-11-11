@@ -9,6 +9,42 @@ import re
 class WPSState:
     NONE, UNLOCKED, LOCKED, UNKNOWN = range(0, 4)
 
+class ArchivedTarget(object):
+    '''
+        Holds information between scans from a previously found target
+    '''
+    def __init__(self, target):
+        self.bssid = target.bssid
+        self.channel = target.channel
+        self.decloaked = target.decloaked
+        self.attacked = target.attacked
+        self.essid = target.essid
+        self.essid_known = target.essid_known
+        self.essid_len = target.essid_len
+
+    def transfer_info(self, other):
+        '''
+            Helper function to transfer relevant fields into another Target or ArchivedTarget
+        '''
+        other.attacked = self.attacked
+
+        # If both targets know the essid, keep decloacked value
+        if self.essid_known and other.essid_known:
+            other.decloaked = self.decloaked
+
+        # The destination target does not know the essid but the source
+        # does, copy that information
+        if self.essid_known and not other.essid_known:
+            other.decloaked = self.decloaked
+            other.essid = self.essid
+            other.essid_known = self.essid_known
+            other.essid_len = self.essid_len
+
+    def __eq__(self, other):
+        # Check if the other class type is either ArchivedTarget or Target
+        return (isinstance(other, self.__class__) or isinstance(other, Target)) \
+               and self.bssid == other.bssid
+
 class Target(object):
     '''
         Holds details for a 'Target' aka Access Point (e.g. router).
@@ -67,11 +103,39 @@ class Target(object):
 
         self.wps = WPSState.UNKNOWN
 
+        # Will be set to true once this target will be attacked
+        # Needed to count targets in infinite attack mode
+        self.attacked = False
+
         self.decloaked = False # If ESSID was hidden but we decloaked it.
 
         self.clients = []
 
         self.validate()
+
+    def __eq__(self, other):
+        # Check if the other class type is either ArchivedTarget or Target
+        return (isinstance(other, self.__class__) or isinstance(other, ArchivedTarget)) \
+               and self.bssid == other.bssid
+
+    def transfer_info(self, other):
+        '''
+            Helper function to transfer relevant fields into another Target or ArchivedTarget
+        '''
+        other.wps = self.wps
+        other.attacked = self.attacked
+
+        # If both targets know the essid, keep decloacked value
+        if self.essid_known and other.essid_known:
+            other.decloaked = self.decloaked
+
+        # The destination target does not know the essid but the source
+        # does, copy that information
+        if self.essid_known and not other.essid_known:
+            other.decloaked = self.decloaked
+            other.essid = self.essid
+            other.essid_known = self.essid_known
+            other.essid_len = self.essid_len
 
     def validate(self):
         ''' Checks that the target is valid. '''
@@ -162,6 +226,8 @@ class Target(object):
             wps = Color.s('{R}lock')
         elif self.wps == WPSState.UNKNOWN:
             wps = Color.s('{O} n/a')
+        else:
+            wps = ' ERR'
 
         clients = '       '
         if len(self.clients) > 0:

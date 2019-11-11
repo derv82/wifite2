@@ -15,6 +15,18 @@
 
       Added a regex check for validity because airodump would crash if an invalid channel argument would be sent."
 
+  * `--infinite/-inf` argument activates the infinite attack mode.
+    In this attack mode Wifite will enter a scan for <scan_time>
+    and after that timer expires it will attack all nearby targets
+    Infinite attack mode will respect all target and attack
+    restrictions (-E, -b, --pmkid, etc.)
+
+  * `scan_time` is configurable by using the pillage (-p) parameter
+
+  * Stop the attack by sending SIGINT(Ctrl+C) while scanning for
+    targets. The user will be prompted to choose between starting
+    attacking targets or exit.
+
   * Added show manufacturers/OUIs option "--showm"
   * Added "--no-pmkid" option to skip PMKID attack
   * Added target PMKID check with aircrack-ng

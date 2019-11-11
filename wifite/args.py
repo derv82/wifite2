@@ -69,6 +69,13 @@ class Arguments(object):
             dest='five_ghz',
             help=self._verbose('Include 5Ghz channels (default: {G}off{W})'))
 
+        glob.add_argument('-inf',
+            '--infinite',
+            action='store_true',
+            dest='infinite_mode',
+            help=Color.s('Enable infinite attack mode. Modify scanning time with '
+                         '{C}-p{W} (default: {G}off{W})'))
+
         glob.add_argument('-mac',
             '--random-mac',
             action='store_true',
