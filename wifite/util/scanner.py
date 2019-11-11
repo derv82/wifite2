@@ -74,7 +74,6 @@ class Scanner(object):
         except KeyboardInterrupt:
             pass
 
-
     def found_target(self):
         '''
         Detect if we found a target specified by the user (optional).
@@ -93,7 +92,7 @@ class Scanner(object):
             if bssid and target.bssid and bssid.lower() == target.bssid.lower():
                 self.target = target
                 break
-            if essid and target.essid and essid.lower() == target.essid.lower():
+            if essid and target.essid and essid == target.essid:
                 self.target = target
                 break
 
@@ -103,7 +102,6 @@ class Scanner(object):
             return True
 
         return False
-
 
     def print_targets(self):
         '''Prints targets selection menu (1 target per row).'''
@@ -235,7 +233,6 @@ class Scanner(object):
 
         return chosen_targets
 
-
 if __name__ == '__main__':
     # 'Test' script will display targets and selects the appropriate one
     Configuration.initialize()
@@ -248,4 +245,3 @@ if __name__ == '__main__':
     for t in targets:
         Color.pl('    {W}Selected: %s' % t)
     Configuration.exit_gracefully(0)
-

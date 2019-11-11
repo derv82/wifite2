@@ -275,7 +275,7 @@ class Airodump(Dependency):
                 result.pop(i)
             elif bssid and result[i].bssid.lower() != bssid.lower():
                 result.pop(i)
-            elif essid and result[i].essid and result[i].essid.lower() != essid.lower():
+            elif essid and result[i].essid and result[i].essid != essid:
                 result.pop(i)
             else:
                 i += 1
