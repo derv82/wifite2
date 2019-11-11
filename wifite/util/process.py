@@ -43,7 +43,6 @@ class Process(object):
         if type(stdout) is bytes: stdout = stdout.decode('utf-8')
         if type(stderr) is bytes: stderr = stderr.decode('utf-8')
 
-
         if Configuration.verbose > 1 and stdout is not None and stdout.strip() != '':
             Color.pe('{P} [stdout] %s{W}' % '\n [stdout] '.join(stdout.strip().split('\n')))
         if Configuration.verbose > 1 and stderr is not None and stderr.strip() != '':
@@ -54,14 +53,17 @@ class Process(object):
     @staticmethod
     def exists(program):
         ''' Checks if program is installed on this system '''
+
+        if program in set(Configuration.existing_commands.keys()):
+            return Configuration.existing_commands[program]
+
         p = Process(['which', program])
         stdout = p.stdout().strip()
         stderr = p.stderr().strip()
 
-        if stdout == '' and stderr == '':
-            return False
-
-        return True
+        exist = not stdout == stderr == ''
+        Configuration.existing_commands.update({program: exist})
+        return exist
 
     def __init__(self, command, devnull=False, stdout=PIPE, stderr=PIPE, cwd=None, bufsize=0, stdin=PIPE):
         ''' Starts executing command '''
@@ -183,7 +185,6 @@ class Process(object):
                 return
             raise e  # process cannot be killed
 
-
 if __name__ == '__main__':
     Configuration.initialize(False)
     p = Process('ls')
@@ -211,4 +212,3 @@ if __name__ == '__main__':
     time.sleep(1)
     print('yes should stop now')
     # After program loses reference to instance in 'p', process dies.
-

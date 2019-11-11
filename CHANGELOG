@@ -26,6 +26,7 @@
   * Standard wordlist contains more passwords then the previous wordlist
   * Added a few more vendors to ieee-oui.txt
   * Removed unnecessary imports (from dependency.py)
+  * Save checked-for-existance commands inside a list to not check them over and over again (avoid logspam)
   * Print more helpful airodumo traceback/debug
   * Updated Dockerfile
 
