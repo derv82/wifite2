@@ -6,10 +6,8 @@ from ..config import Configuration
 
 import re
 
-
 class WPSState:
     NONE, UNLOCKED, LOCKED, UNKNOWN = range(0, 4)
-
 
 class Target(object):
     '''
@@ -52,6 +50,7 @@ class Target(object):
         self.power      = int(fields[8].strip())
         if self.power < 0:
             self.power += 100
+        self.max_power = self.power
 
         self.beacons    = int(fields[9].strip())
         self.ivs        = int(fields[10].strip())
@@ -108,6 +107,9 @@ class Target(object):
         else:
             # Unknown ESSID
             essid = Color.s('{O}%s' % essid)
+
+        if self.power < self.max_power:
+            max_power = self.max_power
 
         # Add a '*' if we decloaked the ESSID
         decloaked_char = '*' if self.decloaked else ' '
@@ -170,11 +172,9 @@ class Target(object):
         result += Color.s('{W}')
         return result
 
-
 if __name__ == '__main__':
     fields = 'AA:BB:CC:DD:EE:FF,2015-05-27 19:28:44,2015-05-27 19:28:46,1,54,WPA2,CCMP TKIP,PSK,-58,2,0,0.0.0.0,9,HOME-ABCD,'.split(',')
     t = Target(fields)
     t.clients.append('asdf')
     t.clients.append('asdf')
     print(t.to_str())
-

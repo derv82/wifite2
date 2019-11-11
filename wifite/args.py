@@ -37,7 +37,6 @@ class Arguments(object):
 
         return parser.parse_args()
 
-
     def _add_global_args(self, glob):
         glob.add_argument('-v',
             '--verbose',
@@ -70,7 +69,6 @@ class Arguments(object):
             dest='five_ghz',
             help=self._verbose('Include 5Ghz channels (default: {G}off{W})'))
 
-
         glob.add_argument('-mac',
             '--random-mac',
             action='store_true',
@@ -94,6 +92,14 @@ class Arguments(object):
             dest='kill_conflicting_processes',
             help=Color.s('Kill processes that conflict with Airmon/Airodump ' +
                 '(default: {G}off{W})'))
+
+        glob.add_argument('-pow',
+            '--power',
+            action='store',
+            dest='min_power',
+            metavar='[min_power]',
+            type=int,
+            help=Color.s('Attacks any targets with at least {C}min_power{W} signal strength'))
 
         glob.add_argument('-b',
             action='store',
@@ -160,7 +166,6 @@ class Arguments(object):
             help=self._verbose('Number of deauth packets to send (default: ' +
                 '{G}%d{W})' % self.config.num_deauths))
 
-
         glob.add_argument('--demon',
             action='store_true',
             dest='demon',
@@ -177,7 +182,6 @@ class Arguments(object):
                 '(default: {G}off{W})'))
         # TODO: Args to specify deauth interface, server port, etc.
         '''
-
 
     def _add_wep_args(self, wep):
         # WEP
@@ -296,7 +300,6 @@ class Arguments(object):
         wep.add_argument('-hirte', help=argparse.SUPPRESS, action='store_true',
                 dest='wep_attack_hirte')
 
-
     def _add_wpa_args(self, wpa):
         wpa.add_argument('--wpa',
             action='store_true',
@@ -359,7 +362,6 @@ class Arguments(object):
         '''
         wpa.add_argument('-strip', help=argparse.SUPPRESS, action='store_true',
                 dest='wpa_strip_handshake')
-
 
     def _add_wps_args(self, wps):
         wps.add_argument('--wps',
@@ -503,4 +505,3 @@ if __name__ == '__main__':
     args = a.args
     for (key,value) in sorted(args.__dict__.items()):
         Color.pl('{C}%s: {G}%s{W}' % (key.ljust(21),value))
-
