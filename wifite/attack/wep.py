@@ -154,8 +154,7 @@ class AttackWEP(Attack):
                                         ivs_files = ivs_files[-1]  # Use most-recent .ivs file
                                     aircrack = Aircrack(ivs_files)
 
-                            elif Configuration.wep_restart_aircrack > 0 and \
-                                    aircrack.pid.running_time() > Configuration.wep_restart_aircrack:
+                            elif 0 < Configuration.wep_restart_aircrack < aircrack.pid.running_time():
                                 # Restart aircrack after X seconds
                                 #Color.pl('\n{+} {C}aircrack{W} ran for more than {C}%d{W} seconds, restarting' % Configuration.wep_restart_aircrack)
                                 aircrack.stop()
@@ -165,7 +164,6 @@ class AttackWEP(Attack):
                                     if not keep_ivs:
                                         ivs_files = ivs_files[-1]  # Use most-recent .ivs file
                                     aircrack = Aircrack(ivs_files)
-
 
                         if not aireplay.is_running():
                             # Some Aireplay attacks loop infinitely
@@ -328,7 +326,6 @@ class AttackWEP(Attack):
             attacks_remaining.insert(0, attacks_remaining.pop(answer-2))
             return False # Don't stop
 
-
     def fake_auth(self):
         '''
         Attempts to fake-authenticate with target.
@@ -354,7 +351,6 @@ class AttackWEP(Attack):
                     ' {G}--require-fakeauth{W} was not set')
         return fakeauth
 
-
 if __name__ == '__main__':
     Configuration.initialize(True)
     from ..model.target import Target
@@ -363,4 +359,3 @@ if __name__ == '__main__':
     wep = AttackWEP(target)
     wep.run()
     Configuration.exit_gracefully(0)
-

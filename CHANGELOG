@@ -46,6 +46,7 @@
   * Save checked-for-existance commands inside a list to not check them over and over again (avoid logspam)
   * Removed hashcat dependency for PMKID capture
   * Simplified boolean var checks
+  * Improved bounds check in wifite/attack/wep.py
   * Print more helpful airodumo traceback/debug
   * Improved colors and output around the code (some minors)
   * Run 'runtests.sh' in Python3 instead of Python2.7
