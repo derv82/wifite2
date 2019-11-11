@@ -35,6 +35,7 @@
   * Removed hashcat dependency for PMKID capture
   * Print more helpful airodumo traceback/debug
   * Improved colors and output around the code (some minors)
+  * Run 'runtests.sh' in Python3 instead of Python2.7
   * Updated Dockerfile
 
 
