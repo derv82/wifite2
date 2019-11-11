@@ -21521,8 +21521,8 @@ DC3350	TechSAT GmbH
 000910	Simple Access Inc.
 000915	CAS Corp.
 00090F	Fortinet Inc.
-000909	Telenor Connect A/S
-5CE28C  Telenor Connect A/S
+000909	ZyXEL Communications Corporation
+5CE28C  ZyXEL Communications Corporation
 000902	Redline Communications Inc.
 00065E	Photuris, Inc.
 000645	Meisei Electric Co. Ltd.

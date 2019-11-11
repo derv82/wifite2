@@ -27,6 +27,7 @@
     targets. The user will be prompted to choose between starting
     attacking targets or exit.
 
+  * Added NULL PIN attack (WPS NULL PIN)
   * Added show manufacturers/OUIs option "--showm"
   * Added "--no-pmkid" option to skip PMKID attack
   * Added target PMKID check with aircrack-ng

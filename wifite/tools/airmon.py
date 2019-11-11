@@ -361,7 +361,7 @@ class Airmon(Dependency):
                 for pid, pname in pid_pnames
             ])
             Color.pl('{!} {O}Conflicting processes: %s' % names_and_pids)
-            Color.pl('{!} {O}If you have problems: {R}kill -9 PID{O} or re-run wifite with {R}--kill{O}){W}')
+            Color.pl('{!} {O}If you have problems: {R}kill -9 PID{O} or re-run wifite with {R}--kill{O}{W}')
             return
 
         Color.pl('{!} {O}Killing {R}%d {O}conflicting processes' % len(pid_pnames))
