@@ -308,8 +308,8 @@ class Airmon(Dependency):
             choice = 1
         else:
             # Multiple interfaces found
-            question = Color.s('{+} Select wireless interface ({G}1-%d{W}): ' % (count))
-            choice = raw_input(question)
+            Color.p('{+} Select wireless interface ({G}1-%d{W}): ' % (count))
+            choice = raw_input()
 
         iface = a.get(choice)
 
@@ -318,7 +318,6 @@ class Airmon(Dependency):
         else:
             iface.interface = Airmon.start(iface)
         return iface.interface
-
 
     @staticmethod
     def terminate_conflicting_processes():
@@ -369,7 +368,6 @@ class Airmon(Dependency):
                     os.kill(int(pid), signal.SIGTERM)
                 except:
                     pass
-
 
     @staticmethod
     def put_interface_up(iface):

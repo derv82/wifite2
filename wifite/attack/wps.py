@@ -33,14 +33,14 @@ class AttackWPS(Attack):
             return False
 
         if not Configuration.wps_pixie and self.pixie_dust:
-            Color.pl('\r{!} {O}--no-pixie{R} was given, ignoring WPS PIN Attack on ' +
-                    '{O}%s{W}' % self.target.essid)
+            Color.pl('\r{!} {O}--no-pixie{R} was given, ignoring WPS Pixie-Dust Attack ' +
+                    'on {O}%s{W}' % self.target.essid)
             self.success = False
             return False
 
         if not Configuration.wps_pin and not self.pixie_dust:
-            Color.pl('\r{!} {O}--no-pin{R} was given, ignoring WPS Pixie-Dust Attack ' +
-                    'on {O}%s{W}' % self.target.essid)
+            Color.pl('\r{!} {O}--pixie{R} was given, ignoring WPS PIN Attack on ' +
+                    '{O}%s{W}' % self.target.essid)
             self.success = False
             return False
 
@@ -67,7 +67,6 @@ class AttackWPS(Attack):
         else:
             return self.run_reaver()
 
-
     def run_bully(self):
         bully = Bully(self.target, pixie_dust=self.pixie_dust)
         bully.run()
@@ -76,11 +75,9 @@ class AttackWPS(Attack):
         self.success = self.crack_result is not None
         return self.success
 
-
     def run_reaver(self):
         reaver = Reaver(self.target, pixie_dust=self.pixie_dust)
         reaver.run()
         self.crack_result = reaver.crack_result
         self.success = self.crack_result is not None
         return self.success
-
