@@ -24,15 +24,11 @@ class Dependency(object):
     def run_dependency_check(cls):
         from ..util.color import Color
 
-        from .airmon import Airmon
-        from .airodump import Airodump
         from .aircrack import Aircrack
-        from .aireplay import Aireplay
         from .ifconfig import Ifconfig
         from .iw import Iw
         from .bully import Bully
         from .reaver import Reaver
-        from .wash import Wash
         from .pyrit import Pyrit
         from .tshark import Tshark
         from .macchanger import Macchanger
