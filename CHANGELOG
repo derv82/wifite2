@@ -25,6 +25,7 @@
   * Migrated from "iwconfig" to "iw" due to deprecation of iwconfig
   * Standard wordlist contains more passwords then the previous wordlist
   * Targeted attack make -e ESSID case sensitive
+  * Ignore multiple ESSIDs with -E
   * Added a few more vendors to ieee-oui.txt
   * Removed unnecessary imports (from dependency.py)
   * Save checked-for-existance commands inside a list to not check them over and over again (avoid logspam)

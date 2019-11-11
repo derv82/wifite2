@@ -42,7 +42,7 @@ class Configuration(object):
         cls.target_channel = None # User-defined channel to scan
         cls.target_essid = None # User-defined AP name
         cls.target_bssid = None # User-defined AP BSSID
-        cls.ignore_essid = None # ESSIDs to ignore
+        cls.ignore_essids = None # ESSIDs to ignore
         cls.clients_only = False # Only show targets that have associated clients
         cls.five_ghz = False # Scan 5Ghz channels
         cls.show_bssids = False # Show BSSIDs in targets list
@@ -249,10 +249,10 @@ class Configuration(object):
             cls.target_essid = args.target_essid
             Color.pl('{+} {C}option:{W} targeting ESSID {G}%s{W}' % args.target_essid)
 
-        if args.ignore_essid is not None:
-            cls.ignore_essid = args.ignore_essid
-            Color.pl('{+} {C}option:{W} {O}ignoring ESSIDs that include {R}%s{W}' % (
-                args.ignore_essid))
+        if args.ignore_essids is not None:
+            cls.ignore_essids = args.ignore_essids
+            Color.pl('{+} {C}option: {O}ignoring ESSID(s): {R}%s{W}' %
+                     ', '.join(args.ignore_essids))
 
         if args.clients_only == True:
             cls.clients_only = True
@@ -271,7 +271,6 @@ class Configuration(object):
         if args.kill_conflicting_processes:
             cls.kill_conflicting_processes = True
             Color.pl('{+} {C}option:{W} kill conflicting processes {G}enabled{W}')
-
 
     @classmethod
     def parse_wep_args(cls, args):
@@ -488,7 +487,6 @@ class Configuration(object):
             Color.pl('{+} {C}option:{W} using {G}%s{W} WEP attacks'
                 % '{W}, {G}'.join(cls.wep_attacks))
 
-
     @classmethod
     def temp(cls, subfile=''):
         ''' Creates and/or returns the temporary directory '''
@@ -513,7 +511,6 @@ class Configuration(object):
             for f in os.listdir(cls.temp_dir):
                 os.remove(cls.temp_dir + f)
             os.rmdir(cls.temp_dir)
-
 
     @classmethod
     def exit_gracefully(cls, code=0):
