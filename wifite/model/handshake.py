@@ -15,7 +15,6 @@ class Handshake(object):
         self.bssid = bssid
         self.essid = essid
 
-
     def divine_bssid_and_essid(self):
         '''
             Tries to find BSSID and ESSID from cap file.
@@ -65,7 +64,6 @@ class Handshake(object):
                     self.essid = essid
                     break
 
-
     def has_handshake(self):
         if not self.bssid or not self.essid:
             self.divine_bssid_and_essid()
@@ -79,12 +77,10 @@ class Handshake(object):
 
         return False
 
-
     def tshark_handshakes(self):
         '''Returns list[tuple] of BSSID & ESSID pairs (ESSIDs are always `None`).'''
         tshark_bssids = Tshark.bssids_with_handshakes(self.capfile, bssid=self.bssid)
         return [(bssid, None) for bssid in tshark_bssids]
-
 
     def cowpatty_handshakes(self):
         '''Returns list[tuple] of BSSID & ESSID pairs (BSSIDs are always `None`).'''
@@ -106,12 +102,10 @@ class Handshake(object):
                 return [(None, self.essid)]
         return []
 
-
     def pyrit_handshakes(self):
         '''Returns list[tuple] of BSSID & ESSID pairs.'''
         return Pyrit.bssid_essid_with_handshakes(
                 self.capfile, bssid=self.bssid, essid=self.essid)
-
 
     def aircrack_handshakes(self):
         '''Returns tuple (BSSID,None) if aircrack thinks self.capfile contains a handshake / can be cracked'''
@@ -125,7 +119,6 @@ class Handshake(object):
             return [(self.bssid, None)]
         else:
             return []
-
 
     def analyze(self):
         '''Prints analysis of handshake capfile'''
@@ -141,7 +134,6 @@ class Handshake(object):
             Handshake.print_pairs(self.cowpatty_handshakes(), self.capfile, 'cowpatty')
 
         Handshake.print_pairs(self.aircrack_handshakes(), self.capfile, 'aircrack')
-
 
     def strip(self, outfile=None):
         # XXX: This method might break aircrack-ng, use at own risk.
@@ -172,7 +164,6 @@ class Handshake(object):
             os.remove(outfile)
             pass
 
-
     @staticmethod
     def print_pairs(pairs, capfile, tool=None):
         '''
@@ -194,7 +185,6 @@ class Handshake(object):
                 Color.pl('%s {G}%s{W}' % (out_str, bssid))
             elif essid:
                 Color.pl('%s ({G}%s{W})' % (out_str, essid))
-
 
     @staticmethod
     def check():
@@ -219,7 +209,6 @@ class Handshake(object):
             hs = Handshake(capfile, bssid=Configuration.target_bssid, essid=Configuration.target_essid)
             hs.analyze()
             Color.pl('')
-
 
 if __name__ == '__main__':
     print('With BSSID & ESSID specified:')

@@ -13,12 +13,10 @@ class Dependency(object):
                     .format(attr_name, cls.__name__)
                 )
 
-
     @classmethod
     def exists(cls):
         from ..util.process import Process
         return Process.exists(cls.dependency_name)
-
 
     @classmethod
     def run_dependency_check(cls):
@@ -55,7 +53,6 @@ class Dependency(object):
             Color.pl('{!} {O}At least 1 Required app is missing. Wifite needs Required apps to run{W}')
             import sys
             sys.exit(-1)
-
 
     @classmethod
     def fails_dependency_check(cls):

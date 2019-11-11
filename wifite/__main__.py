@@ -11,7 +11,6 @@ from .util.color import Color
 import os
 import sys
 
-
 class Wifite(object):
 
     def __init__(self):
@@ -53,16 +52,14 @@ class Wifite(object):
             Configuration.get_monitor_mode_interface()
             self.scan_and_attack()
 
-
     def print_banner(self):
         '''Displays ASCII art of the highest caliber.'''
         Color.pl(r' {G}  .     {GR}{D}     {W}{G}     .    {W}')
-        Color.pl(r' {G}.´  ·  .{GR}{D}     {W}{G}.  ·  `.  {G}wifite {D}%s{W}' % Configuration.version)
-        Color.pl(r' {G}:  :  : {GR}{D} (¯) {W}{G} :  :  :  {W}{D}automated wireless auditor{W}')
-        Color.pl(r' {G}`.  ·  `{GR}{D} /¯\ {W}{G}´  ·  .´  {C}{D}https://github.com/derv82/wifite2{W}')
+        Color.pl(r' {G}.´  ·  .{GR}{D}     {W}{G}.  ·  `.  {G}wifite2 {D}%s{W}' % Configuration.version)
+        Color.pl(r' {G}:  :  : {GR}{D} (¯) {W}{G} :  :  :  {W}{D}an automated wireless auditor forked from @derv82{W}')
+        Color.pl(r' {G}`.  ·  `{GR}{D} /¯\ {W}{G}´  ·  .´  {C}{D}https://github.com/kimocoder/wifite2{W}')
         Color.pl(r' {G}  `     {GR}{D}/¯¯¯\{W}{G}     ´    {W}')
         Color.pl('')
-
 
     def scan_and_attack(self):
         '''
@@ -83,9 +80,7 @@ class Wifite(object):
 
         Color.pl('{+} Finished attacking {C}%d{W} target(s), exiting' % attacked_targets)
 
-
 ##############################################################
-
 
 def entry_point():
     try:
@@ -99,7 +94,6 @@ def entry_point():
         Color.pl('\n{!} {O}Interrupted, Shutting down...{W}')
 
     Configuration.exit_gracefully(0)
-
 
 if __name__ == '__main__':
     entry_point()

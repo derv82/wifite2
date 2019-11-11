@@ -9,7 +9,7 @@ from .tools.macchanger import Macchanger
 
 class Configuration(object):
     ''' Stores configuration variables and functions for Wifite. '''
-    version = '2.2.5'
+    version = '2.5.0'
 
     initialized = False # Flag indicating config has been initialized
     temp_dir = None     # Temporary directory
@@ -142,7 +142,6 @@ class Configuration(object):
         if load_interface:
             cls.get_monitor_mode_interface()
 
-
     @classmethod
     def get_monitor_mode_interface(cls):
         if cls.interface is None:
@@ -181,7 +180,6 @@ class Configuration(object):
         if args.check_handshake: cls.check_handshake = args.check_handshake
         if args.crack_handshake: cls.crack_handshake = True
 
-
     @classmethod
     def validate(cls):
         if cls.use_pmkid_only and cls.wps_only:
@@ -190,7 +188,6 @@ class Configuration(object):
         if cls.use_pmkid_only and cls.dont_use_pmkid:
             Color.pl('{!} {R}Bad Configuration:{O} --pmkid and --no-pmkid are not compatible')
             raise RuntimeError('Unable to attack networks: --pmkid and --no-pmkid are not compatible together')
-
 
     @classmethod
     def parse_settings_args(cls, args):

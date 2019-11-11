@@ -26,7 +26,6 @@ class Client(object):
         self.packets = int(fields[4].strip())
         self.bssid   =     fields[5].strip()
 
-
     def __str__(self):
         ''' String representation of a Client '''
         result = ''
@@ -34,7 +33,6 @@ class Client(object):
             result += key + ': ' + str(value)
             result += ', '
         return result
-
 
 if __name__ == '__main__':
     fields = 'AA:BB:CC:DD:EE:FF, 2015-05-27 19:43:47, 2015-05-27 19:43:47, -67,        2, (not associated) ,HOME-ABCD'.split(',')
