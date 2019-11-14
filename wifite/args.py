@@ -108,6 +108,11 @@ class Arguments(object):
             type=int,
             help=Color.s('Attacks any targets with at least {C}min_power{W} signal strength'))
 
+        glob.add_argument('--skip-crack',
+                          action='store_true',
+                          dest='skip_crack',
+                          help=Color.s('Skip cracking captured handshakes/pmkid (default: {G}off{W})'))
+
         glob.add_argument('-b',
             action='store',
             dest='target_bssid',

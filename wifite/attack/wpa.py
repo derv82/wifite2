@@ -50,6 +50,12 @@ class AttackWPA(Attack):
         Color.pl('\n{+} analysis of captured handshake file:')
         handshake.analyze()
 
+        # Check for the --skip-crack flag
+        if Configuration.skip_crack:
+            Color.pl('{+} Not cracking handshake because {C}skip_atk{W} was used{W}')
+            self.success = False
+            return False
+
         # Check wordlist
         if Configuration.wordlist is None:
             Color.pl('{!} {O}Not cracking handshake because' +

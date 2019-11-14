@@ -38,6 +38,7 @@
   * Added "--power" option.
     Only display and attack APs that had at least <power> during the current scan.
 
+  * Added "--skip-crack" option to skip cracking session
   * Migrated from "iwconfig" to "iw" due to deprecation of iwconfig
   * Standard wordlist contains more passwords then the previous wordlist
   * Targeted attack make -e ESSID case sensitive
