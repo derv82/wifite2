@@ -113,6 +113,14 @@ class Arguments(object):
                           dest='skip_crack',
                           help=Color.s('Skip cracking captured handshakes/pmkid (default: {G}off{W})'))
 
+        glob.add_argument('-first',
+                          '--first',
+                          action='store',
+                          dest='attack_max',
+                          metavar='[attack_max]',
+                          type=int,
+                          help=Color.s('Attacks the first {C}attack_max{W} targets'))
+
         glob.add_argument('-b',
             action='store',
             dest='target_bssid',

@@ -23,6 +23,9 @@ class AttackAll(object):
         attacked_targets = 0
         targets_remaining = len(targets)
         for index, target in enumerate(targets, start=1):
+            if Configuration.attack_max != 0 and index > Configuration.attack_max:
+                print("Attacked %d targets, stopping because of the --first flag" % Configuration.attack_max)
+                break
             attacked_targets += 1
             targets_remaining -= 1
 

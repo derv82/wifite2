@@ -40,6 +40,7 @@ class Configuration(object):
         cls.tx_power = 0 # Wifi transmit power (0 is default)
         cls.interface = None
         cls.min_power = 0  # Minimum power for an access point to be considered a target. Default is 0
+        cls.attack_max = 0
         cls.skip_crack = False
         cls.target_channel = None # User-defined channel to scan
         cls.target_essid = None # User-defined AP name
@@ -263,6 +264,11 @@ class Configuration(object):
         if args.skip_crack:
             cls.skip_crack = True
             Color.pl('{+} {C}option:{W} Skip cracking captured handshakes/pmkid {G}enabled{W}')
+
+        if args.attack_max and args.attack_max > 0:
+            cls.attack_max = args.attack_max
+            Color.pl('{+} {C}option:{W} Attack first {G}%d{W} targets from list' %
+                     cls.attack_max)
 
         if args.target_essid:
             cls.target_essid = args.target_essid
