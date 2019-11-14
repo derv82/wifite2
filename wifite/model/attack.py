@@ -2,11 +2,12 @@
 # -*- coding: utf-8 -*-
 
 import time
+from ..config import Configuration
 
 class Attack(object):
     '''Contains functionality common to all attacks.'''
 
-    target_wait = 60
+    target_wait = min(60, Configuration.wpa_attack_timeout)
 
     def __init__(self, target):
         self.target = target
