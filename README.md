@@ -49,7 +49,7 @@ Run wifite, select your targets, and Wifite will automatically start trying to c
 
 
 ```
-wifite --nodeauths --ignore-locks --keep-ivs -p 137 --dict /usr/share/wordlist -mac -v
+wifite --nodeauths --ignore-locks --keep-ivs -p 137 --dict /usr/share/wordlists/*.* -mac -v
 ```
 
 #
