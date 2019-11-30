@@ -45,11 +45,11 @@ Set interface down + monitor mode + activate interface + TX power
 To start Wifite in Ninja Mode
 ----------
 
-Run wifite, select your targets, and Wifite will automatically start trying to capture or crack the password.
+Excute the below command and it will automatically start to capture and decrypt the password.
 
 
 ```
-wifite --kill --nodeauths --ignore-locks --keep-ivs -p 1337 --dict /usr/share/wordlists/rockyou.txt -mac -v
+wifite --kill --nodeauths --ignore-locks --keep-ivs -p 1337 -mac -v
 ```
 
 #
