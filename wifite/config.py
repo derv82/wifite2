@@ -97,8 +97,8 @@ class Configuration(object):
         cls.wordlist = None
         wordlists = [
             './wordlist-probable.txt',  # Local file (ran from cloned repo)
-            '/usr/share/dict/wordlist-top4800-probable.txt',  # setup.py with prefix=/usr
-            '/usr/local/share/dict/wordlist-top4800-probable.txt',  # setup.py with prefix=/usr/local
+            '/usr/share/dict/wordlist-probable.txt',  # setup.py with prefix=/usr
+            '/usr/local/share/dict/wordlist-probable.txt',  # setup.py with prefix=/usr/local
             # Other passwords found on Kali
             '/usr/share/wfuzz/wordlist/fuzzdb/wordlists-user-passwd/passwds/phpbb.txt',
             '/usr/share/fuzzdb/wordlists-user-passwd/passwds/phpbb.txt',
