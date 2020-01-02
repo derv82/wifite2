@@ -25,7 +25,7 @@ class Cowpatty(Dependency):
             'cowpatty',
             '-f', Configuration.wordlist,
             '-r', handshake.capfile,
-            '-s', handshake.essid
+            '-s', '"' + handshake.essid + '"'
         ]
         if show_command:
             Color.pl('{+} {D}Running: {W}{P}%s{W}' % ' '.join(command))
