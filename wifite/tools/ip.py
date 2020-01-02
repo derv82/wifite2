@@ -5,17 +5,17 @@ import re
 
 from .dependency import Dependency
 
-class Ifconfig(Dependency):
+class Ip(Dependency):
     dependency_required = True
-    dependency_name = 'ifconfig'
-    dependency_url = 'apt-get install net-tools'
+    dependency_name = 'ip'
+    dependency_url = 'apt-get install ip'
 
     @classmethod
     def up(cls, interface, args=[]):
         '''Put interface up'''
         from ..util.process import Process
 
-        command = ['ifconfig', interface]
+        command = ['ip', 'link', 'set', interface]
         if isinstance(args, list):
             command.extend(args)
         elif isinstance(args, str):
@@ -33,7 +33,7 @@ class Ifconfig(Dependency):
         '''Put interface down'''
         from ..util.process import Process
 
-        pid = Process(['ifconfig', interface, 'down'])
+        pid = Process(['ip', 'link', 'set', interface, 'down'])
         pid.wait()
         if pid.poll() != 0:
             raise Exception('Error putting interface %s down:\n%s\n%s' % (interface, pid.stdout(), pid.stderr()))
@@ -43,19 +43,11 @@ class Ifconfig(Dependency):
     def get_mac(cls, interface):
         from ..util.process import Process
 
-        output = Process(['ifconfig', interface]).stdout()
+        output = Process(['ip', 'link show', interface]).stdout()
 
-        # Mac address separated by dashes
-        mac_dash_regex = ('[a-zA-Z0-9]{2}-' * 6)[:-1]
-        match = re.search(' ({})'.format(mac_dash_regex), output)
+        match = re.search(r'([a-fA-F0-9]{2}[-:]){5}[a-fA-F0-9]{2}', output)
         if match:
-            return match.group(1).replace('-', ':')
-
-        # Mac address separated by colons
-        mac_colon_regex = ('[a-zA-Z0-9]{2}:' * 6)[:-1]
-        match = re.search(' ({})'.format(mac_colon_regex), output)
-        if match:
-            return match.group(1)
+           return match.group(0).replace('-', ':')
 
         raise Exception('Could not find the mac address for %s' % interface)
 

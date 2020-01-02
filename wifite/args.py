@@ -186,9 +186,9 @@ class Arguments(object):
             help=self._verbose('Number of deauth packets to send (default: ' +
                 '{G}%d{W})' % self.config.num_deauths))
 
-        glob.add_argument('--demon',
+        glob.add_argument('--daemon',
             action='store_true',
-            dest='demon',
+            dest='daemon',
             help=Color.s('Puts device back in managed mode after quitting (default: '+
                 '{G}off{W})'))
 

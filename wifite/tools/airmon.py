@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from .dependency import Dependency
-from .ifconfig import Ifconfig
+from .ip import Ip
 from .iw import Iw
 from ..util.process import Process
 from ..util.color import Color
@@ -126,9 +126,9 @@ class Airmon(Dependency):
         Manually put interface into monitor mode (no airmon-ng or vif).
         Fix for bad drivers like the rtl8812AU.
         '''
-        Ifconfig.down(iface)
+        Ip.down(iface)
         Iw.mode(iface, 'monitor')
-        Ifconfig.up(iface)
+        Ip.up(iface)
 
         # /sys/class/net/wlan0/type
         iface_type_path = os.path.join('/sys/class/net', iface, 'type')
@@ -145,9 +145,9 @@ class Airmon(Dependency):
         Manually put interface into managed mode (no airmon-ng or vif).
         Fix for bad drivers like the rtl8812AU.
         '''
-        Ifconfig.down(iface)
+        Ip.down(iface)
         Iw.mode(iface, 'managed')
-        Ifconfig.up(iface)
+        Ip.up(iface)
 
         # /sys/class/net/wlan0/type
         iface_type_path = os.path.join('/sys/class/net', iface, 'type')

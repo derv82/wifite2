@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from .dependency import Dependency
-from ..tools.ifconfig import Ifconfig
+from ..tools.ip import Ip
 from ..util.color import Color
 
 class Macchanger(Dependency):
@@ -20,7 +20,7 @@ class Macchanger(Dependency):
         Color.clear_entire_line()
         Color.p('\r{+} {C}macchanger{W}: taking interface {C}%s{W} down...' % iface)
 
-        Ifconfig.down(iface)
+        Ip.down(iface)
 
         Color.clear_entire_line()
         Color.p('\r{+} {C}macchanger{W}: changing mac address of interface {C}%s{W}...' % iface)
@@ -38,7 +38,7 @@ class Macchanger(Dependency):
         Color.clear_entire_line()
         Color.p('\r{+} {C}macchanger{W}: bringing interface {C}%s{W} up...' % iface)
 
-        Ifconfig.up(iface)
+        Ip.up(iface)
 
         return True
 
@@ -56,7 +56,7 @@ class Macchanger(Dependency):
         Color.pl('\r{+} {C}macchanger{W}: resetting mac address on %s...' % iface)
         # -p to reset to permanent MAC address
         if cls.down_macch_up(iface, ['-p']):
-            new_mac = Ifconfig.get_mac(iface)
+            new_mac = Ip.get_mac(iface)
 
             Color.clear_entire_line()
             Color.pl('\r{+} {C}macchanger{W}: reset mac address back to {C}%s{W} on {C}%s{W}' % (new_mac, iface))
@@ -76,7 +76,7 @@ class Macchanger(Dependency):
         # -e to keep vendor bytes the same
         if cls.down_macch_up(iface, ['-e']):
             cls.is_changed = True
-            new_mac = Ifconfig.get_mac(iface)
+            new_mac = Ip.get_mac(iface)
 
             Color.clear_entire_line()
             Color.pl('\r{+} {C}macchanger{W}: changed mac address to {C}%s{W} on {C}%s{W}' % (new_mac, iface))

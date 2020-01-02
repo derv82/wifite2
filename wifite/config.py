@@ -55,7 +55,7 @@ class Configuration(object):
         cls.random_mac = False # Should generate a random Mac address at startup.
         cls.no_deauth = False # Deauth hidden networks & WPA handshake targets
         cls.num_deauths = 1 # Number of deauth packets to send to each target.
-        cls.demon = False # Don't put back interface back in managed mode
+        cls.daemon = False # Don't put back interface back in managed mode
 
         cls.encryption_filter = ['WEP', 'WPA', 'WPS']
 
@@ -247,8 +247,8 @@ class Configuration(object):
             Color.pl('{+} {C}option:{W} will {R}not{W} {O}deauth{W} clients ' +
                     'during scans or captures')
 
-        if args.demon == True:
-            cls.demon = True
+        if args.daemon == True:
+            cls.daemon = True
             Color.pl('{+} {C}option:{W} will put interface back to managed mode')
 
         if args.num_deauths and args.num_deauths > 0:
@@ -544,7 +544,7 @@ class Configuration(object):
         Macchanger.reset_if_changed()
         from .tools.airmon import Airmon
         if cls.interface is not None and Airmon.base_interface is not None:
-            if not cls.demon:
+            if not cls.daemon:
                 Color.pl('{!} {O}Note:{W} Leaving interface in Monitor Mode!')
                 Color.pl('{!} To disable Monitor Mode when finished: ' +
                     '{C}airmon-ng stop %s{W}' % cls.interface)

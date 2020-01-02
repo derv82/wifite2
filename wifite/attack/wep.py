@@ -5,7 +5,7 @@ from ..model.attack import Attack
 from ..tools.airodump import Airodump
 from ..tools.aireplay import Aireplay, WEPAttackType
 from ..tools.aircrack import Aircrack
-from ..tools.ifconfig import Ifconfig
+from ..tools.ip import Ip
 from ..config import Configuration
 from ..util.color import Color
 from ..util.input import raw_input
@@ -67,7 +67,7 @@ class AttackWEP(Attack):
                     if self.fake_auth():
                         # We successfully authenticated!
                         # Use our interface's MAC address for the attacks.
-                        client_mac = Ifconfig.get_mac(Configuration.interface)
+                        client_mac = Ip.get_mac(Configuration.interface)
                         # Keep us authenticated
                         fakeauth_proc = Aireplay(self.target, 'fakeauth')
                     elif len(airodump_target.clients) == 0:
@@ -302,7 +302,7 @@ class AttackWEP(Attack):
             Color.p('\r{+} {O}Deauthenticating *broadcast*{W} (all clients)...')
             Aireplay.deauth(target.bssid, essid=target.essid)
 
-            attacking_mac = Ifconfig.get_mac(Configuration.interface)
+            attacking_mac = Ip.get_mac(Configuration.interface)
             for client in target.clients:
                 if attacking_mac.lower() == client.station.lower():
                     continue  # Don't deauth ourselves.
