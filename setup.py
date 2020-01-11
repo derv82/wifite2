@@ -5,9 +5,9 @@ from wifite.config import Configuration
 setup(
     name='wifite',
     version=Configuration.version,
-    author='derv82',
-    author_email='derv82@gmail.com',
-    url='https://github.com/derv82/wifite2',
+    author='kimocoder',
+    author_email='christian@aircrack-ng.org',
+    url='https://github.com/kimocoder/wifite2',
     packages=[
         'wifite',
         'wifite/attack',
@@ -33,7 +33,6 @@ setup(
 
     Depends on Aircrack-ng Suite, Tshark (from Wireshark), and various other external tools.''',
     classifiers = [
-        "Programming Language :: Python :: 2.7",
         "Programming Language :: Python :: 3"
     ]
 )
