@@ -47,6 +47,7 @@ class Configuration(object):
         cls.target_bssid = None # User-defined AP BSSID
         cls.ignore_essids = None # ESSIDs to ignore
         cls.clients_only = False # Only show targets that have associated clients
+        cls.all_bands = True # Scan for both 2Ghz and 5Ghz channels
         cls.five_ghz = False # Scan 5Ghz channels
         cls.infinite_mode = False # Attack targets continuously
         cls.inf_wait_time = 60
@@ -220,6 +221,10 @@ class Configuration(object):
             cls.target_bssid = args.target_bssid
             Color.pl('{+} {C}option:{W} targeting BSSID ' +
                     '{G}%s{W}' % args.target_bssid)
+
+        if args.all_bands:
+            cls.all_bands = True
+            Color.pl('{+} {C}option:{W} including both {G}2.4Ghz and 5Ghz networks{W} in scans')
 
         if args.five_ghz:
             cls.five_ghz = True

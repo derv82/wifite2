@@ -36,6 +36,7 @@ class Airodump(Dependency):
         if channel is None:
             channel = Configuration.target_channel
         self.channel = channel
+        self.all_bands = Configuration.all_bands
         self.five_ghz = Configuration.five_ghz
 
         self.encryption = encryption
@@ -72,6 +73,7 @@ class Airodump(Dependency):
             '--write-interval', '1' # Write every second
         ]
         if self.channel:    command.extend(['-c', str(self.channel)])
+	elif self.all_bands: command.extend(['--band', 'abg'])
         elif self.five_ghz: command.extend(['--band', 'a'])
 
         if self.encryption:   command.extend(['--enc', self.encryption])

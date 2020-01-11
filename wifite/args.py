@@ -63,6 +63,12 @@ class Arguments(object):
         glob.add_argument('--channel', help=argparse.SUPPRESS, action='store',
             dest='channel')
 
+        glob.add_argument('-ab',
+            '--allbands',
+            action='store_true',
+            dest='all_bands',
+            help=self._verbose('Include both 2.4Ghz and 5Ghz bands (default: {G}off{W})'))
+
         glob.add_argument('-5',
             '--5ghz',
             action='store_true',
