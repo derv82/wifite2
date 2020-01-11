@@ -121,98 +121,6 @@ class Airmon(Dependency):
         return None
 
     @staticmethod
-    def start_bad_driver(iface):
-        '''
-        Manually put interface into monitor mode (no airmon-ng or vif).
-        Fix for bad drivers like the rtl8812AU.
-        '''
-        Ip.down(iface)
-        Iw.mode(iface, 'monitor')
-        Ip.up(iface)
-
-        # /sys/class/net/wlan0/type
-        iface_type_path = os.path.join('/sys/class/net', iface, 'type')
-        if os.path.exists(iface_type_path):
-            with open(iface_type_path, 'r') as f:
-                if (int(f.read()) == Airmon.ARPHRD_IEEE80211_RADIOTAP):
-                    return iface
-
-        return None
-
-    @staticmethod
-    def stop_bad_driver(iface):
-        '''
-        Manually put interface into managed mode (no airmon-ng or vif).
-        Fix for bad drivers like the rtl8812AU.
-        '''
-        Ip.down(iface)
-        Iw.mode(iface, 'managed')
-        Ip.up(iface)
-
-        # /sys/class/net/wlan0/type
-        iface_type_path = os.path.join('/sys/class/net', iface, 'type')
-        if os.path.exists(iface_type_path):
-            with open(iface_type_path, 'r') as f:
-                if (int(f.read()) == Airmon.ARPHRD_ETHER):
-                    return iface
-
-        return None
-
-    @staticmethod
-    def start(iface):
-        '''
-            Starts an interface (iface) in monitor mode
-            Args:
-                iface - The interface to start in monitor mode
-                        Either an instance of AirmonIface object,
-                        or the name of the interface (string).
-            Returns:
-                Name of the interface put into monitor mode.
-            Throws:
-                Exception - If an interface can't be put into monitor mode
-        '''
-        # Get interface name from input
-        if type(iface) == AirmonIface:
-            iface_name = iface.interface
-            driver = iface.driver
-        else:
-            iface_name = iface
-            driver = None
-
-        # Remember this as the 'base' interface.
-        Airmon.base_interface = iface_name
-
-        Color.p('{+} enabling {G}monitor mode{W} on {C}%s{W}... ' % iface_name)
-
-        airmon_output = Process(['airmon-ng', 'start', iface_name]).stdout()
-
-        enabled_iface = Airmon._parse_airmon_start(airmon_output)
-
-        if enabled_iface is None and driver in Airmon.BAD_DRIVERS:
-            Color.p('{O}"bad driver" detected{W} ')
-            enabled_iface = Airmon.start_bad_driver(iface_name)
-
-        if enabled_iface is None:
-            Color.pl('{R}failed{W}')
-
-        monitor_interfaces = Iw.get_interfaces(mode='monitor')
-
-        # Assert that there is an interface in monitor mode
-        if len(monitor_interfaces) == 0:
-            Color.pl('{R}failed{W}')
-            raise Exception('Cannot find any interfaces in monitor mode')
-
-        # Assert that the interface enabled by airmon-ng is in monitor mode
-        if enabled_iface not in monitor_interfaces:
-            Color.pl('{R}failed{W}')
-            raise Exception('Cannot find %s with type:monitor' % enabled_iface)
-
-        # No errors found; the device 'enabled_iface' was put into Mode:Monitor.
-        Color.pl('{G}enabled {C}%s{W}' % enabled_iface)
-
-        return enabled_iface
-
-    @staticmethod
     def _parse_airmon_start(airmon_output):
         '''Find the interface put into monitor mode (if any)'''
 
@@ -225,7 +133,6 @@ class Airmon(Dependency):
                 return matches.group(1)
 
         return None
-
 
     @staticmethod
     def stop(iface):
@@ -245,7 +152,6 @@ class Airmon(Dependency):
             Color.pl('{!} {O}Could not disable {R}%s{W}' % iface)
 
         return (disabled_iface, enabled_iface)
-
 
     @staticmethod
     def _parse_airmon_stop(airmon_output):
@@ -276,7 +182,6 @@ class Airmon(Dependency):
                 enabled_iface = matches.group(1)
 
         return (disabled_iface, enabled_iface)
-
 
     @staticmethod
     def ask():

@@ -10,13 +10,11 @@ from ..tools.hashcat import HcxPcapTool
 import os
 import re
 
-
 class Cowpatty(Dependency):
     ''' Wrapper for Cowpatty program. '''
     dependency_required = False
     dependency_name = 'cowpatty'
     dependency_url = 'https://tools.kali.org/wireless-attacks/cowpatty'
-
 
     @staticmethod
     def crack_handshake(handshake, show_command=False):

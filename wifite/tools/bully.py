@@ -139,9 +139,7 @@ class Bully(Attack, Dependency):
                     self.stop()
                     return
 
-
             time.sleep(0.5)
-
 
     def pattack(self, message, newline=False):
         # Print message with attack information.
@@ -171,10 +169,8 @@ class Bully(Attack, Dependency):
         if newline:
             Color.pl('')
 
-
     def running_time(self):
         return int(time.time() - self.start_time)
-
 
     def get_status(self):
         main_status = self.state
@@ -194,7 +190,6 @@ class Bully(Attack, Dependency):
 
         return main_status
 
-
     def parse_line_thread(self):
         for line in iter(self.bully_proc.pid.stdout.readline, b''):
             if line == '': continue
@@ -210,7 +205,6 @@ class Bully(Attack, Dependency):
 
             if self.crack_result:
                 break
-
 
     def parse_crack_result(self, line):
         # Check for line containing PIN and PSK
@@ -257,7 +251,6 @@ class Bully(Attack, Dependency):
             self.crack_result.dump()
 
         return self.crack_result
-
 
     def parse_state(self, line):
         state = self.state
@@ -346,18 +339,14 @@ class Bully(Attack, Dependency):
         re_running_pixiewps = re.search(r".*Running pixiewps with the information", line)
         if re_running_pixiewps:
             state = '{G}Running pixiewps...{W}'
-
         return state
-
 
     def stop(self):
         if hasattr(self, 'pid') and self.pid and self.pid.poll() is None:
             self.pid.interrupt()
 
-
     def __del__(self):
         self.stop()
-
 
     @staticmethod
     def get_psk_from_pin(target, pin):
@@ -388,7 +377,6 @@ class Bully(Attack, Dependency):
                 return psk
 
         return None
-
 
 if __name__ == '__main__':
     Configuration.initialize()
