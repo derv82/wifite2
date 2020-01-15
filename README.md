@@ -66,7 +66,7 @@ Install Wifite
 To install onto your computer (so you can just run `wifite` from any terminal), run:
 
 ```bash
-sudo python setup.py install
+sudo python3 setup.py install
 ```
 
 This will install `wifite` to `/usr/sbin/wifite` which should be in your terminal path.
