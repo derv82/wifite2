@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 import os
@@ -9,7 +9,7 @@ from .tools.macchanger import Macchanger
 
 class Configuration(object):
     ''' Stores configuration variables and functions for Wifite. '''
-    version = '2.5.0'
+    version = '2.5.1'
 
     initialized = False # Flag indicating config has been initialized
     temp_dir = None     # Temporary directory
