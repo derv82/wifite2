@@ -74,7 +74,7 @@ This will install `wifite` to `/usr/sbin/wifite` which should be in your termina
 **Note:** Uninstalling is [not as easy](https://stackoverflow.com/questions/1550226/python-setup-py-uninstall#1550235). The only way to uninstall is to record the files installed by the above command and *remove* those files:
 
 ```bash
-sudo python setup.py install --record files.txt \
+sudo python3 setup.py install --record files.txt \
   && cat files.txt | xargs sudo rm \
   && rm -f files.txt
 ```
