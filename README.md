@@ -28,7 +28,7 @@ Second, only the latest versions of these programs are supported and must be ins
 
 **Required:**
 
-* `python`: It's recommended to use `python3`.
+* It's recommended to use `python3` as `python2` is deprecated.
 * [`iw`](https://wireless.wiki.kernel.org/en/users/documentation/iw): For identifying wireless devices already in Monitor Mode.
 * [`ip`](https://packages.debian.org/buster/net-tools): For starting/stopping wireless devices.
 * [`Aircrack-ng`](http://aircrack-ng.org/) suite, includes:
