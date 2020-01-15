@@ -9,3 +9,4 @@ MANIFEST
 dist/
 build/
 files.txt
+*.wpc
