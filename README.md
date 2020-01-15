@@ -29,8 +29,8 @@ Second, only the latest versions of these programs are supported and must be ins
 **Required:**
 
 * `python`: It's recommended to use `python3`.
-* [`iwconfig`](https://wiki.debian.org/iwconfig): For identifying wireless devices already in Monitor Mode.
-* [`ifconfig`](https://en.wikipedia.org/wiki/Ifconfig): For starting/stopping wireless devices.
+* [`iw`](https://wireless.wiki.kernel.org/en/users/documentation/iw): For identifying wireless devices already in Monitor Mode.
+* [`ip`](https://packages.debian.org/buster/net-tools): For starting/stopping wireless devices.
 * [`Aircrack-ng`](http://aircrack-ng.org/) suite, includes:
    * [`airmon-ng`](https://tools.kali.org/wireless-attacks/airmon-ng): For enumerating and enabling Monitor Mode on wireless devices.
    * [`aircrack-ng`](https://tools.kali.org/wireless-attacks/aircrack-ng): For cracking WEP .cap files and WPA handshake captures.
@@ -56,7 +56,7 @@ Second, only the latest versions of these programs are supported and must be ins
 Run Wifite
 ----------
 ```
-git clone https://github.com/derv82/wifite2.git
+git clone https://github.com/kimocoder/wifite2.git
 cd wifite2
 sudo ./Wifite.py
 ```
