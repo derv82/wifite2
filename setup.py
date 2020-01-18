@@ -25,11 +25,11 @@ setup(
     },
     license='GNU GPLv2',
     scripts=['bin/wifite'],
-    description='Wireless Network Auditor for Linux',
+    description='Wireless Network Auditor for Linux & Android',
     #long_description=open('README.md').read(),
-    long_description='''Wireless Network Auditor for Linux.
+    long_description='''Wireless Network Auditor for Linux & Android.
 
-    Cracks WEP, WPA, and WPS encrypted networks.
+    Sniff, Injects and Cracks WEP, WPA/2, and WPS encrypted networks.
 
     Depends on Aircrack-ng Suite, Tshark (from Wireshark), and various other external tools.''',
     classifiers = [
