@@ -96,6 +96,9 @@ Brief Feature List
    * Includes information about the cracked access point (Name, BSSID, Date, etc).
 * Easy to try to crack handshakes or PMKID hashes against a wordlist (`--crack`)
 
+TIP! Use `wifite.py -h -v` for a collection of switches and settings
+for your own customization, automation, timers and so on ..
+
 What's new?
 -----------
 Comparing this repo to the "old wifite" @ https://github.com/derv82/wifite
@@ -111,7 +114,7 @@ Comparing this repo to the "old wifite" @ https://github.com/derv82/wifite
 * **Educational**
    * The `--verbose` option (expandable to `-vv` or `-vvv`) shows which commands are executed & the output of those commands.
    * This can help debug why Wifite is not working for you. Or so you can learn how these tools are used.
-* More-actively developed.
+* More-actively developed, with some help from the awesome open-source community.
 * Python 3 support.
 * Sweet new ASCII banner.
 
