@@ -27,20 +27,6 @@ Requirements:
 
 ------------------------------------------------------
 
-### Support Other Distributions (not just Kali x86/64)
-
-Off the top of my head:
-
-* Raspberry Pi (or any Debian distro)
-* Raspberry Pi + Kali (?)
-* Kali Nethunter
-* Various other distributions (backbox, pentoo, blackarch, etc)
-
-Deprecation of "core" programs:
-
-* `iwconfig` is deprecated in favor of `iw`
-* `ifconfig` is deprecated in favor of `ip`
-
 Versioning problems:
 
 * Pixiewps output differs depending on version
@@ -71,6 +57,7 @@ Every option in Wifite's should either:
 1. Significantly affect how Wifite behaves (e.g. `pillage`, `5ghz`, '--no-wps', '--nodeauths')
 2. Or narrow down the list of targets (e.g. filtering --wps --wep --channel)
 3. Or set some flag required by certain hardware (packets per second)
+4. Change timer settings for moving on or hit 'deadlocks' of some kind
 
 Any options that don't fall into the above buckets should be removed.
 
@@ -108,8 +95,7 @@ And some native Python implementations might be cross-platform, which would allo
 
 ### Non-Linux support (OSX & Windows)
 
-Some of Wifite's dependencies work on other OSes (airodump) but some don't (airmon).
-
+Some of Wifite's dependencies work on other OSes (airodump-ng) but some don't (airmon-ng).
 If it's possible to run these programs on Windows or OSX, Wifite should support that.
 
 ------------------------------------------------------
@@ -138,10 +124,10 @@ Order of statuses:
 4. Running pixiewps
 5. Cracked or Failed
 
-And as for PIN cracking.. um.. Not even sure this should be an option in Wifite TBH.
-PIN cracking takes days and most APs auto-lock after 3 attempts.
+wifite wasn't made for heavy memory lifting cracking, rather to be a tool to use 'on the run',
+therefor it includes a probeable wordlist, rather than those bigger tables/lists out there.
 Multi-day (possibly multi-month) attacks aren't a good fit for Wifite.
-Users with that kind of dedication can run bully/reaver themselves.
+Users with that kind of dedication can run bully/reaver/hashcat themselves.
 
 ------------------------------------------------------
 
