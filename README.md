@@ -29,7 +29,7 @@ NetHunter (Android) is also widely supported by wifite, but it will require a cu
 patches for injection in order to work. Tested working like a charm on Android 10 (Q).
 
 More information regarding [ Android: **NetHunter** ](https://gitlab.com/kalilinux/nethunter) is found there and
-you should also take a look at the [ **NetHunter WIKI** ](https://gitlab.com/kalilinux/nethunter/build-scripts/kali-nethunter-project/-/wikis/home) which is more up to date then [ Nethunter.com ](https://nethunter.com).
+you should also take a look at the [ **NetHunter WIKI** ](https://www.kali.org/docs/nethunter/) which is more up to date then [ Nethunter.com ](https://nethunter.com).
 
 Other pen-testing distributions (such as BackBox or Ubuntu) have outdated versions of the tools used by Wifite. Do not expect support unless you are using the latest versions of the *Required Tools*, and also [patched wireless drivers that support injection]().
 
