@@ -1,3 +1,10 @@
+[![GitHub version](https://img.shields.io/badge/version-2.5.1-informational.svg)](#)
+[![GitHub issues](https://img.shields.io/github/issues/kimocoder/wifite2.svg)](https://github.com/kimocoder/wifite2/issues)
+[![GitHub forks](https://img.shields.io/github/forks/kimocoder/wifite2.svg)](https://github.com/kimocoder/wifite2/network)
+[![GitHub stars](https://img.shields.io/github/stars/kimocoder/wifite2.svg)](https://github.com/kimocoder/wifite2/stargazers)
+[![GitHub license](https://img.shields.io/github/license/kimocoder/wifite2.svg)](https://github.com/kimocoder/wifite2/blob/master/LICENSE)
+
+
 Wifite
 ======
 
@@ -21,8 +28,8 @@ Wifite is designed specifically for the latest version of [**Kali** Linux](https
 NetHunter (Android) is also widely supported by wifite, but it will require a custom kernel with modules support and various
 patches for injection in order to work. Tested working like a charm on Android 10 (Q).
 
-More information regarding [ Android: NetHunter ](https://gitlab.com/kalilinux/nethunter) is found there and
-you should also take a look at the [ NetHunter WIKI ](https://gitlab.com/kalilinux/nethunter/build-scripts/kali-nethunter-project/-/wikis/home) which is more up to date then [ Nethunter.com ](https://nethunter.com).
+More information regarding [ Android: **NetHunter** ](https://gitlab.com/kalilinux/nethunter) is found there and
+you should also take a look at the [ **NetHunter WIKI** ](https://gitlab.com/kalilinux/nethunter/build-scripts/kali-nethunter-project/-/wikis/home) which is more up to date then [ Nethunter.com ](https://nethunter.com).
 
 Other pen-testing distributions (such as BackBox or Ubuntu) have outdated versions of the tools used by Wifite. Do not expect support unless you are using the latest versions of the *Required Tools*, and also [patched wireless drivers that support injection]().
 
@@ -34,9 +41,9 @@ Second, only the latest versions of these programs are supported and must be ins
 
 **Required:**
 
-* It's recommended to use `python3` as `python2` is deprecated.
-* [`iw`](https://wireless.wiki.kernel.org/en/users/documentation/iw): For identifying wireless devices already in Monitor Mode.
-* [`ip`](https://packages.debian.org/buster/net-tools): For starting/stopping wireless devices.
+* It's recommended to use `python3` as `python2` was marked deprecated as of january 2020.
+* [`IW`](https://wireless.wiki.kernel.org/en/users/documentation/iw): For identifying wireless devices already in Monitor Mode.
+* [`IP`](https://packages.debian.org/buster/net-tools): For starting/stopping wireless devices.
 * [`Aircrack-ng`](http://aircrack-ng.org/) suite, includes:
    * [`airmon-ng`](https://tools.kali.org/wireless-attacks/airmon-ng): For enumerating and enabling Monitor Mode on wireless devices.
    * [`aircrack-ng`](https://tools.kali.org/wireless-attacks/aircrack-ng): For cracking WEP .cap files and WPA handshake captures.
