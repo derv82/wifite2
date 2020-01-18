@@ -18,6 +18,12 @@ Supported Operating Systems
 ---------------------------
 Wifite is designed specifically for the latest version of [**Kali** Linux](https://www.kali.org/). [ParrotSec](https://www.parrotsec.org/) is also supported.
 
+NetHunter (Android) is also widely supported by wifite, but it will require a custom kernel with modules support and various
+patches for injection in order to work. Tested working like a charm on Android 10 (Q).
+
+More information regarding [ Android: NetHunter ](https://gitlab.com/kalilinux/nethunter) is found there and
+you should also take a look at the [ NetHunter WIKI ](https://gitlab.com/kalilinux/nethunter/build-scripts/kali-nethunter-project/-/wikis/home) which is more up to date then [ Nethunter.com ](https://nethunter.com).
+
 Other pen-testing distributions (such as BackBox or Ubuntu) have outdated versions of the tools used by Wifite. Do not expect support unless you are using the latest versions of the *Required Tools*, and also [patched wireless drivers that support injection]().
 
 Required Tools
@@ -130,6 +136,12 @@ What's not new?
 
 Screenshots
 -----------
+
+NetHunter Android 10 (Q) scanning for targets / target information
+![Scanning for targets](https://i.imgur.com/8QQMfME.jpg)
+
+-------------
+
 Cracking WPS PIN using `reaver`'s Pixie-Dust attack, then fetching WPA key using `bully`:
 ![Pixie-Dust with Reaver to get PIN and Bully to get PSK](https://i.imgur.com/Q5KSDbg.gif)
 
