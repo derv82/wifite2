@@ -1,3 +1,3 @@
 #!/bin/bash
 
-pytest-3 --flake8
+python3 -m pytest --flake8
