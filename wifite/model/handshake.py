@@ -214,22 +214,22 @@ if __name__ == '__main__':
     print('With BSSID & ESSID specified:')
     hs = Handshake('./tests/files/handshake_has_1234.cap', bssid='18:d6:c7:6d:6b:18', essid='YZWifi')
     hs.analyze()
-    print('has_hanshake() =', hs.has_handshake())
+    print(('has_hanshake() =', hs.has_handshake()))
 
     print('\nWith BSSID, but no ESSID specified:')
     hs = Handshake('./tests/files/handshake_has_1234.cap', bssid='18:d6:c7:6d:6b:18')
     hs.analyze()
-    print('has_hanshake() =', hs.has_handshake())
+    print(('has_hanshake() =', hs.has_handshake()))
 
     print('\nWith ESSID, but no BSSID specified:')
     hs = Handshake('./tests/files/handshake_has_1234.cap', essid='YZWifi')
     hs.analyze()
-    print('has_hanshake() =', hs.has_handshake())
+    print(('has_hanshake() =', hs.has_handshake()))
 
     print('\nWith neither BSSID nor ESSID specified:')
     hs = Handshake('./tests/files/handshake_has_1234.cap')
     try:
         hs.analyze()
-        print('has_hanshake() =', hs.has_handshake())
+        print(('has_hanshake() =', hs.has_handshake()))
     except Exception as e:
         Color.pl('{O}Error during Handshake.analyze(): {R}%s{W}' % e)

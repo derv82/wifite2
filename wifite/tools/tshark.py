@@ -94,7 +94,7 @@ class Tshark(Dependency):
 
         bssids = set()
         # Check if we have all 4 messages for the handshake between the same MACs
-        for (target_client, num) in target_client_msg_nums.items():
+        for (target_client, num) in list(target_client_msg_nums.items()):
             if num == 4:
                 # We got a handshake!
                 this_bssid = target_client.split(',')[0]
@@ -223,8 +223,8 @@ if __name__ == '__main__':
     # Should update 'wps' field of a target
     Tshark.check_for_wps_and_update_targets(test_file, targets)
 
-    print('Target(BSSID={}).wps = {} (Expected: 1)'.format(
-        targets[0].bssid, targets[0].wps))
+    print(('Target(BSSID={}).wps = {} (Expected: 1)'.format(
+        targets[0].bssid, targets[0].wps)))
     assert targets[0].wps == WPSState.UNLOCKED
 
-    print(Tshark.bssids_with_handshakes(test_file, bssid=target_bssid))
+    print((Tshark.bssids_with_handshakes(test_file, bssid=target_bssid)))

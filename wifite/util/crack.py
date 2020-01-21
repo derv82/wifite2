@@ -44,7 +44,7 @@ class CrackHelper:
         # Get wordlist
         if not Configuration.wordlist:
             Color.p('\n{+} Enter wordlist file to use for cracking: {G}')
-            Configuration.wordlist = raw_input()
+            Configuration.wordlist = eval(input())
             Color.p('{W}')
 
             if not os.path.exists(Configuration.wordlist):
@@ -86,7 +86,7 @@ class CrackHelper:
         else:
             Color.p('\n{+} Enter the {C}cracking tool{W} to use ({C}%s{W}): {G}' % (
                 '{W}, {C}'.join(available_tools)))
-            tool_name = raw_input()
+            tool_name = eval(input())
             Color.p('{W}')
 
             if tool_name not in available_tools:
@@ -112,7 +112,7 @@ class CrackHelper:
         if json is None:
             return False
         for result in json:
-            for k in result.keys():
+            for k in list(result.keys()):
                 v = result[k]
                 if 'file' in k and os.path.basename(v) == file:
                     return True
@@ -220,7 +220,7 @@ class CrackHelper:
         cls.print_handshakes(handshakes)
 
         Color.p('{+} Select handshake(s) to crack ({G}%d{W}-{G}%d{W}, select multiple with {C},{W} or {C}-{W} or {C}all{W}): {G}' % (1, len(handshakes)))
-        choices = raw_input()
+        choices = eval(input())
         Color.p('{W}')
 
         selection = []
