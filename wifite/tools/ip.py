@@ -43,11 +43,31 @@ class Ip(Dependency):
     def get_mac(cls, interface):
         from ..util.process import Process
 
-        output = Process(['ip', 'link show', interface]).stdout()
+        output = Process(['ifconfig', interface]).stdout()
 
-        match = re.search(r'([a-fA-F0-9]{2}[-:]){5}[a-fA-F0-9]{2}', output)
+        # Mac address separated by dashes
+        mac_dash_regex = ('[a-zA-Z0-9]{2}-' * 6)[:-1]
+        match = re.search(' ({})'.format(mac_dash_regex), output)
         if match:
-           return match.group(0).replace('-', ':')
+            return match.group(1).replace('-', ':')
+
+        # Mac address separated by colons
+        mac_colon_regex = ('[a-zA-Z0-9]{2}:' * 6)[:-1]
+        match = re.search(' ({})'.format(mac_colon_regex), output)
+        if match:
+            return match.group(1)
 
         raise Exception('Could not find the mac address for %s' % interface)
+
+    #@classmethod
+    #def get_mac(cls, interface):
+    #    from ..util.process import Process
+
+    #    output = Process(['ip', 'link show', interface]).stdout()
+
+    #    match = re.search(r'([a-fA-F0-9]{2}[-:]){5}[a-fA-F0-9]{2}', output)
+    #    if match:
+    #       return match.group(0).replace('-', ':')
+
+    #    raise Exception('Could not find the mac address for %s' % interface)
 
