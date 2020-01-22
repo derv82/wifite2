@@ -74,7 +74,7 @@ class Airmon(Dependency):
 
     def print_menu(self):
         ''' Prints menu '''
-        print((AirmonIface.menu_header()))
+        print(AirmonIface.menu_header())
         for idx, iface in enumerate(self.interfaces, start=1):
             Color.pl(' {G}%d{W}. %s' % (idx, iface))
 
@@ -227,7 +227,7 @@ class Airmon(Dependency):
         else:
             # Multiple interfaces found
             Color.p('{+} Select wireless interface ({G}1-%d{W}): ' % (count))
-            choice = eval(input())
+            choice = raw_input()
 
         iface = a.get(choice)
 
@@ -346,10 +346,10 @@ Interface 15mon is too long for linux so it will be renamed to the old style (wl
 		(mac80211 station mode vif disabled for [phy0]wlx00c0ca4ecae0)
     '''
     start_iface = Airmon._parse_airmon_start(stdout)
-    print(('start_iface from stdout:', start_iface))
+    print('start_iface from stdout:', start_iface)
 
     Configuration.initialize(False)
     iface = Airmon.ask()
     (disabled_iface, enabled_iface) = Airmon.stop(iface)
-    print(('Disabled:', disabled_iface))
-    print(('Enabled:', enabled_iface))
+    print('Disabled:', disabled_iface)
+    print('Enabled:', enabled_iface)

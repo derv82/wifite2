@@ -61,7 +61,7 @@ class Aircrack(Dependency):
     def _hex_and_ascii_key(hex_raw):
         hex_chars = []
         ascii_key = ''
-        for index in range(0, len(hex_raw), 2):
+        for index in xrange(0, len(hex_raw), 2):
             byt = hex_raw[index:index+2]
             hex_chars.append(byt)
             byt_int = int(byt, 16)
@@ -156,7 +156,7 @@ if __name__ == '__main__':
     Configuration.initialize(False)
 
     ivs_file = 'tests/files/wep-crackable.ivs'
-    print(('Running aircrack on %s ...' % ivs_file))
+    print('Running aircrack on %s ...' % ivs_file)
 
     aircrack = Aircrack(ivs_file)
     while aircrack.is_running():
@@ -166,7 +166,7 @@ if __name__ == '__main__':
     print('aircrack process completed.')
 
     (hexkey, asciikey) = aircrack.get_key_hex_ascii()
-    print(('aircrack found HEX key: (%s) and ASCII key: (%s)' % (hexkey, asciikey)))
+    print('aircrack found HEX key: (%s) and ASCII key: (%s)' % (hexkey, asciikey))
     assert hexkey == '75:6E:63:6C:65', 'hexkey was "%s", expected "75:6E:63:6C:65"' % hexkey
     assert asciikey == 'uncle', 'asciikey was "%s", expected "uncle"' % asciikey
 

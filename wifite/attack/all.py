@@ -24,7 +24,7 @@ class AttackAll(object):
         targets_remaining = len(targets)
         for index, target in enumerate(targets, start=1):
             if Configuration.attack_max != 0 and index > Configuration.attack_max:
-                print(("Attacked %d targets, stopping because of the --first flag" % Configuration.attack_max))
+                print("Attacked %d targets, stopping because of the --first flag" % Configuration.attack_max)
                 break
             attacked_targets += 1
             targets_remaining -= 1
@@ -156,7 +156,7 @@ class AttackAll(object):
 
         from ..util.input import raw_input
         Color.p(prompt)
-        answer = input().lower()
+        answer = raw_input().lower()
 
         if answer.startswith('s'):
             return None  # Skip
