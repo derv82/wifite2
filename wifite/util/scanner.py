@@ -4,10 +4,10 @@
 from ..util.color import Color
 from ..tools.airodump import Airodump
 from ..util.input import raw_input, xrange
-from ..model.target import Target, WPSState, ArchivedTarget
 from ..config import Configuration
 
 from time import sleep, time
+
 
 class Scanner(object):
     ''' Scans wifi networks & provides menu for selecting targets '''
@@ -251,7 +251,7 @@ class Scanner(object):
         if self.err_msg is not None:
             Color.pl(self.err_msg)
 
-        input_str  = '{+} select target(s)'
+        input_str = '{+} select target(s)'
         input_str += ' ({G}1-%d{W})' % len(self.targets)
         input_str += ' separated by commas, dashes'
         input_str += ' or {G}all{W}: '
@@ -274,6 +274,7 @@ class Scanner(object):
                 chosen_targets.append(self.targets[choice])
 
         return chosen_targets
+
 
 if __name__ == '__main__':
     # 'Test' script will display targets and selects the appropriate one
