@@ -110,6 +110,7 @@ class Configuration(object):
                 cls.wordlist = wlist
                 break
 
+        # Add check for "/usr/share/ieee-data/oui.txt" here, if not use below
         manufacturers = './ieee-oui.txt'
 
         if os.path.exists(manufacturers):
