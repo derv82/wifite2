@@ -81,8 +81,8 @@ RUN ln -s /hashcat/hashcat-utils-${HASHCAT_UTILS_VERSION}/bin/cap2hccapx.bin /us
 WORKDIR /
 
 # Install reaver
-RUN git clone https://github.com/gabrielrcouto/reaver-wps.git
-WORKDIR /reaver-wps/src/
+RUN git clone https://github.com/t6x/reaver-wps-fork-t6x
+WORKDIR /reaver-wps-fork-t6x/src/
 RUN ./configure
 RUN make
 RUN make install
@@ -91,7 +91,7 @@ RUN make install
 WORKDIR /
 
 # Install cowpatty
-RUN git clone https://github.com/roobixx/cowpatty.git
+RUN git clone https://github.com/joswr1ght/cowpatty
 WORKDIR /cowpatty/
 RUN make
 
