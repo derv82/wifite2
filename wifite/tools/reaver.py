@@ -3,7 +3,7 @@
 
 from .dependency import Dependency
 from .airodump import Airodump
-from .bully import Bully # for PSK retrieval
+from .bully import Bully  # for PSK retrieval
 from ..model.attack import Attack
 from ..config import Configuration
 from ..model.wps_result import CrackResultWPS
@@ -11,7 +11,10 @@ from ..util.color import Color
 from ..util.process import Process
 from ..util.timer import Timer
 
-import os, time, re
+import os
+import time
+import re
+
 
 class Reaver(Attack, Dependency):
     dependency_required = False
@@ -66,7 +69,7 @@ class Reaver(Attack, Dependency):
     def run(self):
         ''' Returns True if attack is successful. '''
         try:
-            self._run() # Run-loop
+            self._run()  # Run-loop
         except Exception as e:
             # Failed with error
             self.pattack('{R}Failed:{O} %s' % str(e), newline=True)
@@ -98,6 +101,7 @@ class Reaver(Attack, Dependency):
             self.reaver_proc = Process(self.reaver_cmd,
                     stdout=self.output_write,
                     stderr=Process.devnull())
+
             # Say "yes" if asked to restore session.
             self.reaver_proc.stdin('y\n')
 
@@ -374,6 +378,7 @@ class Reaver(Attack, Dependency):
 
         return stdout.strip()
 
+
 if __name__ == '__main__':
     old_stdout = '''
 [Pixie-Dust]
@@ -435,24 +440,24 @@ executing pixiewps -e d0141b15656e96b85fcead2e8e76330d2b1ac1576bb026e7a328c0e1ba
 '''
 
     (pin, psk, ssid) = Reaver.get_pin_psk_ssid(old_stdout)
-    assert pin  == '12345678',    'pin was "%s", should have been "12345678"' % pin
-    assert psk  == 'Test PSK',    'psk was "%s", should have been "Test PSK"' % psk
+    assert pin == '12345678', 'pin was "%s", should have been "12345678"' % pin
+    assert psk == 'Test PSK', 'psk was "%s", should have been "Test PSK"' % psk
     assert ssid == 'Test Router', 'ssid was %s, should have been Test Router' % repr(ssid)
     result = CrackResultWPS('AA:BB:CC:DD:EE:FF', ssid, pin, psk)
     result.dump()
     print('')
 
     (pin, psk, ssid) = Reaver.get_pin_psk_ssid(new_stdout)
-    assert pin  == '11867722',   'pin was "%s", should have been "11867722"' % pin
-    assert psk  is None,         'psk was "%s", should have been "None"' % psk
+    assert pin == '11867722', 'pin was "%s", should have been "11867722"' % pin
+    assert psk is None, 'psk was "%s", should have been "None"' % psk
     assert ssid == 'belkin.00e', 'ssid was "%s", should have been "belkin.00e"' % repr(ssid)
     result = CrackResultWPS('AA:BB:CC:DD:EE:FF', ssid, pin, psk)
     result.dump()
     print('')
 
     (pin, psk, ssid) = Reaver.get_pin_psk_ssid(pin_attack_stdout)
-    assert pin  == '01030365',   'pin was "%s", should have been "01030365"' % pin
-    assert psk  == 'password',   'psk was "%s", should have been "password"' % psk
+    assert pin == '01030365', 'pin was "%s", should have been "01030365"' % pin
+    assert psk == 'password', 'psk was "%s", should have been "password"' % psk
     assert ssid == 'AirLink89300', 'ssid was "%s", should have been "AirLink89300"' % repr(ssid)
     result = CrackResultWPS('AA:BB:CC:DD:EE:FF', ssid, pin, psk)
     result.dump()

@@ -54,7 +54,7 @@ class Process(object):
     def exists(program):
         ''' Checks if program is installed on this system '''
 
-        if Configuration.initialized: # Maybe we already checked this program
+        if Configuration.initialized:  # Maybe we already checked this program
             if program in set(Configuration.existing_commands.keys()):
                 return Configuration.existing_commands[program]
 
@@ -186,6 +186,7 @@ class Process(object):
             if 'No such process' in e.__str__():
                 return
             raise e  # process cannot be killed
+
 
 if __name__ == '__main__':
     Configuration.initialize(False)

@@ -5,6 +5,7 @@ import re
 
 from .dependency import Dependency
 
+
 class Ip(Dependency):
     dependency_required = True
     dependency_name = 'ip'
@@ -27,7 +28,6 @@ class Ip(Dependency):
         if pid.poll() != 0:
             raise Exception('Error putting interface %s up:\n%s\n%s' % (interface, pid.stdout(), pid.stderr()))
 
-
     @classmethod
     def down(cls, interface):
         '''Put interface down'''
@@ -37,7 +37,6 @@ class Ip(Dependency):
         pid.wait()
         if pid.poll() != 0:
             raise Exception('Error putting interface %s down:\n%s\n%s' % (interface, pid.stdout(), pid.stderr()))
-
 
     @classmethod
     def get_mac(cls, interface):
@@ -50,4 +49,3 @@ class Ip(Dependency):
            return match.group(0).replace('-', ':')
 
         raise Exception('Could not find the mac address for %s' % interface)
-

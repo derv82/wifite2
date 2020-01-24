@@ -21,6 +21,7 @@ import os
 
 # TODO: --no-crack option while attacking targets (implies user will run --crack later)
 
+
 class CrackHelper:
     '''Manages handshake retrieval, selection, and running the cracking commands.'''
 
@@ -152,12 +153,12 @@ class CrackHelper:
 
             name, essid, bssid, date = hs_file.split('_')
             date = date.rsplit('.', 1)[0]
-            days,hours = date.split('T')
+            days, hours = date.split('T')
             hours = hours.replace('-', ':')
             date = '%s %s' % (days, hours)
 
             # Patch for essid with " " (zero) or dot "." in name
-            handshakenew=Handshake(os.path.join(hs_dir, hs_file))
+            handshakenew = Handshake(os.path.join(hs_dir, hs_file))
             handshakenew.divine_bssid_and_essid()
             essid_discovery = handshakenew.essid
 
@@ -297,6 +298,7 @@ class CrackHelper:
             return CrackResultPMKID(hs['bssid'], hs['essid'], hs['filename'], key)
         else:
             return None
+
 
 if __name__ == '__main__':
     CrackHelper.run()

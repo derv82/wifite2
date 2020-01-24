@@ -4,15 +4,16 @@
 from .dependency import Dependency
 from ..util.process import Process
 
+
 class Hostapd(Dependency):
     dependency_required = False
-    dependency_name     = 'hostapd'
-    dependency_url      = 'apt-get install hostapd'
+    dependency_name = 'hostapd'
+    dependency_url = 'apt-get install hostapd'
 
     @classmethod
     def run(slef, iface, target):
 
-        fout = open('/tmp/hostapd.conf','w')
+        fout = open('/tmp/hostapd.conf', 'w')
         fout.write('interface='+iface+'\n')
         fout.write('ssid='+target.essid+'\n')
         fout.write('channel='+target.channel+'\n')

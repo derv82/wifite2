@@ -16,7 +16,6 @@ class John(Dependency):
     dependency_name = 'john'
     dependency_url = 'http://www.openwall.com/john/'
 
-
     @staticmethod
     def crack_handshake(handshake, show_command=False):
         john_file = HcxPcapTool.generate_john_file(handshake, show_command=show_command)

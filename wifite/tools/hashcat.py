@@ -54,7 +54,6 @@ class Hashcat(Dependency):
 
         return key
 
-
     @staticmethod
     def crack_pmkid(pmkid_file, verbose=False):
         '''

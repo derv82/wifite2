@@ -5,6 +5,7 @@ from .dependency import Dependency
 from ..util.process import Process
 import re
 
+
 class Pyrit(Dependency):
     ''' Wrapper for Pyrit program. '''
     dependency_required = False
@@ -13,7 +14,6 @@ class Pyrit(Dependency):
 
     def __init__(self):
         pass
-
 
     @staticmethod
     def bssid_essid_with_handshakes(capfile, bssid=None, essid=None):
@@ -39,7 +39,7 @@ class Pyrit(Dependency):
 
         for line in pyrit.stdout().split('\n'):
             mac_regex = ('[a-zA-Z0-9]{2}:' * 6)[:-1]
-            match = re.search("^#\d+: AccessPoint (%s) \('(.*)'\):$" % (mac_regex), line)
+            match = re.search(r"^#\d+: AccessPoint (%s) \('(.*)'\):$" % (mac_regex), line)
             if match:
                 # We found a new BSSID and ESSID
                 (current_bssid, current_essid) = match.groups()
@@ -55,6 +55,6 @@ class Pyrit(Dependency):
                 # We hit an AP that we care about.
                 # Line does not contain AccessPoint, see if it's 'good'
                 if ', good' in line:
-                    bssid_essid_pairs.add( (current_bssid, current_essid) )
+                    bssid_essid_pairs.add((current_bssid, current_essid))
 
         return list(bssid_essid_pairs)

@@ -26,7 +26,7 @@ class Scanner(object):
         '''
         Scans for targets via Airodump.
         Loops until scan is interrupted via user or config.
-        Note: Sets this object's `targets` attrbute (list[Target]) upon interruption.
+        Sets this object `targets` attribute (list[Target]) on interruption
         '''
 
         max_scan_time = Configuration.scan_time
@@ -39,13 +39,13 @@ class Scanner(object):
 
                 while True:
                     if airodump.pid.poll() is not None:
-                        return True # Airodump process died
+                        return True  # Airodump process died
 
                     self.targets = airodump.get_targets(old_targets=self.targets,
                                                         target_archives=self.target_archives)
 
                     if self.found_target():
-                        return True # We found the target we want
+                        return True  # We found the target we want
 
                     if airodump.pid.poll() is not None:
                         return True  # Airodump process died
@@ -136,8 +136,7 @@ class Scanner(object):
                 break
 
         if self.target:
-            Color.pl('\n{+} {C}found target{G} %s {W}({G}%s{W})'
-                % (self.target.bssid, self.target.essid))
+            Color.pl('\n{+} {C}found target{G} %s {W}({G}%s{W})' % (self.target.bssid, self.target.essid))
             return True
 
         return False
@@ -178,7 +177,6 @@ class Scanner(object):
 
         if Configuration.show_manufacturers:
             Color.p('           MANUFACTURER')
-
 
         Color.pl('   CH  ENCR   POWER  WPS?  CLIENT')
 
@@ -236,8 +234,8 @@ class Scanner(object):
             # 2. How to check if your device supporst monitor mode,
             # 3. Provide airodump-ng command being executed.
             raise Exception('No targets found.'
-                + ' You may need to wait longer,'
-                + ' or you may have issues with your wifi card')
+            + ' You may need to wait longer,'
+            + ' or you may have issues with your wifi card')
 
         # Return all targets if user specified a wait time ('pillage').
         # A scan time is always set if run in infinite mode

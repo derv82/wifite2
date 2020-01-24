@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+
 class Dependency(object):
     required_attr_names = ['dependency_name', 'dependency_url', 'dependency_required']
 
@@ -9,7 +10,7 @@ class Dependency(object):
         for attr_name in cls.required_attr_names:
             if not attr_name in cls.__dict__:
                 raise NotImplementedError(
-                    'Attribute "{}" has not been overridden in class "{}"' \
+                    'Attribute "{}" has not been overridden in class "{}"'
                     .format(attr_name, cls.__name__)
                 )
 
@@ -34,7 +35,7 @@ class Dependency(object):
 
         apps = [
                 # Aircrack
-                Aircrack, #Airodump, Airmon, Aireplay,
+                Aircrack,  #Airodump, Airmon, Aireplay,
                 # wireless/net tools
                 Iw, Ip,
                 # WPS
