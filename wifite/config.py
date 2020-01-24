@@ -9,7 +9,7 @@ from .tools.macchanger import Macchanger
 
 class Configuration(object):
     ''' Stores configuration variables and functions for Wifite. '''
-    version = '2.5.1'
+    version = '2.5.2'
 
     initialized = False # Flag indicating config has been initialized
     temp_dir = None     # Temporary directory
@@ -110,8 +110,10 @@ class Configuration(object):
                 cls.wordlist = wlist
                 break
 
-        # Add check for "/usr/share/ieee-data/oui.txt" here, if not use below
-        manufacturers = './ieee-oui.txt'
+        if os.path.isfile('/usr/share/ieee-data/oui.txt'):
+            manufacturers = './usr/share/ieee-data/oui.txt'
+        else:
+            manufacturers = './ieee-oui.txt'
 
         if os.path.exists(manufacturers):
             with open(manufacturers, "r") as f:
