@@ -69,6 +69,12 @@ class Arguments(object):
             dest='all_bands',
             help=self._verbose('Include both 2.4Ghz and 5Ghz bands (default: {G}off{W})'))
 
+        glob.add_argument('-2',
+            '--2ghz',
+            action='store_true',
+            dest='two_ghz',
+            help=self._verbose('Include 2.4Ghz channels (default: {G}off{W})'))
+
         glob.add_argument('-5',
             '--5ghz',
             action='store_true',
@@ -523,8 +529,8 @@ class Arguments(object):
             dest='crack_handshake',
             help=Color.s('Show commands to crack a captured handshake'))
 
+
 if __name__ == '__main__':
-    from .util.color import Color
     from .config import Configuration
     Configuration.initialize(False)
     a = Arguments(Configuration)

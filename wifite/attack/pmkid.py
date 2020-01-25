@@ -36,7 +36,7 @@ class AttackPMKID(Attack):
 
         bssid = bssid.lower().replace(':', '')
 
-        file_re = re.compile('.*pmkid_.*\.16800')
+        file_re = re.compile(r'.*pmkid_.*\.16800')
         for filename in os.listdir(Configuration.wpa_handshake_dir):
             pmkid_filename = os.path.join(Configuration.wpa_handshake_dir, filename)
             if not os.path.isfile(pmkid_filename):

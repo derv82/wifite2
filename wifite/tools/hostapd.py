@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from .dependency import Dependency
-from ..util.process import Process
+# from ..util.process import Process
 
 
 class Hostapd(Dependency):
@@ -20,11 +20,11 @@ class Hostapd(Dependency):
         fout.write('driver=nl80211\n')
         fout.close()
 
-        command = [
-            'hostapd',
-            '/tmp/hostapd.conf'
-        ]
-        process = Process(command)
+        #command = [
+        #    'hostapd',
+        #    '/tmp/hostapd.conf'
+        #]
+        #process = Process(command)
 
         return None
 

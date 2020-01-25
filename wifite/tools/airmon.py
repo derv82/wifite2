@@ -13,6 +13,7 @@ import re
 import os
 import signal
 
+
 class AirmonIface(object):
     def __init__(self, phy, interface, driver, chipset):
         self.phy = phy
@@ -48,6 +49,7 @@ class AirmonIface(object):
         s += '-' * (AirmonIface.INTERFACE_LEN + AirmonIface.PHY_LEN + AirmonIface.DRIVER_LEN + AirmonIface.CHIPSET_LEN + 3)
         return s
 
+
 class Airmon(Dependency):
     ''' Wrapper around the 'airmon-ng' program '''
     dependency_required = True
@@ -61,9 +63,9 @@ class Airmon(Dependency):
 
     # Drivers that need to be manually put into monitor mode
     BAD_DRIVERS = ['rtl8821au']
-    #see if_arp.h
-    ARPHRD_ETHER = 1 #managed
-    ARPHRD_IEEE80211_RADIOTAP = 803 #monitor
+    # see if_arp.h
+    ARPHRD_ETHER = 1  # managed
+    ARPHRD_IEEE80211_RADIOTAP = 803  # monitor
 
     def __init__(self):
         self.refresh()
@@ -83,7 +85,6 @@ class Airmon(Dependency):
         if type(index) is str:
             index = int(index)
         return self.interfaces[index - 1]
-
 
     @staticmethod
     def get_interfaces():
@@ -119,8 +120,6 @@ class Airmon(Dependency):
                 return iface
 
         return None
-
-
 
     @staticmethod
     def start_bad_driver(iface):
@@ -214,7 +213,6 @@ class Airmon(Dependency):
 
         return enabled_iface
 
-
     @staticmethod
     def _parse_airmon_start(airmon_output):
         '''Find the interface put into monitor mode (if any)'''
@@ -296,7 +294,7 @@ class Airmon(Dependency):
             # Assume we're using the device already in montior mode
             iface = monitor_interfaces[0]
             Color.clear_entire_line()
-            Color.pl('{+} Using {G}%s{W} already in monitor mode' % iface);
+            Color.pl('{+} Using {G}%s{W} already in monitor mode' % iface)
             Airmon.base_interface = None
             return iface
 
@@ -349,7 +347,7 @@ class Airmon(Dependency):
             if match:
                 pid = match.group(1)
                 pname = match.group(2)
-                pid_pnames.append( (pid, pname) )
+                pid_pnames.append((pid, pname))
 
         if len(pid_pnames) == 0:
             return
@@ -422,6 +420,7 @@ class Airmon(Dependency):
         else:
             Color.pl(' {R}cannot restart NetworkManager: {O}systemctl{R} or {O}service{R} not found{W}')
 
+
 if __name__ == '__main__':
     stdout = '''
 Found 2 processes that could cause trouble.
@@ -437,8 +436,8 @@ PHY	Interface	Driver		Chipset
 phy0	wlx00c0ca4ecae0	rtl8187		Realtek Semiconductor Corp. RTL8187
 Interface 15mon is too long for linux so it will be renamed to the old style (wlan#) name.
 
-		(mac80211 monitor mode vif enabled on [phy0]wlan0mon
-		(mac80211 station mode vif disabled for [phy0]wlx00c0ca4ecae0)
+                (mac80211 monitor mode vif enabled on [phy0]wlan0mon
+                (mac80211 station mode vif disabled for [phy0]wlx00c0ca4ecae0)
     '''
     start_iface = Airmon._parse_airmon_start(stdout)
     print('start_iface from stdout:', start_iface)

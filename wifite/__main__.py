@@ -9,7 +9,6 @@ except (ValueError, ImportError) as e:
 from .util.color import Color
 
 import os
-import sys
 
 class Wifite(object):
 

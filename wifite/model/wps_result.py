@@ -4,7 +4,6 @@
 from ..util.color import Color
 from ..model.result import CrackResult
 
-import time
 
 class CrackResultWPS(CrackResult):
     def __init__(self, bssid, essid, pin, psk):

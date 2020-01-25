@@ -9,7 +9,9 @@ from ..config import Configuration
 from ..model.target import Target, WPSState
 from ..model.client import Client
 
-import os, time
+import os
+import time
+
 
 class Airodump(Dependency):
     ''' Wrapper around airodump-ng program '''
@@ -17,9 +19,9 @@ class Airodump(Dependency):
     dependency_name = 'airodump-ng'
     dependency_url = 'https://www.aircrack-ng.org/install.html'
 
-    def __init__(self, interface=None, channel=None, encryption=None,\
+    def __init__(self, interface=None, channel=None, encryption=None,
                        wps=WPSState.UNKNOWN, target_bssid=None,
-                       output_file_prefix='airodump',\
+                       output_file_prefix='airodump',
                        ivs_only=False, skip_wps=False, delete_existing_files=True):
         '''Sets up airodump arguments, doesn't start process yet.'''
 
@@ -37,6 +39,7 @@ class Airodump(Dependency):
             channel = Configuration.target_channel
         self.channel = channel
         self.all_bands = Configuration.all_bands
+        self.two_ghz = Configuration.two_ghz
         self.five_ghz = Configuration.five_ghz
 
         self.encryption = encryption
@@ -49,7 +52,7 @@ class Airodump(Dependency):
 
         # For tracking decloaked APs (previously were hidden)
         self.decloaking = False
-        self.decloaked_times = {} # Map of BSSID(str) -> epoch(int) of last deauth
+        self.decloaked_times = {}  # Map of BSSID(str) -> epoch(int) of last deauth
 
         self.delete_existing_files = delete_existing_files
 
@@ -68,12 +71,13 @@ class Airodump(Dependency):
         command = [
             'airodump-ng',
             self.interface,
-            '-a', # Only show associated clients
-            '-w', self.csv_file_prefix, # Output file prefix
-            '--write-interval', '1' # Write every second
+            '-a',  # Only show associated clients
+            '-w', self.csv_file_prefix,  # Output file prefix
+            '--write-interval', '1'  # Write every second
         ]
         if self.channel:    command.extend(['-c', str(self.channel)])
         elif self.all_bands: command.extend(['--band', 'abg'])
+        elif self.two_ghz: command.extend(['--band', 'bg'])
         elif self.five_ghz: command.extend(['--band', 'a'])
 
         if self.encryption:   command.extend(['--enc', self.encryption])
@@ -166,7 +170,7 @@ class Airodump(Dependency):
 
                     old_target.transfer_info(new_target)
                     just_found = False
-                    break;
+                    break
 
             # If the new_target is not in old_targets, check target_archives
             # and copy attributes from there
@@ -214,7 +218,8 @@ class Airodump(Dependency):
             for row in csv_reader:
                 # Each 'row' is a list of fields for a target/client
 
-                if len(row) == 0: continue
+                if len(row) == 0:
+                    continue
 
                 if row[0].strip() == 'BSSID':
                     # This is the 'header' for the list of Targets
@@ -271,7 +276,7 @@ class Airodump(Dependency):
             if 'WEP' in Configuration.encryption_filter and 'WEP' in target.encryption:
                 result.append(target)
             elif 'WPA' in Configuration.encryption_filter and 'WPA' in target.encryption:
-                    result.append(target)
+                result.append(target)
             elif 'WPS' in Configuration.encryption_filter and target.wps in [WPSState.UNLOCKED, WPSState.LOCKED]:
                 result.append(target)
             elif skip_wps:
@@ -310,8 +315,8 @@ class Airodump(Dependency):
         # Reusable deauth command
         deauth_cmd = [
             'aireplay-ng',
-            '-0', # Deauthentication
-            str(Configuration.num_deauths), # Number of deauth packets to send
+            '-0',  # Deauthentication
+            str(Configuration.num_deauths),  # Number of deauth packets to send
             '--ignore-negative-one'
         ]
 
@@ -338,6 +343,7 @@ class Airodump(Dependency):
             # Deauth clients
             for client in target.clients:
                 Process(deauth_cmd + ['-a', target.bssid, '-c', client.bssid, iface])
+
 
 if __name__ == '__main__':
     ''' Example usage. wlan0mon should be in Monitor Mode '''

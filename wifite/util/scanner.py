@@ -95,8 +95,8 @@ class Scanner(object):
         Returns: True if user wants to stop attack, False otherwise
         '''
         self.previous_target_count = 0
-        for target in self.targets:
-            self.target_archives[target.bssid] = ArchivedTarget(target)
+        # for target in self.targets:
+            # self.target_archives[target.bssid] = ArchivedTarget(target)
 
         self.targets = []
         do_continue = self.find_targets()
@@ -126,8 +126,8 @@ class Scanner(object):
             return False  # No specific target from user.
 
         for target in self.targets:
-            if Configuration.wps_only and target.wps not in [WPSState.UNLOCKED, WPSState.LOCKED]:
-                continue
+            # if Configuration.wps_only and target.wps not in [WPSState.UNLOCKED, WPSState.LOCKED]:
+            #    continue
             if bssid and target.bssid and bssid.lower() == target.bssid.lower():
                 self.target = target
                 break

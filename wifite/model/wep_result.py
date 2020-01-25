@@ -4,7 +4,6 @@
 from ..util.color import Color
 from .result import CrackResult
 
-import time
 
 class CrackResultWEP(CrackResult):
     def __init__(self, bssid, essid, hex_key, ascii_key):
