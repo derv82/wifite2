@@ -42,8 +42,8 @@ Second, only the latest versions of these programs are supported and must be ins
 **Required:**
 
 * It's recommended to use `python3` as `python2` was marked deprecated as of january 2020.
-* [`IW`](https://wireless.wiki.kernel.org/en/users/documentation/iw): For identifying wireless devices already in Monitor Mode.
-* [`IP`](https://packages.debian.org/buster/net-tools): For starting/stopping wireless devices.
+* [`Iw`](https://wireless.wiki.kernel.org/en/users/documentation/iw): For identifying wireless devices already in Monitor Mode.
+* [`Ip`](https://packages.debian.org/buster/net-tools): For starting/stopping wireless devices.
 * [`Aircrack-ng`](http://aircrack-ng.org/) suite, includes:
    * [`airmon-ng`](https://tools.kali.org/wireless-attacks/airmon-ng): For enumerating and enabling Monitor Mode on wireless devices.
    * [`aircrack-ng`](https://tools.kali.org/wireless-attacks/aircrack-ng): For cracking WEP .cap files and WPA handshake captures.
