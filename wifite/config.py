@@ -117,12 +117,16 @@ class Configuration(object):
             manufacturers = './ieee-oui.txt'
 
         if os.path.exists(manufacturers):
+            cls.manufacturers = {}
             with open(manufacturers, "r") as f:
                 # Parse txt format into dict
-                lines = f.read().splitlines()
-                k = lambda line: line.split()[0]
-                v = lambda line: ' '.join(line.split()[1:3]).rstrip('.')
-                cls.manufacturers = {k(line):v(line) for line in lines}
+                for line in f:
+                    if not re.match(r"^\w", line):
+                        continue
+                    line = line.replace('(hex)', '').replace('(base 16)', '')
+                    fields = line.split()
+                    if len(fields) >= 2:
+                        cls.manufacturers[fields[0]] = " ".join(fields[1:]).rstrip('.')
 
         # WPS variables
         cls.wps_filter  = False  # Only attack WPS networks
