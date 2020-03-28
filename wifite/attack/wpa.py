@@ -51,7 +51,7 @@ class AttackWPA(Attack):
 
         # Check for the --skip-crack flag
         if Configuration.skip_crack:
-            Color.pl('{+} Not cracking handshake because {C}skip_atk{W} was used{W}')
+            Color.pl('{+} Not cracking handshake because {C}skip-crack{W} was used{W}')
             self.success = False
             return False
 
