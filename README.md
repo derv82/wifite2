@@ -1,4 +1,4 @@
-[![GitHub version](https://img.shields.io/badge/version-2.5.1-informational.svg)](#)
+[![GitHub version](https://img.shields.io/badge/version-2.5.4-informational.svg)](#)
 [![GitHub issues](https://img.shields.io/github/issues/kimocoder/wifite2.svg)](https://github.com/kimocoder/wifite2/issues)
 [![GitHub forks](https://img.shields.io/github/forks/kimocoder/wifite2.svg)](https://github.com/kimocoder/wifite2/network)
 [![GitHub stars](https://img.shields.io/github/stars/kimocoder/wifite2.svg)](https://github.com/kimocoder/wifite2/stargazers)
@@ -66,6 +66,12 @@ Second, only the latest versions of these programs are supported and must be ins
    * [`hcxdumptool`](https://github.com/ZerBea/hcxdumptool): For capturing PMKID hashes.
    * [`hcxpcaptool`](https://github.com/ZerBea/hcxtools): For converting PMKID packet captures into `hashcat`'s format.
 
+
+Install dependencies
+--------------------
+```
+sudo pip3 install -r requirements.txt
+```
 
 Run Wifite
 ----------
