@@ -23,6 +23,17 @@ Clean the Enviroment:
 rm -r /usr/share/hcxtools/ /usr/share/hcxdumptool/ /usr/share/cowpatty/ /usr/share/bully/ /usr/share/wifite2/ /usr/local/lib/python2.7/dist-packages/cpyrit/
 ```
 
+
+Edit APT Repo
+----------
+```
+nano /etc/apt/sources.list
+```
+Add this repo
+```
+deb http://ftp.debian.org/debian/ stretch main contrib non-free
+```
+
 This will install `wifite`
 ----------
 ```
