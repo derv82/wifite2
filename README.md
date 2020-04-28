@@ -20,13 +20,13 @@ https://github.com/4k4xs4pH1r3/realtek
 Clean the Enviroment:
 ----------
 ```
-rm -r /usr/share/hcxtools/ /usr/share/hcxdumptool/ /usr/share/cowpatty/ /usr/share/bully/ /usr/share/wifite2/
+rm -r /usr/share/hcxtools/ /usr/share/hcxdumptool/ /usr/share/cowpatty/ /usr/share/bully/ /usr/share/wifite2/ /usr/local/lib/python2.7/dist-packages/cpyrit/
 ```
 
 This will install `wifite`
 ----------
 ```
-apt-get update -y && apt-get upgrade -y && apt-get install python2.7-dev libssl-dev zlib1g-dev libpcap-dev -y && apt-get install libpcap-dev -y && apt-get remove --purge pyrit -y && rm -r /usr/local/lib/python2.7/dist-packages/cpyrit/ && pip install psycopg2 && pip install scapy && apt-get install python-scapy && cd /usr/share/ && git clone https://github.com/JPaulMora/Pyrit.git && cd Pyrit && python setup.py clean && python setup.py build && python setup.py install && apt install neofetch git make clang libpcap-dev reaver tshark wireshark aircrack-ng pixiewps libssl-dev libcurl4-openssl-dev libpcap0.8-dev libcurl4-doc libidn11-dev libkrb5-dev libldap2-dev librtmp-dev libssh2-1-dev libssl-doc -y && cd /usr/share/ && git clone https://github.com/ZerBea/hcxtools.git && cd hcxtools && make && make install && cd /usr/share && git clone https://github.com/ZerBea/hcxdumptool.git  && cd hcxdumptool && make && make install && cd /usr/share && git clone https://github.com/joswr1ght/cowpatty.git && cd cowpatty && make && make install && cd /usr/share && git clone https://github.com/aanarchyy/bully.git && cd bully/src && make && make install && neofetch && cd /usr/share && git clone https://github.com/4k4xs4pH1r3/wifite2.git && cd wifite2 && sudo python setup.py install && neofetch
+apt-get update -y && apt-get upgrade -y && apt-get install python2.7-dev libssl-dev zlib1g-dev libpcap-dev -y && apt-get install libpcap-dev -y && apt-get remove --purge pyrit -y && pip install psycopg2 && pip install scapy && apt-get install python-scapy && cd /usr/share/ && git clone https://github.com/JPaulMora/Pyrit.git && cd Pyrit && python setup.py clean && python setup.py build && python setup.py install && apt install neofetch git make clang libpcap-dev reaver tshark wireshark aircrack-ng pixiewps libssl-dev libcurl4-openssl-dev libpcap0.8-dev libcurl4-doc libidn11-dev libkrb5-dev libldap2-dev librtmp-dev libssh2-1-dev libssl-doc -y && cd /usr/share/ && git clone https://github.com/ZerBea/hcxtools.git && cd hcxtools && make && make install && cd /usr/share && git clone https://github.com/ZerBea/hcxdumptool.git  && cd hcxdumptool && make && make install && cd /usr/share && git clone https://github.com/joswr1ght/cowpatty.git && cd cowpatty && make && make install && cd /usr/share && git clone https://github.com/aanarchyy/bully.git && cd bully/src && make && make install && neofetch && cd /usr/share && git clone https://github.com/4k4xs4pH1r3/wifite2.git && cd wifite2 && sudo python setup.py install && neofetch
 ```
 
 ----------
