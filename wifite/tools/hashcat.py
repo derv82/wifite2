@@ -111,7 +111,7 @@ class HcxDumpTool(Dependency):
         command = [
             'hcxdumptool',
             '-i', Configuration.interface,
-            '--filterlist', filterlist,
+            '--filterlist_ap', filterlist,
             '--filtermode', '2',
             '-c', str(target.channel),
             '-o', pcapng_file
