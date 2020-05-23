@@ -231,7 +231,7 @@ class Scanner(object):
 
             # TODO Print a more-helpful reason for failure.
             # 1. Link to wireless drivers wiki,
-            # 2. How to check if your device supporst monitor mode,
+            # 2. How to check if your device supports monitor mode,
             # 3. Provide airodump-ng command being executed.
             raise Exception('No targets found.'
             + ' You may need to wait longer,'
