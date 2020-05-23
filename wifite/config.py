@@ -84,14 +84,14 @@ class Configuration(object):
         # WPA variables
         cls.wpa_filter = False # Only attack WPA networks
         cls.wpa_deauth_timeout = 15 # Wait time between deauths
-        cls.wpa_attack_timeout = 500 # Wait time before failing
+        cls.wpa_attack_timeout = 300 # Wait time before failing
         cls.wpa_handshake_dir = 'hs' # Dir to store handshakes
         cls.wpa_strip_handshake = False # Strip non-handshake packets
         cls.ignore_old_handshakes = False # Always fetch a new handshake
 
         # PMKID variables
         cls.use_pmkid_only = False  # Only use PMKID Capture+Crack attack
-        cls.pmkid_timeout = 30  # Time to wait for PMKID capture
+        cls.pmkid_timeout = 120  # Time to wait for PMKID capture
         cls.dont_use_pmkid = False # Don't use PMKID attack
 
         # Default dictionary for cracking
