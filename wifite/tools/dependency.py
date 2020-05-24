@@ -35,7 +35,7 @@ class Dependency(object):
 
         apps = [
                 # Aircrack
-                Aircrack,  #Airodump, Airmon, Aireplay,
+                Aircrack,  # Airodump, Airmon, Aireplay,
                 # wireless/net tools
                 Iw, Ip,
                 # WPS

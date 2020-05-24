@@ -6,7 +6,9 @@ from ..util.color import Color
 from ..tools.tshark import Tshark
 from ..tools.pyrit import Pyrit
 
-import re, os
+import re
+import os
+
 
 class Handshake(object):
 
@@ -33,7 +35,7 @@ class Handshake(object):
         pairs = Tshark.bssid_essid_pairs(self.capfile, bssid=self.bssid)
 
         if len(pairs) == 0:
-            pairs = self.pyrit_handshakes() # Find bssid/essid pairs that have handshakes in Pyrit
+            pairs = self.pyrit_handshakes()  # Find bssid/essid pairs that have handshakes in Pyrit
 
         if len(pairs) == 0 and not self.bssid and not self.essid:
             # Tshark and Pyrit failed us, nothing else we can do.
@@ -68,12 +70,12 @@ class Handshake(object):
         if not self.bssid or not self.essid:
             self.divine_bssid_and_essid()
 
-        if len(self.tshark_handshakes()) > 0:   return True
-        if len(self.pyrit_handshakes()) > 0:    return True
+        if len(self.tshark_handshakes()) > 0: return True
+        if len(self.pyrit_handshakes()) > 0: return True
 
         # TODO: Can we trust cowpatty & aircrack?
-        #if len(self.cowpatty_handshakes()) > 0: return True
-        #if len(self.aircrack_handshakes()) > 0: return True
+        # if len(self.cowpatty_handshakes()) > 0: return True
+        # if len(self.aircrack_handshakes()) > 0: return True
 
         return False
 
@@ -87,13 +89,13 @@ class Handshake(object):
         if not Process.exists('cowpatty'):
             return []
         if not self.essid:
-            return [] # We need a essid for cowpatty :(
+            return []  # We need a essid for cowpatty :(
 
         command = [
             'cowpatty',
             '-r', self.capfile,
             '-s', self.essid,
-            '-c' # Check for handshake
+            '-c'  # Check for handshake
         ]
 
         proc = Process(command, devnull=False)
@@ -152,9 +154,9 @@ class Handshake(object):
 
         cmd = [
             'tshark',
-            '-r', self.capfile, # input file
-            '-Y', 'wlan.fc.type_subtype == 0x08 || wlan.fc.type_subtype == 0x05 || eapol', # filter
-            '-w', outfile # output file
+            '-r', self.capfile,  # input file
+            '-Y', 'wlan.fc.type_subtype == 0x08 || wlan.fc.type_subtype == 0x05 || eapol',  # filter
+            '-w', outfile  # output file
         ]
         proc = Process(cmd)
         proc.wait()
@@ -209,6 +211,7 @@ class Handshake(object):
             hs = Handshake(capfile, bssid=Configuration.target_bssid, essid=Configuration.target_essid)
             hs.analyze()
             Color.pl('')
+
 
 if __name__ == '__main__':
     print('With BSSID & ESSID specified:')

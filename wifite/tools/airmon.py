@@ -377,7 +377,7 @@ class Airmon(Dependency):
                 Color.pl('{!} {R}Terminating {O}conflicting process {R}%s{O} (PID {R}%s{O})' % (pname, pid))
                 try:
                     os.kill(int(pid), signal.SIGTERM)
-                except:
+                except Exception:
                     pass
 
     @staticmethod

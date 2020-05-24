@@ -4,6 +4,7 @@
 import time
 from ..config import Configuration
 
+
 class Attack(object):
     '''Contains functionality common to all attacks.'''
 

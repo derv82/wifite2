@@ -46,6 +46,6 @@ class Ip(Dependency):
 
         match = re.search(r'([a-fA-F0-9]{2}[-:]){5}[a-fA-F0-9]{2}', output)
         if match:
-           return match.group(0).replace('-', ':')
+            return match.group(0).replace('-', ':')
 
         raise Exception('Could not find the mac address for %s' % interface)

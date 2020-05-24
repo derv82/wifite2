@@ -4,6 +4,7 @@
 from ..util.color import Color
 from .result import CrackResult
 
+
 class CrackResultWPA(CrackResult):
     def __init__(self, bssid, essid, handshake_file, key):
         self.result_type = 'WPA'
@@ -39,13 +40,14 @@ class CrackResultWPA(CrackResult):
 
     def to_dict(self):
         return {
-            'type'  : self.result_type,
-            'date'  : self.date,
-            'essid' : self.essid,
-            'bssid' : self.bssid,
-            'key'   : self.key,
-            'handshake_file' : self.handshake_file
+            'type': self.result_type,
+            'date': self.date,
+            'essid': self.essid,
+            'bssid': self.bssid,
+            'key': self.key,
+            'handshake_file': self.handshake_file
         }
+
 
 if __name__ == '__main__':
     w = CrackResultWPA('AA:BB:CC:DD:EE:FF', 'Test Router', 'hs/capfile.cap', 'abcd1234')
@@ -56,4 +58,3 @@ if __name__ == '__main__':
     w.dump()
     w.save()
     print(w.__dict__['bssid'])
-

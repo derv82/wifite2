@@ -15,6 +15,7 @@ import time
 import re
 from shutil import copy
 
+
 class AttackPMKID(Attack):
 
     def __init__(self, target):
@@ -52,7 +53,6 @@ class AttackPMKID(Attack):
                 if existing_bssid == bssid:
                     return pmkid_filename
         return None
-
 
     def run_hashcat(self):
         '''
@@ -285,7 +285,7 @@ class AttackPMKID(Attack):
                     'because there is no {R}wordlist{O} (re-run with {C}--dict{O})')
 
             # TODO: Uncomment once --crack is updated to support recracking PMKIDs.
-            #Color.pl('{!} {O}Run Wifite with the {R}--crack{O} and {R}--dict{O} options to try again.')
+            # Color.pl('{!} {O}Run Wifite with the {R}--crack{O} and {R}--dict{O} options to try again.')
 
             key = None
         else:

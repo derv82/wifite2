@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 from wifite.tools.airodump import Airodump
-
 import unittest
+
 
 class TestTarget(unittest.TestCase):
     ''' Test suite for Target parsing an generation '''
@@ -30,6 +30,7 @@ class TestTarget(unittest.TestCase):
         for t in targets:
             if t.bssid == '00:1D:D5:9B:11:00':
                 assert(len(t.clients) > 0)
+
 
 if __name__ == '__main__':
     unittest.main()

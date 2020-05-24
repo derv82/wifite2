@@ -16,6 +16,7 @@ import os
 import re
 from shutil import copy
 
+
 class AttackWPA(Attack):
     def __init__(self, target):
         super(AttackWPA, self).__init__(target)
@@ -27,7 +28,7 @@ class AttackWPA(Attack):
         '''Initiates full WPA handshake capture attack.'''
 
         # Skip if target is not WPS
-        if Configuration.wps_only and self.target.wps == False:
+        if Configuration.wps_only and self.target.wps is False:
             Color.pl('\r{!} {O}Skipping WPA-Handshake attack on {R}%s{O} because {R}--wps-only{O} is set{W}' % self.target.essid)
             self.success = False
             return self.success
@@ -82,7 +83,6 @@ class AttackWPA(Attack):
             self.crack_result.dump()
             self.success = True
         return self.success
-
 
     def capture_handshake(self):
         '''Returns captured or stored handshake, otherwise None.'''
@@ -172,7 +172,7 @@ class AttackWPA(Attack):
 
                 # Sleep for at-most 1 second
                 time.sleep(step_timer.remaining())
-                continue # Handshake listen+deauth loop
+                continue  # Handshake listen+deauth loop
 
         if handshake is None:
             # No handshake, attack failed.
@@ -234,7 +234,6 @@ class AttackWPA(Attack):
         # Update handshake to use the stored handshake file for future operations
         handshake.capfile = cap_filename
 
-
     def deauth(self, target):
         '''
             Sends deauthentication request to broadcast and every client of target.
@@ -254,6 +253,7 @@ class AttackWPA(Attack):
                     'Handshake capture',
                     'Deauthing {O}%s{W}' % target_name)
             Aireplay.deauth(target.bssid, client_mac=client, timeout=2)
+
 
 if __name__ == '__main__':
     Configuration.initialize(True)

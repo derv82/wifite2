@@ -96,7 +96,7 @@ class Scanner(object):
         '''
         self.previous_target_count = 0
         # for target in self.targets:
-            # self.target_archives[target.bssid] = ArchivedTarget(target)
+        # self.target_archives[target.bssid] = ArchivedTarget(target)
 
         self.targets = []
         do_continue = self.find_targets()

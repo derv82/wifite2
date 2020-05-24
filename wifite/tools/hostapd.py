@@ -20,11 +20,11 @@ class Hostapd(Dependency):
         fout.write('driver=nl80211\n')
         fout.close()
 
-        #command = [
-        #    'hostapd',
-        #    '/tmp/hostapd.conf'
-        #]
-        #process = Process(command)
+        # command = [
+        #     'hostapd',
+        #     '/tmp/hostapd.conf'
+        # ]
+        # process = Process(command)
 
         return None
 

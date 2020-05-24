@@ -8,6 +8,7 @@ import os
 import time
 from json import loads, dumps
 
+
 class CrackResult(object):
     ''' Abstract class containing results from a crack session '''
 
@@ -106,7 +107,6 @@ class CrackResult(object):
             result.print_single_line(longest_essid)
         Color.pl('')
 
-
     @classmethod
     def load_all(cls):
         if not os.path.exists(cls.cracked_file): return []
@@ -146,6 +146,7 @@ class CrackResult(object):
         result.date = json['date']
         result.readable_date = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(result.date))
         return result
+
 
 if __name__ == '__main__':
     # Deserialize WPA object

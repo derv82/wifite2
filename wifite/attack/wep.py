@@ -13,6 +13,7 @@ from ..model.wep_result import CrackResultWEP
 
 import time
 
+
 class AttackWEP(Attack):
     '''
         Contains logic for attacking a WEP-encrypted access point.
@@ -32,7 +33,7 @@ class AttackWEP(Attack):
             Returns: True if attack is successful, false otherwise
         '''
 
-        aircrack = None # Aircrack process, not started yet
+        aircrack = None  # Aircrack process, not started yet
         fakeauth_proc = None
         replay_file = None
         airodump_target = None
@@ -54,8 +55,8 @@ class AttackWEP(Attack):
                 # Start Airodump process
                 with Airodump(channel=self.target.channel,
                               target_bssid=self.target.bssid,
-                              ivs_only=True, # Only capture IVs packets
-                              skip_wps=True, # Don't check for WPS-compatibility
+                              ivs_only=True,  # Only capture IVs packets
+                              skip_wps=True,  # Don't check for WPS-compatibility
                               output_file_prefix='wep',
                               delete_existing_files=not keep_ivs) as airodump:
 
@@ -90,7 +91,7 @@ class AttackWEP(Attack):
                                         client_mac=client_mac,
                                         replay_file=replay_file)
 
-                    time_unchanged_ivs = time.time() # Timestamp when IVs last changed
+                    time_unchanged_ivs = time.time()  # Timestamp when IVs last changed
                     last_ivs_count = 0
 
                     # Loop until attack completes.
@@ -156,7 +157,7 @@ class AttackWEP(Attack):
 
                             elif 0 < Configuration.wep_restart_aircrack < aircrack.pid.running_time():
                                 # Restart aircrack after X seconds
-                                #Color.pl('\n{+} {C}aircrack{W} ran for more than {C}%d{W} seconds, restarting' % Configuration.wep_restart_aircrack)
+                                # Color.pl('\n{+} {C}aircrack{W} ran for more than {C}%d{W} seconds, restarting' % Configuration.wep_restart_aircrack)
                                 aircrack.stop()
                                 ivs_files = airodump.find_files(endswith='.ivs')
                                 ivs_files.sort()
@@ -206,7 +207,7 @@ class AttackWEP(Attack):
                                 Color.pl('\n{!} {O}aireplay-ng exited unexpectedly{W}')
                                 Color.pl('{?} {O}Command: {R}%s{W}' % ' '.join(aireplay.cmd))
                                 Color.pl('{?} {O}Output:\n{R}%s{W}' % aireplay.get_output())
-                                break # Continue to other attacks
+                                break  # Continue to other attacks
 
                         # Check if IVs stopped flowing (same for > N seconds)
                         if airodump_target.ivs > last_ivs_count:
@@ -221,9 +222,9 @@ class AttackWEP(Attack):
                                 Color.pl('\n{!} restarting {C}aireplay{W} after' +
                                          ' {C}%d{W} seconds of no new IVs'
                                              % stale_seconds)
-                                aireplay = Aireplay(self.target, \
-                                                    wep_attack_type, \
-                                                    client_mac=client_mac, \
+                                aireplay = Aireplay(self.target,
+                                                    wep_attack_type,
+                                                    client_mac=client_mac,
                                                     replay_file=replay_file)
                                 time_unchanged_ivs = time.time()
                         last_ivs_count = airodump_target.ivs
@@ -318,13 +319,13 @@ class AttackWEP(Attack):
 
             # Re-insert current attack to top of list of attacks remaining
             attacks_remaining.insert(0, current_attack)
-            return False # Don't stop
+            return False  # Don't stop
         elif answer == attack_index:
-            return True # Stop attacking
+            return True  # Stop attacking
         elif answer > 1:
             # User selected specific attack: Re-order attacks based on desired next-step
             attacks_remaining.insert(0, attacks_remaining.pop(answer-2))
-            return False # Don't stop
+            return False  # Don't stop
 
     def fake_auth(self):
         '''
@@ -350,6 +351,7 @@ class AttackWEP(Attack):
                 Color.pl('{!} continuing attacks because' +
                     ' {G}--require-fakeauth{W} was not set')
         return fakeauth
+
 
 if __name__ == '__main__':
     Configuration.initialize(True)

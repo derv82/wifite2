@@ -6,18 +6,21 @@ from ..config import Configuration
 from ..util.process import Process
 from ..util.timer import Timer
 
-import os, time, re
+import os
+import time
+import re
 from threading import Thread
+
 
 class WEPAttackType(object):
     ''' Enumeration of different WEP attack types '''
-    fakeauth     = 0
-    replay       = 1
-    chopchop     = 2
-    fragment     = 3
-    caffelatte   = 4
-    p0841        = 5
-    hirte        = 6
+    fakeauth = 0
+    replay = 1
+    chopchop = 2
+    fragment = 3
+    caffelatte = 4
+    p0841 = 5
+    hirte = 6
     forgedreplay = 7
 
     def __init__(self, var):
@@ -30,7 +33,7 @@ class WEPAttackType(object):
         self.value = None
         self.name = None
         if type(var) is int:
-            for (name,value) in WEPAttackType.__dict__.items():
+            for (name, value) in WEPAttackType.__dict__.items():
                 if type(value) is int:
                     if value == var:
                         self.name = name
@@ -38,7 +41,7 @@ class WEPAttackType(object):
                         return
             raise Exception('Attack number %d not found' % var)
         elif type(var) is str:
-            for (name,value) in WEPAttackType.__dict__.items():
+            for (name, value) in WEPAttackType.__dict__.items():
                 if type(value) is int:
                     if name == var:
                         self.name = name
@@ -68,7 +71,7 @@ class Aireplay(Thread, Dependency):
                 attack_type - str, e.g. 'fakeauth', 'arpreplay', etc.
                 client_mac - MAC address of an associated client.
         '''
-        super(Aireplay, self).__init__() # Init the parent Thread
+        super(Aireplay, self).__init__()  # Init the parent Thread
 
         self.target = target
         self.output_file = Configuration.temp('aireplay_%s.output' % attack_type)
@@ -124,7 +127,7 @@ class Aireplay(Thread, Dependency):
                     # Look for fakeauth status. Potential Output lines:
                     # (START): 00:54:58  Sending Authentication Request (Open System)
                     if 'Sending Authentication Request ' in line:
-                        self.status = None # Reset
+                        self.status = None  # Reset
                     # (????):  Please specify an ESSID (-e).
                     elif 'Please specify an ESSID' in line:
                         self.status = None
@@ -216,7 +219,7 @@ class Aireplay(Thread, Dependency):
 
                     # XX:XX:XX  Now you can build a packet with packetforge-ng out of that 1500 bytes keystream
 
-                else: # Replay, forged replay, etc.
+                else:  # Replay, forged replay, etc.
                     # Parse Packets Sent & PacketsPerSecond. Possible output lines:
                     # Read 55 packets (got 0 ARP requests and 0 ACKs), sent 0 packets...(0 pps)
                     # Read 4467 packets (got 1425 ARP requests and 1417 ACKs), sent 1553 packets...(100 pps)
@@ -263,8 +266,8 @@ class Aireplay(Thread, Dependency):
 
         if attack_type == WEPAttackType.fakeauth:
             cmd.extend([
-                '--fakeauth', '30', # Fake auth every 30 seconds
-                '-Q', # Send re-association packets
+                '--fakeauth', '30',  # Fake auth every 30 seconds
+                '-Q',  # Send re-association packets
                 '-a', target.bssid
             ])
             if target.essid_known:
@@ -283,8 +286,8 @@ class Aireplay(Thread, Dependency):
                 '--chopchop',
                 '-b', target.bssid,
                 '-x', str(Configuration.wep_pps),
-                #'-m', '60', # Minimum packet length (bytes)
-                #'-n', '82', # Maximum packet length
+                # '-m', '60', # Minimum packet length (bytes)
+                # '-n', '82', # Maximum packet length
                 '-F'        # Automatically choose first packet
             ])
             if client_mac:
@@ -295,8 +298,8 @@ class Aireplay(Thread, Dependency):
                 '--fragment',
                 '-b', target.bssid,
                 '-x', str(Configuration.wep_pps),
-                '-m', '100', # Minimum packet length (bytes)
-                '-F'         # Automatically choose first packet
+                '-m', '100',  # Minimum packet length (bytes)
+                '-F'          # Automatically choose first packet
             ])
             if client_mac:
                 cmd.extend(['-h', client_mac])
@@ -317,7 +320,7 @@ class Aireplay(Thread, Dependency):
                 '-b', target.bssid,
                 '-c', 'ff:ff:ff:ff:ff:ff',
                 '-x', str(Configuration.wep_pps),
-                '-F', # Automatically choose first packet
+                '-F',  # Automatically choose first packet
                 '-p', '0841'
             ])
             if client_mac:
@@ -339,7 +342,7 @@ class Aireplay(Thread, Dependency):
                 '-b', target.bssid,
                 '-h', client_mac,
                 '-r', replay_file,
-                '-F', # Automatically choose first packet
+                '-F',  # Automatically choose first packet
                 '-x', str(Configuration.wep_pps)
             ])
         else:
@@ -365,12 +368,12 @@ class Aireplay(Thread, Dependency):
         cmd = [
             'packetforge-ng',
             '-0',
-            '-a', bssid,           # Target MAC
-            '-h', station_mac,     # Client MAC
-            '-k', '192.168.1.2',   # Dest IP
-            '-l', '192.168.1.100', # Source IP
-            '-y', xor_file,        # Read PRNG from .xor file
-            '-w', forged_file,     # Write to
+            '-a', bssid,            # Target MAC
+            '-h', station_mac,      # Client MAC
+            '-k', '192.168.1.2',    # Dest IP
+            '-l', '192.168.1.100',  # Source IP
+            '-y', xor_file,         # Read PRNG from .xor file
+            '-w', forged_file,      # Write to
             Configuration.interface
         ]
 
@@ -389,11 +392,11 @@ class Aireplay(Thread, Dependency):
         num_deauths = num_deauths or Configuration.num_deauths
         deauth_cmd = [
             'aireplay-ng',
-            '-0', # Deauthentication
+            '-0',  # Deauthentication
             str(num_deauths),
             '--ignore-negative-one',
-            '-a', target_bssid, # Target AP
-            '-D' # Skip AP detection
+            '-a', target_bssid,  # Target AP
+            '-D'  # Skip AP detection
         ]
         if client_mac is not None:
             # Station-specific deauth
@@ -421,7 +424,7 @@ class Aireplay(Thread, Dependency):
 
         cmd = [
             'aireplay-ng',
-            '-1', '0', # Fake auth, no delay
+            '-1', '0',  # Fake auth, no delay
             '-a', target.bssid,
             '-T', str(num_attempts)
         ]
@@ -438,8 +441,10 @@ class Aireplay(Thread, Dependency):
         if fakeauth_proc.poll() is None or timer.ended():
             fakeauth_proc.interrupt()
             return False
+
         output = fakeauth_proc.stdout()
         return 'association successful' in output.lower()
+
 
 if __name__ == '__main__':
     t = WEPAttackType(4)
@@ -449,4 +454,3 @@ if __name__ == '__main__':
 
     t = WEPAttackType(t)
     print(t.name, type(t.name), t.value)
-

@@ -7,6 +7,7 @@ from ..config import Configuration
 from ..tools.bully import Bully
 from ..tools.reaver import Reaver
 
+
 class AttackWPS(Attack):
 
     @staticmethod

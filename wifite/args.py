@@ -3,7 +3,9 @@
 
 from .util.color import Color
 
-import argparse, sys
+import argparse
+import sys
+
 
 class Arguments(object):
     ''' Holds arguments used by the Wifite '''
@@ -535,5 +537,5 @@ if __name__ == '__main__':
     Configuration.initialize(False)
     a = Arguments(Configuration)
     args = a.args
-    for (key,value) in sorted(args.__dict__.items()):
-        Color.pl('{C}%s: {G}%s{W}' % (key.ljust(21),value))
+    for (key, value) in sorted(args.__dict__.items()):
+        Color.pl('{C}%s: {G}%s{W}' % (key.ljust(21), value))

@@ -7,11 +7,12 @@ import re
 from .util.color import Color
 from .tools.macchanger import Macchanger
 
+
 class Configuration(object):
     ''' Stores configuration variables and functions for Wifite. '''
-    version = '2.5.4'
+    version = '2.5.5'
 
-    initialized = False # Flag indicating config has been initialized
+    initialized = False  # Flag indicating config has been initialized
     temp_dir = None     # Temporary directory
     interface = None
     verbose = 0
@@ -30,34 +31,34 @@ class Configuration(object):
             return
         cls.initialized = True
 
-        cls.verbose = 0 # Verbosity of output. Higher number means more debug info about running processes.
+        cls.verbose = 0  # Verbosity of output. Higher number means more debug info about running processes.
         cls.print_stack_traces = True
 
         cls.kill_conflicting_processes = False
 
-        cls.scan_time = 0 # Time to wait before attacking all targets
+        cls.scan_time = 0  # Time to wait before attacking all targets
 
-        cls.tx_power = 0 # Wifi transmit power (0 is default)
+        cls.tx_power = 0  # Wifi transmit power (0 is default)
         cls.interface = None
         cls.min_power = 0  # Minimum power for an access point to be considered a target. Default is 0
         cls.attack_max = 0
         cls.skip_crack = False
-        cls.target_channel = None # User-defined channel to scan
-        cls.target_essid = None # User-defined AP name
-        cls.target_bssid = None # User-defined AP BSSID
-        cls.ignore_essids = None # ESSIDs to ignore
-        cls.clients_only = False # Only show targets that have associated clients
-        cls.all_bands = False # Scan for both 2Ghz and 5Ghz channels
-        cls.two_ghz = False # Scan 2.4Ghz channels
-        cls.five_ghz = False # Scan 5Ghz channels
-        cls.infinite_mode = False # Attack targets continuously
+        cls.target_channel = None  # User-defined channel to scan
+        cls.target_essid = None  # User-defined AP name
+        cls.target_bssid = None  # User-defined AP BSSID
+        cls.ignore_essids = None  # ESSIDs to ignore
+        cls.clients_only = False  # Only show targets that have associated clients
+        cls.all_bands = False  # Scan for both 2Ghz and 5Ghz channels
+        cls.two_ghz = False  # Scan 2.4Ghz channels
+        cls.five_ghz = False  # Scan 5Ghz channels
+        cls.infinite_mode = False  # Attack targets continuously
         cls.inf_wait_time = 60
-        cls.show_bssids = False # Show BSSIDs in targets list
-        cls.show_manufacturers = False # Show manufacturers in targets list
-        cls.random_mac = False # Should generate a random Mac address at startup.
-        cls.no_deauth = False # Deauth hidden networks & WPA handshake targets
-        cls.num_deauths = 1 # Number of deauth packets to send to each target.
-        cls.daemon = False # Don't put back interface back in managed mode
+        cls.show_bssids = False  # Show BSSIDs in targets list
+        cls.show_manufacturers = False  # Show manufacturers in targets list
+        cls.random_mac = False  # Should generate a random Mac address at startup.
+        cls.no_deauth = False  # Deauth hidden networks & WPA handshake targets
+        cls.num_deauths = 1  # Number of deauth packets to send to each target.
+        cls.daemon = False  # Don't put back interface back in managed mode
 
         cls.encryption_filter = ['WEP', 'WPA', 'WPS']
 
@@ -68,31 +69,31 @@ class Configuration(object):
         cls.eviltwin_fakeap_iface = None
 
         # WEP variables
-        cls.wep_filter = False # Only attack WEP networks
-        cls.wep_pps = 600 # Packets per second
-        cls.wep_timeout = 600 # Seconds to wait before failing
-        cls.wep_crack_at_ivs = 10000 # Minimum IVs to start cracking
+        cls.wep_filter = False  # Only attack WEP networks
+        cls.wep_pps = 600  # Packets per second
+        cls.wep_timeout = 600  # Seconds to wait before failing
+        cls.wep_crack_at_ivs = 10000  # Minimum IVs to start cracking
         cls.require_fakeauth = False
-        cls.wep_restart_stale_ivs = 11 # Seconds to wait before restarting
-                                                 # Aireplay if IVs don't increaes.
-                                                 # '0' means never restart.
+        cls.wep_restart_stale_ivs = 11  # Seconds to wait before restarting
+        # Aireplay if IVs don't increaes.
+        # '0' means never restart.
         cls.wep_restart_aircrack = 30  # Seconds to give aircrack to crack
-                                                 # before restarting the process.
-        cls.wep_crack_at_ivs = 10000   # Number of IVS to start cracking
-        cls.wep_keep_ivs = False       # Retain .ivs files across multiple attacks.
+        # before restarting the process.
+        cls.wep_crack_at_ivs = 10000  # Number of IVS to start cracking
+        cls.wep_keep_ivs = False  # Retain .ivs files across multiple attacks.
 
         # WPA variables
-        cls.wpa_filter = False # Only attack WPA networks
-        cls.wpa_deauth_timeout = 15 # Wait time between deauths
-        cls.wpa_attack_timeout = 300 # Wait time before failing
-        cls.wpa_handshake_dir = 'hs' # Dir to store handshakes
-        cls.wpa_strip_handshake = False # Strip non-handshake packets
-        cls.ignore_old_handshakes = False # Always fetch a new handshake
+        cls.wpa_filter = False  # Only attack WPA networks
+        cls.wpa_deauth_timeout = 15  # Wait time between deauths
+        cls.wpa_attack_timeout = 300  # Wait time before failing
+        cls.wpa_handshake_dir = 'hs'  # Dir to store handshakes
+        cls.wpa_strip_handshake = False  # Strip non-handshake packets
+        cls.ignore_old_handshakes = False  # Always fetch a new handshake
 
         # PMKID variables
         cls.use_pmkid_only = False  # Only use PMKID Capture+Crack attack
         cls.pmkid_timeout = 120  # Time to wait for PMKID capture
-        cls.dont_use_pmkid = False # Don't use PMKID attack
+        cls.dont_use_pmkid = False  # Don't use PMKID attack
 
         # Default dictionary for cracking
         cls.cracked_file = 'cracked.txt'
@@ -129,16 +130,16 @@ class Configuration(object):
                         cls.manufacturers[fields[0]] = " ".join(fields[1:]).rstrip('.')
 
         # WPS variables
-        cls.wps_filter  = False  # Only attack WPS networks
-        cls.no_wps      = False  # Do not use WPS attacks (Pixie-Dust & PIN attacks)
-        cls.wps_only    = False  # ONLY use WPS attacks on non-WEP networks
-        cls.use_bully   = False  # Use bully instead of reaver
-        cls.use_reaver  = False  # Use reaver instead of bully
-        cls.wps_pixie   = True
-        cls.wps_pin     = True
-        cls.wps_ignore_lock = False      # Skip WPS PIN attack if AP is locked.
-        cls.wps_pixie_timeout = 300      # Seconds to wait for PIN before WPS Pixie attack fails
-        cls.wps_fail_threshold = 100     # Max number of failures
+        cls.wps_filter = False  # Only attack WPS networks
+        cls.no_wps = False  # Do not use WPS attacks (Pixie-Dust & PIN attacks)
+        cls.wps_only = False  # ONLY use WPS attacks on non-WEP networks
+        cls.use_bully = False  # Use bully instead of reaver
+        cls.use_reaver = False  # Use reaver instead of bully
+        cls.wps_pixie = True
+        cls.wps_pin = True
+        cls.wps_ignore_lock = False  # Skip WPS PIN attack if AP is locked.
+        cls.wps_pixie_timeout = 300  # Seconds to wait for PIN before WPS Pixie attack fails
+        cls.wps_fail_threshold = 100  # Max number of failures
         cls.wps_timeout_threshold = 100  # Max number of timeouts
 
         # Commands
@@ -255,7 +256,7 @@ class Configuration(object):
             cls.show_bssids = True
             Color.pl('{+} {C}option:{W} showing {G}bssids{W} of targets during scan')
 
-        if args.show_manufacturers == True:
+        if args.show_manufacturers is True:
             cls.show_manufacturers = True
             Color.pl('{+} {C}option:{W} showing {G}manufacturers{W} of targets during scan')
 
@@ -264,7 +265,7 @@ class Configuration(object):
             Color.pl('{+} {C}option:{W} will {R}not{W} {O}deauth{W} clients ' +
                     'during scans or captures')
 
-        if args.daemon == True:
+        if args.daemon is True:
             cls.daemon = True
             Color.pl('{+} {C}option:{W} will put interface back to managed mode')
 
@@ -523,8 +524,8 @@ class Configuration(object):
                 'chopchop',
                 'caffelatte',
                 'p0841',
-                'hirte'
-            ]
+                'hirte']
+
         elif len(cls.wep_attacks) > 0:
             Color.pl('{+} {C}option:{W} using {G}%s{W} WEP attacks'
                 % '{W}, {G}'.join(cls.wep_attacks))
@@ -574,7 +575,7 @@ class Configuration(object):
 
         if Airmon.killed_network_manager:
             Color.pl('{!} You can restart NetworkManager when finished ({C}service network-manager start{W})')
-            #Airmon.start_network_manager()
+            # Airmon.start_network_manager()
 
         exit(code)
 
@@ -587,14 +588,15 @@ class Configuration(object):
         for key in cls.__dict__.keys():
             max_len = max(max_len, len(key))
 
-        result  = Color.s('{W}%s  Value{W}\n' % 'cls Key'.ljust(max_len))
+        result = Color.s('{W}%s  Value{W}\n' % 'cls Key'.ljust(max_len))
         result += Color.s('{W}%s------------------{W}\n' % ('-' * max_len))
 
-        for (key,val) in sorted(cls.__dict__.items()):
+        for (key, val) in sorted(cls.__dict__.items()):
             if key.startswith('__') or type(val) in [classmethod, staticmethod] or val is None:
                 continue
-            result += Color.s('{G}%s {W} {C}%s{W}\n' % (key.ljust(max_len),val))
+            result += Color.s('{G}%s {W} {C}%s{W}\n' % (key.ljust(max_len), val))
         return result
+
 
 if __name__ == '__main__':
     Configuration.initialize(False)

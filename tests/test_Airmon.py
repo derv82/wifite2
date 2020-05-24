@@ -8,6 +8,7 @@ from wifite.tools.airmon import Airmon
 
 import unittest
 
+
 class TestAirmon(unittest.TestCase):
     def test_airmon_start(self):
         # From https://github.com/derv82/wifite2/issues/67
@@ -21,4 +22,3 @@ phy0    wlan0        iwlwifi        Intel Corporation Centrino Ultimate-N 6300 (
 '''
         mon_iface = Airmon._parse_airmon_start(stdout)
         assert mon_iface == 'wlan0mon', 'Expected monitor-mode interface to be "wlan0mon" but got "{}"'.format(mon_iface)
-

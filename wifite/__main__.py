@@ -10,6 +10,7 @@ from .util.color import Color
 
 import os
 
+
 class Wifite(object):
 
     def __init__(self):
@@ -89,7 +90,6 @@ class Wifite(object):
 
         Color.pl('{+} Finished attacking {C}%d{W} target(s), exiting' % attacked_targets)
 
-##############################################################
 
 def entry_point():
     try:
@@ -103,6 +103,7 @@ def entry_point():
         Color.pl('\n{!} {O}Interrupted, Shutting down...{W}')
 
     Configuration.exit_gracefully(0)
+
 
 if __name__ == '__main__':
     entry_point()

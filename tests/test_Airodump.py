@@ -8,9 +8,9 @@ from wifite.tools.airodump import Airodump
 
 import unittest
 
+
 class TestAirodump(unittest.TestCase):
     ''' Test suite for Wifite's interaction with the Airodump tool '''
-
 
     def test_airodump_weird_characters(self):
         csv_filename = self.getFile('airodump-weird-ssids.csv')
@@ -39,10 +39,10 @@ class TestAirodump(unittest.TestCase):
         assert target.essid == expected, 'Expected ESSID (%s) but got (%s)' % (expected, target.essid)
         assert target.essid_len == 19, 'ESSID length shold be 19, but got %s' % target.essid_len
 
-
     def getFile(self, filename):
         ''' Helper method to parse targets from filename '''
-        import os, inspect
+        import os
+        import inspect
         this_file = os.path.abspath(inspect.getsourcefile(self.getFile))
         this_dir = os.path.dirname(this_file)
         return os.path.join(this_dir, 'files', filename)

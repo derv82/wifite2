@@ -1,13 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import sys
-sys.path.insert(0, '..')
-
 from wifite.model.handshake import Handshake
 from wifite.util.process import Process
 
+import sys
+sys.path.insert(0, '..')
+
 import unittest
+
 
 class TestHandshake(unittest.TestCase):
     ''' Test suite for Target parsing an generation '''
@@ -55,4 +56,3 @@ class TestHandshake(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
-

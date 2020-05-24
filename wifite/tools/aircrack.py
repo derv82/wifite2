@@ -9,6 +9,7 @@ from ..config import Configuration
 import os
 import re
 
+
 class Aircrack(Dependency):
     dependency_required = True
     dependency_name = 'aircrack-ng'
@@ -35,7 +36,6 @@ class Aircrack(Dependency):
         command.extend(ivs_file)
 
         self.pid = Process(command, devnull=True)
-
 
     def is_running(self):
         return self.pid.poll() is None
@@ -78,7 +78,6 @@ class Aircrack(Dependency):
         if os.path.exists(self.cracked_file):
             os.remove(self.cracked_file)
 
-
     @staticmethod
     def crack_handshake(handshake, show_command=False):
         from ..util.color import Color
@@ -100,7 +99,7 @@ class Aircrack(Dependency):
 
         # Report progress of cracking
         aircrack_nums_re = re.compile(r'(\d+)/(\d+) keys tested.*\(([\d.]+)\s+k/s')
-        aircrack_key_re  = re.compile(r'Current passphrase:\s*([^\s].*[^\s])\s*$')
+        aircrack_key_re = re.compile(r'Current passphrase:\s*([^\s].*[^\s])\s*$')
         num_tried = num_total = 0
         percent = num_kps = 0.0
         eta_str = 'unknown'
@@ -124,7 +123,7 @@ class Aircrack(Dependency):
             status = '\r{+} {C}Cracking WPA Handshake: %0.2f%%{W}' % percent
             status += ' ETA: {C}%s{W}' % eta_str
             status += ' @ {C}%0.1fkps{W}' % num_kps
-            #status += ' ({C}%d{W}/{C}%d{W} keys)' % (num_tried, num_total)
+            # status += ' ({C}%d{W}/{C}%d{W} keys)' % (num_tried, num_total)
             status += ' (current key: {C}%s{W})' % current_key
             Color.clear_entire_line()
             Color.p(status)

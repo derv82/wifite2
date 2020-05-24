@@ -6,8 +6,10 @@ from ..config import Configuration
 
 import re
 
+
 class WPSState:
     NONE, UNLOCKED, LOCKED, UNKNOWN = range(0, 4)
+
 
 class ArchivedTarget(object):
     '''
@@ -45,6 +47,7 @@ class ArchivedTarget(object):
         return (isinstance(other, self.__class__) or isinstance(other, Target)) \
                and self.bssid == other.bssid
 
+
 class Target(object):
     '''
         Holds details for a 'Target' aka Access Point (e.g. router).
@@ -72,10 +75,10 @@ class Target(object):
                     13 ESSID          (HOME-ABCD)
                     14 Key            ()
         '''
-        self.bssid          =     fields[0].strip()
-        self.channel        =     fields[3].strip()
-        self.encryption     =     fields[5].strip()
-        self.authentication =     fields[7].strip()
+        self.bssid = fields[0].strip()
+        self.channel = fields[3].strip()
+        self.encryption = fields[5].strip()
+        self.authentication = fields[7].strip()
         if 'WPA' in self.encryption:
             self.encryption = 'WPA'
         elif 'WEP' in self.encryption:
@@ -83,22 +86,22 @@ class Target(object):
         if len(self.encryption) > 4:
             self.encryption = self.encryption[0:4].strip()
 
-        self.power      = int(fields[8].strip())
+        self.power = int(fields[8].strip())
         if self.power < 0:
             self.power += 100
         self.max_power = self.power
 
-        self.beacons    = int(fields[9].strip())
-        self.ivs        = int(fields[10].strip())
+        self.beacons = int(fields[9].strip())
+        self.ivs = int(fields[10].strip())
 
         self.essid_known = True
-        self.essid_len   = int(fields[12].strip())
-        self.essid       =     fields[13]
+        self.essid_len = int(fields[12].strip())
+        self.essid = fields[13]
         if self.essid == '\\x00' * self.essid_len or \
                 self.essid == 'x00' * self.essid_len or \
                 self.essid.strip() == '':
             # Don't display '\x00...' for hidden ESSIDs
-            self.essid = None # '(%s)' % self.bssid
+            self.essid = None  # '(%s)' % self.bssid
             self.essid_known = False
 
         self.wps = WPSState.UNKNOWN
@@ -107,7 +110,7 @@ class Target(object):
         # Needed to count targets in infinite attack mode
         self.attacked = False
 
-        self.decloaked = False # If ESSID was hidden but we decloaked it.
+        self.decloaked = False  # If ESSID was hidden but we decloaked it.
 
         self.clients = []
 
@@ -186,7 +189,7 @@ class Target(object):
 
         if show_manufacturer:
             oui = ''.join(self.bssid.split(':')[:3])
-            self.manufacturer = Configuration.manufacturers.get(oui,"")
+            self.manufacturer = Configuration.manufacturers.get(oui, "")
 
             max_oui_len = 27
             manufacturer = Color.s('{W}%s  ' % self.manufacturer)
@@ -216,7 +219,7 @@ class Target(object):
 
         power = '%sdb' % str(self.power).rjust(3)
         if self.power > 50:
-            color ='G'
+            color = 'G'
         elif self.power > 35:
             color = 'O'
         else:
@@ -242,6 +245,7 @@ class Target(object):
                 essid, bssid, manufacturer, channel, encryption, power, wps, clients)
         result += Color.s('{W}')
         return result
+
 
 if __name__ == '__main__':
     fields = 'AA:BB:CC:DD:EE:FF,2015-05-27 19:28:44,2015-05-27 19:28:46,1,54,WPA2,CCMP TKIP,PSK,-58,2,0,0.0.0.0,9,HOME-ABCD,'.split(',')

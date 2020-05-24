@@ -8,6 +8,7 @@ from .pmkid import AttackPMKID
 from ..config import Configuration
 from ..util.color import Color
 
+
 class AttackAll(object):
 
     @classmethod
@@ -65,7 +66,7 @@ class AttackAll(object):
 
             # WPS
             if not Configuration.use_pmkid_only:
-                if target.wps != False and AttackWPS.can_attack_wps():
+                if target.wps is not False and AttackWPS.can_attack_wps():
                     # Pixie-Dust
                     if Configuration.wps_pixie:
                         attacks.append(AttackWPS(target, pixie_dust=True))
@@ -161,6 +162,6 @@ class AttackAll(object):
         if answer.startswith('s'):
             return None  # Skip
         elif answer.startswith('e') or answer.startswith('r'):
-            return False # Exit/Return
+            return False  # Exit/Return
         else:
             return True  # Continue
