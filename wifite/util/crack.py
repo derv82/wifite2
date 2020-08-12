@@ -157,15 +157,16 @@ class CrackHelper:
             hours = hours.replace('-', ':')
             date = '%s %s' % (days, hours)
 
-            # Patch for essid with " " (zero) or dot "." in name
-            handshakenew = Handshake(os.path.join(hs_dir, hs_file))
-            handshakenew.divine_bssid_and_essid()
-            essid_discovery = handshakenew.essid
+            if hs_type == '4-WAY':
+                # Patch for essid with " " (zero) or dot "." in name
+                handshakenew = Handshake(os.path.join(hs_dir, hs_file))
+                handshakenew.divine_bssid_and_essid()
+                essid_discovery = handshakenew.essid
 
-            if essid_discovery is None:
-                essid = essid
-            else:
-                essid = essid_discovery
+                if essid_discovery is None:
+                    essid = essid
+                else:
+                    essid = essid_discovery
 
             handshake = {
                 'filename': os.path.join(hs_dir, hs_file),
