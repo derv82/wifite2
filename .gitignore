@@ -4,7 +4,7 @@ py/hs/
 hs/
 *.bak
 .idea/
-cracked.txt
+cracked.json
 MANIFEST
 dist/
 build/

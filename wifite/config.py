@@ -96,7 +96,7 @@ class Configuration(object):
         cls.dont_use_pmkid = False  # Don't use PMKID attack
 
         # Default dictionary for cracking
-        cls.cracked_file = 'cracked.txt'
+        cls.cracked_file = 'cracked.json'
         cls.wordlist = None
         wordlists = [
             './wordlist-probable.txt',  # Local file (ran from cloned repo)
