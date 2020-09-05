@@ -10,7 +10,7 @@ from .tools.macchanger import Macchanger
 
 class Configuration(object):
     ''' Stores configuration variables and functions for Wifite. '''
-    version = '2.5.5'
+    version = '2.5.6'
 
     initialized = False  # Flag indicating config has been initialized
     temp_dir = None     # Temporary directory
@@ -585,7 +585,7 @@ class Configuration(object):
         from .util.color import Color
 
         max_len = 20
-        for key in cls.__dict__.keys():
+        for key in list(cls.__dict__.keys()):
             max_len = max(max_len, len(key))
 
         result = Color.s('{W}%s  Value{W}\n' % 'cls Key'.ljust(max_len))
@@ -600,4 +600,4 @@ class Configuration(object):
 
 if __name__ == '__main__':
     Configuration.initialize(False)
-    print(Configuration.dump())
+    print((Configuration.dump()))

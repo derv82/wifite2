@@ -191,8 +191,8 @@ class Process(object):
 if __name__ == '__main__':
     Configuration.initialize(False)
     p = Process('ls')
-    print(p.stdout())
-    print(p.stderr())
+    print((p.stdout()))
+    print((p.stderr()))
     p.interrupt()
 
     # Calling as list of arguments
@@ -207,7 +207,7 @@ if __name__ == '__main__':
     print(out)
     print(err)
 
-    print('"reaver" exists: %s' % Process.exists('reaver'))
+    print(('"reaver" exists: %s' % Process.exists('reaver')))
 
     # Test on never-ending process
     p = Process('yes')

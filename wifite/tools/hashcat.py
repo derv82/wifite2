@@ -97,7 +97,7 @@ class Hashcat(Dependency):
 class HcxDumpTool(Dependency):
     dependency_required = False
     dependency_name = 'hcxdumptool'
-    dependency_url = 'https://github.com/ZerBea/hcxdumptool'
+    dependency_url = 'apt-get install hcxdumptool'
 
     def __init__(self, target, pcapng_file):
         # Create filterlist
@@ -129,7 +129,7 @@ class HcxDumpTool(Dependency):
 class HcxPcapTool(Dependency):
     dependency_required = False
     dependency_name = 'hcxpcaptool'
-    dependency_url = 'https://github.com/ZerBea/hcxtools'
+    dependency_url = 'apt-get install hcxtools'
 
     def __init__(self, target):
         self.target = target

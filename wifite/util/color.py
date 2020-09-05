@@ -63,9 +63,9 @@ class Color(object):
     def s(text):
         ''' Returns colored string '''
         output = text
-        for (key, value) in Color.replacements.items():
+        for (key, value) in list(Color.replacements.items()):
             output = output.replace(key, value)
-        for (key, value) in Color.colors.items():
+        for (key, value) in list(Color.colors.items()):
             output = output.replace('{%s}' % key, value)
         return output
 
@@ -118,6 +118,6 @@ class Color(object):
 
 if __name__ == '__main__':
     Color.pl('{R}Testing{G}One{C}Two{P}Three{W}Done')
-    print(Color.s('{C}Testing{P}String{W}'))
+    print((Color.s('{C}Testing{P}String{W}')))
     Color.pl('{+} Good line')
     Color.pl('{!} Danger')
