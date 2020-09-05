@@ -8,6 +8,7 @@ from ..util.color import Color
 
 import os
 
+hccapx_autoremove = False # change this to True if you want the hccapx files to be automatically removed
 
 class Hashcat(Dependency):
     dependency_required = False
@@ -49,7 +50,7 @@ class Hashcat(Dependency):
                 key = stdout.split(':', 5)[-1].strip()
                 break
 
-        if os.path.exists(hccapx_file):
+            if os.path.exists(hccapx_file) and hccapx_autoremove is True:
             os.remove(hccapx_file)
 
         return key
