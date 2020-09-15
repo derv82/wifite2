@@ -105,7 +105,8 @@ class Aireplay(Thread, Dependency):
         self.xor_percent = '0%'
         while self.pid.poll() is None:
             time.sleep(0.1)
-            if not os.path.exists(self.output_file): continue
+            if not os.path.exists(self.output_file):
+                continue
             # Read output file & clear output file
             with open(self.output_file, 'r+') as fid:
                 lines = fid.read()
@@ -119,7 +120,8 @@ class Aireplay(Thread, Dependency):
 
             for line in lines.split('\n'):
                 line = line.replace('\r', '').strip()
-                if line == '': continue
+                if line == '':
+                    continue
                 if 'Notice: got a deauth/disassoc packet' in line:
                     self.error = 'Not associated (needs fakeauth)'
 

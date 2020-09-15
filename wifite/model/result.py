@@ -109,7 +109,8 @@ class CrackResult(object):
 
     @classmethod
     def load_all(cls):
-        if not os.path.exists(cls.cracked_file): return []
+        if not os.path.exists(cls.cracked_file):
+                return []
         with open(cls.cracked_file, 'r') as json_file:
             json = loads(json_file.read())
         return json

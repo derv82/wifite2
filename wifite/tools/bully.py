@@ -193,7 +193,8 @@ class Bully(Attack, Dependency):
 
     def parse_line_thread(self):
         for line in iter(self.bully_proc.pid.stdout.readline, b''):
-            if line == '': continue
+            if line == '':
+                continue
             line = line.decode('utf-8')
             line = line.replace('\r', '').replace('\n', '').strip()
 

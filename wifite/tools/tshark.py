@@ -36,12 +36,14 @@ class Tshark(Dependency):
         for line in output.split('\n'):
             src, dst, index, total = Tshark._extract_src_dst_index_total(line)
 
-            if src is None: continue  # Skip
+            if src is None:
+                continue  # Skip
 
             index = int(index)
             total = int(total)
 
-            if total != 4: continue  # Handshake X of 5? X of 3? Skip it.
+            if total != 4:
+                continue  # Handshake X of 5? X of 3? Skip it.
 
             # Identify the client and target MAC addresses
             if index % 2 == 1:

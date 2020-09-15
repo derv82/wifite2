@@ -240,7 +240,8 @@ class AttackWPA(Attack):
             Args:
                 target - The Target to deauth, including clients.
         '''
-        if Configuration.no_deauth: return
+        if Configuration.no_deauth:
+                return
 
         for index, client in enumerate([None] + self.clients):
             if client is None:

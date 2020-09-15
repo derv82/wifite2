@@ -234,7 +234,8 @@ class AttackWEP(Attack):
                     # End of big while loop
                 # End of with-airodump
             except KeyboardInterrupt:
-                if fakeauth_proc: fakeauth_proc.stop()
+                if fakeauth_proc:
+                        fakeauth_proc.stop()
                 if len(attacks_remaining) == 0:
                     if keep_ivs:
                         Airodump.delete_airodump_temp_files('wep')
