@@ -11,7 +11,7 @@ class Tshark(Dependency):
     ''' Wrapper for Tshark program. '''
     dependency_required = False
     dependency_name = 'tshark'
-    dependency_url = 'apt-get install wireshark'
+    dependency_url = 'apt install wireshark'
 
     def __init__(self):
         pass

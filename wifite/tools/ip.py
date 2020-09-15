@@ -9,7 +9,7 @@ from .dependency import Dependency
 class Ip(Dependency):
     dependency_required = True
     dependency_name = 'ip'
-    dependency_url = 'apt-get install iproute2'
+    dependency_url = 'apt install iproute2'
 
     @classmethod
     def up(cls, interface, args=[]):

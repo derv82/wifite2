@@ -8,7 +8,7 @@ from .dependency import Dependency
 class Hostapd(Dependency):
     dependency_required = False
     dependency_name = 'hostapd'
-    dependency_url = 'apt-get install hostapd'
+    dependency_url = 'apt install hostapd'
 
     @classmethod
     def run(slef, iface, target):

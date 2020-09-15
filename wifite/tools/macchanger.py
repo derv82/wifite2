@@ -9,7 +9,7 @@ from ..util.color import Color
 class Macchanger(Dependency):
     dependency_required = False
     dependency_name = 'macchanger'
-    dependency_url = 'apt-get install macchanger'
+    dependency_url = 'apt install macchanger'
 
     is_changed = False
 
