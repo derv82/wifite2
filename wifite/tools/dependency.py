@@ -31,7 +31,7 @@ class Dependency(object):
         from .pyrit import Pyrit
         from .tshark import Tshark
         from .macchanger import Macchanger
-        from .hashcat import Hashcat, HcxDumpTool, HcxPcapTool
+        from .hashcat import Hashcat, HcxDumpTool, HcxPcapngTool
 
         apps = [
                 # Aircrack
@@ -43,7 +43,7 @@ class Dependency(object):
                 # Cracking/handshakes
                 Pyrit, Tshark,
                 # Hashcat
-                Hashcat, HcxDumpTool, HcxPcapTool,
+                Hashcat, HcxDumpTool, HcxPcapngTool,
                 # Misc
                 Macchanger
             ]

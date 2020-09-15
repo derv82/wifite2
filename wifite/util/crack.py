@@ -10,7 +10,7 @@ from ..util.color import Color
 from ..util.input import raw_input
 from ..tools.aircrack import Aircrack
 from ..tools.cowpatty import Cowpatty
-from ..tools.hashcat import Hashcat, HcxPcapTool
+from ..tools.hashcat import Hashcat, HcxPcapngTool
 from ..tools.john import John
 
 from json import loads
@@ -33,8 +33,8 @@ class CrackHelper:
     # Tools for cracking & their dependencies. (RaduNico's code btw!)
     possible_tools = [
         ('aircrack', [Aircrack]),
-        ('hashcat', [Hashcat, HcxPcapTool]),
-        ('john', [John, HcxPcapTool]),
+        ('hashcat', [Hashcat, HcxPcapngTool]),
+        ('john', [John, HcxPcapngTool]),
         ('cowpatty', [Cowpatty])
     ]
 

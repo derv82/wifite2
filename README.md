@@ -64,7 +64,7 @@ Second, only the latest versions of these programs are supported and must be ins
 * [`pyrit`](https://github.com/JPaulMora/Pyrit): For detecting handshake captures.
 * [`hashcat`](https://hashcat.net/): For cracking PMKID hashes.
    * [`hcxdumptool`](https://github.com/ZerBea/hcxdumptool): For capturing PMKID hashes.
-   * [`hcxpcaptool`](https://github.com/ZerBea/hcxtools): For converting PMKID packet captures into `hashcat`'s format.
+   * [`hcxpcapngtool`](https://github.com/ZerBea/hcxtools): For converting PMKID packet captures into `hashcat`'s format.
 
 
 Install dependencies

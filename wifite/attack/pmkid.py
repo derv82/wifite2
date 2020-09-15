@@ -3,7 +3,7 @@
 
 from ..model.attack import Attack
 from ..config import Configuration
-from ..tools.hashcat import HcxDumpTool, HcxPcapTool, Hashcat
+from ..tools.hashcat import HcxDumpTool, HcxPcapngTool, Hashcat
 from ..util.color import Color
 from ..util.timer import Timer
 from ..model.pmkid_result import CrackResultPMKID
@@ -73,7 +73,7 @@ class AttackPMKID(Attack):
         # Check that we have all hashcat programs
         dependencies = [
             HcxDumpTool.dependency_name,
-            HcxPcapTool.dependency_name
+            HcxPcapngTool.dependency_name
         ]
         missing_deps = [dep for dep in dependencies if not Process.exists(dep)]
         if len(missing_deps) > 0:
@@ -235,7 +235,7 @@ class AttackPMKID(Attack):
 
     def capture_pmkid(self):
         '''
-        Runs hashcat's hcxpcaptool to extract PMKID hash from the .pcapng file.
+        Runs hashcat's hcxpcapngtool to extract PMKID hash from the .pcapng file.
         Returns:
             The PMKID hash (str) if found, otherwise None.
         '''
@@ -248,7 +248,7 @@ class AttackPMKID(Attack):
 
         # Repeatedly run pcaptool & check output for hash for self.target.essid
         pmkid_hash = None
-        pcaptool = HcxPcapTool(self.target)
+        pcaptool = HcxPcapngTool(self.target)
         while self.timer.remaining() > 0:
             pmkid_hash = pcaptool.get_pmkid_hash(self.pcapng_file)
             if pmkid_hash is not None:

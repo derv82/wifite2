@@ -24,7 +24,7 @@ class Hashcat(Dependency):
     @staticmethod
     def crack_handshake(handshake, show_command=False):
         # Generate hccapx
-        hccapx_file = HcxPcapTool.generate_hccapx_file(
+        hccapx_file = HcxPcapngTool.generate_hccapx_file(
                 handshake, show_command=show_command)
 
         key = None
@@ -51,7 +51,7 @@ class Hashcat(Dependency):
                 break
 
             if os.path.exists(hccapx_file) and hccapx_autoremove is True:
-            os.remove(hccapx_file)
+                os.remove(hccapx_file)
 
         return key
 
@@ -127,9 +127,9 @@ class HcxDumpTool(Dependency):
         self.proc.interrupt()
 
 
-class HcxPcapTool(Dependency):
+class HcxPcapngTool(Dependency):
     dependency_required = False
-    dependency_name = 'hcxpcaptool'
+    dependency_name = 'hcxpcapngtool'
     dependency_url = 'apt-get install hcxtools'
 
     def __init__(self, target):
@@ -144,7 +144,7 @@ class HcxPcapTool(Dependency):
             os.remove(hccapx_file)
 
         command = [
-            'hcxpcaptool',
+            'hcxpcapngtool',
             '-o', hccapx_file,
             handshake.capfile
         ]
@@ -167,7 +167,7 @@ class HcxPcapTool(Dependency):
             os.remove(john_file)
 
         command = [
-            'hcxpcaptool',
+            'hcxpcapngtool',
             '-j', john_file,
             handshake.capfile
         ]
@@ -188,7 +188,7 @@ class HcxPcapTool(Dependency):
             os.remove(self.pmkid_file)
 
         command = [
-            'hcxpcaptool',
+            'hcxpcapngtool',
             '-z', self.pmkid_file,
             pcapng_file
         ]

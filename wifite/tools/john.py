@@ -5,7 +5,7 @@ from .dependency import Dependency
 from ..config import Configuration
 from ..util.color import Color
 from ..util.process import Process
-from ..tools.hashcat import HcxPcapTool
+from ..tools.hashcat import HcxPcapngTool
 
 import os
 
@@ -18,7 +18,7 @@ class John(Dependency):
 
     @staticmethod
     def crack_handshake(handshake, show_command=False):
-        john_file = HcxPcapTool.generate_john_file(handshake, show_command=show_command)
+        john_file = HcxPcapngTool.generate_john_file(handshake, show_command=show_command)
 
         # Use `john --list=formats` to find if OpenCL or CUDA is supported.
         formats_stdout = Process(['john', '--list=formats']).stdout()

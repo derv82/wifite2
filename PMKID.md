@@ -9,7 +9,7 @@ See https://hashcat.net/forum/thread-7717.html
    * Should also use `-c <channel>`, `--filterlist` and `--filtermode` to target a specific client
    * Could be a new attack type: `wifite.attack.pmkid`
 2. Detect when PMKID is found.
-   * `hcxpcaptool -z pmkid.16800 pmkid.pcapng`
+   * `hcxpcapngtool -z pmkid.16800 pmkid.pcapng`
    * Single-line in pmkid.16800 will have PMKID, MACAP, MACStation, ESSID (in hex).
 3. Save `.16800` file (to `./hs/`? or `./pmkids/`?)
    * New result type: `pmkid_result`
@@ -26,7 +26,7 @@ See https://hashcat.net/forum/thread-7717.html
 * If target can't be attacked... we need to detect this failure mode.
    * Might need to scrape `hcxdumptool`'s output
    * Look at `pmkids()` func in .bashrc
-   * hcxpcaptool -z OUTPUT.16800 INPUT.pcapng > /dev/null
+   * hcxpcapngtool -z OUTPUT.16800 INPUT.pcapng > /dev/null
    * Check OUTPUT.16800 for the ESSID.
 * Wireless adapter support is minimal, apparently.
 * hcxdumptool also deauths networks and captures handshakes... maybe unnecessarily
