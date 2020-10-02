@@ -1,0 +1,19 @@
+#include<stdio.h>
+int main()
+{
+    int n,i,binary[10];
+    printf("Enter the number:");
+    scanf("%d",&n);
+    for ( i = 0; n>0; i++)
+    {
+    binary[i]=n%2;
+    n=n/=2;
+    }
+    printf("\n the number is:");
+    for ( i = i-1; i >=0; i--)
+    {
+            printf("%d",binary[i]);
+
+    }
+     return 0;
+}
