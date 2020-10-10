@@ -1,3 +1,0 @@
-# SPDX-License-Identifier: GPL-2.0-only
-obj-y				+= nspire.o
-obj-y				+= clcd.o

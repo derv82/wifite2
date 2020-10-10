@@ -1,5 +1,0 @@
-libbpf_version.h
-libbpf.pc
-FEATURE-DUMP.libbpf
-test_libbpf
-libbpf.so.*
