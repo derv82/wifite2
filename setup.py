@@ -1,4 +1,5 @@
 from distutils.core import setup
+import setuptools
 
 from wifite.config import Configuration
 

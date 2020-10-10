@@ -86,17 +86,15 @@ Install Wifite
 To install onto your computer (so you can just run `wifite` from any terminal), run:
 
 ```bash
-sudo python3 setup.py install
+sudo make && make install
 ```
 
 This will install `wifite` to `/usr/sbin/wifite` which should be in your terminal path.
 
-**Note:** Uninstalling is [not as easy](https://stackoverflow.com/questions/1550226/python-setup-py-uninstall#1550235). The only way to uninstall is to record the files installed by the above command and *remove* those files:
+**Note:** To uninstall, simply do
 
 ```bash
-sudo python3 setup.py install --record files.txt \
-  && cat files.txt | xargs sudo rm \
-  && rm -f files.txt
+sudo make uninstall
 ```
 
 Brief Feature List

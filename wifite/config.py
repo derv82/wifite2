@@ -13,7 +13,7 @@ class Configuration(object):
     version = '2.5.6'
 
     initialized = False  # Flag indicating config has been initialized
-    temp_dir = None     # Temporary directory
+    temp_dir = None  # Temporary directory
     interface = None
     verbose = 0
 
