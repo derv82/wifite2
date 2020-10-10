@@ -20,7 +20,7 @@ class Hashcat(Dependency):
     def should_use_force():
         command = ['hashcat', '-I']
         stderr = Process(command).stderr()
-        return 'No devices found/left' in stderr
+        return 'No devices found/left' or 'Unstable OpenCL driver detected!' in stderr
 
     @staticmethod
     def crack_handshake(handshake, show_command=False):
