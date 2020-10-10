@@ -1,0 +1,8 @@
+The mode parameter type was changed in the callback function devnode in
+struct device_type.
+
+commit 2c9ede55ecec58099b72e4bb8eab719f32f72c31
+Author: Al Viro <viro@zeniv.linux.org.uk>
+Date:   Sat Jul 23 20:24:48 2011 -0400
+
+    switch device_get_devnode() and ->devnode() to umode_t *

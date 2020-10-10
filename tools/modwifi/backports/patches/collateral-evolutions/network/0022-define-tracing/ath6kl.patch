@@ -1,0 +1,10 @@
+--- a/drivers/net/wireless/ath/ath6kl/trace.c
++++ b/drivers/net/wireless/ath/ath6kl/trace.c
+@@ -16,6 +16,7 @@
+ 
+ #include <linux/module.h>
+ 
++#include "trace.h"
+ #define CREATE_TRACE_POINTS
+ #include "trace.h"
+ 

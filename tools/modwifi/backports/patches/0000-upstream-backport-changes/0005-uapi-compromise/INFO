@@ -1,0 +1,4 @@
+Older kernel versions do not have the uapi include directory, but they 
+have the same functions in the include file without uapi. On recent 
+kernel versions the include file without uapi in the name includes the 
+uapi one.

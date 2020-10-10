@@ -1,0 +1,20 @@
+Programmable pins were introduced in the ptp subsystem in kernel 3.15 
+and igb makes use of them now. These patches are removing the code 
+accessing these new functions.
+
+These patches are needed for every kernel which does not have this 
+commit:
+commit 6092315dfdec5185881605d15a0e200d6e90eb66
+Author: Richard Cochran <richardcochran@gmail.com>
+Date:   Thu Mar 20 22:21:52 2014 +0100
+
+    ptp: introduce programmable pins.
+    
+    This patch adds a pair of new ioctls to the PTP Hardware Clock device
+    interface. Using the ioctls, user space programs can query each pin to
+    find out its current function and also reprogram a different function
+    if desired.
+    
+    Signed-off-by: Richard Cochran <richardcochran@gmail.com>
+    Signed-off-by: David S. Miller <davem@davemloft.net>
+

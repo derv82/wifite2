@@ -1,0 +1,12 @@
+We can not easily backport ipv6_stub which provides some IPv6 function 
+callbacks.
+These patches are removing usage of ipv6_stub which was introduces in 
+this commit:
+commit 5f81bd2e5d804ca93f3ec8873451b22d2f454721
+Author: Cong Wang <amwang@redhat.com>
+Date:   Sat Aug 31 13:44:30 2013 +0800
+
+    ipv6: export a stub for IPv6 symbols used by vxlan
+
+mcgrof@ergon ~/linux (git::master)$ git describe --contains 5f81bd2e5d804ca93f3ec8873451b22d2f454721
+v3.12-rc1~132^2~101

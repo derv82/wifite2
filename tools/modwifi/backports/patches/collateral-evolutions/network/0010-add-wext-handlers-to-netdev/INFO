@@ -1,0 +1,18 @@
+The patch "wext: refactor" by Johannes Berg refactored
+wext code so that new kernels no longer get the wext
+handlers through struct netdevice, instead they get
+it through the struct wiphy which is cfg80211 specific.
+
+For old kernels this means you get not wext handlers
+anymore when backporting code, this adds the wext handler
+back to the netdevice wireless_handlers to let compat
+users use wext again.
+
+We do this for every kernel version because the struct wiphy
+is changing from kernel version to version. At least the
+struct from kernel 2.6.33 and 2.6.34 are incompatible and
+the kernel would dereference some wrong type in the struct
+and oops. The old interface is not affected by this. This
+will cause that CONFIG_CFG80211_WEXT still depends on
+CONFIG_WIRELESS_EXT in compat-drivers.
+

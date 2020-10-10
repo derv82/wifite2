@@ -1,0 +1,554 @@
+--- a/drivers/media/v4l2-core/Kconfig
++++ b/drivers/media/v4l2-core/Kconfig
+@@ -68,7 +68,7 @@ config VIDEOBUF_DVB
+ 
+ # Used by drivers that need Videobuf2 modules
+ config VIDEOBUF2_CORE
+-	select DMA_SHARED_BUFFER
++	select DMA_SHARED_BUFFER if !KERNEL_3_5
+ 	tristate
+ 
+ config VIDEOBUF2_MEMOPS
+@@ -79,13 +79,13 @@ config VIDEOBUF2_DMA_CONTIG
+ 	depends on HAS_DMA
+ 	select VIDEOBUF2_CORE
+ 	select VIDEOBUF2_MEMOPS
+-	select DMA_SHARED_BUFFER
++	select DMA_SHARED_BUFFER if !KERNEL_3_5
+ 
+ config VIDEOBUF2_VMALLOC
+ 	tristate
+ 	select VIDEOBUF2_CORE
+ 	select VIDEOBUF2_MEMOPS
+-	select DMA_SHARED_BUFFER
++	select DMA_SHARED_BUFFER if !KERNEL_3_5
+ 
+ config VIDEOBUF2_DMA_SG
+ 	tristate
+--- a/drivers/media/v4l2-core/v4l2-mem2mem.c
++++ b/drivers/media/v4l2-core/v4l2-mem2mem.c
+@@ -440,6 +440,7 @@ int v4l2_m2m_create_bufs(struct file *fi
+ }
+ EXPORT_SYMBOL_GPL(v4l2_m2m_create_bufs);
+ 
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0)
+ /**
+  * v4l2_m2m_expbuf() - export a source or destination buffer, depending on
+  * the type
+@@ -453,6 +454,7 @@ int v4l2_m2m_expbuf(struct file *file, s
+ 	return vb2_expbuf(vq, eb);
+ }
+ EXPORT_SYMBOL_GPL(v4l2_m2m_expbuf);
++#endif /* LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0) */
+ /**
+  * v4l2_m2m_streamon() - turn on streaming for a video queue
+  */
+@@ -803,6 +805,7 @@ int v4l2_m2m_ioctl_dqbuf(struct file *fi
+ }
+ EXPORT_SYMBOL_GPL(v4l2_m2m_ioctl_dqbuf);
+ 
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0)
+ int v4l2_m2m_ioctl_expbuf(struct file *file, void *priv,
+ 				struct v4l2_exportbuffer *eb)
+ {
+@@ -811,6 +814,7 @@ int v4l2_m2m_ioctl_expbuf(struct file *f
+ 	return v4l2_m2m_expbuf(file, fh->m2m_ctx, eb);
+ }
+ EXPORT_SYMBOL_GPL(v4l2_m2m_ioctl_expbuf);
++#endif /* LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0) */
+ 
+ int v4l2_m2m_ioctl_streamon(struct file *file, void *priv,
+ 				enum v4l2_buf_type type)
+--- a/drivers/media/v4l2-core/videobuf2-core.c
++++ b/drivers/media/v4l2-core/videobuf2-core.c
+@@ -252,6 +252,7 @@ static void __vb2_buf_userptr_put(struct
+ 	}
+ }
+ 
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0)
+ /**
+  * __vb2_plane_dmabuf_put() - release memory associated with
+  * a DMABUF shared plane
+@@ -280,6 +281,7 @@ static void __vb2_buf_dmabuf_put(struct
+ 	for (plane = 0; plane < vb->num_planes; ++plane)
+ 		__vb2_plane_dmabuf_put(vb, &vb->planes[plane]);
+ }
++#endif /* LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0) */
+ 
+ /**
+  * __setup_lengths() - setup initial lengths for every plane in
+@@ -423,8 +425,10 @@ static void __vb2_free_mem(struct vb2_qu
+ 		/* Free MMAP buffers or release USERPTR buffers */
+ 		if (q->memory == V4L2_MEMORY_MMAP)
+ 			__vb2_buf_mem_free(vb);
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0)
+ 		else if (q->memory == V4L2_MEMORY_DMABUF)
+ 			__vb2_buf_dmabuf_put(vb);
++#endif /* LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0) */
+ 		else
+ 			__vb2_buf_userptr_put(vb);
+ 	}
+@@ -783,6 +787,7 @@ static int __verify_mmap_ops(struct vb2_
+ 	return 0;
+ }
+ 
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0)
+ /**
+  * __verify_dmabuf_ops() - verify that all memory operations required for
+  * DMABUF queue type have been provided
+@@ -796,6 +801,7 @@ static int __verify_dmabuf_ops(struct vb
+ 
+ 	return 0;
+ }
++#endif /* LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0) */
+ 
+ /**
+  * __verify_memory_type() - Check whether the memory type and buffer type
+@@ -829,10 +835,12 @@ static int __verify_memory_type(struct v
+ 		return -EINVAL;
+ 	}
+ 
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0)
+ 	if (memory == V4L2_MEMORY_DMABUF && __verify_dmabuf_ops(q)) {
+ 		dprintk(1, "DMABUF for current setup unsupported\n");
+ 		return -EINVAL;
+ 	}
++#endif /* LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0) */
+ 
+ 	/*
+ 	 * Place the busy tests at the end: -EBUSY can be ignored when
+@@ -1454,6 +1462,7 @@ err:
+ 	return ret;
+ }
+ 
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0)
+ /**
+  * __qbuf_dmabuf() - handle qbuf of a DMABUF buffer
+  */
+@@ -1572,6 +1581,7 @@ err:
+ 
+ 	return ret;
+ }
++#endif /* LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0) */
+ 
+ /**
+  * __enqueue_in_driver() - enqueue a vb2_buffer in driver for processing
+@@ -1634,9 +1644,11 @@ static int __buf_prepare(struct vb2_buff
+ 		ret = __qbuf_userptr(vb, b);
+ 		up_read(&current->mm->mmap_sem);
+ 		break;
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0)
+ 	case V4L2_MEMORY_DMABUF:
+ 		ret = __qbuf_dmabuf(vb, b);
+ 		break;
++#endif /* LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0) */
+ 	default:
+ 		WARN(1, "Invalid queue type\n");
+ 		ret = -EINVAL;
+@@ -2022,8 +2034,10 @@ EXPORT_SYMBOL_GPL(vb2_wait_for_all_buffe
+  */
+ static void __vb2_dqbuf(struct vb2_buffer *vb)
+ {
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0)
+ 	struct vb2_queue *q = vb->vb2_queue;
+ 	unsigned int i;
++#endif /* LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0) */
+ 
+ 	/* nothing to do if the buffer is already dequeued */
+ 	if (vb->state == VB2_BUF_STATE_DEQUEUED)
+@@ -2031,6 +2045,7 @@ static void __vb2_dqbuf(struct vb2_buffe
+ 
+ 	vb->state = VB2_BUF_STATE_DEQUEUED;
+ 
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0)
+ 	/* unmap DMABUF buffer */
+ 	if (q->memory == V4L2_MEMORY_DMABUF)
+ 		for (i = 0; i < vb->num_planes; ++i) {
+@@ -2039,6 +2054,7 @@ static void __vb2_dqbuf(struct vb2_buffe
+ 			call_void_memop(vb, unmap_dmabuf, vb->planes[i].mem_priv);
+ 			vb->planes[i].dbuf_mapped = 0;
+ 		}
++#endif /* LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0) */
+ }
+ 
+ static int vb2_internal_dqbuf(struct vb2_queue *q, struct v4l2_buffer *b, bool nonblocking)
+@@ -2345,6 +2361,7 @@ static int __find_plane_by_offset(struct
+ 	return -EINVAL;
+ }
+ 
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0)
+ /**
+  * vb2_expbuf() - Export a buffer as a file descriptor
+  * @q:		videobuf2 queue
+@@ -2422,6 +2439,7 @@ int vb2_expbuf(struct vb2_queue *q, stru
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(vb2_expbuf);
++#endif /* LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0) */
+ 
+ /**
+  * vb2_mmap() - map video buffers into application address space
+@@ -3364,6 +3382,7 @@ int vb2_ioctl_streamoff(struct file *fil
+ }
+ EXPORT_SYMBOL_GPL(vb2_ioctl_streamoff);
+ 
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0)
+ int vb2_ioctl_expbuf(struct file *file, void *priv, struct v4l2_exportbuffer *p)
+ {
+ 	struct video_device *vdev = video_devdata(file);
+@@ -3373,6 +3392,7 @@ int vb2_ioctl_expbuf(struct file *file,
+ 	return vb2_expbuf(vdev->queue, p);
+ }
+ EXPORT_SYMBOL_GPL(vb2_ioctl_expbuf);
++#endif /* LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0) */
+ 
+ /* v4l2_file_operations helpers */
+ 
+--- a/drivers/media/v4l2-core/videobuf2-dma-contig.c
++++ b/drivers/media/v4l2-core/videobuf2-dma-contig.c
+@@ -98,8 +98,10 @@ static void *vb2_dc_vaddr(void *buf_priv
+ {
+ 	struct vb2_dc_buf *buf = buf_priv;
+ 
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0)
+ 	if (!buf->vaddr && buf->db_attach)
+ 		buf->vaddr = dma_buf_vmap(buf->db_attach->dmabuf);
++#endif
+ 
+ 	return buf->vaddr;
+ }
+@@ -272,6 +274,7 @@ static int vb2_dc_mmap(void *buf_priv, s
+ }
+ #endif /* (LINUX_VERSION_CODE < KERNEL_VERSION(3,9,0)) */
+ 
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0)
+ /*********************************************/
+ /*         DMABUF ops for exporters          */
+ /*********************************************/
+@@ -471,6 +474,7 @@ static struct dma_buf *vb2_dc_get_dmabuf
+ 
+ 	return dbuf;
+ }
++#endif /* LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0) */
+ 
+ /*********************************************/
+ /*       callbacks for USERPTR buffers       */
+@@ -773,6 +777,7 @@ fail_buf:
+ 	return ERR_PTR(ret);
+ }
+ 
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0)
+ /*********************************************/
+ /*       callbacks for DMABUF buffers        */
+ /*********************************************/
+@@ -883,6 +888,7 @@ static void *vb2_dc_attach_dmabuf(void *
+ 
+ 	return buf;
+ }
++#endif /* LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0) */
+ 
+ /*********************************************/
+ /*       DMA CONTIG exported functions       */
+@@ -891,7 +897,9 @@ static void *vb2_dc_attach_dmabuf(void *
+ const struct vb2_mem_ops vb2_dma_contig_memops = {
+ 	.alloc		= vb2_dc_alloc,
+ 	.put		= vb2_dc_put,
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0)
+ 	.get_dmabuf	= vb2_dc_get_dmabuf,
++#endif /* LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0) */
+ 	.cookie		= vb2_dc_cookie,
+ 	.vaddr		= vb2_dc_vaddr,
+ 	.mmap		= vb2_dc_mmap,
+@@ -899,10 +907,12 @@ const struct vb2_mem_ops vb2_dma_contig_
+ 	.put_userptr	= vb2_dc_put_userptr,
+ 	.prepare	= vb2_dc_prepare,
+ 	.finish		= vb2_dc_finish,
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0)
+ 	.map_dmabuf	= vb2_dc_map_dmabuf,
+ 	.unmap_dmabuf	= vb2_dc_unmap_dmabuf,
+ 	.attach_dmabuf	= vb2_dc_attach_dmabuf,
+ 	.detach_dmabuf	= vb2_dc_detach_dmabuf,
++#endif /* LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0) */
+ 	.num_users	= vb2_dc_num_users,
+ };
+ EXPORT_SYMBOL_GPL(vb2_dma_contig_memops);
+--- a/drivers/media/v4l2-core/videobuf2-vmalloc.c
++++ b/drivers/media/v4l2-core/videobuf2-vmalloc.c
+@@ -30,7 +30,9 @@ struct vb2_vmalloc_buf {
+ 	unsigned int			n_pages;
+ 	atomic_t			refcount;
+ 	struct vb2_vmarea_handler	handler;
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0)
+ 	struct dma_buf			*dbuf;
++#endif /* LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0) */
+ };
+ 
+ static void vb2_vmalloc_put(void *buf_priv);
+@@ -211,6 +213,7 @@ static int vb2_vmalloc_mmap(void *buf_pr
+ 	return 0;
+ }
+ 
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0)
+ #ifdef CONFIG_HAS_DMA
+ /*********************************************/
+ /*         DMABUF ops for exporters          */
+@@ -439,6 +442,7 @@ static void *vb2_vmalloc_attach_dmabuf(v
+ 
+ 	return buf;
+ }
++#endif /* LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0) */
+ 
+ 
+ const struct vb2_mem_ops vb2_vmalloc_memops = {
+@@ -446,6 +450,7 @@ const struct vb2_mem_ops vb2_vmalloc_mem
+ 	.put		= vb2_vmalloc_put,
+ 	.get_userptr	= vb2_vmalloc_get_userptr,
+ 	.put_userptr	= vb2_vmalloc_put_userptr,
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0)
+ #ifdef CONFIG_HAS_DMA
+ 	.get_dmabuf	= vb2_vmalloc_get_dmabuf,
+ #endif
+@@ -453,6 +458,7 @@ const struct vb2_mem_ops vb2_vmalloc_mem
+ 	.unmap_dmabuf	= vb2_vmalloc_unmap_dmabuf,
+ 	.attach_dmabuf	= vb2_vmalloc_attach_dmabuf,
+ 	.detach_dmabuf	= vb2_vmalloc_detach_dmabuf,
++#endif /* LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0) */
+ 	.vaddr		= vb2_vmalloc_vaddr,
+ 	.mmap		= vb2_vmalloc_mmap,
+ 	.num_users	= vb2_vmalloc_num_users,
+--- a/include/media/v4l2-mem2mem.h
++++ b/include/media/v4l2-mem2mem.h
+@@ -119,8 +119,10 @@ int v4l2_m2m_dqbuf(struct file *file, st
+ int v4l2_m2m_create_bufs(struct file *file, struct v4l2_m2m_ctx *m2m_ctx,
+ 			 struct v4l2_create_buffers *create);
+ 
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0)
+ int v4l2_m2m_expbuf(struct file *file, struct v4l2_m2m_ctx *m2m_ctx,
+ 		   struct v4l2_exportbuffer *eb);
++#endif /* LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0) */
+ 
+ int v4l2_m2m_streamon(struct file *file, struct v4l2_m2m_ctx *m2m_ctx,
+ 		      enum v4l2_buf_type type);
+@@ -242,8 +244,10 @@ int v4l2_m2m_ioctl_create_bufs(struct fi
+ 				struct v4l2_create_buffers *create);
+ int v4l2_m2m_ioctl_querybuf(struct file *file, void *fh,
+ 				struct v4l2_buffer *buf);
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0)
+ int v4l2_m2m_ioctl_expbuf(struct file *file, void *fh,
+ 				struct v4l2_exportbuffer *eb);
++#endif /* LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0) */
+ int v4l2_m2m_ioctl_qbuf(struct file *file, void *fh,
+ 				struct v4l2_buffer *buf);
+ int v4l2_m2m_ioctl_dqbuf(struct file *file, void *fh,
+--- a/include/media/videobuf2-core.h
++++ b/include/media/videobuf2-core.h
+@@ -86,7 +86,9 @@ struct vb2_mem_ops {
+ 				  enum dma_data_direction dma_dir,
+ 				  gfp_t gfp_flags);
+ 	void		(*put)(void *buf_priv);
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0)
+ 	struct dma_buf *(*get_dmabuf)(void *buf_priv, unsigned long flags);
++#endif /* LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0) */
+ 
+ 	void		*(*get_userptr)(void *alloc_ctx, unsigned long vaddr,
+ 					unsigned long size,
+@@ -96,12 +98,14 @@ struct vb2_mem_ops {
+ 	void		(*prepare)(void *buf_priv);
+ 	void		(*finish)(void *buf_priv);
+ 
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0)
+ 	void		*(*attach_dmabuf)(void *alloc_ctx, struct dma_buf *dbuf,
+ 					  unsigned long size,
+ 					  enum dma_data_direction dma_dir);
+ 	void		(*detach_dmabuf)(void *buf_priv);
+ 	int		(*map_dmabuf)(void *buf_priv);
+ 	void		(*unmap_dmabuf)(void *buf_priv);
++#endif /* LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0) */
+ 
+ 	void		*(*vaddr)(void *buf_priv);
+ 	void		*(*cookie)(void *buf_priv);
+@@ -465,7 +469,9 @@ void vb2_queue_release(struct vb2_queue
+ void vb2_queue_error(struct vb2_queue *q);
+ 
+ int vb2_qbuf(struct vb2_queue *q, struct v4l2_buffer *b);
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0)
+ int vb2_expbuf(struct vb2_queue *q, struct v4l2_exportbuffer *eb);
++#endif /* LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0) */
+ int vb2_dqbuf(struct vb2_queue *q, struct v4l2_buffer *b, bool nonblocking);
+ 
+ int vb2_streamon(struct vb2_queue *q, enum v4l2_buf_type type);
+@@ -630,8 +636,10 @@ int vb2_ioctl_qbuf(struct file *file, vo
+ int vb2_ioctl_dqbuf(struct file *file, void *priv, struct v4l2_buffer *p);
+ int vb2_ioctl_streamon(struct file *file, void *priv, enum v4l2_buf_type i);
+ int vb2_ioctl_streamoff(struct file *file, void *priv, enum v4l2_buf_type i);
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0)
+ int vb2_ioctl_expbuf(struct file *file, void *priv,
+ 	struct v4l2_exportbuffer *p);
++#endif /* LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0) */
+ 
+ /* struct v4l2_file_operations helpers */
+ 
+--- a/drivers/media/platform/am437x/am437x-vpfe.c
++++ b/drivers/media/platform/am437x/am437x-vpfe.c
+@@ -2266,7 +2266,9 @@ static const struct v4l2_ioctl_ops vpfe_
+ 	.vidioc_querybuf		= vb2_ioctl_querybuf,
+ 	.vidioc_qbuf			= vb2_ioctl_qbuf,
+ 	.vidioc_dqbuf			= vb2_ioctl_dqbuf,
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0)
+ 	.vidioc_expbuf			= vb2_ioctl_expbuf,
++#endif
+ 	.vidioc_streamon		= vb2_ioctl_streamon,
+ 	.vidioc_streamoff		= vb2_ioctl_streamoff,
+ 
+--- a/drivers/media/platform/coda/coda-common.c
++++ b/drivers/media/platform/coda/coda-common.c
+@@ -845,7 +845,9 @@ static const struct v4l2_ioctl_ops coda_
+ 	.vidioc_querybuf	= v4l2_m2m_ioctl_querybuf,
+ 
+ 	.vidioc_qbuf		= coda_qbuf,
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0)
+ 	.vidioc_expbuf		= v4l2_m2m_ioctl_expbuf,
++#endif
+ 	.vidioc_dqbuf		= coda_dqbuf,
+ 	.vidioc_create_bufs	= v4l2_m2m_ioctl_create_bufs,
+ 
+--- a/drivers/media/platform/davinci/vpbe_display.c
++++ b/drivers/media/platform/davinci/vpbe_display.c
+@@ -1249,7 +1249,9 @@ static const struct v4l2_ioctl_ops vpbe_
+ 	.vidioc_dqbuf		 = vb2_ioctl_dqbuf,
+ 	.vidioc_streamon	 = vb2_ioctl_streamon,
+ 	.vidioc_streamoff	 = vb2_ioctl_streamoff,
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0)
+ 	.vidioc_expbuf		 = vb2_ioctl_expbuf,
++#endif
+ 
+ 	.vidioc_cropcap		 = vpbe_display_cropcap,
+ 	.vidioc_g_crop		 = vpbe_display_g_crop,
+--- a/drivers/media/platform/davinci/vpif_capture.c
++++ b/drivers/media/platform/davinci/vpif_capture.c
+@@ -1260,7 +1260,9 @@ static const struct v4l2_ioctl_ops vpif_
+ 	.vidioc_querybuf		= vb2_ioctl_querybuf,
+ 	.vidioc_qbuf			= vb2_ioctl_qbuf,
+ 	.vidioc_dqbuf			= vb2_ioctl_dqbuf,
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0)
+ 	.vidioc_expbuf			= vb2_ioctl_expbuf,
++#endif
+ 	.vidioc_streamon		= vb2_ioctl_streamon,
+ 	.vidioc_streamoff		= vb2_ioctl_streamoff,
+ 
+--- a/drivers/media/platform/davinci/vpif_display.c
++++ b/drivers/media/platform/davinci/vpif_display.c
+@@ -1059,7 +1059,9 @@ static const struct v4l2_ioctl_ops vpif_
+ 	.vidioc_querybuf		= vb2_ioctl_querybuf,
+ 	.vidioc_qbuf			= vb2_ioctl_qbuf,
+ 	.vidioc_dqbuf			= vb2_ioctl_dqbuf,
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0)
+ 	.vidioc_expbuf			= vb2_ioctl_expbuf,
++#endif
+ 	.vidioc_streamon		= vb2_ioctl_streamon,
+ 	.vidioc_streamoff		= vb2_ioctl_streamoff,
+ 
+--- a/drivers/media/platform/exynos4-is/fimc-capture.c
++++ b/drivers/media/platform/exynos4-is/fimc-capture.c
+@@ -1372,7 +1372,9 @@ static const struct v4l2_ioctl_ops fimc_
+ 	.vidioc_querybuf		= vb2_ioctl_querybuf,
+ 	.vidioc_qbuf			= vb2_ioctl_qbuf,
+ 	.vidioc_dqbuf			= vb2_ioctl_dqbuf,
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0)
+ 	.vidioc_expbuf			= vb2_ioctl_expbuf,
++#endif
+ 	.vidioc_prepare_buf		= vb2_ioctl_prepare_buf,
+ 	.vidioc_create_bufs		= vb2_ioctl_create_bufs,
+ 
+--- a/drivers/media/platform/exynos4-is/fimc-m2m.c
++++ b/drivers/media/platform/exynos4-is/fimc-m2m.c
+@@ -538,7 +538,9 @@ static const struct v4l2_ioctl_ops fimc_
+ 	.vidioc_querybuf		= v4l2_m2m_ioctl_querybuf,
+ 	.vidioc_qbuf			= v4l2_m2m_ioctl_qbuf,
+ 	.vidioc_dqbuf			= v4l2_m2m_ioctl_dqbuf,
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0)
+ 	.vidioc_expbuf			= v4l2_m2m_ioctl_expbuf,
++#endif
+ 	.vidioc_streamon		= v4l2_m2m_ioctl_streamon,
+ 	.vidioc_streamoff		= v4l2_m2m_ioctl_streamoff,
+ 	.vidioc_g_crop			= fimc_m2m_g_crop,
+--- a/drivers/media/platform/vivid/vivid-core.c
++++ b/drivers/media/platform/vivid/vivid-core.c
+@@ -572,7 +572,9 @@ static const struct v4l2_ioctl_ops vivid
+ 	.vidioc_querybuf		= vb2_ioctl_querybuf,
+ 	.vidioc_qbuf			= vb2_ioctl_qbuf,
+ 	.vidioc_dqbuf			= vb2_ioctl_dqbuf,
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0)
+ 	.vidioc_expbuf			= vb2_ioctl_expbuf,
++#endif
+ 	.vidioc_streamon		= vb2_ioctl_streamon,
+ 	.vidioc_streamoff		= vb2_ioctl_streamoff,
+ 
+--- a/drivers/media/platform/vim2m.c
++++ b/drivers/media/platform/vim2m.c
+@@ -697,7 +697,9 @@ static const struct v4l2_ioctl_ops vim2m
+ 	.vidioc_querybuf	= v4l2_m2m_ioctl_querybuf,
+ 	.vidioc_qbuf		= v4l2_m2m_ioctl_qbuf,
+ 	.vidioc_dqbuf		= v4l2_m2m_ioctl_dqbuf,
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0)
+ 	.vidioc_expbuf		= v4l2_m2m_ioctl_expbuf,
++#endif
+ 
+ 	.vidioc_streamon	= v4l2_m2m_ioctl_streamon,
+ 	.vidioc_streamoff	= v4l2_m2m_ioctl_streamoff,
+--- a/drivers/media/usb/au0828/au0828-video.c
++++ b/drivers/media/usb/au0828/au0828-video.c
+@@ -1678,7 +1678,9 @@ static const struct v4l2_ioctl_ops video
+ 	.vidioc_querybuf            = vb2_ioctl_querybuf,
+ 	.vidioc_qbuf                = vb2_ioctl_qbuf,
+ 	.vidioc_dqbuf               = vb2_ioctl_dqbuf,
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0)
+ 	.vidioc_expbuf               = vb2_ioctl_expbuf,
++#endif
+ 
+ 	.vidioc_s_std               = vidioc_s_std,
+ 	.vidioc_g_std               = vidioc_g_std,
+--- a/drivers/media/v4l2-core/videobuf2-dma-sg.c
++++ b/drivers/media/v4l2-core/videobuf2-dma-sg.c
+@@ -373,9 +373,11 @@ static void *vb2_dma_sg_vaddr(void *buf_
+ 	BUG_ON(!buf);
+ 
+ 	if (!buf->vaddr) {
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0)
+ 		if (buf->db_attach)
+ 			buf->vaddr = dma_buf_vmap(buf->db_attach->dmabuf);
+ 		else
++#endif
+ 			buf->vaddr = vm_map_ram(buf->pages,
+ 					buf->num_pages, -1, PAGE_KERNEL);
+ 	}
+@@ -428,6 +430,7 @@ static int vb2_dma_sg_mmap(void *buf_pri
+ 	return 0;
+ }
+ 
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0)
+ /*********************************************/
+ /*         DMABUF ops for exporters          */
+ /*********************************************/
+@@ -701,6 +704,7 @@ static void *vb2_dma_sg_attach_dmabuf(vo
+ 
+ 	return buf;
+ }
++#endif /* LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0) */
+ 
+ static void *vb2_dma_sg_cookie(void *buf_priv)
+ {
+@@ -719,11 +723,13 @@ const struct vb2_mem_ops vb2_dma_sg_memo
+ 	.vaddr		= vb2_dma_sg_vaddr,
+ 	.mmap		= vb2_dma_sg_mmap,
+ 	.num_users	= vb2_dma_sg_num_users,
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0)
+ 	.get_dmabuf	= vb2_dma_sg_get_dmabuf,
+ 	.map_dmabuf	= vb2_dma_sg_map_dmabuf,
+ 	.unmap_dmabuf	= vb2_dma_sg_unmap_dmabuf,
+ 	.attach_dmabuf	= vb2_dma_sg_attach_dmabuf,
+ 	.detach_dmabuf	= vb2_dma_sg_detach_dmabuf,
++#endif /* LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0) */
+ 	.cookie		= vb2_dma_sg_cookie,
+ };
+ EXPORT_SYMBOL_GPL(vb2_dma_sg_memops);

@@ -1,0 +1,30 @@
+--- a/net/ieee802154/dgram.c
++++ b/net/ieee802154/dgram.c
+@@ -480,8 +480,13 @@ static int dgram_setsockopt(struct sock
+ 		ro->want_ack = !!val;
+ 		break;
+ 	case WPAN_SECURITY:
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,8,0)
+ 		if (!ns_capable(net->user_ns, CAP_NET_ADMIN) &&
+ 		    !ns_capable(net->user_ns, CAP_NET_RAW)) {
++#else
++		if (!capable(CAP_NET_ADMIN) &&
++		    !capable(CAP_NET_RAW)) {
++#endif
+ 			err = -EPERM;
+ 			break;
+ 		}
+@@ -504,8 +509,13 @@ static int dgram_setsockopt(struct sock
+ 		}
+ 		break;
+ 	case WPAN_SECURITY_LEVEL:
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,8,0)
+ 		if (!ns_capable(net->user_ns, CAP_NET_ADMIN) &&
+ 		    !ns_capable(net->user_ns, CAP_NET_RAW)) {
++#else
++		if (!capable(CAP_NET_ADMIN) &&
++		    !capable(CAP_NET_RAW)) {
++#endif
+ 			err = -EPERM;
+ 			break;
+ 		}

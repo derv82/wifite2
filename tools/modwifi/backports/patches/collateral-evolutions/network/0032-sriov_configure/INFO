@@ -1,0 +1,13 @@
+In kernel 3.8 struct pci_driver got a new function pointer sriov_configure.
+Address this by putting ifdef around the code.
+
+
+commit 1789382a72a537447d65ea4131d8bcc1ad85ce7b
+Author: Donald Dutile <ddutile@redhat.com>
+Date:   Mon Nov 5 15:20:36 2012 -0500
+
+    PCI: SRIOV control and status via sysfs
+
+git describe --contains 1789382a72a537447d65ea4131d8bcc1ad85ce7b
+v3.8-rc1~128^2~6^2~4
+

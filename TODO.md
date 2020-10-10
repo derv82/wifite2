@@ -5,8 +5,6 @@ This file is a braindump of ideas to improve Wifite2 (or forward-looking to "Wif
 ------------------------------------------------------
 
 ### Better Dependency Handling
-I can rely on `pip3` + `requirements.txt` for python libraries, but most of wifite's dependencies are installed programs.
-
 When a dependency is not found, Wifite should walk the user through installing all required dependencies, and maybe the optional dependencies as well.
 
 The dependency-installation walkthrough should provide or auto-execute the install commands (`git clone`, `wget | tar && ./config`, etc).

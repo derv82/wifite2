@@ -1,0 +1,35 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ * Copyright 2012 ST-Ericsson AB
+ */
+
+/dts-v1/;
+#include "ste-hrefprev60.dtsi"
+#include "ste-href-stuib.dtsi"
+
+/ {
+	model = "ST-Ericsson HREF (pre-v60) and ST UIB";
+	compatible = "st-ericsson,mop500", "st-ericsson,u8500";
+
+	/* This stablilizes the serial port enumeration */
+	aliases {
+		serial0 = &ux500_serial0;
+		serial1 = &ux500_serial1;
+		serial2 = &ux500_serial2;
+	};
+
+	soc {
+		/* Reset line for the BU21013 touchscreen */
+		i2c@80110000 {
+			/* Only one of these will be used */
+			bu21013_tp@5c {
+				touch-gpio = <&gpio2 12 0x4>;
+				reset-gpio = <&tc3589x_gpio 13 0x4>;
+			};
+			bu21013_tp@5d {
+				touch-gpio = <&gpio2 12 0x4>;
+				reset-gpio = <&tc3589x_gpio 13 0x4>;
+			};
+		};
+	};
+};

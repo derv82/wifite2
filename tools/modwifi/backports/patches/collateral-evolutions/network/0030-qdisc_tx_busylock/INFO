@@ -1,0 +1,22 @@
+struct net_device got an extension with the member qdisc_tx_busylock
+as of commit 23d3b8bfb. For older kernels we need to ifdef around that
+as its now available.
+
+mcgrof@ergon ~/linux (git::master)$ git describe --contains 23d3b8bfb
+v3.7-rc1~145^2~208
+
+commit 23d3b8bfb8eb20e7d96afa09991e6a5ed1c83164
+Author: Eric Dumazet <edumazet@google.com>
+Date:   Wed Sep 5 01:02:56 2012 +0000
+
+    net: qdisc busylock needs lockdep annotations
+    
+    It seems we need to provide ability for stacked devices
+    to use specific lock_class_key for sch->busylock
+    
+    We could instead default l2tpeth tx_queue_len to 0 (no qdisc), but
+    a user might use a qdisc anyway.
+    
+    (So same fixes are probably needed on non LLTX stacked drivers)
+
+[ the commit log goes we only include up to here to help with context ]

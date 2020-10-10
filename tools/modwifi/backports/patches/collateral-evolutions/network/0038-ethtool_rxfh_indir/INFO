@@ -1,0 +1,13 @@
+In kernel 3.3 struct ethtool_ops received 3 new function pointers
+get_rxfh_indir_size, get_rxfh_indir, set_rxfh_indir.
+Address this by putting ifdef around the code.
+
+
+commit 7850f63f1620512631445b901ae11cd149e7375c
+Author: Ben Hutchings <bhutchings@solarflare.com>
+Date:   Thu Dec 15 13:55:01 2011 +0000
+
+    ethtool: Centralise validation of ETHTOOL_{G, S}RXFHINDIR parameters
+
+git describe --contains 7850f63f1620512631445b901ae11cd149e7375c
+v3.3-rc1~182^2~192

@@ -1,0 +1,1715 @@
+Archive member included because of file (symbol)
+
+/root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(debug-vector.o)
+                              /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/_vectors.o (_DebugExceptionVector)
+/root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(double-vector.o)
+                              /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/_vectors.o (_DoubleExceptionVector)
+/root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(kernel-vector.o)
+                              /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/_vectors.o (_KernelExceptionVector)
+/root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(reset-vector-unpack.o)
+                              /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/_vectors.o (_ResetVector)
+/root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(user-vector.o)
+                              /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/_vectors.o (_UserExceptionVector)
+/root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(nmi-vector.o)
+                              /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/_vectors.o (_NMIExceptionVector)
+/root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(window-vectors.o)
+                              /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/_vectors.o (_WindowOverflow4)
+/root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(int-vector-level2.o)
+                              /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/_vectors.o (_Level2Vector)
+/root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(int-vector-level3.o)
+                              /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/_vectors.o (_Level3Vector)
+/root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(exc-alloca-handler.o)
+                              /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(user-vector.o) (_xtos_alloca_handler)
+/root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(exc-syscall-handler.o)
+                              /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(user-vector.o) (_xtos_syscall_handler)
+/root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(int-lowpri-dispatcher.o)
+                              /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(user-vector.o) (_xtos_l1int_handler)
+/root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(int-sethandler.o)
+                              (_xtos_set_interrupt_handler)
+/root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(int-handler-level2.o)
+                              /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(int-vector-level2.o) (_Level2FromVector)
+/root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(int-handler-level3.o)
+                              /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(int-vector-level3.o) (_Level3FromVector)
+/root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(interrupt-table.o)
+                              /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(int-lowpri-dispatcher.o) (_xtos_interrupt_table)
+/root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(exc-unhandled.o)
+                              /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(user-vector.o) (_xtos_unhandled_exception)
+/root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(exc-return.o)
+                              /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(int-lowpri-dispatcher.o) (_xtos_return_from_exc)
+/root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libathos.a(athos_main.o)
+                              /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(reset-vector-unpack.o) (_rom_store_table)
+/root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_allocram.o)
+                              /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libathos.a(athos_main.o) (cmnos_allocram_module_install)
+/root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_clock.o)
+                              (cticks)
+/root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_eeprom.o)
+                              /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libathos.a(athos_main.o) (eep_state)
+/root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_intr.o)
+                              /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libathos.a(athos_main.o) (cmnos_intr_module_install)
+/root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_mem.o)
+                              /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libathos.a(athos_main.o) (cmnos_mem_module_install)
+/root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_misc.o)
+                              /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libathos.a(athos_main.o) (cmnos_misc_module_install)
+/root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_printf.o)
+                              /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libathos.a(athos_main.o) (cmnos_printf_module_install)
+/root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_rompatch.o)
+                              /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libathos.a(athos_main.o) (cmnos_romp_module_install)
+/root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_string.o)
+                              /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libathos.a(athos_main.o) (cmnos_string_module_install)
+/root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_tasklet.o)
+                              /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libathos.a(athos_main.o) (cmnos_tasklet_module_install)
+/root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_timer.o)
+                              /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libathos.a(athos_main.o) (cmnos_timer_module_install)
+/root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_wdt.o)
+                              /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libathos.a(athos_main.o) (cmnos_wdt_module_install)
+/root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(uart_api.o)
+                              /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libathos.a(athos_main.o) (cmnos_uart_module_install)
+/root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhif.a(hif_pci.o)
+                              /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libathos.a(athos_main.o) (hif_pci_module_install)
+/root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhif.a(HIF_usb.o)
+                              /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libathos.a(athos_main.o) (hif_usb_module_install)
+/root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhif.a(usb_api.o)
+                              /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libathos.a(athos_main.o) (usbfifo_module_install)
+/root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhif.a(usb_table.o)
+                              (UsbDeviceDescriptor)
+/root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhif.a(usb_fifo.o)
+                              /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhif.a(usb_api.o) (vUsbFIFO_EPxCfg_HS)
+/root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhif.a(dma_lib.o)
+                              /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libathos.a(athos_main.o) (dma_lib_module_install)
+/root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libvbuf.a(vbuf.o)
+                              /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libathos.a(athos_main.o) (vbuf_module_install)
+/root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libvdesc.a(vdesc.o)
+                              /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libathos.a(athos_main.o) (vdesc_module_install)
+/root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhtc.a(htc.o)
+                              (htc_module_install)
+/root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libdma.a(dma_engine.o)
+                              /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libathos.a(athos_main.o) (dma_engine_module_install)
+/root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libdma.a(desc.o)
+                              /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libdma.a(dma_engine.o) (zfDmaGetPacket)
+/root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libfwd.a(fwd.o)
+                              /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libathos.a(athos_main.o) (fwd_init)
+/root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libbuf_pool.a(buf_pool_static.o)
+                              (buf_pool_module_install)
+/root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(exc-sethandler.o)
+                              /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libathos.a(athos_main.o) (_xtos_set_exception_handler)
+/root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(exc-table.o)
+                              /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(exc-sethandler.o) (_xtos_c_handler_table)
+/root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(exc-c-wrapper-handler.o)
+                              /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(exc-sethandler.o) (_xtos_c_wrapper_handler)
+/opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/arch/lib//libhal.a(clock.o)
+                              /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_clock.o) (xthal_get_ccount)
+/opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/arch/lib//libhal.a(misc.o)
+                              (Xthal_num_ccompare)
+/opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/arch/lib//libhal.a(windowspill_asm.o)
+                              /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libathos.a(athos_main.o) (xthal_window_spill)
+/opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/arch/lib//libhal.a(cache_asm--hw_configid0.o)
+                              /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/_vectors.o (xthals_hw_configid0)
+/opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/arch/lib//libhal.a(cache_asm--hw_configid1.o)
+                              /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/_vectors.o (xthals_hw_configid1)
+/opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/arch/lib//libhal.a(cache_asm--release_major.o)
+                              /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/_vectors.o (xthals_release_major)
+/opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/arch/lib//libhal.a(cache_asm--release_minor.o)
+                              /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/_vectors.o (xthals_release_minor)
+/opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/arch/lib//libhal.a(int_asm--get_intenable.o)
+                              /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libathos.a(athos_main.o) (xthal_get_intenable)
+/opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/arch/lib//libhal.a(int_asm--get_interrupt.o)
+                              /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libathos.a(athos_main.o) (xthal_get_interrupt)
+/opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/arch/lib//libhal.a(int_asm--set_intenable.o)
+                              /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libathos.a(athos_main.o) (xthal_set_intenable)
+/opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/arch/lib//libhal.a(interrupts--intlevel.o)
+                              /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(int-sethandler.o) (Xthal_intlevel)
+/opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib/xcc//libgcc.a(_divsi3.o)
+                              (__divsi3)
+/opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib/xcc//libgcc.a(_modsi3.o)
+                              (__modsi3)
+/opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib/xcc//libgcc.a(_udivsi3.o)
+                              (__udivsi3)
+/opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib/xcc//libgcc.a(_umodsi3.o)
+                              (__umodsi3)
+/opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib//libc.a(memcmp.o)
+                              /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_mem.o) (memcmp)
+/opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib//libc.a(memcpy.o)
+                              (memcpy)
+/opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib//libc.a(memmove.o)
+                              /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_mem.o) (memmove)
+/opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib//libc.a(memset.o)
+                              (memset)
+/opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib//libc.a(strcmp.o)
+                              (strcmp)
+/opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib//libc.a(strcpy.o)
+                              (strcpy)
+/opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib//libc.a(strlen.o)
+                              (strlen)
+/opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib//libc.a(strncmp.o)
+                              /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_string.o) (strncmp)
+/opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib//libc.a(strncpy.o)
+                              /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_string.o) (strncpy)
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+ResetVector_text_seg 0x008e0000         0x00000800
+WindowVectors_text_seg 0x008e0800         0x00000200
+Level2InterruptVector_lit_seg 0x008e0a00         0x00000020
+Level2InterruptVector_text_seg 0x008e0a20         0x000000e0
+Level3InterruptVector_lit_seg 0x008e0b00         0x00000020
+Level3InterruptVector_text_seg 0x008e0b20         0x000000e0
+DebugExceptionVector_lit_seg 0x008e0c00         0x00000020
+DebugExceptionVector_text_seg 0x008e0c20         0x000000e0
+NMIExceptionVector_lit_seg 0x008e0ce0         0x00000004
+NMIExceptionVector_text_seg 0x008e0ce4         0x0000001c
+KernelExceptionVector_lit_seg 0x008e0d00         0x00000040
+KernelExceptionVector_text_seg 0x008e0d40         0x000000c0
+UserExceptionVector_lit_seg 0x008e0e00         0x00000020
+UserExceptionVector_text_seg 0x008e0e20         0x000000e0
+DoubleExceptionVector_lit_seg 0x008e0f00         0x00000020
+DoubleExceptionVector_text_seg 0x008e0f20         0x000000e0
+irom_seg         0x008e1000         0x00007000
+drom_seg         0x004e8000         0x00001800
+dram_seg         0x00500000         0x00001000
+dram1_seg        0x0053f7f0         0x00000800
+dram2_seg        0x004e0100         0x00000400
+*default*        0x00000000         0xffffffff
+
+Linker script and memory map
+
+                0x008e0800                PROVIDE (_memmap_vecbase_reset, 0x8e0800)
+                0x00021001                _memmap_cacheattr_wb_base = 0x21001
+                0x00021001                _memmap_cacheattr_wt_base = 0x21001
+                0x00022002                _memmap_cacheattr_bp_base = 0x22002
+                0xfff00ff0                _memmap_cacheattr_unused_mask = 0xfff00ff0
+                0x22221221                _memmap_cacheattr_wb_trapnull = 0x22221221
+                0x22221221                _memmap_cacheattr_wt_trapnull = 0x22221221
+                0x22222222                _memmap_cacheattr_bp_trapnull = 0x22222222
+                0xfff21ff1                _memmap_cacheattr_wb_strict = 0xfff21ff1
+                0xfff21ff1                _memmap_cacheattr_wt_strict = 0xfff21ff1
+                0xfff22ff2                _memmap_cacheattr_bp_strict = 0xfff22ff2
+                0x22221221                _memmap_cacheattr_wb_allvalid = 0x22221221
+                0x22221221                _memmap_cacheattr_wt_allvalid = 0x22221221
+                0x22222222                _memmap_cacheattr_bp_allvalid = 0x22222222
+                0x22221221                PROVIDE (_memmap_cacheattr_reset, _memmap_cacheattr_wb_trapnull)
+
+.lit4           0x004e8000      0x704
+                0x004e8000                _lit4_start = <code 341> (.)
+ *(*.lit4)
+ .lit4          0x004e8000       0x10 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/crt1-tiny.o
+ .ResetVector.lit4
+                0x004e8010        0x8 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(reset-vector-unpack.o)
+ .UserExceptionVector.lit4
+                0x004e8018        0x4 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(user-vector.o)
+ .lit4          0x004e801c        0x4 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(exc-alloca-handler.o)
+ .lit4          0x004e8020        0x8 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(exc-syscall-handler.o)
+ .lit4          0x004e8028        0xc /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(int-lowpri-dispatcher.o)
+ .lit4          0x004e8034        0xc /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(int-sethandler.o)
+ .lit4          0x004e8040        0x8 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(int-handler-level2.o)
+ .lit4          0x004e8048        0x8 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(int-handler-level3.o)
+ .lit4          0x004e8050      0x10c /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libathos.a(athos_main.o)
+ .lit4          0x004e815c       0x1c /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_allocram.o)
+ .lit4          0x004e8178       0x38 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_clock.o)
+ .lit4          0x004e81b0       0x50 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_eeprom.o)
+ .lit4          0x004e8200       0x2c /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_intr.o)
+ .lit4          0x004e822c       0x14 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_mem.o)
+ .lit4          0x004e8240       0x50 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_misc.o)
+ .lit4          0x004e8290       0x1c /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_printf.o)
+ .lit4          0x004e82ac       0x34 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_rompatch.o)
+ .lit4          0x004e82e0       0x18 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_string.o)
+ .lit4          0x004e82f8       0x18 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_tasklet.o)
+ .lit4          0x004e8310       0x1c /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_timer.o)
+ .lit4          0x004e832c       0x28 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_wdt.o)
+ .lit4          0x004e8354       0x34 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(uart_api.o)
+ .lit4          0x004e8388       0x7c /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhif.a(hif_pci.o)
+ .lit4          0x004e8404       0x88 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhif.a(HIF_usb.o)
+ .lit4          0x004e848c       0xf4 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhif.a(usb_api.o)
+ .lit4          0x004e8580        0xc /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhif.a(usb_fifo.o)
+ .lit4          0x004e858c       0x34 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhif.a(dma_lib.o)
+ .lit4          0x004e85c0       0x10 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libvbuf.a(vbuf.o)
+ .lit4          0x004e85d0       0x14 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libvdesc.a(vdesc.o)
+ .lit4          0x004e85e4       0x30 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhtc.a(htc.o)
+ .lit4          0x004e8614       0x50 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libdma.a(dma_engine.o)
+ .lit4          0x004e8664        0x4 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libdma.a(desc.o)
+ .lit4          0x004e8668       0x54 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libfwd.a(fwd.o)
+ .lit4          0x004e86bc       0x1c /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libbuf_pool.a(buf_pool_static.o)
+ .lit4          0x004e86d8       0x10 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(exc-sethandler.o)
+ .lit4          0x004e86e8        0x4 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/arch/lib//libhal.a(windowspill_asm.o)
+ .lit4          0x004e86ec       0x10 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib//libc.a(strcmp.o)
+ .lit4          0x004e86fc        0x8 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib//libc.a(strncmp.o)
+ *(.gnu.linkonce.lit4.*)
+                0x004e8704                _lit4_end = <code 341> (.)
+
+.ResetVector.literal
+                0x004e8704        0x0
+                0x004e8704                _ResetVector_literal_start = <code 341> (.)
+ *(.ResetVector.literal)
+                0x004e8704                _ResetVector_literal_end = <code 341> (.)
+
+.dport0.stack   0x0053f7f0      0x800
+                0x0053f7f0                _reserved_stack_start = .
+                0x0053f7f0                _stack_sentry = ALIGN (0x8)
+                0x0053fff0                . = (. + 0x800)
+ *fill*         0x0053f7f0      0x800 00
+ *fill*         0x0053fff0        0x0 00
+ *fill*         0x0053fff0        0x0 00
+ *fill*         0x0053fff0        0x0 00
+ *fill*         0x0053fff0        0x0 00
+                0x0053fff0                __stack = .
+                0x0053fff0                _reserved_stack_end = .
+
+.dport0.usb_in_rom
+                0x004e0100       0xec
+                0x004e0100                _reserved_rom_data_start = .
+                0x004e0100                _reserved_rom_data_end = .
+                0x004e0260                _data_start_in_rom = 0x160
+ .dport0.usb_in_rom
+                0x004e0100       0xec /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhif.a(usb_table.o)
+                0x004e0100                UsbDeviceDescriptor
+                0x004e01c0                String20Descriptor
+                0x004e01b0                String10Descriptor
+                0x004e0120                u8HSConfigDescriptor01
+                0x004e0160                u8FSConfigDescriptor01
+                0x004e01a0                String00Descriptor
+                0x004e01e0                String30Descriptor
+
+.dport0.data    0x00500000      0x400
+                0x00500000                _reserved_data_start = 0x0
+                0x00500000                _indir_tbl = 0x0
+                0x00500400                . = 0x400
+ *fill*         0x00500000      0x400 00
+ *fill*         0x00500400        0x0 00
+ *fill*         0x00500400        0x0 00
+ *fill*         0x00500400        0x0 00
+ *fill*         0x00500400        0x0 00
+                0x00500400                _reserved_data_end = .
+                0x00500400                _dport0_data_start = <code 341> (.)
+ *(.dport0.data)
+ *(.dport.data)
+                0x00500400                _dport0_data_end = <code 341> (.)
+
+.dport0.bss     0x00500400        0x0
+                0x00500400                . = ALIGN (0x8)
+                0x00500400                _dport0_bss_start = <code 341> (.)
+ *(.dport0.bss)
+                0x00500400                . = ALIGN (0x8)
+                0x00500400                _dport0_bss_end = <code 341> (.)
+
+.dram0.rodata   0x004e8704        0x0
+                0x004e8704                _dram0_rodata_start = <code 341> (.)
+ *(.dram0.rodata)
+ *(.dram.rodata)
+                0x004e8704                _dram0_rodata_end = <code 341> (.)
+
+.rodata         0x004e8710      0x934
+                0x004e8710                _rodata_start = <code 341> (.)
+ *(.rodata)
+ .rodata        0x004e8710       0x30 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libathos.a(athos_main.o)
+                0x004e8710                _rom_store_table
+ .rodata        0x004e8740       0x50 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_clock.o)
+                0x004e8740                cmnos_clocking_table
+ .rodata        0x004e8790       0x98 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/arch/lib//libhal.a(misc.o)
+                0x004e87a4                Xthal_have_loops
+                0x004e87d6                Xthal_have_mimic_cacheattr
+                0x004e87d8                Xthal_mmu_rings
+                0x004e87a3                Xthal_have_density
+                0x004e8798                Xthal_rev_no
+                0x004e87a1                Xthal_memory_order
+                0x004e8824                Xthal_xlmi_size
+                0x004e87ac                Xthal_have_highlevel_interrupts
+                0x004e87cc                Xthal_hw_min_version_major
+                0x004e87a9                Xthal_have_exceptions
+                0x004e87c4                Xthal_hw_release_major
+                0x004e87ec                Xthal_instrom_vaddr
+                0x004e87f4                Xthal_instrom_size
+                0x004e8820                Xthal_xlmi_paddr
+                0x004e87d9                Xthal_mmu_ca_bits
+                0x004e87d7                Xthal_have_tlbs
+                0x004e87f0                Xthal_instrom_paddr
+                0x004e87a2                Xthal_have_windowed
+                0x004e87e9                Xthal_num_ccompare
+                0x004e87a0                Xthal_num_aregs_log2
+                0x004e8818                Xthal_dataram_size
+                0x004e8814                Xthal_dataram_paddr
+                0x004e8790                Xthal_release_major
+                0x004e8810                Xthal_dataram_vaddr
+                0x004e87d0                Xthal_hw_max_version_major
+                0x004e87e6                Xthal_num_instram
+                0x004e87e5                Xthal_dtlb_ways
+                0x004e87d4                Xthal_have_spanning_way
+                0x004e880c                Xthal_datarom_size
+                0x004e87a8                Xthal_have_mul16
+                0x004e87b0                Xthal_have_s32c1i
+                0x004e87e4                Xthal_itlb_ways
+                0x004e87c0                Xthal_hw_configid1
+                0x004e87ab                Xthal_have_interrupts
+                0x004e87af                Xthal_have_release_sync
+                0x004e87c8                Xthal_hw_release_name
+                0x004e87fc                Xthal_instram_paddr
+                0x004e87b2                Xthal_have_pif
+                0x004e87a6                Xthal_have_minmax
+                0x004e879c                Xthal_num_aregs
+                0x004e87ad                Xthal_have_nmi
+                0x004e87b8                Xthal_build_unique_id
+                0x004e8804                Xthal_datarom_vaddr
+                0x004e8808                Xthal_datarom_paddr
+                0x004e87d5                Xthal_have_identity_map
+                0x004e87aa                Xthal_xea_version
+                0x004e87dc                Xthal_mmu_max_pte_page_size
+                0x004e87ae                Xthal_have_prid
+                0x004e87e0                Xthal_mmu_min_pte_page_size
+                0x004e8800                Xthal_instram_size
+                0x004e881c                Xthal_xlmi_vaddr
+                0x004e87a5                Xthal_have_nsa
+                0x004e87e8                Xthal_have_ccount
+                0x004e87bc                Xthal_hw_configid0
+                0x004e87b4                Xthal_num_writebuffer_entries
+                0x004e8794                Xthal_release_name
+                0x004e87f8                Xthal_instram_vaddr
+                0x004e87e7                Xthal_num_dataram
+                0x004e87b1                Xthal_have_threadptr
+                0x004e87a7                Xthal_have_sext
+ *fill*         0x004e8828        0x8 00
+ .rodata        0x004e8830       0x20 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/arch/lib//libhal.a(interrupts--intlevel.o)
+                0x004e8830                Xthal_intlevel
+ *(.rodata.*)
+ .rodata.str1.4
+                0x004e8850      0x22a /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libathos.a(athos_main.o)
+ *fill*         0x004e8a7a        0x2 00
+ .rodata.str1.4
+                0x004e8a7c       0x5d /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_allocram.o)
+ *fill*         0x004e8ad9        0x3 00
+ .rodata.str1.4
+                0x004e8adc       0x1e /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_eeprom.o)
+ *fill*         0x004e8afa        0x2 00
+ .rodata.str1.4
+                0x004e8afc       0x98 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_misc.o)
+                                 0x9c (size before relaxing)
+ .rodata.str1.4
+                0x004e8b94       0x3b /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_printf.o)
+ *fill*         0x004e8bcf        0x1 00
+ .rodata.str1.4
+                0x004e8bd0       0x82 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_rompatch.o)
+ *fill*         0x004e8c52        0x2 00
+ .rodata.str1.4
+                0x004e8c54       0x71 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhif.a(hif_pci.o)
+ *fill*         0x004e8cc5        0x3 00
+ .rodata.str1.4
+                0x004e8cc8       0xc2 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhif.a(HIF_usb.o)
+ *fill*         0x004e8d8a        0x2 00
+ .rodata.str1.4
+                0x004e8d8c      0x11e /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhif.a(usb_api.o)
+ *fill*         0x004e8eaa        0x2 00
+ .rodata.str1.4
+                0x004e8eac       0x22 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libdma.a(dma_engine.o)
+                                 0x27 (size before relaxing)
+ *fill*         0x004e8ece        0x2 00
+ .rodata.str1.4
+                0x004e8ed0      0x151 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libfwd.a(fwd.o)
+ *fill*         0x004e9021        0x3 00
+ .rodata.str1.4
+                0x004e9024       0x10 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/arch/lib//libhal.a(misc.o)
+ *(.gnu.linkonce.r.*)
+ *(.rodata1)
+                0x004e9034                __XT_EXCEPTION_TABLE__ = <code 341> (.)
+ *(.xt_except_table)
+ *(.gcc_except_table)
+ *(.gnu.linkonce.e.*)
+ *(.gnu.version_r)
+                0x004e9034                . = ALIGN (0x4)
+                0x004e9034                _bss_table_start = <code 341> (.)
+                0x004e9034        0x4 LONG 0x500400 _dport0_bss_start
+                0x004e9038        0x4 LONG 0x500400 _dport0_bss_end
+                0x004e903c        0x4 LONG 0x500950 _bss_start
+                0x004e9040        0x4 LONG 0x500b78 _bss_end
+                0x004e9044                _bss_table_end = <code 341> (.)
+                0x004e9044                _rodata_end = <code 341> (.)
+
+.dram0.literal  0x004e9044        0x0
+                0x004e9044                _dram0_literal_start = <code 341> (.)
+ *(.dram0.literal)
+ *(.dram.literal)
+                0x004e9044                _dram0_literal_end = <code 341> (.)
+
+.dram0.data     0x00500400        0x0
+                0x00500400                _dram0_data_start = <code 341> (.)
+ *(.dram0.data)
+ *(.dram.data)
+                0x00500400                _dram0_data_end = <code 341> (.)
+
+.data           0x00500400      0x550
+                0x00500400                _data_start = <code 341> (.)
+ *(.data)
+ .data          0x00500400      0x100 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(user-vector.o)
+                0x00500400                _xtos_exc_handler_table
+ .data          0x00500500      0x138 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(interrupt-table.o)
+                0x00500500                _xtos_enabled
+                0x00500500                _xtos_intstruct
+                0x00500508                _xtos_interrupt_table
+                0x005005a0                _xtos_interrupt_mask_table
+                0x00500504                _xtos_vpri_enabled
+ *fill*         0x00500638        0x8 00
+ .data          0x00500640       0xb8 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libathos.a(athos_main.o)
+                0x00500640                basic_ROM_module_table
+ .data          0x005006f8        0x8 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_misc.o)
+                0x005006fc                assprint
+                0x005006f8                assloop
+ .data          0x00500700        0x4 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_printf.o)
+                0x00500700                _putc
+ .data          0x00500704        0x4 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_rompatch.o)
+                0x00500704                patch_addr
+ .data          0x00500708        0xc /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhif.a(hif_pci.o)
+                0x00500708                pci_sc
+ *fill*         0x00500714        0xc 00
+ .data          0x00500720       0x44 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhif.a(usb_api.o)
+                0x00500720                TestPatn0
+                0x00500730                TestPatn1
+ *fill*         0x00500764        0xc 00
+ .data          0x00500770       0x4c /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhif.a(usb_table.o)
+                0x00500780                u8OtherSpeedConfigDescriptorEX
+                0x00500770                u8DeviceQualifierDescriptorEX
+ *fill*         0x005007bc        0x4 00
+ .data          0x005007c0       0x90 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhif.a(dma_lib.o)
+                0x005007c0                eng_q
+ .data          0x00500850      0x100 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(exc-table.o)
+                0x00500850                _xtos_c_handler_table
+ *(.data.*)
+ *(.gnu.linkonce.d.*)
+ *(.data1)
+ *(.sdata)
+ *(.sdata.*)
+ *(.gnu.linkonce.s.*)
+ *(.sdata2)
+ *(.sdata2.*)
+ *(.gnu.linkonce.s2.*)
+ *(.jcr)
+ *(.eh_frame)
+ *crtbegin.o(.ctors)
+ *(EXCLUDE_FILE(*crtend.o) .ctors)
+ *(SORT(.ctors.*))
+ *(.ctors)
+ *crtbegin.o(.dtors)
+ *(EXCLUDE_FILE(*crtend.o) .dtors)
+ *(SORT(.dtors.*))
+ *(.dtors)
+                0x00500950                __XT_EXCEPTION_DESCS__ = <code 341> (.)
+ *(.xt_except_desc)
+ *(.gnu.linkonce.h.*)
+                0x00500950                __XT_EXCEPTION_DESCS_END__ = <code 341> (.)
+ *(.xt_except_desc_end)
+ *(.dynamic)
+ *(.gnu.version_d)
+                0x00500950                _data_end = <code 341> (.)
+
+.bss            0x00500950      0x2a8
+                0x00500950                . = ALIGN (0x8)
+                0x00500950                _bss_start = <code 341> (.)
+ *(.dynsbss)
+ *(.sbss)
+ *(.sbss.*)
+ *(.gnu.linkonce.sb.*)
+ *(.scommon)
+ *(.sbss2)
+ *(.sbss2.*)
+ *(.gnu.linkonce.sb2.*)
+ *(.dynbss)
+ *(.bss)
+ .bss           0x00500950        0x2 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libathos.a(athos_main.o)
+ *fill*         0x00500952        0x2 00
+ .bss           0x00500954        0x8 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_allocram.o)
+                0x00500954                allocram_current_addr
+                0x00500958                allocram_remaining_bytes
+ .bss           0x0050095c       0x1c /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_clock.o)
+                0x00500970                pll_ctrl_setting_5ghz
+                0x0050096c                pll_ctrl_setting_24ghz
+                0x00500964                clock_info
+                0x0050095c                cticks
+                0x00500968                cmnos_skip_pll_init
+                0x00500960                curr_band
+ .bss           0x00500978        0x4 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_eeprom.o)
+                0x00500978                eep_state
+                0x0050097a                eep_exist
+ *fill*         0x0050097c        0x4 00
+ .bss           0x00500980       0xa8 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_intr.o)
+                0x00500980                cmnos_enabled_interrupts
+                0x00500990                cmnos_isr_info
+ .bss           0x00500a28        0x4 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_misc.o)
+                0x00500a28                current_dump
+ .bss           0x00500a2c        0x4 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_rompatch.o)
+                0x00500a2c                patch_start
+ .bss           0x00500a30        0x4 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_tasklet.o)
+ .bss           0x00500a34        0x4 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_timer.o)
+                0x00500a34                timer_list
+ .bss           0x00500a38        0xc /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_wdt.o)
+                0x00500a38                wdt_ctrl
+ .bss           0x00500a44       0x10 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(uart_api.o)
+ .bss           0x00500a54       0x44 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhif.a(HIF_usb.o)
+                0x00500a54                g_hifUSBCtx
+ .bss           0x00500a98       0x5e /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhif.a(usb_api.o)
+                0x00500abc                u16TxRxCounter
+                0x00500ad0                u8UsbInterfaceValue
+                0x00500ae0                u8String10Descriptor
+                0x00500ad4                u16FirmwareComplete
+                0x00500ad8                u8UsbDeviceDescriptor
+                0x00500ad2                u8UsbInterfaceAlternateSetting
+                0x00500aa4                usbFifoConf
+                0x00500ab8                pu8DescriptorEX
+                0x00500ac8                eUsbCxCommand
+                0x00500af0                UsbStatus
+                0x00500a98                ControlCmd
+                0x00500ace                u8UsbConfigValue
+                0x00500ae4                u8String20Descriptor
+                0x00500ae8                u8String30Descriptor
+                0x00500ac4                eUsbCxFinishAction
+                0x00500ac0                u8ConfigDescriptorEX
+                0x00500acc                UsbChirpFinish
+                0x00500ab4                fwCheckSum
+                0x00500adc                u8String00Descriptor
+ *fill*         0x00500af6        0x2 00
+ .bss           0x00500af8        0xc /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libvbuf.a(vbuf.o)
+                0x00500af8                g_vbufCtx
+ .bss           0x00500b04        0x8 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libvdesc.a(vdesc.o)
+                0x00500b04                g_vdescCtx
+ .bss           0x00500b0c        0xc /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libfwd.a(fwd.o)
+                0x00500b0c                fwd_sc
+ .bss           0x00500b18       0x2c /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libbuf_pool.a(buf_pool_static.o)
+                0x00500b18                g_poolCtx
+ .bss           0x00500b44       0x2d /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/arch/lib//libhal.a(misc.o)
+                0x00500b4d                Xthal_have_clamps
+                0x00500b70                Xthal_num_xlmi
+                0x00500b48                Xthal_release_internal
+                0x00500b6a                Xthal_itlb_way_bits
+                0x00500b6b                Xthal_itlb_arf_ways
+                0x00500b44                Xthal_release_minor
+                0x00500b64                Xthal_have_xlt_cacheattr
+                0x00500b50                Xthal_have_speculation
+                0x00500b67                Xthal_mmu_asid_kernel
+                0x00500b69                Xthal_mmu_sr_bits
+                0x00500b65                Xthal_have_cacheattr
+                0x00500b6d                Xthal_dtlb_arf_ways
+                0x00500b6c                Xthal_dtlb_way_bits
+                0x00500b60                Xthal_hw_release_internal
+                0x00500b58                Xthal_hw_min_version_minor
+                0x00500b4f                Xthal_have_fp
+                0x00500b68                Xthal_mmu_ring_bits
+                0x00500b4e                Xthal_have_mac16
+                0x00500b4c                Xthal_have_booleans
+                0x00500b66                Xthal_mmu_asid_bits
+                0x00500b6e                Xthal_num_instrom
+                0x00500b54                Xthal_hw_release_minor
+                0x00500b5c                Xthal_hw_max_version_minor
+                0x00500b6f                Xthal_num_datarom
+ *(.bss.*)
+ *(.gnu.linkonce.b.*)
+ *(COMMON)
+ *(.dram0.bss)
+                0x00500b78                . = ALIGN (0x8)
+ *fill*         0x00500b71        0x7 00
+ *fill*         0x00500b78        0x0 00
+ *fill*         0x00500b78        0x0 00
+ *fill*         0x00500b78        0x0 00
+ *fill*         0x00500b78        0x0 00
+                0x00500b78                _bss_end = <code 341> (.)
+                0x00500bf8                . = (. + 0x80)
+ *fill*         0x00500b78       0x80 00
+ *fill*         0x00500bf8        0x0 00
+ *fill*         0x00500bf8        0x0 00
+ *fill*         0x00500bf8        0x0 00
+ *fill*         0x00500bf8        0x0 00
+                0x00500bf8                _end = ALIGN (0x8)
+                0x00500bf8                PROVIDE (end, ALIGN (0x8))
+
+.ResetVector.text
+                0x008e0000       0xde
+                0x008e0000                _ResetVector_text_start = <code 341> (.)
+ *(.ResetVector.text)
+ .ResetVector.text
+                0x008e0000       0xde /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(reset-vector-unpack.o)
+                0x008e0000                _ResetVector
+                0x008e0020                _ResetHandler
+                0x008e00de                _ResetVector_text_end = <code 341> (.)
+
+.WindowVectors.text
+                0x008e0800      0x16a
+                0x008e0800                _WindowVectors_text_start = <code 341> (.)
+ *(.WindowVectors.text)
+ .WindowVectors.text
+                0x008e0800      0x16a /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(window-vectors.o)
+                0x008e0900                _WindowOverflow12
+                0x008e0800                _WindowOverflow4
+                0x008e0840                _WindowUnderflow4
+                0x008e0940                _WindowUnderflow12
+                0x008e0880                _WindowOverflow8
+                0x008e08c0                _WindowUnderflow8
+                0x008e096a                _WindowVectors_text_end = <code 341> (.)
+
+.KernelExceptionVector.literal
+                0x008e0d00        0x0
+                0x008e0d00                _KernelExceptionVector_literal_start = <code 341> (.)
+ *(.KernelExceptionVector.literal)
+                0x008e0d00                _KernelExceptionVector_literal_end = <code 341> (.)
+
+.KernelExceptionVector.text
+                0x008e0d40        0x6
+                0x008e0d40                _KernelExceptionVector_text_start = <code 341> (.)
+ *(.KernelExceptionVector.text)
+ .KernelExceptionVector.text
+                0x008e0d40        0x6 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(kernel-vector.o)
+                0x008e0d40                _KernelExceptionVector
+                0x008e0d46                _KernelExceptionVector_text_end = <code 341> (.)
+
+.UserExceptionVector.literal
+                0x008e0e00        0x0
+                0x008e0e00                _UserExceptionVector_literal_start = <code 341> (.)
+ *(.UserExceptionVector.literal)
+                0x008e0e00                _UserExceptionVector_literal_end = <code 341> (.)
+
+.UserExceptionVector.text
+                0x008e0e20       0x17
+                0x008e0e20                _UserExceptionVector_text_start = <code 341> (.)
+ *(.UserExceptionVector.text)
+ .UserExceptionVector.text
+                0x008e0e20       0x17 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(user-vector.o)
+                0x008e0e20                _UserExceptionVector
+                0x008e0e37                _UserExceptionVector_text_end = <code 341> (.)
+
+.DoubleExceptionVector.literal
+                0x008e0f00        0x0
+                0x008e0f00                _DoubleExceptionVector_literal_start = <code 341> (.)
+ *(.DoubleExceptionVector.literal)
+                0x008e0f00                _DoubleExceptionVector_literal_end = <code 341> (.)
+
+.DoubleExceptionVector.text
+                0x008e0f20        0x6
+                0x008e0f20                _DoubleExceptionVector_text_start = <code 341> (.)
+ *(.DoubleExceptionVector.text)
+ .DoubleExceptionVector.text
+                0x008e0f20        0x6 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(double-vector.o)
+                0x008e0f20                _DoubleExceptionVector
+                0x008e0f26                _DoubleExceptionVector_text_end = <code 341> (.)
+
+.Level2InterruptVector.literal
+                0x008e0a00        0x0
+                0x008e0a00                _Level2InterruptVector_literal_start = <code 341> (.)
+ *(.Level2InterruptVector.literal)
+                0x008e0a00                _Level2InterruptVector_literal_end = <code 341> (.)
+
+.Level2InterruptVector.text
+                0x008e0a20        0x6
+                0x008e0a20                _Level2InterruptVector_text_start = <code 341> (.)
+ *(.Level2InterruptVector.text)
+ .Level2InterruptVector.text
+                0x008e0a20        0x6 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(int-vector-level2.o)
+                0x008e0a20                _Level2Vector
+                0x008e0a26                _Level2InterruptVector_text_end = <code 341> (.)
+
+.Level3InterruptVector.literal
+                0x008e0b00        0x0
+                0x008e0b00                _Level3InterruptVector_literal_start = <code 341> (.)
+ *(.Level3InterruptVector.literal)
+                0x008e0b00                _Level3InterruptVector_literal_end = <code 341> (.)
+
+.Level3InterruptVector.text
+                0x008e0b20        0x6
+                0x008e0b20                _Level3InterruptVector_text_start = <code 341> (.)
+ *(.Level3InterruptVector.text)
+ .Level3InterruptVector.text
+                0x008e0b20        0x6 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(int-vector-level3.o)
+                0x008e0b20                _Level3Vector
+                0x008e0b26                _Level3InterruptVector_text_end = <code 341> (.)
+
+.DebugExceptionVector.literal
+                0x008e0c00        0x0
+                0x008e0c00                _DebugExceptionVector_literal_start = <code 341> (.)
+ *(.DebugExceptionVector.literal)
+                0x008e0c00                _DebugExceptionVector_literal_end = <code 341> (.)
+
+.DebugExceptionVector.text
+                0x008e0c20        0x6
+                0x008e0c20                _DebugExceptionVector_text_start = <code 341> (.)
+ *(.DebugExceptionVector.text)
+ .DebugExceptionVector.text
+                0x008e0c20        0x6 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(debug-vector.o)
+                0x008e0c20                _DebugExceptionVector
+                0x008e0c26                _DebugExceptionVector_text_end = <code 341> (.)
+
+.NMIExceptionVector.literal
+                0x008e0ce0        0x0
+                0x008e0ce0                _NMIExceptionVector_literal_start = <code 341> (.)
+ *(.NMIExceptionVector.literal)
+                0x008e0ce0                _NMIExceptionVector_literal_end = <code 341> (.)
+
+.NMIExceptionVector.text
+                0x008e0ce4        0x3
+                0x008e0ce4                _NMIExceptionVector_text_start = <code 341> (.)
+ *(.NMIExceptionVector.text)
+ .NMIExceptionVector.text
+                0x008e0ce4        0x3 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(nmi-vector.o)
+                0x008e0ce4                _NMIExceptionVector
+                0x008e0ce7                _NMIExceptionVector_text_end = <code 341> (.)
+
+.iram0.text     0x008e1000        0x0
+                0x008e1000                _iram0_text_start = <code 341> (.)
+ *(.iram0.literal .iram.literal .iram.text.literal .iram0.text .iram.text)
+                0x008e1000                _iram0_text_end = <code 341> (.)
+
+.text           0x008e1000     0x5d58
+                0x008e1000                _stext = .
+                0x008e1000                _text_start = <code 341> (.)
+ *(.entry.text)
+ *(.init)
+ *(.init)
+ *(.literal .text .literal.* .text.* .stub .gnu.warning .gnu.linkonce.literal.* .gnu.linkonce.t.*.literal .gnu.linkonce.t.*)
+ .text          0x008e1000       0x2a /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/crt1-tiny.o
+                0x008e1000                _start
+ *fill*         0x008e102a        0x2 00
+ .text          0x008e102c       0xd7 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(exc-alloca-handler.o)
+                0x008e102c                _xtos_alloca_handler
+ *fill*         0x008e1103        0x1 00
+ .text          0x008e1104       0x6f /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(exc-syscall-handler.o)
+                0x008e1104                _xtos_syscall_handler
+                0x008e1143                _SyscallException
+ *fill*         0x008e1173        0x1 00
+ .text          0x008e1174       0x6e /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(int-lowpri-dispatcher.o)
+                0x008e1174                _xtos_l1int_handler
+                0x008e1192                _LevelOneInterrupt
+ *fill*         0x008e11e2        0x2 00
+ .text          0x008e11e4       0x5c /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(int-sethandler.o)
+                0x008e11e4                _xtos_set_interrupt_handler_arg
+                0x008e1230                _xtos_set_interrupt_handler
+ .text          0x008e1240       0xb1 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(int-handler-level2.o)
+                0x008e1240                _Level2FromVector
+                0x008e12f1                _Level2HandlerLabel
+ *fill*         0x008e12f1        0x3 00
+ .text          0x008e12f4       0xae /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(int-handler-level3.o)
+                0x008e12f4                _Level3FromVector
+                0x008e13a2                _Level3HandlerLabel
+ *fill*         0x008e13a2        0x2 00
+ .text          0x008e13a4      0x826 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libathos.a(athos_main.o)
+                0x008e1604                athos_interrupt_handler
+                0x008e18c8                turn_off_rc
+                0x008e167c                athos_init
+                0x008e16e8                read_usb_conf
+                0x008e178c                set_pci_conf
+                0x008e1614                athos_interrupt_init
+                0x008e1548                generic_hif_module_install
+                0x008e16b0                _read_usb_desc
+                0x008e13f8                Magpie_fatal_exception_handler
+                0x008e1468                athos_restore_intrlvl
+                0x008e18fc                bootentry
+                0x008e1bac                main
+                0x008e189c                pci_gmac_bootload
+                0x008e1574                athos_indirection_table_install
+                0x008e1860                bootload
+                0x008e13a4                post
+                0x008e1454                athos_block_all_intrlvl
+                0x008e1460                athos_unblock_all_intrlvl
+ *fill*         0x008e1bca        0x2 00
+ .text          0x008e1bcc       0x78 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_allocram.o)
+                0x008e1c30                cmnos_allocram_module_install
+                0x008e1bdc                cmnos_allocram
+                0x008e1c0c                cmnos_allocram_debug
+                0x008e1bcc                cmnos_allocram_init
+ .text          0x008e1c44       0xf2 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_clock.o)
+                0x008e1c74                cmnos_refclk_speed_get
+                0x008e1c80                cmnos_uart_frequency
+                0x008e1c88                cmnos_sysclk_change
+                0x008e1c98                cmnos_wlan_band_set
+                0x008e1cdc                cmnos_tick
+                0x008e1ca0                cmnos_pll_init
+                0x008e1c44                cmnos_delay_us
+                0x008e1c90                cmnos_clockregs_init
+                0x008e1c64                cmnos_milliseconds
+                0x008e1d04                cmnos_clock_module_install
+                0x008e1ca8                cmnos_clock_init
+ *fill*         0x008e1d36        0x2 00
+ .text          0x008e1d38      0x3e5 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_eeprom.o)
+                0x008e1dbc                cmnos_eep_is_exist
+                0x008e1d38                cmnos_eeprom_write_hword
+                0x008e2104                cmnos_eep_module_install
+                0x008e1d90                cmnos_eeprom_read_hword
+                0x008e1e54                cmnos_eep_read
+                0x008e1e9c                cmnos_eep_init
+                0x008e1df4                cmnos_eep_write
+ *fill*         0x008e211d        0x3 00
+ .text          0x008e2120      0x18e /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_intr.o)
+                0x008e2150                cmnos_intr_mask_inum
+                0x008e2230                cmnos_intr_invoke_isr
+                0x008e2290                cmnos_intr_module_install
+                0x008e2120                cmnos_intr_dummy
+                0x008e2190                cmnos_intr_unmask_inum
+                0x008e2128                cmnos_intr_init
+                0x008e21cc                cmnos_intr_attach_isr
+ *fill*         0x008e22ae        0x2 00
+ .text          0x008e22b0       0x26 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_mem.o)
+                0x008e22b0                cmnos_mem_init
+                0x008e22b8                cmnos_mem_module_install
+ *fill*         0x008e22d6        0x2 00
+ .text          0x008e22d8      0x175 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_misc.o)
+                0x008e22f4                cmnos_misaligned_load_handler
+                0x008e2414                cmnos_rom_version_get
+                0x008e22ec                cmnos_mac_reset
+                0x008e22d8                cmnos_system_reset
+                0x008e23f4                cmnos_is_host_present
+                0x008e23c4                cmnos_get_kbhit
+                0x008e2420                cmnos_misc_module_install
+                0x008e2348                cmnos_assfail
+                0x008e23b4                cmnos_report_failure_to_host
+                0x008e23bc                cmnos_target_id_get
+ *fill*         0x008e244d        0x3 00
+ .text          0x008e2450      0x513 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_printf.o)
+                0x008e2954                cmnos_printf_module_install
+                0x008e2450                cmnos_write_char
+                0x008e2918                cmnos_printf
+                0x008e294c                cmnos_printf_init
+ *fill*         0x008e2963        0x1 00
+ .text          0x008e2964      0x155 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_rompatch.o)
+                0x008e29e8                cmnos_romp_decode
+                0x008e2aa0                cmnos_romp_module_install
+                0x008e2a34                cmnos_romp_download
+                0x008e2a98                cmnos_romp_init
+                0x008e297c                _read_rom_patch
+                0x008e2964                _patch_dump
+                0x008e2a24                cmnos_romp_install
+ *fill*         0x008e2ab9        0x3 00
+ .text          0x008e2abc       0x2b /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_string.o)
+                0x008e2ac4                cmnos_string_module_install
+                0x008e2abc                cmnos_string_init
+ *fill*         0x008e2ae7        0x1 00
+ .text          0x008e2ae8       0xb2 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_tasklet.o)
+                0x008e2ae8                cmnos_tasklet_init
+                0x008e2b20                cmnos_tasklet_disable
+                0x008e2b04                cmnos_tasklet_schedule
+                0x008e2b7c                cmnos_tasklet_module_install
+                0x008e2b54                cmnos_tasklet_run
+                0x008e2af4                cmnos_tasklet_init_task
+ *fill*         0x008e2b9a        0x2 00
+ .text          0x008e2b9c       0xde /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_timer.o)
+                0x008e2b9c                cmnos_timer_setfn
+                0x008e2bf0                cmnos_timer_disarm
+                0x008e2bac                cmnos_timer_arm
+                0x008e2c5c                cmnos_timer_module_install
+                0x008e2c2c                cmnos_timer_handler
+                0x008e2c20                cmnos_timer_init
+ *fill*         0x008e2c7a        0x2 00
+ .text          0x008e2c7c      0x114 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_wdt.o)
+                0x008e2d28                cmnos_wdt_init
+                0x008e2d0c                cmnos_wdt_disable
+                0x008e2d68                cmnos_wdt_module_install
+                0x008e2c7c                cmnos_wdt_last_boot
+                0x008e2d50                cmnos_wdt_task
+                0x008e2cc4                cmnos_wdt_set
+                0x008e2ca8                cmnos_wdt_reset
+                0x008e2cec                cmnos_wdt_enable
+ .text          0x008e2d90      0x19b /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(uart_api.o)
+                0x008e2e0c                _uart_char_put_nowait
+                0x008e2e6c                _uart_str_out
+                0x008e2dd8                _uart_char_get_nothing
+                0x008e2de0                _uart_char_put
+                0x008e2e58                _uart_task
+                0x008e2e60                _uart_status
+                0x008e2d90                _uart_init
+                0x008e2ef4                cmnos_uart_module_install
+                0x008e2e38                _uart_char_get
+                0x008e2dd0                _uart_char_put_nothing
+                0x008e2e8c                _uart_config
+ *fill*         0x008e2f2b        0x1 00
+ .text          0x008e2f2c      0x41a /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhif.a(hif_pci.o)
+                0x008e3314                hif_pci_api_install
+                0x008e3180                __pci_reap_recv
+                0x008e2f6c                __pci_get_tx_eng
+                0x008e2fa4                __pci_enable
+                0x008e3290                __pci_is_pipe_supported
+                0x008e2f80                __pci_get_rx_eng
+                0x008e2f38                __pci_reg_write
+                0x008e32a0                __pci_get_max_msg_len
+                0x008e31a8                __pci_isr_handler
+                0x008e3248                __pci_xmit_buf
+                0x008e30a8                __pci_init
+                0x008e32c0                __pci_get_def_pipe
+                0x008e3140                __pci_reg_callback
+                0x008e32d0                hif_pci_module_install
+                0x008e30fc                __pci_cfg_pipe
+                0x008e2f44                __pci_get_pipe
+                0x008e32b0                __pci_get_reserved_headroom
+                0x008e3070                __pci_boot_init
+                0x008e3154                __pci_reap_xmitted
+                0x008e3274                __pci_return_recv
+                0x008e32b8                __pci_shutdown
+                0x008e2f2c                __pci_reg_read
+                0x008e3138                __pci_start
+                0x008e2fbc                __pci_reset
+ *fill*         0x008e3346        0x2 00
+ .text          0x008e3348      0x4d4 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhif.a(HIF_usb.o)
+                0x008e3780                HIFusb_DescTraceDump
+                0x008e3614                _HIFusb_return_recv_buf
+                0x008e3658                _HIFusb_is_pipe_supported
+                0x008e33c8                _HIFusb_init
+                0x008e367c                _HIFusb_isr_handler
+                0x008e3668                _HIFusb_get_max_msg_len
+                0x008e3648                _HIFusb_pause_recv
+                0x008e3508                _HIFusb_config_pipe
+                0x008e3640                _HIFusb_set_recv_bufsz
+                0x008e373c                hif_usb_module_install
+                0x008e3424                _HIFusb_register_callback
+                0x008e341c                _HIFusb_shutdown
+                0x008e372c                _HIFusb_get_default_pipe
+                0x008e3438                _HIFusb_start
+                0x008e35b4                _HIFusb_send_buffer
+                0x008e3650                _HIFusb_resume_recv
+ .text          0x008e381c      0xf9d /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhif.a(usb_api.o)
+                0x008e470c                usbfifo_module_install
+                0x008e471c                cmnos_usb_module_install
+                0x008e4638                _usb_init
+ *fill*         0x008e47b9        0x3 00
+ .text          0x008e47bc      0x3b3 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhif.a(usb_fifo.o)
+                0x008e47f8                mUsbFIFOConfig
+                0x008e4840                mUsbEPMxPtSzLow
+                0x008e47bc                mUsbEPMap
+                0x008e4a40                vUsbFIFO_EPxCfg_FS
+                0x008e4818                mUsbEPMxPtSzHigh
+                0x008e48b0                vUsbFIFO_EPxCfg_HS
+                0x008e47d8                mUsbFIFOMap
+                0x008e4864                mUsbEPinHighBandSet
+ *fill*         0x008e4b6f        0x1 00
+ .text          0x008e4b70      0x243 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhif.a(dma_lib.o)
+                0x008e4c40                __dma_lib_rx_init
+                0x008e4d7c                dma_lib_module_install
+                0x008e4d14                __dma_reap_recv
+                0x008e4b7c                __dma_reg_write
+                0x008e4c6c                __dma_hard_xmit
+                0x008e4cec                __dma_xmit_done
+                0x008e4b88                __dma_set_base
+                0x008e4bf0                __dma_lib_rx_config
+                0x008e4ba8                __dma_lib_tx_init
+                0x008e4d30                __dma_return_recv
+                0x008e4b70                __dma_reg_read
+                0x008e4c94                __dma_reap_xmitted
+                0x008e4cb0                __dma_flush_xmit
+                0x008e4d58                __dma_recv_pkt
+ *fill*         0x008e4db3        0x1 00
+ .text          0x008e4db4       0x84 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libvbuf.a(vbuf.o)
+                0x008e4e10                _vbuf_free_vbuf
+                0x008e4e24                vbuf_module_install
+                0x008e4df0                _vbuf_alloc_vbuf
+                0x008e4db4                _vbuf_init
+ .text          0x008e4e38       0xb5 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libvdesc.a(vdesc.o)
+                0x008e4e74                _vdesc_alloc_desc
+                0x008e4e8c                _vdesc_get_hw_desc
+                0x008e4ed4                vdesc_module_install
+                0x008e4e38                _vdesc_init
+                0x008e4e94                _vdesc_swap_vdesc
+ *fill*         0x008e4eed        0x3 00
+ .text          0x008e4ef0      0x8ef /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhtc.a(htc.o)
+                0x008e55b8                HTCControlSvcProcessMsg
+                0x008e56a8                AdjustCreditThreshold
+                0x008e4fd8                _HTC_Init
+                0x008e50d0                _HTC_Ready
+                0x008e5124                ReturnBuffers
+                0x008e51ec                _HTC_SendMsg
+                0x008e5540                HTCProcessConfigPipeMsg
+                0x008e5358                _HTC_GetReservedHeadroom
+                0x008e5680                HTCSendDoneHandler
+                0x008e53e8                HTCCheckAndSendCreditReport
+                0x008e5348                _HTC_PauseRecv
+                0x008e50b8                _HTC_Shutdown
+                0x008e53b0                HTCFreeMsgBuffer
+                0x008e51dc                _HTC_ReturnBuffers
+                0x008e56e0                HTCMsgRecvHandler
+                0x008e536c                htc_module_install
+                0x008e5640                HTCControlSvcProcessSendComplete
+                0x008e53c8                HTCAllocMsgBuffer
+                0x008e50c0                _HTC_RegisterService
+                0x008e5448                HTCProcessConnectMsg
+                0x008e4fc0                HTC_AssembleBuffers
+                0x008e5350                _HTC_ResumeRecv
+                0x008e51a4                _HTC_ReturnBuffersList
+                0x008e56d8                RedistributeCredit
+ *fill*         0x008e57df        0x1 00
+ .text          0x008e57e0      0x3d3 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libdma.a(dma_engine.o)
+                0x008e5828                _DMAengine_init_tx_queue
+                0x008e57e8                _DMAengine_init_rx_queue
+                0x008e57e0                _DMAengine_init
+                0x008e5914                _DMAengine_config_rx_queue
+                0x008e5b1c                dma_engine_module_install
+                0x008e5a34                _DMAengine_has_compl_packets
+                0x008e5a2c                _DMAengine_flush_xmit
+                0x008e5a54                _DMAengine_reap_recv_buf
+                0x008e5a84                _DMAengine_reap_xmited_buf
+                0x008e5abc                _DMAengine_desc_dump
+                0x008e5884                _DMAengine_return_recv_buf
+                0x008e596c                _DMAengine_xmit_buf
+ *fill*         0x008e5bb3        0x1 00
+ .text          0x008e5bb4      0x16f /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libdma.a(desc.o)
+                0x008e5bf0                zfDmaReclaimPacket
+                0x008e5bb4                zfDmaGetPacket
+                0x008e5c84                zfDmaPutPacket
+ *fill*         0x008e5d23        0x1 00
+ .text          0x008e5d24      0x404 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libfwd.a(fwd.o)
+                0x008e5d74                fwd_retbuf_handler
+                0x008e6020                magpie_mdio_copy_bytes
+                0x008e5ec0                magpie_mdio_boot_init
+                0x008e6060                fw_compute_cksum
+                0x008e6080                mdio_get_fw_image
+                0x008e5d8c                fwd_tgt_process_last
+                0x008e5dbc                fwd_tgt_recv
+                0x008e5fd8                mdio_read_block
+                0x008e5f84                magpie_mdio_wait_for_lock
+                0x008e5e9c                magpie_mdio_module_install
+                0x008e5d3c                fwd_init
+                0x008e5fc0                magpie_mdio_release_lock
+ .text          0x008e6128       0xe3 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libbuf_pool.a(buf_pool_static.o)
+                0x008e6128                buf_pool_module_install
+                0x008e616c                _buf_pool_static_create_pool
+                0x008e6164                _buf_pool_static_shutdown
+                0x008e61c4                _buf_pool_static_alloc_buf
+                0x008e61e8                _buf_pool_static_alloc_buf_align
+                0x008e61f8                _buf_pool_static_free_buf
+                0x008e614c                _buf_pool_static_init
+ *fill*         0x008e620b        0x1 00
+ .text          0x008e620c       0x61 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(exc-sethandler.o)
+                0x008e620c                _xtos_set_exception_handler
+ *fill*         0x008e626d        0x3 00
+ .text          0x008e6270       0x79 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(exc-c-wrapper-handler.o)
+                0x008e6270                _xtos_cause3_handler
+                0x008e6298                _GeneralException
+                0x008e6278                _xtos_c_wrapper_handler
+ *fill*         0x008e62e9        0x3 00
+ .text          0x008e62ec      0x137 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/arch/lib//libhal.a(windowspill_asm.o)
+                0x008e62ec                xthal_window_spill_nw
+                0x008e62ec                xthal_spill_registers_into_stack_nw
+                0x008e6400                xthal_window_spill
+ *fill*         0x008e6423        0x1 00
+ .text          0x008e6424      0x118 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib//libc.a(strcmp.o)
+                0x008e6424                strcmp
+ .text          0x008e653c       0x98 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib//libc.a(strcpy.o)
+                0x008e653c                strcpy
+ .text          0x008e65d4       0x63 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib//libc.a(strlen.o)
+                0x008e65d4                strlen
+ *fill*         0x008e6637        0x1 00
+ .text          0x008e6638       0x8e /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib//libc.a(strncmp.o)
+                0x008e6638                strncmp
+ *fill*         0x008e66c6        0x2 00
+ .text          0x008e66c8      0x11b /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib//libc.a(strncpy.o)
+                0x008e6700                strncpy
+ *fill*         0x008e67e3        0x1 00
+ .text          0x008e67e4        0x8 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(interrupt-table.o)
+                0x008e67e4                _xtos_unhandled_interrupt
+ .text          0x008e67ec        0xd /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(exc-unhandled.o)
+                0x008e67ec                _xtos_unhandled_exception
+ *fill*         0x008e67f9        0x3 00
+ .text          0x008e67fc       0x18 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(exc-return.o)
+                0x008e67fc                _xtos_return_from_exc
+ .text          0x008e6814        0x5 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(exc-table.o)
+                0x008e6814                _xtos_p_none
+ *fill*         0x008e6819        0x3 00
+ .text          0x008e681c       0x26 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/arch/lib//libhal.a(clock.o)
+                0x008e6824                xthal_set_ccompare
+                0x008e6834                xthal_get_ccompare
+                0x008e681c                xthal_get_ccount
+ *fill*         0x008e6842        0x2 00
+ .text          0x008e6844        0x8 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/arch/lib//libhal.a(int_asm--get_intenable.o)
+                0x008e6844                xthal_get_intenable
+ .text          0x008e684c        0x8 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/arch/lib//libhal.a(int_asm--get_interrupt.o)
+                0x008e684c                xthal_get_interrupt
+                0x008e684c                xthal_get_intread
+ .text          0x008e6854        0x8 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/arch/lib//libhal.a(int_asm--set_intenable.o)
+                0x008e6854                xthal_set_intenable
+ .text          0x008e685c       0x68 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib/xcc//libgcc.a(_divsi3.o)
+                0x008e685c                __divsi3
+ .text          0x008e68c4       0x49 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib/xcc//libgcc.a(_modsi3.o)
+                0x008e68c4                __modsi3
+ *fill*         0x008e690d        0x3 00
+ .text          0x008e6910       0x50 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib/xcc//libgcc.a(_udivsi3.o)
+                0x008e6910                __udivsi3
+ .text          0x008e6960       0x3d /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib/xcc//libgcc.a(_umodsi3.o)
+                0x008e6960                __umodsi3
+ *fill*         0x008e699d        0x3 00
+ .text          0x008e69a0       0x45 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib//libc.a(memcmp.o)
+                0x008e69a0                memcmp
+ *fill*         0x008e69e5        0x3 00
+ .text          0x008e69e8      0x135 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib//libc.a(memcpy.o)
+                0x008e6a28                memcpy
+ *fill*         0x008e6b1d        0x3 00
+ .text          0x008e6b20      0x1c2 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib//libc.a(memmove.o)
+                0x008e6b20                memmove
+ *fill*         0x008e6ce2        0x2 00
+ .text          0x008e6ce4       0x74 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib//libc.a(memset.o)
+                0x008e6d0c                memset
+ *(.fini.literal)
+ *(.fini)
+ *(.gnu.version)
+                0x008e6d58                _text_end = <code 341> (.)
+                0x008e6d58                _text_end_magic = .
+                0x008e6d58                _etext = .
+
+.debug
+ *(.debug)
+
+.line
+ *(.line)
+
+.debug_srcinfo
+ *(.debug_srcinfo)
+
+.debug_sfnames
+ *(.debug_sfnames)
+
+.debug_aranges  0x00000000      0x840
+ *(.debug_aranges)
+ .debug_aranges
+                0x00000000       0x20 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/crt1-tiny.o
+ .debug_aranges
+                0x00000020       0x20 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(debug-vector.o)
+ .debug_aranges
+                0x00000040       0x20 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(double-vector.o)
+ .debug_aranges
+                0x00000060       0x20 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(kernel-vector.o)
+ .debug_aranges
+                0x00000080       0x20 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(reset-vector-unpack.o)
+ .debug_aranges
+                0x000000a0       0x20 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(user-vector.o)
+ .debug_aranges
+                0x000000c0       0x20 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(nmi-vector.o)
+ .debug_aranges
+                0x000000e0       0x20 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(window-vectors.o)
+ .debug_aranges
+                0x00000100       0x20 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(int-vector-level2.o)
+ .debug_aranges
+                0x00000120       0x20 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(int-vector-level3.o)
+ .debug_aranges
+                0x00000140       0x20 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(exc-alloca-handler.o)
+ .debug_aranges
+                0x00000160       0x20 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(exc-syscall-handler.o)
+ .debug_aranges
+                0x00000180       0x20 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(int-lowpri-dispatcher.o)
+ .debug_aranges
+                0x000001a0       0x20 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(int-sethandler.o)
+ .debug_aranges
+                0x000001c0       0x20 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(int-handler-level2.o)
+ .debug_aranges
+                0x000001e0       0x20 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(int-handler-level3.o)
+ .debug_aranges
+                0x00000200       0x20 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(interrupt-table.o)
+ .debug_aranges
+                0x00000220       0x20 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(exc-unhandled.o)
+ .debug_aranges
+                0x00000240       0x20 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(exc-return.o)
+ .debug_aranges
+                0x00000260       0x20 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libathos.a(athos_main.o)
+ .debug_aranges
+                0x00000280       0x20 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_allocram.o)
+ .debug_aranges
+                0x000002a0       0x20 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_clock.o)
+ .debug_aranges
+                0x000002c0       0x20 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_eeprom.o)
+ .debug_aranges
+                0x000002e0       0x20 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_intr.o)
+ .debug_aranges
+                0x00000300       0x20 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_mem.o)
+ .debug_aranges
+                0x00000320       0x20 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_misc.o)
+ .debug_aranges
+                0x00000340       0x20 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_printf.o)
+ .debug_aranges
+                0x00000360       0x20 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_rompatch.o)
+ .debug_aranges
+                0x00000380       0x20 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_string.o)
+ .debug_aranges
+                0x000003a0       0x20 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_tasklet.o)
+ .debug_aranges
+                0x000003c0       0x20 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_timer.o)
+ .debug_aranges
+                0x000003e0       0x20 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_wdt.o)
+ .debug_aranges
+                0x00000400       0x20 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(uart_api.o)
+ .debug_aranges
+                0x00000420       0x20 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhif.a(hif_pci.o)
+ .debug_aranges
+                0x00000440       0x20 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhif.a(HIF_usb.o)
+ .debug_aranges
+                0x00000460       0x20 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhif.a(usb_api.o)
+ .debug_aranges
+                0x00000480       0x20 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhif.a(usb_fifo.o)
+ .debug_aranges
+                0x000004a0       0x20 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhif.a(dma_lib.o)
+ .debug_aranges
+                0x000004c0       0x20 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libvbuf.a(vbuf.o)
+ .debug_aranges
+                0x000004e0       0x20 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libvdesc.a(vdesc.o)
+ .debug_aranges
+                0x00000500       0x20 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhtc.a(htc.o)
+ .debug_aranges
+                0x00000520       0x20 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libdma.a(dma_engine.o)
+ .debug_aranges
+                0x00000540       0x20 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libdma.a(desc.o)
+ .debug_aranges
+                0x00000560       0x20 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libfwd.a(fwd.o)
+ .debug_aranges
+                0x00000580       0x20 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libbuf_pool.a(buf_pool_static.o)
+ .debug_aranges
+                0x000005a0       0x20 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(exc-sethandler.o)
+ .debug_aranges
+                0x000005c0       0x20 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(exc-table.o)
+ .debug_aranges
+                0x000005e0       0x20 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(exc-c-wrapper-handler.o)
+ .debug_aranges
+                0x00000600       0x20 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/arch/lib//libhal.a(clock.o)
+ .debug_aranges
+                0x00000620       0x20 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/arch/lib//libhal.a(windowspill_asm.o)
+ .debug_aranges
+                0x00000640       0x20 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/arch/lib//libhal.a(int_asm--get_intenable.o)
+ .debug_aranges
+                0x00000660       0x20 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/arch/lib//libhal.a(int_asm--get_interrupt.o)
+ .debug_aranges
+                0x00000680       0x20 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/arch/lib//libhal.a(int_asm--set_intenable.o)
+ .debug_aranges
+                0x000006a0       0x20 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib/xcc//libgcc.a(_divsi3.o)
+ .debug_aranges
+                0x000006c0       0x20 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib/xcc//libgcc.a(_modsi3.o)
+ .debug_aranges
+                0x000006e0       0x20 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib/xcc//libgcc.a(_udivsi3.o)
+ .debug_aranges
+                0x00000700       0x20 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib/xcc//libgcc.a(_umodsi3.o)
+ .debug_aranges
+                0x00000720       0x20 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib//libc.a(memcmp.o)
+ .debug_aranges
+                0x00000740       0x20 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib//libc.a(memcpy.o)
+ .debug_aranges
+                0x00000760       0x20 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib//libc.a(memmove.o)
+ .debug_aranges
+                0x00000780       0x20 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib//libc.a(memset.o)
+ .debug_aranges
+                0x000007a0       0x20 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib//libc.a(strcmp.o)
+ .debug_aranges
+                0x000007c0       0x20 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib//libc.a(strcpy.o)
+ .debug_aranges
+                0x000007e0       0x20 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib//libc.a(strlen.o)
+ .debug_aranges
+                0x00000800       0x20 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib//libc.a(strncmp.o)
+ .debug_aranges
+                0x00000820       0x20 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib//libc.a(strncpy.o)
+
+.debug_pubnames
+                0x00000000     0x24ff
+ *(.debug_pubnames)
+ .debug_pubnames
+                0x00000000       0x56 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(int-sethandler.o)
+ .debug_pubnames
+                0x00000056      0x1c9 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libathos.a(athos_main.o)
+ .debug_pubnames
+                0x0000021f       0xaf /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_allocram.o)
+ .debug_pubnames
+                0x000002ce      0x19d /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_clock.o)
+ .debug_pubnames
+                0x0000046b       0xd5 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_eeprom.o)
+ .debug_pubnames
+                0x00000540       0xf1 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_intr.o)
+ .debug_pubnames
+                0x00000631       0x42 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_mem.o)
+ .debug_pubnames
+                0x00000673      0x13a /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_misc.o)
+ .debug_pubnames
+                0x000007ad       0x78 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_printf.o)
+ .debug_pubnames
+                0x00000825       0xcc /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_rompatch.o)
+ .debug_pubnames
+                0x000008f1       0x48 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_string.o)
+ .debug_pubnames
+                0x00000939       0xb1 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_tasklet.o)
+ .debug_pubnames
+                0x000009ea       0xae /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_timer.o)
+ .debug_pubnames
+                0x00000a98       0xcb /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_wdt.o)
+ .debug_pubnames
+                0x00000b63       0xf8 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(uart_api.o)
+ .debug_pubnames
+                0x00000c5b      0x21c /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhif.a(hif_pci.o)
+ .debug_pubnames
+                0x00000e77      0x1b1 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhif.a(HIF_usb.o)
+ .debug_pubnames
+                0x00001028      0x212 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhif.a(usb_api.o)
+ .debug_pubnames
+                0x0000123a      0x101 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhif.a(usb_table.o)
+ .debug_pubnames
+                0x0000133b       0xb2 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhif.a(usb_fifo.o)
+ .debug_pubnames
+                0x000013ed      0x146 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhif.a(dma_lib.o)
+ .debug_pubnames
+                0x00001533       0x70 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libvbuf.a(vbuf.o)
+ .debug_pubnames
+                0x000015a3       0x8d /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libvdesc.a(vdesc.o)
+ .debug_pubnames
+                0x00001630      0x241 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhtc.a(htc.o)
+ .debug_pubnames
+                0x00001871      0x164 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libdma.a(dma_engine.o)
+ .debug_pubnames
+                0x000019d5       0x4f /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libdma.a(desc.o)
+ .debug_pubnames
+                0x00001a24      0x139 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libfwd.a(fwd.o)
+ .debug_pubnames
+                0x00001b5d       0xf7 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libbuf_pool.a(buf_pool_static.o)
+ .debug_pubnames
+                0x00001c54       0x32 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(exc-sethandler.o)
+ .debug_pubnames
+                0x00001c86      0x7fb /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/arch/lib//libhal.a(misc.o)
+ .debug_pubnames
+                0x00002481       0x25 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/arch/lib//libhal.a(interrupts--intlevel.o)
+ .debug_pubnames
+                0x000024a6       0x1d /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib//libc.a(memcmp.o)
+ .debug_pubnames
+                0x000024c3       0x1e /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib//libc.a(memmove.o)
+ .debug_pubnames
+                0x000024e1       0x1e /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib//libc.a(strncmp.o)
+
+.debug_info     0x00000000    0x806eb
+ *(.debug_info)
+ .debug_info    0x00000000       0x79 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/crt1-tiny.o
+ .debug_info    0x00000079       0x7c /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(debug-vector.o)
+ .debug_info    0x000000f5       0x7d /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(double-vector.o)
+ .debug_info    0x00000172       0x7d /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(kernel-vector.o)
+ .debug_info    0x000001ef       0x7c /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(reset-vector-unpack.o)
+ .debug_info    0x0000026b       0x7b /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(user-vector.o)
+ .debug_info    0x000002e6       0x7a /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(nmi-vector.o)
+ .debug_info    0x00000360       0x7e /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(window-vectors.o)
+ .debug_info    0x000003de       0x7a /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(int-vector-level2.o)
+ .debug_info    0x00000458       0x7a /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(int-vector-level3.o)
+ .debug_info    0x000004d2       0x82 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(exc-alloca-handler.o)
+ .debug_info    0x00000554       0x83 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(exc-syscall-handler.o)
+ .debug_info    0x000005d7       0x85 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(int-lowpri-dispatcher.o)
+ .debug_info    0x0000065c      0x3b2 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(int-sethandler.o)
+ .debug_info    0x00000a0e       0x85 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(int-handler-level2.o)
+ .debug_info    0x00000a93       0x85 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(int-handler-level3.o)
+ .debug_info    0x00000b18       0x7f /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(interrupt-table.o)
+ .debug_info    0x00000b97       0x7d /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(exc-unhandled.o)
+ .debug_info    0x00000c14       0x7a /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(exc-return.o)
+ .debug_info    0x00000c8e     0x537c /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libathos.a(athos_main.o)
+ .debug_info    0x0000600a     0x4878 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_allocram.o)
+ .debug_info    0x0000a882     0x4b5d /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_clock.o)
+ .debug_info    0x0000f3df     0x4a08 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_eeprom.o)
+ .debug_info    0x00013de7     0x4ae9 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_intr.o)
+ .debug_info    0x000188d0     0x474d /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_mem.o)
+ .debug_info    0x0001d01d     0x4b9d /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_misc.o)
+ .debug_info    0x00021bba     0x4a67 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_printf.o)
+ .debug_info    0x00026621     0x4995 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_rompatch.o)
+ .debug_info    0x0002afb6     0x472c /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_string.o)
+ .debug_info    0x0002f6e2     0x48b1 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_tasklet.o)
+ .debug_info    0x00033f93     0x4973 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_timer.o)
+ .debug_info    0x00038906     0x4943 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_wdt.o)
+ .debug_info    0x0003d249     0x49ad /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(uart_api.o)
+ .debug_info    0x00041bf6     0x4dec /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhif.a(hif_pci.o)
+ .debug_info    0x000469e2     0x4f73 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhif.a(HIF_usb.o)
+ .debug_info    0x0004b955     0x5313 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhif.a(usb_api.o)
+ .debug_info    0x00050c68      0x3db /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhif.a(usb_table.o)
+ .debug_info    0x00051043     0x4996 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhif.a(usb_fifo.o)
+ .debug_info    0x000559d9     0x4d2a /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhif.a(dma_lib.o)
+ .debug_info    0x0005a703     0x47dd /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libvbuf.a(vbuf.o)
+ .debug_info    0x0005eee0     0x4843 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libvdesc.a(vdesc.o)
+ .debug_info    0x00063723     0x58a0 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhtc.a(htc.o)
+ .debug_info    0x00068fc3     0x4c2f /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libdma.a(dma_engine.o)
+ .debug_info    0x0006dbf2     0x50a8 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libdma.a(desc.o)
+ .debug_info    0x00072c9a     0x4e26 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libfwd.a(fwd.o)
+ .debug_info    0x00077ac0     0x49ef /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libbuf_pool.a(buf_pool_static.o)
+ .debug_info    0x0007c4af      0x2ef /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(exc-sethandler.o)
+ .debug_info    0x0007c79e       0x79 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(exc-table.o)
+ .debug_info    0x0007c817       0x85 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(exc-c-wrapper-handler.o)
+ .debug_info    0x0007c89c       0xc9 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/arch/lib//libhal.a(clock.o)
+ .debug_info    0x0007c965      0xc20 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/arch/lib//libhal.a(misc.o)
+ .debug_info    0x0007d585       0xd3 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/arch/lib//libhal.a(windowspill_asm.o)
+ .debug_info    0x0007d658       0xcb /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/arch/lib//libhal.a(int_asm--get_intenable.o)
+ .debug_info    0x0007d723       0xcb /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/arch/lib//libhal.a(int_asm--get_interrupt.o)
+ .debug_info    0x0007d7ee       0xcb /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/arch/lib//libhal.a(int_asm--set_intenable.o)
+ .debug_info    0x0007d8b9      0x229 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/arch/lib//libhal.a(interrupts--intlevel.o)
+ .debug_info    0x0007dae2       0xf4 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib/xcc//libgcc.a(_divsi3.o)
+ .debug_info    0x0007dbd6       0xf4 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib/xcc//libgcc.a(_modsi3.o)
+ .debug_info    0x0007dcca       0xf4 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib/xcc//libgcc.a(_udivsi3.o)
+ .debug_info    0x0007ddbe       0xf4 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib/xcc//libgcc.a(_umodsi3.o)
+ .debug_info    0x0007deb2      0xb40 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib//libc.a(memcmp.o)
+ .debug_info    0x0007e9f2      0x10d /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib//libc.a(memcpy.o)
+ .debug_info    0x0007eaff      0xb81 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib//libc.a(memmove.o)
+ .debug_info    0x0007f680      0x10d /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib//libc.a(memset.o)
+ .debug_info    0x0007f78d      0x10d /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib//libc.a(strcmp.o)
+ .debug_info    0x0007f89a      0x10d /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib//libc.a(strcpy.o)
+ .debug_info    0x0007f9a7      0x10d /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib//libc.a(strlen.o)
+ .debug_info    0x0007fab4      0xb29 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib//libc.a(strncmp.o)
+ .debug_info    0x000805dd      0x10e /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib//libc.a(strncpy.o)
+
+.debug_abbrev   0x00000000     0x321a
+ *(.debug_abbrev)
+ .debug_abbrev  0x00000000       0x14 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/crt1-tiny.o
+ .debug_abbrev  0x00000014       0x14 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(debug-vector.o)
+ .debug_abbrev  0x00000028       0x14 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(double-vector.o)
+ .debug_abbrev  0x0000003c       0x14 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(kernel-vector.o)
+ .debug_abbrev  0x00000050       0x14 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(reset-vector-unpack.o)
+ .debug_abbrev  0x00000064       0x14 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(user-vector.o)
+ .debug_abbrev  0x00000078       0x14 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(nmi-vector.o)
+ .debug_abbrev  0x0000008c       0x14 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(window-vectors.o)
+ .debug_abbrev  0x000000a0       0x14 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(int-vector-level2.o)
+ .debug_abbrev  0x000000b4       0x14 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(int-vector-level3.o)
+ .debug_abbrev  0x000000c8       0x14 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(exc-alloca-handler.o)
+ .debug_abbrev  0x000000dc       0x14 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(exc-syscall-handler.o)
+ .debug_abbrev  0x000000f0       0x14 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(int-lowpri-dispatcher.o)
+ .debug_abbrev  0x00000104       0xce /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(int-sethandler.o)
+ .debug_abbrev  0x000001d2       0x14 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(int-handler-level2.o)
+ .debug_abbrev  0x000001e6       0x14 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(int-handler-level3.o)
+ .debug_abbrev  0x000001fa       0x14 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(interrupt-table.o)
+ .debug_abbrev  0x0000020e       0x14 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(exc-unhandled.o)
+ .debug_abbrev  0x00000222       0x14 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(exc-return.o)
+ .debug_abbrev  0x00000236      0x20d /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libathos.a(athos_main.o)
+ .debug_abbrev  0x00000443      0x168 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_allocram.o)
+ .debug_abbrev  0x000005ab      0x1a9 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_clock.o)
+ .debug_abbrev  0x00000754      0x18b /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_eeprom.o)
+ .debug_abbrev  0x000008df      0x166 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_intr.o)
+ .debug_abbrev  0x00000a45      0x137 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_mem.o)
+ .debug_abbrev  0x00000b7c      0x1b1 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_misc.o)
+ .debug_abbrev  0x00000d2d      0x1b4 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_printf.o)
+ .debug_abbrev  0x00000ee1      0x18c /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_rompatch.o)
+ .debug_abbrev  0x0000106d      0x137 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_string.o)
+ .debug_abbrev  0x000011a4      0x164 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_tasklet.o)
+ .debug_abbrev  0x00001308      0x166 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_timer.o)
+ .debug_abbrev  0x0000146e      0x196 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_wdt.o)
+ .debug_abbrev  0x00001604      0x1d5 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(uart_api.o)
+ .debug_abbrev  0x000017d9      0x1cf /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhif.a(hif_pci.o)
+ .debug_abbrev  0x000019a8      0x240 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhif.a(HIF_usb.o)
+ .debug_abbrev  0x00001be8      0x1cd /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhif.a(usb_api.o)
+ .debug_abbrev  0x00001db5       0x65 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhif.a(usb_table.o)
+ .debug_abbrev  0x00001e1a      0x142 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhif.a(usb_fifo.o)
+ .debug_abbrev  0x00001f5c      0x1b6 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhif.a(dma_lib.o)
+ .debug_abbrev  0x00002112      0x16a /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libvbuf.a(vbuf.o)
+ .debug_abbrev  0x0000227c      0x183 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libvdesc.a(vdesc.o)
+ .debug_abbrev  0x000023ff      0x21c /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhtc.a(htc.o)
+ .debug_abbrev  0x0000261b      0x200 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libdma.a(dma_engine.o)
+ .debug_abbrev  0x0000281b      0x168 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libdma.a(desc.o)
+ .debug_abbrev  0x00002983      0x1d3 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libfwd.a(fwd.o)
+ .debug_abbrev  0x00002b56      0x186 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libbuf_pool.a(buf_pool_static.o)
+ .debug_abbrev  0x00002cdc       0xbc /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(exc-sethandler.o)
+ .debug_abbrev  0x00002d98       0x14 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(exc-table.o)
+ .debug_abbrev  0x00002dac       0x14 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(exc-c-wrapper-handler.o)
+ .debug_abbrev  0x00002dc0       0x14 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/arch/lib//libhal.a(clock.o)
+ .debug_abbrev  0x00002dd4       0x4c /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/arch/lib//libhal.a(misc.o)
+ .debug_abbrev  0x00002e20       0x14 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/arch/lib//libhal.a(windowspill_asm.o)
+ .debug_abbrev  0x00002e34       0x14 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/arch/lib//libhal.a(int_asm--get_intenable.o)
+ .debug_abbrev  0x00002e48       0x14 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/arch/lib//libhal.a(int_asm--get_interrupt.o)
+ .debug_abbrev  0x00002e5c       0x14 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/arch/lib//libhal.a(int_asm--set_intenable.o)
+ .debug_abbrev  0x00002e70       0x62 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/arch/lib//libhal.a(interrupts--intlevel.o)
+ .debug_abbrev  0x00002ed2       0x14 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib/xcc//libgcc.a(_divsi3.o)
+ .debug_abbrev  0x00002ee6       0x14 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib/xcc//libgcc.a(_modsi3.o)
+ .debug_abbrev  0x00002efa       0x14 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib/xcc//libgcc.a(_udivsi3.o)
+ .debug_abbrev  0x00002f0e       0x14 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib/xcc//libgcc.a(_umodsi3.o)
+ .debug_abbrev  0x00002f22       0xd7 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib//libc.a(memcmp.o)
+ .debug_abbrev  0x00002ff9       0x14 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib//libc.a(memcpy.o)
+ .debug_abbrev  0x0000300d       0xd7 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib//libc.a(memmove.o)
+ .debug_abbrev  0x000030e4       0x14 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib//libc.a(memset.o)
+ .debug_abbrev  0x000030f8       0x14 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib//libc.a(strcmp.o)
+ .debug_abbrev  0x0000310c       0x14 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib//libc.a(strcpy.o)
+ .debug_abbrev  0x00003120       0x14 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib//libc.a(strlen.o)
+ .debug_abbrev  0x00003134       0xd2 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib//libc.a(strncmp.o)
+ .debug_abbrev  0x00003206       0x14 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib//libc.a(strncpy.o)
+
+.debug_line     0x00000000    0x1e38a
+ *(.debug_line)
+ .debug_line    0x00000000       0x87 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/crt1-tiny.o
+ .debug_line    0x00000087       0x42 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(debug-vector.o)
+ .debug_line    0x000000c9       0x43 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(double-vector.o)
+ .debug_line    0x0000010c       0x43 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(kernel-vector.o)
+ .debug_line    0x0000014f      0x1aa /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(reset-vector-unpack.o)
+ .debug_line    0x000002f9       0x6b /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(user-vector.o)
+ .debug_line    0x00000364       0x3a /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(nmi-vector.o)
+ .debug_line    0x0000039e      0x195 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(window-vectors.o)
+ .debug_line    0x00000533       0x40 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(int-vector-level2.o)
+ .debug_line    0x00000573       0x40 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(int-vector-level3.o)
+ .debug_line    0x000005b3      0x1e7 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(exc-alloca-handler.o)
+ .debug_line    0x0000079a      0x13a /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(exc-syscall-handler.o)
+ .debug_line    0x000008d4      0x104 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(int-lowpri-dispatcher.o)
+ .debug_line    0x000009d8      0x2d8 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(int-sethandler.o)
+ .debug_line    0x00000cb0      0x171 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(int-handler-level2.o)
+ .debug_line    0x00000e21      0x16b /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(int-handler-level3.o)
+ .debug_line    0x00000f8c       0x4c /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(interrupt-table.o)
+ .debug_line    0x00000fd8       0x55 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(exc-unhandled.o)
+ .debug_line    0x0000102d       0x70 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(exc-return.o)
+ .debug_line    0x0000109d     0x1521 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libathos.a(athos_main.o)
+ .debug_line    0x000025be      0xd96 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_allocram.o)
+ .debug_line    0x00003354      0xe1b /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_clock.o)
+ .debug_line    0x0000416f     0x1014 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_eeprom.o)
+ .debug_line    0x00005183      0xe81 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_intr.o)
+ .debug_line    0x00006004      0xd26 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_mem.o)
+ .debug_line    0x00006d2a      0xeab /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_misc.o)
+ .debug_line    0x00007bd5     0x10c7 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_printf.o)
+ .debug_line    0x00008c9c      0xe7a /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_rompatch.o)
+ .debug_line    0x00009b16      0xd32 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_string.o)
+ .debug_line    0x0000a848      0xe54 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_tasklet.o)
+ .debug_line    0x0000b69c      0xe2c /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_timer.o)
+ .debug_line    0x0000c4c8      0xea6 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_wdt.o)
+ .debug_line    0x0000d36e      0xf00 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(uart_api.o)
+ .debug_line    0x0000e26e     0x1154 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhif.a(hif_pci.o)
+ .debug_line    0x0000f3c2     0x12a1 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhif.a(HIF_usb.o)
+ .debug_line    0x00010663     0x1c7f /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhif.a(usb_api.o)
+ .debug_line    0x000122e2      0x1bc /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhif.a(usb_table.o)
+ .debug_line    0x0001249e     0x1029 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhif.a(usb_fifo.o)
+ .debug_line    0x000134c7      0xf37 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhif.a(dma_lib.o)
+ .debug_line    0x000143fe      0xe0d /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libvbuf.a(vbuf.o)
+ .debug_line    0x0001520b      0xe66 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libvdesc.a(vdesc.o)
+ .debug_line    0x00016071     0x180f /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhtc.a(htc.o)
+ .debug_line    0x00017880     0x11cf /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libdma.a(dma_engine.o)
+ .debug_line    0x00018a4f      0xfb1 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libdma.a(desc.o)
+ .debug_line    0x00019a00     0x114e /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libfwd.a(fwd.o)
+ .debug_line    0x0001ab4e      0xec1 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libbuf_pool.a(buf_pool_static.o)
+ .debug_line    0x0001ba0f      0x2ba /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(exc-sethandler.o)
+ .debug_line    0x0001bcc9       0x3f /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(exc-table.o)
+ .debug_line    0x0001bd08      0x113 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(exc-c-wrapper-handler.o)
+ .debug_line    0x0001be1b       0xcc /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/arch/lib//libhal.a(clock.o)
+ .debug_line    0x0001bee7      0x1cb /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/arch/lib//libhal.a(misc.o)
+ .debug_line    0x0001c0b2      0x335 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/arch/lib//libhal.a(windowspill_asm.o)
+ .debug_line    0x0001c3e7       0x8c /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/arch/lib//libhal.a(int_asm--get_intenable.o)
+ .debug_line    0x0001c473       0x8d /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/arch/lib//libhal.a(int_asm--get_interrupt.o)
+ .debug_line    0x0001c500       0x8d /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/arch/lib//libhal.a(int_asm--set_intenable.o)
+ .debug_line    0x0001c58d      0x1ec /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/arch/lib//libhal.a(interrupts--intlevel.o)
+ .debug_line    0x0001c779      0x16c /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib/xcc//libgcc.a(_divsi3.o)
+ .debug_line    0x0001c8e5      0x124 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib/xcc//libgcc.a(_modsi3.o)
+ .debug_line    0x0001ca09      0x136 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib/xcc//libgcc.a(_udivsi3.o)
+ .debug_line    0x0001cb3f      0x106 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib/xcc//libgcc.a(_umodsi3.o)
+ .debug_line    0x0001cc45      0x2f0 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib//libc.a(memcmp.o)
+ .debug_line    0x0001cf35      0x355 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib//libc.a(memcpy.o)
+ .debug_line    0x0001d28a      0x32d /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib//libc.a(memmove.o)
+ .debug_line    0x0001d5b7      0x18c /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib//libc.a(memset.o)
+ .debug_line    0x0001d743      0x2e2 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib//libc.a(strcmp.o)
+ .debug_line    0x0001da25      0x1da /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib//libc.a(strcpy.o)
+ .debug_line    0x0001dbff      0x168 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib//libc.a(strlen.o)
+ .debug_line    0x0001dd67      0x322 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib//libc.a(strncmp.o)
+ .debug_line    0x0001e089      0x301 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib//libc.a(strncpy.o)
+
+.debug_frame
+ *(.debug_frame)
+
+.debug_str
+ *(.debug_str)
+
+.debug_loc
+ *(.debug_loc)
+
+.debug_macinfo
+ *(.debug_macinfo)
+
+.debug_weaknames
+ *(.debug_weaknames)
+
+.debug_funcnames
+ *(.debug_funcnames)
+
+.debug_typenames
+ *(.debug_typenames)
+
+.debug_varnames
+ *(.debug_varnames)
+
+.xt.insn
+ *(.xt.insn)
+ *(.gnu.linkonce.x.*)
+
+.xt.prop        0x00000000     0x4f8c
+ *(.xt.prop)
+ .xt.prop       0x00000000       0x3c /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/crt1-tiny.o
+ .xt.prop       0x0000003c       0x18 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(debug-vector.o)
+ .xt.prop       0x00000054       0x18 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(double-vector.o)
+ .xt.prop       0x0000006c       0x18 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(kernel-vector.o)
+ .xt.prop       0x00000084       0xd8 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(reset-vector-unpack.o)
+ .xt.prop       0x0000015c       0x18 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(user-vector.o)
+ .xt.prop       0x00000174       0x18 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(nmi-vector.o)
+ .xt.prop       0x0000018c       0x90 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(window-vectors.o)
+ .xt.prop       0x0000021c       0x18 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(int-vector-level2.o)
+ .xt.prop       0x00000234       0x18 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(int-vector-level3.o)
+ .xt.prop       0x0000024c       0x78 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(exc-alloca-handler.o)
+ .xt.prop       0x000002c4       0x90 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(exc-syscall-handler.o)
+ .xt.prop       0x00000354       0x3c /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(int-lowpri-dispatcher.o)
+ .xt.prop       0x00000390       0x84 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(int-sethandler.o)
+ .xt.prop       0x00000414       0x9c /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(int-handler-level2.o)
+ .xt.prop       0x000004b0       0x9c /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(int-handler-level3.o)
+ .xt.prop       0x0000054c       0x24 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(interrupt-table.o)
+ .xt.prop       0x00000570       0x18 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(exc-unhandled.o)
+ .xt.prop       0x00000588       0x18 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(exc-return.o)
+ .xt.prop       0x000005a0      0x420 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libathos.a(athos_main.o)
+ .xt.prop       0x000009c0       0x84 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_allocram.o)
+ .xt.prop       0x00000a44      0x138 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_clock.o)
+ .xt.prop       0x00000b7c      0x258 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_eeprom.o)
+ .xt.prop       0x00000dd4       0xf0 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_intr.o)
+ .xt.prop       0x00000ec4       0x3c /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_mem.o)
+ .xt.prop       0x00000f00      0x180 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_misc.o)
+ .xt.prop       0x00001080      0x4f8 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_printf.o)
+ .xt.prop       0x00001578      0x144 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_rompatch.o)
+ .xt.prop       0x000016bc       0x3c /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_string.o)
+ .xt.prop       0x000016f8      0x114 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_tasklet.o)
+ .xt.prop       0x0000180c      0x150 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_timer.o)
+ .xt.prop       0x0000195c      0x114 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(cmnos_wdt.o)
+ .xt.prop       0x00001a70      0x1a4 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a(uart_api.o)
+ .xt.prop       0x00001c14      0x42c /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhif.a(hif_pci.o)
+ .xt.prop       0x00002040      0x450 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhif.a(HIF_usb.o)
+ .xt.prop       0x00002490      0xa38 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhif.a(usb_api.o)
+ .xt.prop       0x00002ec8       0x54 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhif.a(usb_table.o)
+ .xt.prop       0x00002f1c       0xe4 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhif.a(usb_fifo.o)
+ .xt.prop       0x00003000      0x1f8 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhif.a(dma_lib.o)
+ .xt.prop       0x000031f8       0x9c /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libvbuf.a(vbuf.o)
+ .xt.prop       0x00003294       0xb4 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libvdesc.a(vdesc.o)
+ .xt.prop       0x00003348      0x5c4 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhtc.a(htc.o)
+ .xt.prop       0x0000390c      0x33c /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libdma.a(dma_engine.o)
+ .xt.prop       0x00003c48       0xc0 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libdma.a(desc.o)
+ .xt.prop       0x00003d08      0x2a0 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libfwd.a(fwd.o)
+ .xt.prop       0x00003fa8      0x114 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libbuf_pool.a(buf_pool_static.o)
+ .xt.prop       0x000040bc       0x54 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(exc-sethandler.o)
+ .xt.prop       0x00004110       0x18 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(exc-table.o)
+ .xt.prop       0x00004128       0x60 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(exc-c-wrapper-handler.o)
+ .xt.prop       0x00004188       0x6c /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/arch/lib//libhal.a(clock.o)
+ .xt.prop       0x000041f4      0x210 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/arch/lib//libhal.a(misc.o)
+ .xt.prop       0x00004404       0xe4 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/arch/lib//libhal.a(windowspill_asm.o)
+ .xt.prop       0x000044e8       0x18 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/arch/lib//libhal.a(int_asm--get_intenable.o)
+ .xt.prop       0x00004500       0x18 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/arch/lib//libhal.a(int_asm--get_interrupt.o)
+ .xt.prop       0x00004518       0x18 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/arch/lib//libhal.a(int_asm--set_intenable.o)
+ .xt.prop       0x00004530       0x90 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib/xcc//libgcc.a(_divsi3.o)
+ .xt.prop       0x000045c0       0x6c /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib/xcc//libgcc.a(_modsi3.o)
+ .xt.prop       0x0000462c       0x90 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib/xcc//libgcc.a(_udivsi3.o)
+ .xt.prop       0x000046bc       0x60 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib/xcc//libgcc.a(_umodsi3.o)
+ .xt.prop       0x0000471c       0x3c /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib//libc.a(memcmp.o)
+ .xt.prop       0x00004758      0x198 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib//libc.a(memcpy.o)
+ .xt.prop       0x000048f0       0xa8 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib//libc.a(memmove.o)
+ .xt.prop       0x00004998       0xc0 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib//libc.a(memset.o)
+ .xt.prop       0x00004a58       0xfc /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib//libc.a(strcmp.o)
+ .xt.prop       0x00004b54      0x108 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib//libc.a(strcpy.o)
+ .xt.prop       0x00004c5c       0xb4 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib//libc.a(strlen.o)
+ .xt.prop       0x00004d10       0xe4 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib//libc.a(strncmp.o)
+ .xt.prop       0x00004df4      0x198 /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib//libc.a(strncpy.o)
+ *(.xt.prop.*)
+ *(.gnu.linkonce.prop.*)
+
+.xt.lit         0x00000000        0x8
+ *(.xt.lit)
+ .xt.lit        0x00000000        0x8 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a(reset-vector-unpack.o)
+ *(.xt.lit.*)
+ *(.gnu.linkonce.p.*)
+
+.xt.profile_range
+ *(.xt.profile_range)
+ *(.gnu.linkonce.profile_range.*)
+
+.xt.profile_ranges
+ *(.xt.profile_ranges)
+ *(.gnu.linkonce.xt.profile_ranges.*)
+
+.xt.profile_files
+ *(.xt.profile_files)
+ *(.gnu.linkonce.xt.profile_files.*)
+LOAD /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/_vectors.o
+LOAD /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/crt1-tiny.o
+START GROUP
+LOAD /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhandlers-board.a
+LOAD /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libathos.a
+LOAD /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libcmnos.a
+LOAD /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhif.a
+LOAD /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libvbuf.a
+LOAD /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libvdesc.a
+LOAD /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libhtc.a
+LOAD /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libdma.a
+LOAD /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libfwd.a
+LOAD /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/libbuf_pool.a
+END GROUP
+LOAD /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/arch/lib//libhal.a
+LOAD /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib/xcc//libgcc.a
+LOAD /opt/xtensa/XtDevTools/install/builds/RB-2007.2-linux/Magpie_P0/xtensa-elf/lib//libc.a
+OUTPUT(rom.fpga.out elf32-xtensa-be)
+
+.xtensa.info    0x00000000      0x1b4
+ .xtensa.info   0x00000000      0x1b4 /root/Workspace/0412_v202/tgt/build/magpie_1_1/image/magpie/../../../..//build/magpie_1_1/lib/rom/_vectors.o

@@ -1,0 +1,16 @@
+This is backported because of:
+
+commit cd4dc0821bc97947f25c8483a4aa0711bff8619a
+Author: Frank Praznik <frank.praznik@oh.rr.com>
+Date:   Wed Jan 22 13:49:41 2014 -0500
+
+    HID: Add transport-driver callbacks to the hid_ll_driver struct
+    
+    Add raw_request and output_report callbacks to the hid_ll_driver struct.
+    
+    Signed-off-by: Frank Praznik <frank.praznik@oh.rr.com>
+    Acked-by: David Herrmann <dh.herrmann@gmail.com>
+    Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+
+This did not make it to v3.14, so its only present on linux-next, its
+available for example on next-20140409

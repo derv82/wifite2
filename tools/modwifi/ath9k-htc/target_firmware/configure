@@ -1,0 +1,31 @@
+#!/bin/sh
+TOOLCHAIN=$PWD/../toolchain/inst
+TARGET=xtensa-elf
+PREFIX="$TOOLCHAIN/bin/$TARGET-"
+TOOLCHAIN_FILE=$PWD/build/toolchain.cmake
+
+set -e
+rm -rf build
+mkdir -p build
+
+cat > "$TOOLCHAIN_FILE" <<EOF
+INCLUDE(CMakeForceCompiler)
+
+SET(CMAKE_SYSTEM_PROCESSOR xtensa)
+SET(CMAKE_FIND_ROOT_PATH ${TOOLCHAIN}/$TARGET)
+SET(CMAKE_STRIP :)
+
+CMAKE_FORCE_C_COMPILER(${PREFIX}gcc GNU)
+EOF
+
+do_cmake() {
+	cmake -DCMAKE_TOOLCHAIN_FILE=$TOOLCHAIN_FILE "$@"
+}
+
+mkdir -p build/k2 build/magpie
+cd build/k2
+do_cmake -DTARGET_K2=ON ../..
+cd -
+cd build/magpie
+do_cmake -DTARGET_MAGPIE=ON ../..
+cd -

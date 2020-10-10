@@ -1,0 +1,23 @@
+This patch requires a manual backport:
+
+commit adc8d746caa67fff4b53ba3e5163a6cbacc3b523
+Author: Alan Cox <alan@linux.intel.com>
+Date:   Sat Jul 14 15:31:47 2012 +0100
+
+    tty: move the termios object into the tty
+    
+    This will let us sort out a whole pile of tty related races. The
+    alternative would be to keep points and refcount the termios objects.
+    However
+    1. They are tiny anyway
+    2. Many devices don't use the stored copies
+    3. We can remove a pty special case
+    
+    Signed-off-by: Alan Cox <alan@linux.intel.com>
+    Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+We cannot use compat.git for this given that the assignment
+was not done through a static inline helper.
+
+mcgrof@ergon ~/linux (git::master)$ git describe --contains adc8d746caa67fff4b53ba3e5163a6cbacc3b523
+v3.7-rc1~172^2~187

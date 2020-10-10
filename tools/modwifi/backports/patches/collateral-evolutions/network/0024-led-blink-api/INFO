@@ -1,0 +1,13 @@
+backports: use old led api on old kernel versions.
+
+Usage of a new led api was introduced in mac80211, this patch make
+backports use the old api on older kernel versions. This could cause a
+problem with the led, the transmit led could stay on if nothing is
+transfered.
+
+This backports the following upstream commit:
+commit e47f2509e5f182f4df144406de6f2bc78179d57e
+Author: Fabio Baltieri <fabio.baltieri@gmail.com>
+Date:   Thu Jul 25 12:00:26 2013 +0200
+
+    mac80211: use oneshot blink API for LED triggers

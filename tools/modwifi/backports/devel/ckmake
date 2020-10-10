@@ -1,0 +1,632 @@
+#!/usr/bin/env python
+
+# ncurses Linux kernel cross kernel compilation utility
+
+# Copyright (C) 2012 Luis R. Rodriguez <mcgrof@do-not-panic.com>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 2 as
+# published by the Free Software Foundation.
+
+import argparse
+import locale
+import curses
+import time
+import os
+import re
+import random
+import tempfile
+import subprocess
+import sys
+import signal
+
+from Queue import *
+from threading import Thread, Lock
+from shutil import copytree, ignore_patterns, rmtree, copyfileobj
+from time import sleep
+
+# find self
+source_dir = os.path.abspath(os.path.dirname(__file__))
+source_dir = os.path.dirname(source_dir)
+# add parent directory to path to get to lib/
+sys.path.append(source_dir)
+# import libraries we need
+from lib import bpreqs as reqs
+
+releases_processed = []
+releases_baking = []
+processed_lock = Lock()
+baking_lock = Lock()
+my_cwd = os.getcwd()
+ckmake_return = 0
+
+tmp_path = my_cwd + "/.tmp.ckmake"
+ckmake_log = my_cwd + "/ckmake.log"
+ckmake_report = my_cwd + "/ckmake-report.log"
+
+home = os.getenv("HOME")
+ksrc = home + "/" + "ksrc-backports"
+modules = ksrc + "/lib/modules"
+
+
+def clean():
+    if os.path.exists(tmp_path):
+        rmtree(tmp_path)
+
+
+def get_processed_rel(i):
+    "Because... list.pop(i) didn't work to keep order..."
+    processed_lock.acquire()
+    for rel in releases_processed:
+        if (rel['idx'] == i):
+            processed_lock.release()
+            return rel
+    processed_lock.release()
+
+    baking_lock.acquire()
+    for rel in releases_baking:
+        if (rel['idx'] == i):
+            releases_baking.remove(rel)
+            baking_lock.release()
+            return rel
+    baking_lock.release()
+
+
+def get_status_name(status):
+    if (status == 0):
+        return 'OK'
+    elif (status == 130):
+        return 'TERM'
+    elif (status == 1234):
+        return 'INIT'
+    elif (status == 1235):
+        return 'LINK'
+    elif (status == -2):
+        return 'TERM'
+    else:
+        return 'FAIL'
+
+
+def get_stat_pos(status):
+    if (status == 0):
+        return 34
+    elif (status == 130):
+        return 33
+    elif (status == 1234):
+        return 33
+    elif (status == 1235):
+        return 33
+    elif (status == -2):
+        return 33
+    else:
+        return 33
+
+
+def get_status_color(status):
+    if (status == 0):
+        return curses.color_pair(1)
+    elif (status == 130):
+        return curses.color_pair(2)
+    elif (status == 1234):
+        return curses.color_pair(2)
+    elif (status == -2):
+        return curses.color_pair(2)
+    else:
+        return curses.color_pair(3)
+
+
+def print_report():
+    os.system("clear")
+    sys.stdout.write("\n\n\n")
+    sys.stdout.write("== ckmake-report.log ==\n\n")
+    report = open(ckmake_report, 'r+')
+    copyfileobj(report, sys.stdout)
+    report.close()
+
+
+def process_logs():
+    os.system('clear')
+    log = open(ckmake_log, 'w+')
+    report = open(ckmake_report, 'w+')
+    for i in range(0, len(releases_processed)):
+        rel = get_processed_rel(i)
+        rel_log = open(rel['log'], 'r+')
+        log.write(rel_log.read())
+        status = get_status_name(rel['status'])
+        rel_report = "%-4s%-20s[  %s  ]\n" % \
+                     (rel['idx'] + 1, rel['version'], status)
+        report.write(rel_report)
+        if (rel['status'] != 0 and
+                rel['status'] != 2):
+            ckmake_return = -1
+    report.close()
+    log.close()
+    print_report()
+
+
+def process_kernel(num, kset, cmdline_args):
+    while True:
+        rel = kset.queue.get()
+        work_dir = tmp_path + '/' + rel['version']
+        copytree(my_cwd,
+                 work_dir,
+                 ignore=ignore_patterns('.tmp*', ".git"))
+        build = '%s/build/' % rel['full_path']
+        jobs = '-j%d' % kset.build_jobs
+        make_args = ['KLIB=%s' % build,
+                     'KLIB_BUILD=%s' % build]
+        nice = ['ionice', '-c', '3', 'nice', '-n', '20']
+
+        log_file_name = work_dir + '/' + 'ckmake.n.log'
+        rel['log'] = log_file_name
+        log_file = open(log_file_name, 'w')
+        null_file = open('/dev/null', 'r')
+
+        all_config_name = os.path.join(work_dir, 'all.config')
+        all_config = open(all_config_name, 'w')
+        all_config.write("CPTCFG_CFG80211_INTERNAL_REGDB=n\n")
+        config_name = 'allnoconfig'
+        if cmdline_args.allyesconfig:
+            config_name = 'allyesconfig'
+        elif cmdline_args.defconfig:
+            all_config.write(
+                open(os.path.join(work_dir, 'defconfigs', cmdline_args.defconfig)).read())
+        else:
+            all_config.write("CPTCFG_BACKPORT_USERSEL_BUILD_ALL=y\n")
+        all_config.close()
+
+        all_config_env = os.environ.copy()
+        all_config_env["KCONFIG_ALLCONFIG"] = all_config_name
+
+        kset.baking(rel)
+
+        p = subprocess.Popen(nice + ['make', jobs] + make_args + [config_name],
+                             cwd=work_dir, env=all_config_env,
+                             stdin=null_file,
+                             stdout=log_file,
+                             stderr=log_file)
+        p.wait()
+
+        if p.returncode == 0:
+            p = subprocess.Popen(nice + ['make', jobs] + make_args,
+                                 cwd=work_dir,
+                                 stdin=null_file,
+                                 stdout=log_file,
+                                 stderr=log_file)
+            p.wait()
+
+        log_file.close()
+        status = p.returncode
+        if status == 0:
+            warn = re.compile('^WARNING:.*undefined.*')
+            log_file = open(log_file_name, 'r')
+            for l in log_file:
+                if warn.match(l):
+                    status = 1235
+                    break
+        null_file.close()
+
+        kset.update_status(rel, status)
+        kset.queue.task_done()
+        kset.completed(rel)
+
+
+def cpu_info_build_jobs():
+    if not os.path.exists('/proc/cpuinfo'):
+        return 1
+    f = open('/proc/cpuinfo', 'r')
+    max_cpu = 1
+    for line in f:
+        m = re.match(r"(?P<PROC>processor\s*:)\s*"
+                     "(?P<NUM>\d+)",
+                     line)
+        if not m:
+            continue
+        proc_specs = m.groupdict()
+        cpu_num = int(proc_specs['NUM'])
+        if cpu_num > max_cpu:
+            max_cpu = cpu_num
+    return max_cpu + 1
+
+
+def kill_curses():
+    curses.endwin()
+    sys.stdout = os.fdopen(0, 'w', 0)
+
+
+def sig_handler(signal, frame):
+    kill_curses()
+    process_logs()
+    clean()
+    sys.exit(-2)
+
+
+def compute_rel_weight_base_2(rel_specs):
+    weight = 0
+    sublevel = 0
+
+    if (rel_specs['SUBLEVEL'] != ''):
+        sublevel = int(rel_specs['SUBLEVEL'].lstrip(".")) * 20
+    else:
+        sublevel = 5
+
+    weight = (int(rel_specs['VERSION'])    << 32) + \
+             (int(rel_specs['PATCHLEVEL']) << 16) + \
+             (sublevel << 8)
+
+    return weight
+
+
+def compute_rel_weight_base_3(rel_specs):
+    weight = 0
+    extra = 0
+    sublevel = 0
+
+    weight = (int(rel_specs['VERSION'])    << 32) + \
+             (int(rel_specs['PATCHLEVEL']) << 16)
+
+    return weight
+
+
+def compute_rel_weight_base(rel_specs):
+
+    if (int(rel_specs['VERSION']) == 2):
+        return compute_rel_weight_base_2(rel_specs)
+    if (int(rel_specs['VERSION']) == 3):
+        return compute_rel_weight_base_3(rel_specs)
+    return 0
+
+
+def compute_rel_weight(rel_specs):
+    weight = 0
+    extra = 0
+    sublevel = 0
+
+    if (rel_specs['EXTRAVERSION'] != ''):
+        if ("." in rel_specs['EXTRAVERSION'] or
+                "rc" in rel_specs['EXTRAVERSION']):
+            rc = rel_specs['EXTRAVERSION'].lstrip("-rc")
+            if (rc == ""):
+                rc = 0
+            else:
+                rc = int(rc) - 20
+            extra = int(rc)
+        else:
+            extra = int(rel_specs['EXTRAVERSION']) + 10
+
+    if (rel_specs['SUBLEVEL'] != ''):
+        sublevel = int(rel_specs['SUBLEVEL'].lstrip(".")) * 20
+    else:
+        sublevel = 5
+
+    weight = (int(rel_specs['VERSION'])    << 32) + \
+             (int(rel_specs['PATCHLEVEL']) << 16) + \
+             (sublevel   		       << 8 ) + \
+             (extra * 60)
+
+    return weight
+
+
+def get_rel_spec_base(rel):
+    m = re.match(r"v*(?P<VERSION>\d+)\.+"
+                 "(?P<PATCHLEVEL>\d+)[.]*"
+                 "(?P<SUBLEVEL>\d*)",
+                 rel)
+    if (not m):
+        return m
+    rel_specs = m.groupdict()
+    return rel_specs
+
+
+def get_base_spec(rel_specs):
+    if (int(rel_specs['VERSION']) == 2):
+        rel = rel_specs['VERSION'] + "." + rel_specs['PATCHLEVEL'] + \
+            "." + rel_specs['SUBLEVEL']
+    else:
+        rel = rel_specs['VERSION'] + "." + rel_specs['PATCHLEVEL']
+    return get_rel_spec_base(rel)
+
+
+def get_rel_spec_ubuntu(rel):
+    if ("rc" in rel):
+        m = re.match(r"v*(?P<VERSION>\d+)\.+"
+                     "(?P<PATCHLEVEL>\d+)[.]+"
+                     "(?P<SUBLEVEL>\d+)[-]+"
+                     "\d+rc(?P<EXTRAVERSION>\d+)\-*",
+                     rel)
+    else:
+        m = re.match(r"v*(?P<VERSION>\d+)\.+"
+                     "(?P<PATCHLEVEL>\d+)[.]+"
+                     "(?P<SUBLEVEL>\d+)[-]+"
+                     "(?P<EXTRAVERSION>\d+)\-*",
+                     rel)
+    if (not m):
+        return m
+    rel_specs = m.groupdict()
+    return rel_specs
+
+
+def krel_same_base(new_rel, rel):
+    if (int(new_rel['ver']) != int(rel['ver'])):
+        return False
+    if (int(new_rel['pat']) != int(rel['pat'])):
+        return False
+    if (int(new_rel['ver']) == 3):
+        return True
+    if (int(new_rel['ver']) != 2):
+        return False
+    if (int(new_rel['sub']) == int(rel['sub'])):
+        return True
+    return False
+
+
+def krel_base_update(new_rel, rel):
+    if (not krel_same_base(new_rel, rel)):
+        return False
+    if (int(new_rel['sub']) > int(rel['sub'])):
+        return True
+    if (int(new_rel['sub']) < int(rel['sub'])):
+        return False
+
+    # Too lazy to deal with 2.x kernels,
+    if (not new_rel['is_rc']):
+        return False
+
+    if (int(new_rel['ext']) <= int(rel['ext'])):
+        return False
+    return True
+
+
+def krel_base_smaller(new_rel, rel):
+    if (not krel_same_base(new_rel, rel)):
+        return False
+    if (int(new_rel['sub']) > int(rel['sub'])):
+        return False
+    if (int(new_rel['sub']) < int(rel['sub'])):
+        return True
+    return False
+
+
+class kernel_set():
+
+    def __init__(self, stdscr):
+        self.queue = Queue()
+        self.target_krevs = []
+        self.releases = []
+        self.target_kranges = []
+        self.stdscr = stdscr
+        self.lock = Lock()
+        signal.signal(signal.SIGINT, sig_handler)
+        self.build_jobs = cpu_info_build_jobs()
+        if (curses.has_colors()):
+            curses.init_pair(1,
+                             curses.COLOR_GREEN,
+                             curses.COLOR_BLACK)
+            curses.init_pair(2,
+                             curses.COLOR_CYAN,
+                             curses.COLOR_BLACK)
+            curses.init_pair(3,
+                             curses.COLOR_RED,
+                             curses.COLOR_BLACK)
+            curses.init_pair(4,
+                             curses.COLOR_BLUE,
+                             curses.COLOR_BLACK)
+
+    def baking(self, rel):
+        baking_lock.acquire()
+        releases_baking.append(rel)
+        baking_lock.release()
+
+    def completed(self, rel):
+        processed_lock.acquire()
+        releases_processed.insert(rel['idx'], rel)
+        processed_lock.release()
+
+    def set_locale(self):
+        locale.setlocale(locale.LC_ALL, '')
+        code = locale.getpreferredencoding()
+
+    def refresh(self):
+        self.lock.acquire()
+        self.stdscr.refresh()
+        self.lock.release()
+
+    def wight_in_target_kranges(self, rel_base_weight):
+        for krange in self.target_kranges:
+            if (krange['is_range']):
+                if (krange['weight_lower'] <= rel_base_weight and
+                        rel_base_weight <= krange['weight_upper']):
+                    return True
+            else:
+                if (rel_base_weight == krange['weight']):
+                    return True
+        return False
+
+    def evaluate_new_rel(self, new_rel):
+        for rel in self.releases:
+            if (krel_base_update(new_rel, rel)):
+                new_rel['idx'] = rel['idx']
+                self.releases.remove(rel)
+                break
+            if (krel_base_smaller(new_rel, rel)):
+                return
+        if (self.target_kranges):
+            if (not self.wight_in_target_kranges(new_rel['base_weight'])):
+                return
+        self.releases.insert(new_rel['idx'], new_rel)
+
+    def parse_releases(self, target_kranges):
+        self.target_kranges = target_kranges
+        for dirname, dirnames, filenames in os.walk(modules):
+            rels = []
+            for subdirname in dirnames:
+                specifics = get_rel_spec_ubuntu(subdirname)
+                if (not specifics):
+                    continue
+                base_specs = get_base_spec(specifics)
+                if (not base_specs):
+                    continue
+                rc = False
+
+                ver = specifics['VERSION'] + '.' + \
+                    specifics['PATCHLEVEL']
+
+                if ("rc" in subdirname):
+                    rc = True
+                    ver = ver + '-rc' + specifics['EXTRAVERSION']
+                else:
+                    ver = ver + '.' + specifics['SUBLEVEL']
+
+                get_rel_spec_base(subdirname)
+                rel = dict(name=subdirname,
+                           full_path=dirname + '/' +
+                           subdirname,
+                           version=ver,
+                           is_rc=rc,
+                           ver=specifics['VERSION'],
+                           pat=specifics['PATCHLEVEL'],
+                           sub=specifics['SUBLEVEL'],
+                           ext=specifics['EXTRAVERSION'],
+                           base_weight=compute_rel_weight_base(base_specs),
+                           weight=compute_rel_weight(specifics),
+                           processed=False,
+                           log='',
+                           status=1234)
+                rels.append(rel)
+
+            def relsort(rel):
+                return int(rel['ver']), int(rel['pat']), int(rel['sub'])
+            rels.sort(key=relsort)
+            for rel in rels:
+                rel['idx'] = len(self.releases)
+                self.evaluate_new_rel(rel)
+        self.refresh()
+
+    def setup_screen(self):
+        for i in range(0, len(self.releases)):
+            rel = self.releases[i]
+            self.lock.acquire()
+            self.stdscr.addstr(rel['idx'], 0,
+                               "%-4d" % (rel['idx'] + 1))
+            if (curses.has_colors()):
+                self.stdscr.addstr(rel['idx'], 5,
+                                   "%-20s" % (rel['version']),
+                                   curses.color_pair(4))
+            else:
+                self.stdscr.addstr(rel['idx'], 0,
+                                   "%-20s" % (rel['version']))
+            self.stdscr.addstr(rel['idx'], 30, "[        ]")
+            self.stdscr.refresh()
+            self.lock.release()
+
+    def create_threads(self, cmdline_args):
+        for rel in self.releases:
+            th = Thread(target=process_kernel, args=(0, self, cmdline_args))
+            th.setDaemon(True)
+            th.start()
+
+    def kick_threads(self):
+        for rel in self.releases:
+            self.queue.put(rel)
+            sleep(1)
+
+    def wait_threads(self):
+        self.queue.join()
+
+    def update_status(self, rel, status):
+        self.lock.acquire()
+        stat_name = get_status_name(status)
+        stat_pos = get_stat_pos(status)
+        if (curses.has_colors()):
+            stat_color = get_status_color(status)
+            self.stdscr.addstr(rel['idx'], stat_pos, stat_name,
+                               get_status_color(status))
+        else:
+            self.stdscr.addstr(rel['idx'], stat_pos, stat_name)
+        rel['processed'] = True
+        rel['status'] = status
+        self.stdscr.refresh()
+        self.lock.release()
+
+
+def main(stdscr, args, target_kranges):
+    kset = kernel_set(stdscr)
+
+    kset.set_locale()
+    kset.parse_releases(target_kranges)
+    kset.setup_screen()
+    kset.create_threads(args)
+    kset.kick_threads()
+    kset.wait_threads()
+    kset.refresh()
+
+
+def build_krange(krange_list):
+    if (len(krange_list) == 2):
+        lower = krange_list.pop(0)
+        upper = krange_list.pop(0)
+        specifics_lower = get_rel_spec_base(lower)
+        if (not specifics_lower):
+            return {}
+        specifics_upper = get_rel_spec_base(upper)
+        if (not specifics_upper):
+            return {}
+        krange = dict(is_range=True,
+                      weight_lower=compute_rel_weight_base(specifics_lower),
+                      weight_upper=compute_rel_weight_base(specifics_upper))
+        return krange
+    elif (len(krange_list) == 1):
+        rel = krange_list.pop(0)
+        specifics = get_rel_spec_base(rel)
+        if (not specifics):
+            return {}
+        krange = dict(is_range=False,
+                      weight=compute_rel_weight_base(specifics))
+        return krange
+    else:
+        return {}
+    return {}
+
+if __name__ == "__main__":
+    req = reqs.Req()
+    req.require('make')
+    req.require('gcc')
+    if not req.reqs_match():
+        sys.exit(1)
+    parser = argparse.ArgumentParser(
+        description='compile against all kernels you have')
+    parser.add_argument(
+        '--allyesconfig', const=True, default=False, action="store_const",
+        help='Build allyesconfig rather than only backport code.')
+    parser.add_argument('--defconfig', metavar='<name>', type=str,
+                        help='Build this defconfig rather than only backport code.')
+    parser.add_argument('--revs', metavar='<revision-list>', type=str,
+                        help='Optional list of kernel revisions to test for, example: 2.6.24,2.6.30,2.6.32..3.2,3.4')
+    args = parser.parse_args()
+
+    target_kranges = []
+    if (args.revs):
+        klists = args.revs.split(",")
+        for klist in klists:
+            krange_list = klist.split("..")
+            krange = build_krange(krange_list)
+            target_kranges.append(krange)
+
+    if not os.path.exists(modules):
+        print "%s does not exist" % (modules)
+        sys.exit(1)
+    if not os.path.exists(my_cwd + '/Makefile'):
+        print "%s does not exist" % (my_cwd + '/Makefile')
+        sys.exit(1)
+    if os.path.exists(ckmake_log):
+        os.remove(ckmake_log)
+    if os.path.exists(ckmake_report):
+        os.remove(ckmake_report)
+    if os.path.exists(tmp_path):
+        rmtree(tmp_path)
+    os.makedirs(tmp_path)
+    curses.wrapper(main, args, target_kranges)
+    kill_curses()
+    process_logs()
+    clean()
+    sys.exit(ckmake_return)

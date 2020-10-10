@@ -1,0 +1,43 @@
+# Linux kernel backports package
+
+This package provides backport support for drivers from newer kernels
+down to older kernels. It currently backports the following subsystems:
+
+  * Ethernet
+  * Wireless
+  * Bluetooth
+  * NFC
+  * ieee802154
+  * Media
+  * Regulator
+
+This package provides the latest Linux kernel subsystem enhancements
+for kernels 3.0 and above.
+
+# Documentation
+
+This package is documented online and has more-up-to date information
+online than on this README file. You should read the wiki page
+and not rely on this README!
+
+https://backports.wiki.kernel.org
+
+# License
+
+This work is a subset of the Linux kernel as such we keep the kernel's
+Copyright practice. Some files have their own copyright and in those
+cases the license is mentioned in the file. All additional work made
+to building this package is licensed under the GPLv2.
+
+# Backporting preference for EXPORT_SYMBOL_GPL() and proprietary drivers
+
+This framework was designed by intent since its inception *only* for upstream
+Linux kernel drivers to avoid excuses about the difficulty to support upstream
+Linux kernel development while also supporting users on older kernels. To
+ensure the intent is respected currently all symbols that we do work on to
+backport are exported via EXPORT_SYMBOL_GPL() as we do work to backport them
+for the supported kernels. By using EXPORT_SYMBOL_GPL() we make it *clear* that
+if you use the backported symbols your software *is* considered derivative
+works of the Linux kernel.
+
+Comprendes, Mendes?

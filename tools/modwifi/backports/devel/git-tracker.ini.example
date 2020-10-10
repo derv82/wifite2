@@ -1,0 +1,38 @@
+#
+# Example configuration file for the git tracker
+#
+
+
+# start with the global default section for some settings
+[DEFAULT]
+
+#
+# The cachedir need not be set, but it's more efficient
+# to set it. If it is set, it doesn't have to exist and
+# it also doesn't have to be persistent, but if it is
+# persistent then the git objects from the input kernel
+# and output repositories can be cached, leading to
+# faster execution and less consumed network bandwidth.
+#
+cachedir = /tmp/work
+
+
+#
+# Then, a single section (name doesn't matter) for each
+# tree you want to handle.
+#
+# Each section must contain:
+#  * input	the kernel repository to use as input
+#  * output	the output git *repository*
+#		(this must be a repository, not a checked-out working
+#		 directory, so that the script can push commits into it)
+#
+# Optional parameters in each section are:
+#  * branches	comma separated list of branches, default "master"
+#  * defconfig	if given, create a symlink defconfig -> defconfigs/<this>
+#		to allow just 'make' to work in the output directory
+#
+[iwlwifi]
+input = git://git.kernel.org/pub/scm/linux/kernel/git/iwlwifi/iwlwifi.git
+output = /tmp/test.git
+defconfig = iwlwifi

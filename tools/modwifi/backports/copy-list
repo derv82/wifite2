@@ -1,0 +1,183 @@
+#
+# This file specifies which sources are copied from the kernel
+# into the backports package.
+#
+# Directories must end with a slash (e.g. "net/wireless/") and
+# are then copied with all their contents.
+#
+# It is also possible to rename while copying, to do so list
+# old name -> new name
+# Note that in this case the spaces are needed: " -> "
+#
+
+COPYING
+MAINTAINERS
+include/linux/unaligned/
+include/linux/hashtable.h
+
+# 802.11
+drivers/net/wireless/Kconfig
+drivers/net/wireless/Makefile
+
+include/linux/wireless.h
+include/uapi/linux/wireless.h
+include/linux/ieee80211.h
+include/linux/pci_ids.h
+include/uapi/linux/pci_regs.h
+include/linux/mmc/sdio_ids.h
+include/linux/ath9k_platform.h
+include/uapi/linux/wil6210_uapi.h
+include/linux/wl12xx.h
+include/linux/rndis.h
+include/linux/bcm47xx_wdt.h
+include/linux/usb/usbnet.h
+include/linux/usb/rndis_host.h
+include/linux/spi/libertas_spi.h
+include/linux/platform_data/brcmfmac-sdio.h
+include/linux/platform_data/net-cw1200.h
+include/uapi/linux/nl80211.h
+
+include/net/cfg80211.h
+include/net/cfg80211-wext.h
+include/net/ieee80211_radiotap.h
+include/net/lib80211.h
+include/net/mac80211.h
+include/net/regulatory.h
+
+net/Makefile
+net/Kconfig
+net/wireless/
+net/mac80211/
+
+drivers/net/wireless/ath/
+drivers/ssb/
+include/linux/ssb/
+drivers/bcma/
+include/linux/bcma/
+drivers/net/wireless/b43/
+drivers/net/wireless/b43legacy/
+drivers/net/wireless/brcm80211/
+drivers/net/wireless/cw1200/
+drivers/net/wireless/iwlegacy/
+drivers/net/wireless/iwlwifi/
+drivers/net/wireless/rt2x00/
+drivers/net/wireless/zd1211rw/
+drivers/net/wireless/libertas/
+drivers/net/wireless/p54/
+drivers/net/wireless/rtl818x/
+drivers/net/wireless/rtlwifi/
+drivers/net/wireless/libertas_tf/
+drivers/net/wireless/ipw2x00/
+drivers/net/wireless/ti/
+drivers/net/wireless/orinoco/
+drivers/net/wireless/mwifiex/
+drivers/net/wireless/adm8211.c
+drivers/net/wireless/adm8211.h
+drivers/net/wireless/at76c50x-usb.c
+drivers/net/wireless/at76c50x-usb.h
+drivers/net/wireless/mac80211_hwsim.c
+drivers/net/wireless/mac80211_hwsim.h
+drivers/net/wireless/mwl8k.c
+drivers/net/wireless/rsi/
+drivers/net/wireless/rndis_wlan.c
+# rndis also requires some of the USB networking
+drivers/net/usb/Makefile
+drivers/net/usb/Kconfig
+drivers/net/usb/rndis_host.c
+drivers/net/usb/cdc_ether.c
+drivers/net/usb/usbnet.c
+
+
+# Bluetooth
+include/net/bluetooth/
+net/bluetooth/
+drivers/bluetooth/
+
+
+# Ethernet drivers
+drivers/net/ethernet/Kconfig
+drivers/net/ethernet/Makefile
+
+drivers/net/ethernet/atheros/
+
+drivers/net/ethernet/broadcom/Kconfig
+drivers/net/ethernet/broadcom/Makefile
+drivers/net/ethernet/broadcom/b44.c
+drivers/net/ethernet/broadcom/b44.h
+
+drivers/net/ethernet/intel/Kconfig
+drivers/net/ethernet/intel/Makefile
+drivers/net/ethernet/intel/igb/
+
+# wwan drivers
+include/uapi/linux/usb/cdc.h
+include/uapi/linux/usb/cdc-wdm.h
+include/linux/usb/cdc_ncm.h
+include/linux/usb/cdc-wdm.h
+
+drivers/usb/class/Makefile
+drivers/usb/class/Kconfig
+drivers/usb/class/cdc-wdm.c
+drivers/net/usb/cdc_mbim.c
+drivers/net/usb/cdc_ncm.c
+drivers/net/usb/sierra_net.c
+drivers/net/usb/qmi_wwan.c
+
+# NFC core
+net/nfc/
+include/net/nfc/
+include/uapi/linux/nfc.h
+
+# NFC drivers
+drivers/nfc/
+include/linux/platform_data/pn544.h
+include/linux/platform_data/st21nfca.h
+include/linux/platform_data/st21nfcb.h
+
+# Media
+include/media/
+
+include/linux/videodev2.h
+
+include/uapi/linux/media.h
+include/uapi/linux/dvb/
+include/uapi/linux/v4l2-common.h
+include/uapi/linux/v4l2-controls.h
+include/uapi/linux/v4l2-dv-timings.h
+include/uapi/linux/v4l2-mediabus.h
+include/uapi/linux/media-bus-format.h
+include/uapi/linux/v4l2-subdev.h
+include/uapi/linux/videodev2.h
+include/uapi/linux/vsp1.h
+include/trace/events/v4l2.h
+drivers/staging/media/cxd2099/cxd2099.h
+include/uapi/linux/ivtv.h
+include/uapi/linux/meye.h
+
+include/linux/hdmi.h
+
+drivers/media/
+include/linux/platform_data/camera-rcar.h
+include/linux/of_graph.h
+
+include/net/6lowpan.h
+include/net/cfg802154.h
+include/net/netns/ieee802154_6lowpan.h
+include/net/nl802154.h
+include/net/mac802154.h
+include/linux/ieee802154.h
+include/net/af_ieee802154.h
+include/linux/nl802154.h
+include/net/ieee802154_netdev.h
+include/linux/spi/at86rf230.h
+include/linux/spi/cc2520.h
+net/6lowpan/
+net/ieee802154/
+net/mac802154/
+drivers/net/ieee802154/
+
+# MPLS labels, checked on skb->protocol on the
+# respective 802 family, only ethernet seems to use
+# this right now, see 960d97f95
+include/linux/mpls.h
+include/uapi/linux/mpls.h

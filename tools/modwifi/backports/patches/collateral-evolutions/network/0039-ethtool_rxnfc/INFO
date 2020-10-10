@@ -1,0 +1,14 @@
+In kernel 3.2 an argument type of function pointer get_rxnfc in
+struct ethtool_ops changed from void to u32.
+Address this by putting ifdef around the code.
+
+
+commit 815c7db5c809ea3d5735de3131ecdf758b0e14ff
+Author: Ben Hutchings <bhutchings@solarflare.com>
+Date:   Tue Sep 6 13:49:12 2011 +0000
+
+    ethtool: Clean up definitions of rule location arrays in RX NFC
+
+git describe --contains 815c7db5c809ea3d5735de3131ecdf758b0e14ff
+v3.2-rc1~129^2~272
+

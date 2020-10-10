@@ -1,0 +1,12 @@
+In kernel 3.2 struct net_device_ops got a new function pointer
+ndo_set_vf_spoofchk. Address this by putting ifdef around the code.
+
+
+commit 5f8444a3fa617076f8da51a3e8ecce01a5d7f738
+Author: Greg Rose <gregory.v.rose@intel.com>
+Date:   Sat Oct 8 03:05:24 2011 +0000
+
+    if_link: Add additional parameter to IFLA_VF_INFO for spoof checking
+
+git describe --contains 5f8444a3fa617076f8da51a3e8ecce01a5d7f738
+v3.2-rc1~129^2~87

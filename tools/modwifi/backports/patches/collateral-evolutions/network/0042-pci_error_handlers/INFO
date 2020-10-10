@@ -1,0 +1,12 @@
+In kernel 3.7 struct pci_driver changed pci_error_handlers to const.
+Address this by putting ifdef around the code.
+
+
+commit 494530284f16298050ab99f54b7b12dd7d1418a1
+Author: Stephen Hemminger <shemminger@vyatta.com>
+Date:   Fri Sep 7 09:33:14 2012 -0700
+
+    PCI: Make pci_error_handlers const
+
+git describe --contains 494530284f16298050ab99f54b7b12dd7d1418a1
+v3.7-rc1~177^2~9^2~3

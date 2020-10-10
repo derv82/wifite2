@@ -1,0 +1,14 @@
+In kernel 3.5 struct ethtool_ops received 2 new function pointers
+get_module_info and get_module_eeprom. Address this by putting ifdef around
+the code.
+
+
+commit 41c3cb6d20f0252308e9796fa4f3dacb4960de91
+Author: Stuart Hodgson <smhodgson@solarflare.com>
+Date:   Thu Apr 19 09:44:42 2012 +0100
+
+    ethtool: Extend the ethtool API to obtain plugin module eeprom data
+
+git describe --contains 41c3cb6d20f0252308e9796fa4f3dacb4960de91
+v3.5-rc1~109^2~124^2~2
+

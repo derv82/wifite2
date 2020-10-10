@@ -1,0 +1,88 @@
+Commit c60520fa needs to be reverted for older kernels because
+although we can backport some new DMA changes some other
+larger changes ended up extending some core dma data
+structures, for details see bca0fa5f as an example. We're
+aided with this revert by having added vb2_mmap_pfn_range() to
+compat. The main reason to revert is usage of the new
+dma_mmap_coherent() and core changes required via
+bca0fa5f.
+
+commit c60520fa50cd86d64bc8ebb34300ddc4ca91393d
+Author: Marek Szyprowski <m.szyprowski@samsung.com>
+Date:   Thu Jun 14 11:32:21 2012 -0300
+
+    [media] v4l: vb2-dma-contig: let mmap method to use dma_mmap_coherent call
+    
+    Let mmap method to use dma_mmap_coherent call.  Moreover, this patch removes
+    vb2_mmap_pfn_range from videobuf2 helpers as it was suggested by Laurent
+    Pinchart.  The function is no longer used in vb2 code.
+    
+    Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
+    Signed-off-by: Tomasz Stanislawski <t.stanislaws@samsung.com>
+    Acked-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+    Acked-by: Hans Verkuil <hans.verkuil@cisco.com>
+    Signed-off-by: Mauro Carvalho Chehab <mchehab@redhat.com>
+
+--- a/drivers/media/v4l2-core/videobuf2-dma-contig.c
++++ b/drivers/media/v4l2-core/videobuf2-dma-contig.c
+@@ -188,6 +188,52 @@ static void *vb2_dc_alloc(void *alloc_ct
+ 	return buf;
+ }
+ 
++#if (LINUX_VERSION_CODE < KERNEL_VERSION(3,9,0))
++#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,2,0))
++static int
++backport_vb2_mmap_pfn_range(struct vm_area_struct *vma, unsigned long paddr,
++			    unsigned long size,
++			    const struct vm_operations_struct *vm_ops,
++			    void *priv)
++{
++	int ret;
++
++	size = min_t(unsigned long, vma->vm_end - vma->vm_start, size);
++
++	vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
++	ret = remap_pfn_range(vma, vma->vm_start, paddr >> PAGE_SHIFT,
++				size, vma->vm_page_prot);
++	if (ret) {
++		printk(KERN_ERR "Remapping memory failed, error: %d\n", ret);
++		return ret;
++	}
++
++	vma->vm_flags		|= VM_DONTEXPAND | VM_DONTDUMP;
++	vma->vm_private_data	= priv;
++	vma->vm_ops		= vm_ops;
++
++	vma->vm_ops->open(vma);
++
++	pr_debug("%s: mapped paddr 0x%08lx at 0x%08lx, size %ld\n",
++			__func__, paddr, vma->vm_start, size);
++
++	return 0;
++}
++
++static int vb2_dc_mmap(void *buf_priv, struct vm_area_struct *vma)
++{
++	struct vb2_dc_buf *buf = buf_priv;
++
++	if (!buf) {
++		printk(KERN_ERR "No buffer to map\n");
++		return -EINVAL;
++	}
++
++	return backport_vb2_mmap_pfn_range(vma, buf->dma_addr, buf->size,
++					   &vb2_common_vm_ops, &buf->handler);
++}
++#endif /* (LINUX_VERSION_CODE >= KERNEL_VERSION(3,2,0)) */
++#else
+ static int vb2_dc_mmap(void *buf_priv, struct vm_area_struct *vma)
+ {
+ 	struct vb2_dc_buf *buf = buf_priv;
+@@ -224,6 +270,7 @@ static int vb2_dc_mmap(void *buf_priv, s
+ 
+ 	return 0;
+ }
++#endif /* (LINUX_VERSION_CODE < KERNEL_VERSION(3,9,0)) */
+ 
+ /*********************************************/
+ /*         DMABUF ops for exporters          */

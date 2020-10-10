@@ -1,0 +1,63 @@
+This is required unless we add some macro wrappers for this
+type of static work upstream but not sure if that is a good
+idea yet.
+
+--- a/net/ieee802154/reassembly.c
++++ b/net/ieee802154/reassembly.c
+@@ -97,7 +97,11 @@ static void lowpan_frag_expire(unsigned
+ 	struct net *net;
+ 
+ 	fq = container_of((struct inet_frag_queue *)data, struct frag_queue, q);
++#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,15,0))
+ 	net = container_of(fq->q.net, struct net, ieee802154_lowpan.frags);
++#else
++	net = &init_net;
++#endif
+ 
+ 	spin_lock(&fq->q.lock);
+ 
+@@ -395,24 +399,44 @@ static int zero;
+ static struct ctl_table lowpan_frags_ns_ctl_table[] = {
+ 	{
+ 		.procname	= "6lowpanfrag_high_thresh",
++#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,15,0))
+ 		.data		= &init_net.ieee802154_lowpan.frags.high_thresh,
++#else
++		.data		= &ieee802154_lowpan.frags.high_thresh,
++#endif
+ 		.maxlen		= sizeof(int),
+ 		.mode		= 0644,
+ 		.proc_handler	= proc_dointvec_minmax,
++#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,15,0))
+ 		.extra1		= &init_net.ieee802154_lowpan.frags.low_thresh
++#else
++		.extra1		= &ieee802154_lowpan.frags.low_thresh
++#endif
+ 	},
+ 	{
+ 		.procname	= "6lowpanfrag_low_thresh",
++#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,15,0))
+ 		.data		= &init_net.ieee802154_lowpan.frags.low_thresh,
++#else
++		.data		= &ieee802154_lowpan.frags.low_thresh,
++#endif
+ 		.maxlen		= sizeof(int),
+ 		.mode		= 0644,
+ 		.proc_handler	= proc_dointvec_minmax,
+ 		.extra1		= &zero,
++#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,15,0))
+ 		.extra2		= &init_net.ieee802154_lowpan.frags.high_thresh
++#else
++		.extra2		= &ieee802154_lowpan.frags.high_thresh
++#endif
+ 	},
+ 	{
+ 		.procname	= "6lowpanfrag_time",
++#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,15,0))
+ 		.data		= &init_net.ieee802154_lowpan.frags.timeout,
++#else
++		.data		= &ieee802154_lowpan.frags.timeout,
++#endif
+ 		.maxlen		= sizeof(int),
+ 		.mode		= 0644,
+ 		.proc_handler	= proc_dointvec_jiffies,

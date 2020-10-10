@@ -1,0 +1,9 @@
+For some reason the tracing on older kernels requires
+the tracing to be declared before it's defined; it's
+broken when the trace header is only included to create
+the tracepoints.
+
+Since new kernels don't, add patches for the two places
+that rely on the new behaviour.
+
+The kernel that requires this has not been identified...

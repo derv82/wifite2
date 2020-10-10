@@ -1,0 +1,15 @@
+Newer kernels make generic netlink ops and multicast groups
+const, but older can't have that. We therefore introduce
+__genl_const, which can be defined depending on the kernel.
+
+What kernel versions require this?
+
+XXX: try to SmPLify
+
+The struct genl_ops gave the *option* to make it const via:
+mcgrof@ergon ~/linux (git::master)$ git describe --contains f84f771d9
+v3.13-rc1~33^2~32^2~2
+
+The struct genl_multicast_group was *forced* to be const via:
+mcgrof@ergon ~/linux (git::master)$ git describe --contains 2a94fe48f
+v3.13-rc1~33^2^2

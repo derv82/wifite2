@@ -1,0 +1,23 @@
+In kernel 3.3 and 3.10 struct net_device_ops function pointers
+ndo_vlan_rx_add_vid and ndo_vlan_rx_kill_vid changed.
+Address this by putting ifdef around the code.
+
+
+commit 8e586137e6b63af1e881b328466ab5ffbe562510
+Author: Jiri Pirko <jpirko@redhat.com>
+Date:   Thu Dec 8 19:52:37 2011 -0500
+
+    net: make vlan ndo_vlan_rx_[add/kill]_vid return error value
+
+git describe --contains 8e586137e6b63af1e881b328466ab5ffbe562510
+v3.3-rc1~182^2~291
+
+
+commit 80d5c3689b886308247da295a228a54df49a44f6
+Author: Patrick McHardy <kaber@trash.net>
+Date:   Fri Apr 19 02:04:28 2013 +0000
+
+    net: vlan: prepare for 802.1ad VLAN filtering offload
+
+git describe --contains 80d5c3689b886308247da295a228a54df49a44f6
+v3.10-rc1~66^2~97^2~4

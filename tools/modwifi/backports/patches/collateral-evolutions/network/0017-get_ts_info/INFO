@@ -1,0 +1,27 @@
+Linux 3.5 will have get_ts_info to support the Precision Time Protocol.
+
+http://linuxptp.sourceforge.net/
+http://en.wikipedia.org/wiki/Precision_Time_Protocol
+
+We cannot backport this support given that this introduces
+a data structure change on the ethtool_ops.
+
+commit c8f3a8c31069137fe0100e6920558f1a7487ef3c
+Author: Richard Cochran <richardcochran@gmail.com>
+Date:   Tue Apr 3 22:59:17 2012 +0000
+
+    ethtool: Introduce a method for getting time stamping capabilities.
+    
+    This commit adds a new ethtool ioctl that exposes the SO_TIMESTAMPING
+    capabilities of a network interface. In addition, user space programs
+    can use this ioctl to discover the PTP Hardware Clock (PHC) device
+    associated with the interface.
+    
+    Since software receive time stamps are handled by the stack, the generic
+    ethtool code can answer the query correctly in case the MAC or PHY
+    drivers lack special time stamping features.
+    
+    Signed-off-by: Richard Cochran <richardcochran@gmail.com>
+    Reviewed-by: Ben Hutchings <bhutchings@solarflare.com>
+    Signed-off-by: David S. Miller <davem@davemloft.net>
+

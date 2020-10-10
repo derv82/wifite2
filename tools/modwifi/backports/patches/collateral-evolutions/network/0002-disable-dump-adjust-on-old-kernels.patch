@@ -1,0 +1,46 @@
+On older kernels, we can't do this workaround, so if you use
+an old 64-bit kernel with compat you'd better upgrade.
+
+For more details of this work around refer to this commit
+upstream that deals with the code added:
+
+commit 645e77def93f1dd0e211c7244fbe152dac8a7100
+Author: Johannes Berg <johannes.berg@intel.com>
+Date:   Fri Mar 1 14:03:49 2013 +0100
+
+    nl80211: increase wiphy dump size dynamically
+    
+    Given a device with many channels capabilities the wiphy
+    information can still overflow even though its size in
+    3.9 was reduced to 3.8 levels. For new userspace and
+    kernel 3.10 we're going to implement a new "split dump"
+    protocol that can use multiple messages per wiphy.
+    
+    For now though, add a workaround to be able to send more
+    information to userspace. Since generic netlink doesn't
+    have a way to set the minimum dump size globally, and we
+    wouldn't really want to set it globally anyway, increase
+    the size only when needed, as described in the comments.
+    As userspace might not be prepared for large buffers, we
+    can only use 4k.
+    
+    Also increase the size for the get_wiphy command.
+
+--- a/net/wireless/nl80211.c
++++ b/net/wireless/nl80211.c
+@@ -1804,6 +1804,7 @@ static int nl80211_dump_wiphy(struct sk_
+ 						 cb->nlh->nlmsg_seq,
+ 						 NLM_F_MULTI, state);
+ 			if (ret < 0) {
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,1,0)
+ 				/*
+ 				 * If sending the wiphy data didn't fit (ENOBUFS
+ 				 * or EMSGSIZE returned), this SKB is still
+@@ -1825,6 +1826,7 @@ static int nl80211_dump_wiphy(struct sk_
+ 					rtnl_unlock();
+ 					return 1;
+ 				}
++#endif
+ 				idx--;
+ 				break;
+ 			}

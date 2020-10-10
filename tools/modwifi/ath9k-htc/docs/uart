@@ -1,0 +1,4 @@
+Name     | TX pin | TX GPIO | RX pin | RX GPIO | Baudrate
+---------+--------+---------+--------+---------+--------
+AR9271   |   48   |  GPIO9  |   49   |  GPIO10 | 19200
+AR7010   |   54   |  GPIO8  |   52   |  GPIO9  | 115200

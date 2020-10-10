@@ -70,7 +70,7 @@ Second, only the latest versions of these programs are supported and must be ins
 Install dependencies
 --------------------
 ```
-sudo pip3 install -r requirements.txt
+sudo make deps
 ```
 
 Run Wifite
@@ -78,6 +78,7 @@ Run Wifite
 ```
 git clone https://github.com/kimocoder/wifite2.git
 cd wifite2
+sudo make
 sudo ./Wifite.py
 ```
 

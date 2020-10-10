@@ -1,0 +1,28 @@
+#!/usr/bin/env python
+"""
+ gplizer
+=========
+
+This modifies C files with EXPORT_SYMBOL() to EXPORT_SYMBOL_GPL().
+We use this as Python code here as we may use it later for broader
+substitutions. We keep it in backports as typically we forget to
+use EXPORT_SYMBOL_GPL() when backporting kernel symbols.
+
+In short this does this but in Python:
+
+for i in $(find ./ -type f -name \*.c); do
+	perl -pi -e'$_ =~ s|EXPORT_SYMBOL\(|EXPORT_SYMBOL_GPL\(|gs;' $i
+done
+"""
+
+import os, fileinput
+
+def gplize(f):
+    for line in fileinput.input(f, inplace=1):
+        print line.replace('EXPORT_SYMBOL(','EXPORT_SYMBOL_GPL('),
+
+if __name__ == '__main__':
+    for root, dirs, files in os.walk(os.getcwd()):
+        for f in files: 
+            if f.endswith('.c'):
+                gplize(os.path.join(root, f))

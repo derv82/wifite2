@@ -1,0 +1,12 @@
+In kernel 3.4 a new field no_fcs was introduced to struct sk_buff.
+Address this by putting ifdef around the code.
+
+
+commit 3bdc0eba0b8b47797f4a76e377dd8360f317450f
+Author: Ben Greear <greearb@candelatech.com>
+Date:   Sat Feb 11 15:39:30 2012 +0000
+
+    net: Add framework to allow sending packets with customized CRC.
+
+git describe --contains 3bdc0eba0b8b47797f4a76e377dd8360f317450f
+v3.4-rc1~177^2~207

@@ -1,0 +1,629 @@
+#!/usr/bin/env python
+import argparse, os, sys, errno, getopt, re
+import shutil, urllib2
+from urlparse import urljoin
+import tarfile, tempfile
+import fileinput, subprocess
+source_dir = os.path.abspath(os.path.dirname(__file__))
+sys.path.append(source_dir + '/../')
+from lib import bpar as ar
+from lib import bpgit as git
+from lib import bpreqs as reqs
+
+KPATH="http://kernel.ubuntu.com/~kernel-ppa/mainline/"
+BACKPORTS_KSRC_DIR="ksrc-backports"
+# ~ 101 MiB for installed space on usr/src/ and lib/modules/
+SPACE_PER_KERNEL=101
+# ~13 MiB of both deb files
+SPACE_PER_KERNEL_DEB=13
+
+# Having to update this manually is stupid, lets either get Ubuntu
+# folks to use a json files or we start seeing how we can start
+# building our own shit.
+# For example:
+# https://www.kernel.org/releases.json
+KERNEL_URLS = [
+    KPATH + "v3.0.101-oneiric/linux-headers-3.0.101-0300101_3.0.101-0300101.201310220446_all.deb",
+    KPATH + "v3.1.10-precise/linux-headers-3.1.10-030110_3.1.10-030110.201201181135_all.deb",
+    KPATH + "v3.2.68-precise/linux-headers-3.2.68-030268_3.2.68-030268.201503061936_all.deb",
+    KPATH + "v3.3.8-quantal/linux-headers-3.3.8-030308_3.3.8-030308.201206041356_all.deb",
+    KPATH + "v3.4.106-quantal/linux-headers-3.4.106-0304106_3.4.106-0304106.201502031340_all.deb",
+    KPATH + "v3.5.7.12-quantal/linux-headers-3.5.7-03050712_3.5.7-03050712.201305111435_all.deb",
+    KPATH + "v3.6.11-raring/linux-headers-3.6.11-030611_3.6.11-030611.201212171335_all.deb",
+    KPATH + "v3.7.10-raring/linux-headers-3.7.10-030710_3.7.10-030710.201302271235_all.deb",
+    KPATH + "v3.8.13-raring/linux-headers-3.8.13-030813_3.8.13-030813.201305111843_all.deb",
+    KPATH + "v3.9.11-saucy/linux-headers-3.9.11-030911_3.9.11-030911.201307202035_all.deb",
+    KPATH + "v3.10.73-saucy/linux-headers-3.10.73-031073_3.10.73-031073.201503261540_all.deb",
+    KPATH + "v3.11.10-saucy/linux-headers-3.11.10-031110_3.11.10-031110.201311291453_all.deb",
+    KPATH + "v3.12.39-trusty/linux-headers-3.12.39-031239_3.12.39-031239.201503190941_all.deb",
+    KPATH + "v3.13.11-trusty/linux-headers-3.13.11-031311_3.13.11-031311.201404222035_all.deb",
+    KPATH + "v3.14.37-utopic/linux-headers-3.14.37-031437_3.14.37-031437.201503261136_all.deb",
+    KPATH + "v3.15.10-utopic/linux-headers-3.15.10-031510_3.15.10-031510.201408132333_all.deb",
+    KPATH + "v3.16.7-utopic/linux-headers-3.16.7-031607_3.16.7-031607.201410301735_all.deb",
+    KPATH + "v3.17.8-vivid/linux-headers-3.17.8-031708_3.17.8-031708.201501081837_all.deb",
+    KPATH + "v3.18.10-vivid/linux-headers-3.18.10-031810_3.18.10-031810.201503241436_all.deb",
+    KPATH + "v3.19.3-vivid/linux-headers-3.19.3-031903_3.19.3-031903.201503261036_all.deb",
+    KPATH + "v4.0-rc6-vivid/linux-headers-4.0.0-040000rc6_4.0.0-040000rc6.201503291935_all.deb"
+]
+
+NUM_KERNELS=len(KERNEL_URLS)
+
+GIT_TREES = [
+    "git://git.kernel.org/pub/scm/linux/kernel/git/backports/backports.git",
+    "git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git",
+    "git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git",
+    "git://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git",
+]
+
+class backport_kernel_updater:
+    """
+    This is the Linux kernel backports kernel updater. It ensures you
+    have your system up to date with the latest expected kernels, it
+    will also remove any stale kernels directories or files that the
+    upstream project no longer needs or wants.
+    """
+    def pkg_arch(self, machine):
+        if machine == "x86_64":
+            return "amd64"
+        elif machine == "i686":
+            return "i386"
+        sys.stdout.write("Unsupported machine type: %s\n" % machine)
+        sys.exit(1)
+    def __init__(self,
+                 force=False,
+                 rebuild_only=False,
+                 git_trees_only=False,
+                 reference=None):
+        self.ksrc_base = ""
+        self.ksrc_prefix = ""
+        self.kernel_urls = KERNEL_URLS
+        self.git_trees = GIT_TREES
+        self.git_trees_missing = list()
+        self.git_trees_present = list()
+        self.all_git_trees_present = True
+        self.kernel_urls_generic = list()
+        self.kernel_bases = list()
+        self.kernel_pkgs = list()
+        self.kernel_vers = list()
+        self.kernel_vers_count = list()
+        self.root = os.geteuid() == 0
+        self.force = force
+        self.rebuild_only = rebuild_only
+        self.git_trees_only = git_trees_only
+        self.reference = reference
+        self.reference_git = None
+        self.cwd = os.getcwd()
+        sysname, nodename, release, version, self.machine = os.uname()
+        self.pkg_arch = self.pkg_arch(self.machine)
+        if self.root:
+            self.ksrc_base = self.cwd + "/"
+            self.ksrc_prefix = self.ksrc_base + BACKPORTS_KSRC_DIR
+        else:
+            self.ksrc_base = os.environ['HOME'] + "/"
+            self.ksrc_prefix = self.ksrc_base + BACKPORTS_KSRC_DIR
+        if not self.reference:
+            self.reference = os.path.join(self.ksrc_base, 'linux/.git')
+        else:
+            if not os.path.isdir(self.reference):
+                sys.stderr.write("Reference directory does not exist: %s\n" % self.reference)
+                sys.exit(1)
+            else:
+                base_dir = os.path.dirname(self.reference)
+                self.reference_git = dict(git_url=None,
+                                          directory=base_dir,
+                                          directory_obj=self.reference,
+                                          directory_valid=True,
+                                          tree_up_to_date=False,
+                                          reference_args=list())
+        for kernel_url in self.kernel_urls:
+            pkg = kernel_url.split('/')[-1]
+            self.kernel_pkgs.append(pkg)
+            version = pkg.split('-')[2]
+            self.kernel_vers.append(version)
+            kver = dict(ver = version, count = 0)
+            self.kernel_vers_count.append(kver)
+            pkg_tmp = pkg.split('-')[2] + "-" + pkg.split('-')[3]
+            pkg_tmp_base = pkg_tmp.split('_')[0]
+            self.kernel_bases.append(pkg_tmp_base)
+            m = re.match(r"(?P<part_1>.*)_(?P<part_2>.*)_all.deb", kernel_url)
+            pkg_generic_file = m.group('part_1') + '-generic_' + \
+                               m.group('part_2') + '_' + self.pkg_arch + '.deb'
+            pkg_generic_url = urljoin(kernel_url, pkg_generic_file)
+            self.kernel_urls_generic.append(pkg_generic_url)
+
+        for git_tree in self.git_trees:
+            tree_name = git_tree.split('/')[-1]
+            tree_dir = tree_name.split('.')[0]
+            tree_dir = os.path.join(self.ksrc_base, tree_dir.split('.')[0])
+            tree_dir_objs = os.path.join(tree_dir + '/.git')
+            tree_ok = os.path.isdir(tree_dir) and os.path.isdir(tree_dir_objs)
+            tree = dict(git_url=git_tree,
+                        directory=tree_dir,
+                        directory_obj=tree_dir_objs,
+                        directory_valid=tree_ok,
+                        tree_up_to_date=False,
+                        reference_args=list())
+            if not self.reference_git and tree_name in self.reference.replace("/", ""):
+                self.reference_git = tree
+                continue
+            if not tree_ok:
+                self.git_trees_missing.append(tree)
+            else:
+                self.git_trees_present.append(tree)
+
+        for git_tree in self.git_trees_present + self.git_trees_missing:
+            if 'backports' in git_tree.get('directory'):
+                continue
+            if not git_tree.get('directory_valid'):
+                git_tree['reference_args'].append("--reference")
+                git_tree['reference_args'].append(self.reference_git.get('directory_obj'))
+
+        if self.reference_git.get('directory_valid'):
+            self.all_git_trees_present = (1 + len(self.git_trees_present)) == len(self.git_trees)
+        else:
+            self.all_git_trees_present = len(self.git_trees_present) == len(self.git_trees)
+
+        urls = self.kernel_urls + self.kernel_urls_generic
+        urls.sort()
+        self.all_kernel_urls = urls
+        self.all_new_kernels = list()
+
+    def warn_root(self):
+        if not self.root:
+            return
+        sys.stdout.write("** Running as a privileged user!\n")
+        sys.stdout.write("** You are trying to force using %s and %s ...\n" % (
+                         self.ksrc_prefix + "/lib/modules",
+                         self.ksrc_prefix + "/usr/src"))
+        sys.stdout.write("** This is a terrible idea. Consider running " \
+                         "as a non root.\n")
+        if not self.force:
+            answer = raw_input("Do you still want to continue (y/N)? ")
+            if answer != "y":
+                sys.exit(1)
+    def warn_size_reqs_about(self):
+        sys.stdout.write("\n")
+        sys.stdout.write("Linux kernel backports updater\n")
+        sys.stdout.write("------------------------------------------------------------------\n")
+        sys.stdout.write("There are two parts to the updater:\n\n")
+        sys.stdout.write("\t1. Stable kernel header release updater\n")
+        sys.stdout.write("\t2. Git tree updater\n\n")
+        sys.stdout.write("Step 1) will go first and will be immediately followed by Step 2).\n")
+        sys.stdout.write("A description of what will be done and what space requires are needed\n")
+        sys.stdout.write("are described below. Total expected available space: 6 GiB.\n")
+    def warn_size_reqs_kernels(self):
+        sys.stdout.write("\n")
+        sys.stdout.write("Stable kernel header release updater\n")
+        sys.stdout.write("------------------------------------------------------------------\n")
+        sys.stdout.write("This will download %d kernel headers to allow you to\n" % NUM_KERNELS)
+        sys.stdout.write("cross compile any module over these kernels with ckmake.\n")
+        sys.stdout.write("The download payload is about ~ %d MiB, once uncompressed\n" %
+                         (SPACE_PER_KERNEL_DEB * NUM_KERNELS))
+        sys.stdout.write("it will stash kernel header files under the directories:\n\n\t%s\n\t%s\n\n" %
+                         (self.ksrc_prefix + "/usr/src/", self.ksrc_prefix + "/lib/modules/"))
+        sys.stdout.write("It will consume about ~ %d GiB of space.\n\n" % (NUM_KERNELS * SPACE_PER_KERNEL / 1024))
+        sys.stdout.write("The kernel headers used are from Vanilla kernels")
+        sys.stdout.write("from the \nUbuntu mainline / vanilla kernel PPA and are extracted\n")
+        sys.stdout.write("using the GNU ar and Python tar module:\n\n%s\n\n" % KPATH)
+    def warn_size_reqs_git_trees(self):
+        sys.stdout.write("\n")
+        sys.stdout.write("Git tree updater\n")
+        sys.stdout.write("------------------------------------------------------------------\n")
+        sys.stdout.write("This will download or update all backport related kernel git trees:\n\n")
+        for git_tree in self.git_trees:
+            sys.stdout.write("\t%s\n" % git_tree)
+        sys.stdout.write("\n")
+        sys.stdout.write("By default we will git clone or expect each git tree to be present under:\n")
+        sys.stdout.write("\n\n\t%s\n\n" % self.ksrc_base)
+        sys.stdout.write("For each git clone issused --reference will be used based on Linus'\n")
+        sys.stdout.write("linux.git tree to help save as much space as possible. If you do not\n")
+        sys.stdout.write("have the git trees cloned you will be expected to download over 1 GiB\n")
+        sys.stdout.write("of data and once the trees are extracted they will consume about\n")
+        sys.stdout.write("2-3 GiB of space.\n")
+        sys.stdout.write("\n")
+        if self.all_git_trees_present:
+            sys.stdout.write("We detected you have all git trees present, we'll just git fetch for you.\n\n");
+        else:
+            if self.git_trees_missing:
+                sys.stdout.write("Missing trees:\n")
+                for git_tree in self.git_trees_missing:
+                    sys.stdout.write("%s\n" % (git_tree.get('git_url')))
+            if self.git_trees_present:
+                sys.stdout.write("Present trees:\n")
+                for git_tree in self.git_trees_present:
+                    sys.stdout.write("%s\n" % (git_tree.get('directory')))
+            sys.stdout.write("\n")
+    def warn_size_reqs_prompt(self):
+        answer = raw_input("Do you still want to continue (y/N)? ")
+        if answer != "y":
+            sys.exit(1)
+        sys.stdout.write("\n")
+    def warn_size_reqs(self):
+        if self.force or self.rebuild_only:
+            return
+        if not self.rebuild_only and not self.git_trees_only:
+            self.warn_size_reqs_about()
+        if not self.git_trees_only:
+            self.warn_size_reqs_kernels()
+        self.warn_size_reqs_git_trees()
+        self.warn_size_reqs_prompt()
+    def move_dir(self, dirname, dir_target):
+        old_ksrc_prefix = self.ksrc_base + dir_target
+        if (os.path.islink(old_ksrc_prefix)):
+            old_real_path=os.path.realpath(old_ksrc_prefix)
+            old_base_dir=os.path.dirname(old_real_path)
+            new_real_path = old_base_dir + BACKPORTS_KSRC_DIR
+            try:
+                os.rename(old_base_dir + "compat-ksrc", new_real_path)
+                os.unlink(old_ksrc_prefix)
+                os.symlink(old_real_path, new_real_path)
+            except OSError as e:
+                if e.errno != errno.EEXIST:
+                    raise
+        elif (os.path.isdir(old_ksrc_prefix)):
+            try:
+                os.rename(old_ksrc_prefix, self.ksrc_prefix)
+            except OSError as e:
+                if e.errno != errno.EEXIST:
+                    raise
+    def move_old_compat_dirs(self):
+        if self.git_trees_only:
+            return
+        old_ksrc_prefix = self.ksrc_base + "compat-ksrc"
+        if os.path.islink(old_ksrc_prefix):
+            old_real_path=os.path.realpath(old_ksrc_prefix)
+            old_base_dir=os.path.dirname(old_real_path)
+            new_real_path = old_base_dir + "/" + BACKPORTS_KSRC_DIR
+            try:
+                sys.stdout.write("Trying to mv %s %s\n\n" %(old_base_dir + "/compat-ksrc", new_real_path))
+                os.rename(old_base_dir + "/compat-ksrc", new_real_path)
+                os.unlink(old_ksrc_prefix)
+                os.symlink(new_real_path, self.ksrc_prefix)
+            except OSError as e:
+                if e.errno != errno.EEXIST:
+                    raise
+        elif os.path.isdir(old_ksrc_prefix):
+            try:
+                os.rename(old_ksrc_prefix, self.ksrc_prefix)
+            except OSError as e:
+                if e.errno != errno.EEXIST:
+                    raise
+        old_debs = self.ksrc_base + "debs"
+        if os.path.islink(old_debs):
+            old_real_path=os.path.realpath(old_debs)
+            old_base_dir=os.path.dirname(old_real_path)
+            new_real_path = old_base_dir + "/" + BACKPORTS_KSRC_DIR + "/" + "debs"
+            try:
+                sys.stdout.write("Trying to mv %s %s\n\n" %(old_base_dir + "/debs", new_real_path))
+                os.rename(old_base_dir + "/debs", new_real_path)
+                os.unlink(old_debs)
+                os.symlink(old_real_path, new_real_path)
+                os.symlink(old_deb, new_real_path)
+            except OSError as e:
+                if e.errno != errno.EEXIST:
+                    raise
+        elif os.path.isdir(old_debs):
+            try:
+                os.rename(old_debs, self.ksrc_prefix + "debs")
+            except OSError as e:
+                if e.errno != errno.EEXIST:
+                    raise
+    def prep_dirs(self):
+        if self.git_trees_only:
+            return
+        for i in [self.ksrc_prefix,
+                  self.ksrc_prefix + "/debs",
+                  self.ksrc_prefix + "/usr/src",
+                  self.ksrc_prefix + "/lib/modules"]:
+            try:
+                path = os.path.join(self.ksrc_prefix, i)
+                if not os.path.isdir(path):
+                    sys.stdout.write("Creating %s\n" % path)
+                    os.makedirs(path)
+            except OSError as e:
+                if e.errno != errno.EEXIST:
+                    raise
+    def is_stale_kernel_str(self, pkg):
+        for kbase in self.kernel_bases:
+            if (kbase in pkg):
+                return False
+        return True
+    def remove_stale_kernel_pkgs(self):
+        pkg_path = os.path.join(self.ksrc_prefix, 'debs')
+        for root, dirs, files in os.walk(pkg_path):
+            for f in files:
+                if not f.endswith('.deb'):
+                    continue
+                if self.is_stale_kernel_str(f):
+                    pkg_full_path = os.path.join(pkg_path, f);
+                    sys.stdout.write("Removing old kpkg: %s\n" % pkg_full_path)
+                    os.remove(pkg_full_path)
+        return 0
+    def rm_clean_dir(self, d):
+        if not os.path.isdir(d):
+            return
+        shutil.rmtree(d, ignore_errors=True)
+        try:
+            os.rmdir(d)
+        except OSError as e:
+            if e.errno != errno.ENOENT:
+                raise
+    def remove_stale_kernel_dir(self, dir_name):
+        dir_path = os.path.join(self.ksrc_prefix, dir_name)
+        for stuff in os.listdir(dir_path):
+            d = os.path.join(dir_path, stuff)
+            if not os.path.isdir(d):
+                continue
+            if self.is_stale_kernel_str(d):
+                dir_full_path = os.path.join(dir_path, d);
+                sys.stdout.write("Removing old directory: %s\n" % d)
+                self.rm_clean_dir(d)
+    def remove_stale_kernel_dirs(self):
+        for i in [self.ksrc_prefix + "/usr/src",
+                  self.ksrc_prefix + "/lib/modules"]:
+            if os.path.isdir(i):
+                self.remove_stale_kernel_dir(i)
+    def wget_url(self, url, dir_target):
+        sys.stdout.write('Trying URL:  %s\n' % url)
+        target = os.path.join(dir_target, url.split('/')[-1])
+        u = urllib2.urlopen(url)
+        f = open(target, 'wb')
+        meta = u.info()
+        target_size = int(meta.getheaders("Content-Length")[0])
+        sys.stdout.write('Target path: %s bytes: %s\n' % (target, target_size))
+        target_size_now = os.path.getsize(target)
+        check = 8192
+        if target_size_now > target_size:
+            sys.stdout.write('Filesystem file size (%d) > URL file size (%s) bytes: %s' % (target_size_now, target_size))
+            return
+        if target_size_now:
+            buff = u.read(target_size_now)
+            if not buff:
+                return
+        while True:
+            buff = u.read(check)
+            if not buff:
+                break
+            target_size_now += len(buff)
+            f.write(buff)
+            stat = r"%10d  [%3.2f%%]" % (target_size_now, target_size_now * 100. / target_size)
+            stat = stat + chr(8)*(len(stat) + 1)
+            print stat,
+        f.close()
+        sys.stdout.write("\n")
+    def url_file_chunks_missing(self, url, dir_target):
+        target = os.path.join(dir_target, url.split('/')[-1])
+        if not os.path.isfile(target):
+            return True
+        u = urllib2.urlopen(url)
+        meta = u.info()
+        target_size = int(meta.getheaders("Content-Length")[0])
+        target_size_now = os.path.getsize(target)
+        if target_size_now < target_size:
+            return True
+        return False
+    def get_kver(self, url):
+        for kver in self.kernel_vers_count:
+            if kver.get('ver') in url:
+                return kver
+        return None
+    def increase_kver_count(self, url):
+        kver = self.get_kver(url)
+        if not kver:
+            return
+        kver['count'] = kver['count'] + 1
+        if kver['count'] >= 2:
+            sys.stdout.write("%s - up to date !\n" % kver.get('ver'))
+    def is_new_kernel(self, string):
+        if self.force:
+            return True
+        for kernel in self.all_new_kernels:
+            if string in kernel:
+                return True
+        return False
+    def get_backport_pkgs(self):
+        sys.stdout.write("Looking for updates and downloading. You can hit CTRL-C\n")
+        sys.stdout.write("and come back at any time, we'll take off right where \n")
+        sys.stdout.write("we left off\n")
+        for url in self.all_kernel_urls:
+            dir_target = os.path.join(self.ksrc_prefix, "debs")
+            target = os.path.join(dir_target, url.split('/')[-1])
+            if not self.url_file_chunks_missing(url, dir_target):
+                self.increase_kver_count(url)
+                continue
+            self.wget_url(url, dir_target)
+            self.increase_kver_count(url)
+            self.all_new_kernels.append(url)
+        sys.stdout.write("\n")
+    def fix_header_lib_modules(self, dir_path):
+        """
+        Relink lib/modules/*/build/ directories relatively to make it work
+        for regular user based workflows
+        """
+        for kernel in os.listdir(dir_path):
+            if "generic" not in kernel:
+                continue
+            kver = self.get_kver(kernel)
+            sys.stdout.write("%s - creating lib/modules/$kernel/build symlink for non-root installation ...\n" % (kver.get('ver')))
+            src = os.path.join(dir_path, kernel)
+            dst = os.path.join(self.ksrc_prefix, 'lib/modules/' + kernel)
+            build_target = os.path.join(src, 'build')
+            usr_src_sym = "../../../usr/src/linux-headers-" + kernel
+            os.unlink(build_target)
+            os.symlink(usr_src_sym, build_target)
+            shutil.move(src, dst)
+    def install_headers(self, dir_path):
+        for kernel in os.listdir(dir_path):
+            src = os.path.join(dir_path, kernel)
+            dst = os.path.join(self.ksrc_prefix, 'usr/src/' + kernel)
+            kver = self.get_kver(kernel)
+            sys.stdout.write("%s - installing usr/src/ ...\n" % (kver.get('ver')))
+            sys.stdout.write("src: %s\n" % src)
+            sys.stdout.write("dst: %s\n" % dst)
+            self.rm_clean_dir(dst)
+            shutil.move(src, dst)
+    def fix_makefile_old_kernels(self, makefile):
+        if not os.path.isfile(makefile):
+            return
+        if '-generic' in makefile:
+            return
+        kver = self.get_kver(makefile)
+        sys.stdout.write("%s - fixing Makefile due to make 3.82 bug (required for 2.6.24-2.6.28) ...\n" % (kver.get('ver')))
+        for line in fileinput.input(makefile, inplace=True):
+            print("%s" % (re.sub('^/ %', '%', line))),
+        fileinput.close()
+    def sanitize_and_install_kernel_dirs(self, dir_path):
+        d_lib_modules = os.path.join(dir_path, "lib/modules")
+        d_usr_src     = os.path.join(dir_path, "usr/src")
+        if os.path.isdir(d_usr_src):
+            self.install_headers(d_usr_src)
+        if os.path.isdir(d_lib_modules):
+            self.fix_header_lib_modules(d_lib_modules)
+    def extract_backport_pkgs(self):
+        tmp_prefix = BACKPORTS_KSRC_DIR + '_'
+        tmpdir_path = tempfile.mkdtemp(prefix=tmp_prefix)
+        for url in self.all_kernel_urls:
+            kver = self.get_kver(url)
+            dir_target = os.path.join(self.ksrc_prefix, "debs")
+            target = os.path.join(dir_target, url.split('/')[-1])
+            if not self.is_new_kernel(url):
+                sys.stdout.write("%s - already installed %s ...\n" % (kver.get('ver'), target))
+                continue
+            sys.stdout.write("%s - extracting new %s ...\n" % (kver.get('ver'), target))
+            data, dpath = tempfile.mkstemp(prefix=tmp_prefix)
+            ar.print_data(target, data)
+            tar = tarfile.open(name=dpath, mode='r')
+            tar.extractall(path=tmpdir_path, members=bk_tar_members(tar))
+            os.unlink(dpath)
+        self.sanitize_and_install_kernel_dirs(tmpdir_path)
+        self.rm_clean_dir(tmpdir_path)
+    def rebuild_needed(self, kdir):
+        if '-generic' not in kdir:
+            return False
+        m = re.match(r"^(?P<VERSION>\d+)\.+" \
+                     "(?P<PATCHLEVEL>\d+)[.]*", \
+                     kdir)
+        if not m:
+            return False
+        rel_specs = m.groupdict()
+        if int(rel_specs['VERSION']) < 3:
+            return False
+        if int(rel_specs['PATCHLEVEL']) == 0:
+            return False
+        return True
+    def make_kdir(self, make_args, kbuild_path):
+        tmp_prefix = BACKPORTS_KSRC_DIR + '_rebuild_h_'
+        null_file = open('/dev/null', 'r')
+        p = subprocess.Popen(['make'] + make_args ,
+                             stdin=null_file,
+                             stdout=sys.stdout,
+                             stderr=sys.stdout,
+                             cwd=kbuild_path)
+        p.wait()
+        null_file.close()
+    def rebuild_binary_deps(self, kpath, count):
+        kbuild_path = os.path.join(kpath, "build")
+        for target in ['basic', 'mod', 'genksyms']:
+            modpath = 'scripts/' + target
+            if count == 0:
+                make_args = ['-C' + kbuild_path, 'M=' + modpath, '-j', '4', 'clean' ]
+                self.make_kdir(make_args, kbuild_path)
+            make_args = ['-C' + kbuild_path, 'M=' + modpath, '-j', '4' ]
+            self.make_kdir(make_args, kbuild_path)
+    def rebuild_kdir_binary_deps(self, kpath):
+        """
+        We found out empirically at least 4 rebuilds are required...
+        """
+        kver = self.get_kver(kpath)
+        sys.stdout.write("%s - rebuilding binary dependencies ...\n" % kver.get('ver'))
+        for count in range(0, 4):
+            self.rebuild_binary_deps(kpath, count)
+    def rebuild_header_binary_deps(self):
+        dir_target = os.path.join(self.ksrc_prefix, "lib/modules")
+        for kdir in os.listdir(dir_target):
+            if not self.rebuild_needed(kdir):
+                continue
+            if not self.rebuild_only and not self.is_new_kernel(kdir):
+                continue
+            kpath = os.path.join(dir_target, kdir)
+            self.rebuild_kdir_binary_deps(kpath)
+    def clone_git_tree(self, git_tree):
+        sys.stdout.write("Cloning tree %s\n" % git_tree.get('git_url'))
+        git.clone(git_tree.get('git_url'),
+                  git_tree.get('directory'),
+                  git_tree.get('reference_args'))
+        git_tree['tree_up_to_date']=True
+        git_tree['valid']=True
+    def update_git_tree(self, git_tree):
+        sys.stdout.write("Updating tree %s\n" % git_tree.get('directory'))
+        git.fetch(tree=git_tree.get('directory'))
+        git_tree['tree_up_to_date']=True
+        git_tree['valid']=True
+    def clone_or_update_tree(self, git_tree):
+        if not git_tree.get('directory_valid'):
+            self.clone_git_tree(git_tree)
+        else:
+            self.update_git_tree(git_tree)
+    def update_git_trees(self):
+        if self.reference_git:
+            git_tree = self.reference_git
+            self.clone_or_update_tree(git_tree)
+        for git_tree in self.git_trees_present + self.git_trees_missing:
+            self.clone_or_update_tree(git_tree)
+
+def bk_tar_members(members):
+    for tarinfo in members:
+        if not "usr/share" in tarinfo.name:
+            yield tarinfo
+
+def _main():
+    req = reqs.Req()
+    req.require_hint('ar', 'binutils')
+    req.require('make')
+    req.require('gcc')
+    req.require('git')
+    if not req.reqs_match():
+        sys.exit(1)
+
+    parser = argparse.ArgumentParser(description='Linux kernel backports update manager')
+    parser.add_argument('--force', const=True, default=False, action="store_const",
+                        help='Force run without sanity or careful user checks')
+    parser.add_argument('--rebuild-only', const=True, default=False, action="store_const",
+                        help='Only rebuild the binary kernel header dependencies, don\'t download new stuff')
+    parser.add_argument('--git-trees-only', const=True, default=False, action="store_const",
+                        help='Only download or update the required git trees')
+    parser.add_argument('--reference', metavar='<path-to-git-obj-dir>', type=str,
+                        default=None,
+                        help='Override what argument to use to git clone --reference')
+    args = parser.parse_args()
+
+    bk_updater = backport_kernel_updater(force=args.force,
+                                         rebuild_only=args.rebuild_only,
+                                         git_trees_only=args.git_trees_only,
+                                         reference=args.reference)
+
+    bk_updater.warn_root()
+    bk_updater.warn_size_reqs()
+    bk_updater.move_old_compat_dirs()
+    bk_updater.prep_dirs()
+
+    if bk_updater.rebuild_only:
+        bk_updater.rebuild_header_binary_deps()
+        return 0
+    if bk_updater.git_trees_only:
+        bk_updater.update_git_trees()
+        return 0
+
+    bk_updater.remove_stale_kernel_pkgs()
+    bk_updater.remove_stale_kernel_dirs()
+    bk_updater.get_backport_pkgs()
+    bk_updater.extract_backport_pkgs()
+    bk_updater.rebuild_header_binary_deps()
+    bk_updater.update_git_trees()
+
+    return 0
+
+if __name__ == '__main__':
+    ret = _main()
+if ret:
+    sys.exit(ret)

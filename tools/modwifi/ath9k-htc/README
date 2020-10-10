@@ -1,0 +1,119 @@
+This is the firmware for the Qualcomm Atheros AR7010 and AR9271 USB
+802.11n NICs.
+
+Research notes
+--------------
+
+See the file target_firmware/wlan/modwifi.h for #define's that can
+be used to debug research additions.
+
+What is this exactly?
+---------------------
+
+This is the firmware which resides in RAM on the AR7010/AR9271 NICs.
+It is used by ath9k (Linux) and athn (OpenBSD) to provide wireless
+services.
+
+What licence is this covered by?
+--------------------------------
+
+The Qualcomm Atheros owned code is under the ClearBSD licence.
+
+The NOTICES.TXT file contains copyright notices for software which
+this firmware release leverages.
+
+There is some code that is based off of work done under contract
+but is owned by Qualcomm Atheros; the original copyright statements
+from that work are in NOTICES.TXT.
+
+The Tensilica code (xtos/xtensa) is distributed with permission from
+Tensilica, Inc., under the MIT licence.
+
+There are three ECOS source files distributed under the terms of
+the GPLv2, with a caveat that linking or using the source files does
+not bring the rest of the binary under the GPLv2.  Please read the
+ECOS caveats in more detail.
+
+
+Ok, what are those NICs?
+------------------------
+
+The AR7010 is a USB/PCIe SoC with onboard RAM, ROM and flash.
+It comes with an external wireless chip connected via PCIe - typically
+an AR9280 or AR9287.
+
+The AR9271 is a USB/Wifi SoC with onboad RAM, ROM, flash and the
+actual wireless chip.  The wireless core is an off-shoot of the AR9285.
+It is a single-chip solution.
+
+How do I build it?
+------------------
+
+You're in for a treat.
+
+* Install the cmake build tool (http://www.cmake.org/).
+  Major distributions have packages for this.
+
+* For FreeBSD - install gmake and wget.
+
+* You first have to build the toolchain.
+
+  * Linux:
+
+  $ make toolchain
+
+  * FreeBSD:
+
+  $ gmake toolchain
+
+  (Yes, I made this work on FreeBSD as well.)
+
+* Next, build the firmware.
+
+  * Linux:
+
+  $ make -C target_firmware
+
+  * FreeBSD:
+
+  $ gmake -C target_firmware
+
+You will end up with two .fw files - one for the AR7010 and one for
+the AR9271 in the target_firmware directory.
+
+You can clean the firmware build (when you wish to force a rebuild)
+by doing:
+
+  * Linux:
+
+  $ make -C target_firmware clean
+
+  * FreeBSD:
+
+  $ gmake -C target_firmware clean
+
+Then what?
+----------
+
+You need to then copy this into the relevant location for your operating
+system.  Yes, this means you need a driver.  No, there's no FreeBSD
+driver yet for this particular chipset, sorry.
+
+
+Where do I file bugs?
+---------------------
+
+Please file bugs in github - http://github.com/qca/open-ath9k-htc-firmware/issues .
+
+
+Mailing lists?
+--------------
+
+Here you go:
+
+http://lists.infradead.org/mailman/listinfo/ath9k_htc_fw
+
+And
+
+ath9k_htc_fw@lists.infradead.org
+

@@ -1,0 +1,12 @@
+backports: adapt to changes in netdev select_queue call
+
+This patch reverts the changes done in the following commit for older
+kernel versions:
+commit f663dd9aaf9ed124f25f0f8452edf238f087ad50
+Author: Jason Wang <jasowang@redhat.com>
+Date:   Fri Jan 10 16:18:26 2014 +0800
+
+    net: core: explicitly select a txq before doing l2 forwarding
+
+mcgrof@ergon ~/linux (git::master)$ git describe --contains f663dd9aaf9ed124f25f0f8452edf238f087ad50
+v3.13-rc8~4^2~2

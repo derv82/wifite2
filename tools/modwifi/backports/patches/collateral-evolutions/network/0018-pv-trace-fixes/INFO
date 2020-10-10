@@ -1,0 +1,7 @@
+In recent kernels, %pV will copy the va_list before using it.
+This isn't true for all kernels, so copy the va_list for use
+by the dev_*() functions, otherwise the kernel will crash if
+the message is printed and traced.
+
+This is required for kernels <= 3.1, as otherwise it would
+those kernels would crash.

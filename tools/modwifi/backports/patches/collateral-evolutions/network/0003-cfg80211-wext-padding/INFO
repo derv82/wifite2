@@ -1,0 +1,30 @@
+This is a tricky one.
+
+Consider a kernel that has this code in net/wireless/wext-core.c:
+
+#ifdef CONFIG_CFG80211_WEXT
+        if (dev->ieee80211_ptr && dev->ieee80211_ptr->wiphy)
+                handlers = dev->ieee80211_ptr->wiphy->wext;
+#endif
+#ifdef CONFIG_WIRELESS_EXT
+        if (dev->wireless_handlers)
+                handlers = dev->wireless_handlers;
+#endif
+
+If a kernel is compiled without CONFIG_WIRELESS_EXT then
+compat-drivers can't do wireless extensions against it.
+However, if the kernel is compiled with CONFIG_CFG80211_WEXT
+then it will try to get the wext handlers from struct wiphy.
+
+Now, struct wiphy in the base kernel and struct wiphy in
+compat-drivers don't match, so the kernel crashes!!
+
+To fix this, add lots of padding to compat-drivers's
+struct wiphy so that the "wext" pointer is guaranteed
+to be NULL.
+
+Make sure the padding is larger than the struct so we
+don't ever run into this again because the wext pointer
+moved due to struct enlargements.
+
+

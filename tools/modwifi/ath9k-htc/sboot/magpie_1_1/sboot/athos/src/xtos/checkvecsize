@@ -1,0 +1,71 @@
+# Script to check that vector code is 16 bytes or less
+# $Id: //depot/rel/Cottonwood/Xtensa/OS/xtos/checkvecsize#2 $
+
+# Copyright (c) 2001 Tensilica Inc.
+#
+# Permission is hereby granted, free of charge, to any person obtaining
+# a copy of this software and associated documentation files (the
+# "Software"), to deal in the Software without restriction, including
+# without limitation the rights to use, copy, modify, merge, publish,
+# distribute, sublicense, and/or sell copies of the Software, and to
+# permit persons to whom the Software is furnished to do so, subject to
+# the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+# IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+# CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+# TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+# SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+package Xtensa::checkvecsize;
+
+# Perl library modules
+use strict;
+use Getopt::Long;
+use FileHandle;
+
+# Program
+
+use vars qw($objdump $maxsize);
+
+{
+  $::myname = 'checkvecsize';
+
+  # command line
+  $maxsize = 16;
+  die("Usage is: $::myname -objdump prog [-maxsize n] files...\n")
+    unless &GetOptions("objdump=s" => \$objdump,
+		       "maxsize=i" => \$maxsize)
+      && @ARGV > 0 && defined($objdump);
+  my $file;
+  foreach $file (@ARGV) {
+    checkvecsize ($file);
+  }
+}
+
+sub checkvecsize {
+  my ($file) = @_;
+  my $od = new FileHandle "${objdump} -h $file|";
+  die("$::myname: $!, opening pipe to $objdump -h $file.\n")
+    unless $od;
+  while (<$od>) {
+    if (/^\s*\d+\s+(\S+)\s+([0-9A-Fa-f]{8})\s/) {
+      my $size = hex($2);
+      die("$::myname: $file $1 section size is $size bytes.\n")
+	if $size > $maxsize;
+    }
+  }
+  $od->close();
+}
+
+
+# Local Variables:
+# mode:perl
+# perl-indent-level:2
+# cperl-indent-level:2
+# End:

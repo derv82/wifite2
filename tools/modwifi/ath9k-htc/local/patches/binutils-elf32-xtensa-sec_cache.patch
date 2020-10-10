@@ -1,0 +1,20 @@
+--- a/bfd/elf32-xtensa.c	2012-06-29 17:46:01.000000000 +0300
++++ b/bfd/elf32-xtensa.c	2013-05-08 19:16:39.436716824 +0300
+@@ -6075,7 +6075,7 @@
+       release_internal_relocs (sec_cache->sec, sec_cache->relocs);
+       if (sec_cache->ptbl)
+ 	free (sec_cache->ptbl);
+-      memset (sec_cache, 0, sizeof (sec_cache));
++      memset (sec_cache, 0, sizeof (*sec_cache));
+     }
+ }
+ 
+@@ -6117,7 +6117,7 @@
+ 
+   /* Fill in the new section cache.  */
+   clear_section_cache (sec_cache);
+-  memset (sec_cache, 0, sizeof (sec_cache));
++  memset (sec_cache, 0, sizeof (*sec_cache));
+ 
+   sec_cache->sec = sec;
+   sec_cache->contents = contents;

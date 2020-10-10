@@ -1,0 +1,77 @@
+
+ Theory of operation for output Makefiles
+==========================================
+
+This document explains briefly how how the Makefile system works in the
+backported code. It's obviously based on the kernel's Makefile system
+but must be modified by the backporting process to work.
+
+
+ Operation in the backport output tree
+---------------------------------------
+
+Again, let's start with how it works in the result and not with how the
+modifications are made. There are a few different Makefiles that are used
+to achieve this result -- you can look into the details there.
+
+At build time, the very first thing the make system has to do is ensure
+the Kconfig.kernel and Kconfig.versions files exist and are up-to-date,
+this is done by reading the kernel's .config file and storing its md5sum
+to make sure it can react to changes.
+
+Once these are in place, the configuration process can start with any of
+the tools -- menuconfig, defconfig-*, ...
+
+When the configuration is complete and exists in .config, the autoconf
+header (backport-include/backport/autoconf.h) must be generated. This step is
+also done in the make system (by a small embedded shell script) and needs
+the .local-symbols so it only includes the symbols from the backport.
+
+After this exists, all that's left to do is source the .config file and
+export everything in there into the environment for calling the kernel's
+build system.
+
+
+ Backport creation for Makefiles
+---------------------------------
+
+Similar to Kconfig (see the "kconfig-operation" file) there are issues
+with just taking the kernel's makefiles and attempting to use them out
+of tree. The "wrapper" make system is described above, but some other
+transformations are needed.
+
+First though, one "root" Makefile is shipped with the backport tree, the
+file Makefile.kernel. This is the file that the kernel sees and it has
+references to all the makefiles that the backport is supposed to include.
+Some of these may also be invalid/stale, like in any Makefile copied from
+the kernel.
+
+The main thing here is that some symbols may refer to another directory
+or C file that doesn't exist. For example, this:
+
+obj-$(CONFIG_FOO) += foo/
+
+If the foo/ directory wasn't copied into the backport, then the symbol
+FOO will be disabled in the Kconfig, and not treated as a local one.
+Therefore, if CONFIG_FOO is set in the base kernel, the make system may
+attempt to recurse into the foo/ directory and fail the build. Thus, any
+such references that cannot be satisfied due to missing code are changed
+to
+obj-$(IMPOSSIBLE_FOO) += foo/
+
+This preserves the original intent and makefile syntax while disabling
+the recursion that would fail.
+
+NOTE: The makefile parser in the generation script is very very basic and
+      really only works for this particular syntax that the kernel uses.
+
+      Right now, the parser doesn't even understand line continuations,
+      though this would be fairly to fix.
+
+      Also, the parser doesn't understand temporary variables and then
+      sometimes disables things it shouldn't, this is the reason for the
+      brcm80211 patches (at the time of writing -- those patches might be
+      acceptable upstream.)
+
+      Finally, the parser thinks that .o files can only be built from .c
+      files, so any other files won't be handled correctly.

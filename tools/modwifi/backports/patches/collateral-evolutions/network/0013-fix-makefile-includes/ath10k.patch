@@ -1,0 +1,10 @@
+--- a/drivers/net/wireless/ath/ath10k/htt.h
++++ b/drivers/net/wireless/ath/ath10k/htt.h
+@@ -19,6 +19,7 @@
+ #define _HTT_H_
+ 
+ #include <linux/bug.h>
++#include <linux/idr.h>
+ #include <linux/interrupt.h>
+ #include <linux/dmapool.h>
+ #include <linux/hashtable.h>

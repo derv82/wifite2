@@ -1,0 +1,17 @@
+backports: do not use DMA SG on old kernel versions
+
+the usb net driver now uses the dma sg api which is not available on
+old kernels, this patch removed the usage of the dma sg api for old
+kernel versions.
+
+This backports the following upstream commit:
+commit 638c5115a794981441246fa8fa5d95c1875af5ba
+Author: Ming Lei <ming.lei@canonical.com>
+Date:   Thu Aug 8 21:48:24 2013 +0800
+
+    USBNET: support DMA SG
+
+mcgrof@ergon ~/linux (git::master)$ git describe --contains 638c5115a794981441246fa8fa5d95c1875af5ba
+v3.12-rc1~186^2~110
+
+XXX: this patch seems odd, the kernel versoin used seems off.

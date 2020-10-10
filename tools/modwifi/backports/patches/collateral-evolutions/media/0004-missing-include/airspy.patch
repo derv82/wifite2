@@ -1,0 +1,18 @@
+Without this patch I get the following error message when compiling 
+against kernel 3.2, all other kernel versions work:
+
+3.2.60/drivers/media/usb/airspy/airspy.c: In function ‘airspy_queue_setup’:
+3.2.60/drivers/media/usb/airspy/airspy.c:506:2: error: implicit declaration of function ‘PAGE_ALIGN’ [-Werror=implicit-function-declaration]
+sizes[0] = PAGE_ALIGN(s->buffersize);
+
+
+--- a/drivers/media/usb/airspy/airspy.c
++++ b/drivers/media/usb/airspy/airspy.c
+@@ -16,6 +16,7 @@
+ 
+ #include <linux/module.h>
+ #include <linux/slab.h>
++#include <linux/mm.h>
+ #include <linux/usb.h>
+ #include <media/v4l2-device.h>
+ #include <media/v4l2-ioctl.h>

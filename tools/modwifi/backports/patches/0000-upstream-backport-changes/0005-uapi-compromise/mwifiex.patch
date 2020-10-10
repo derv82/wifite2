@@ -1,0 +1,22 @@
+--- a/drivers/net/wireless/mwifiex/decl.h
++++ b/drivers/net/wireless/mwifiex/decl.h
+@@ -26,7 +26,7 @@
+ #include <linux/wait.h>
+ #include <linux/timer.h>
+ #include <linux/ieee80211.h>
+-#include <uapi/linux/if_arp.h>
++#include <linux/if_arp.h>
+ #include <net/mac80211.h>
+ 
+ 
+--- a/drivers/net/wireless/mwifiex/sta_rx.c
++++ b/drivers/net/wireless/mwifiex/sta_rx.c
+@@ -17,7 +17,7 @@
+  * this warranty disclaimer.
+  */
+ 
+-#include <uapi/linux/ipv6.h>
++#include <linux/ipv6.h>
+ #include <net/ndisc.h>
+ #include "decl.h"
+ #include "ioctl.h"

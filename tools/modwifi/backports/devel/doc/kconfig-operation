@@ -1,0 +1,134 @@
+
+ Theory of operation for Kconfig
+=================================
+
+This document explains briefly how how the Kconfig system works in the
+backported code. It's obviously based on the original drivers' Kconfig
+but is "hacked up" by the backporting process.
+
+
+ Operation in the backport output tree
+---------------------------------------
+
+Let's start with the output, i.e. with the build-time Kconfig operation.
+At build time, it is necessary to know what symbols are available in the
+backported code, and in many cases also which are available in the kernel
+it's being compiled against, e.g. to only allow selecting any PCI drivers
+if PCI is enabled in the kernel.
+
+As usual, the Kconfig tree starts with the file "Kconfig" at the root of
+the output directory. This file ships in this repository in the backport
+directory (but as all other Kconfig files will have been modified at the
+backport output generation time.)
+
+This "root" Kconfig file includes all the other Kconfig files that are
+used to configure everything. This includes the compat/Kconfig file that
+also ships in this repository and contains the backport symbols as well
+as the generated ones -- Kconfig.kernel and Kconfig.versions.
+
+These files (Kconfig.kernel and Kconfig.versions) are generated at build
+time and depend on the kernel that they the backport is compiled against.
+The former (Kconfig.kernel) is generated from the kernel's .config file
+and contains all the Kconfig symbols (options) as hidden and unchangeable
+options that the kernel has enabled. This addresses the dependency issue,
+it will for example contain
+
+config PCI
+    bool
+    default y
+
+if the kernel has PCI enabled. For a modular option, here's an example:
+
+config CORDIC
+    tristate
+    default m
+
+(though if CORDIC was built into the kernel, it'd be "bool", but that's
+immaterial for the usage here since it can't be changed anyway)
+
+If the kernel doesn't have it then this will be missing, and any driver
+that "depends on PCI" will not be selectable in the configuration.
+
+The second file (Kconfig.versions) is generated from just the version of
+the kernel and also contains invisible and unselectable boolean options
+like
+
+config KERNEL_X
+    def_bool y
+
+to indicate that APIs introduced in kernel version X (e.g. 3_3 for 3.3
+or 2_6_24 for 2.6.24) must be backported. Essentially, the presence of
+a symbol KERNEL_X indicates that the kernel that the code is
+being compiled against is older than X.
+
+All together, this allows the correct options to be selected by the user.
+
+When using Linux backports as a packaged solution the the CONFIG_
+environment variable is set to CPTCFG_ ("compat config", but also chosen
+because it has the same length as CONFIG_). This shows up in the .config
+file and other places, and in fact in all makefiles and in the code. The
+reason for this is that it must be possible to distinguish between kernel
+and backport options (even though we sort of port over kernel options).
+This allows code to, for example, have "#ifdef CONFIG_PM" which can only
+be set or cleared in the kernel, not in the backport configuration. Since
+this is needed, a transformation step is done at backport creation time.
+
+When using Linux backports to integrate into an existing Linux tree
+the CONFIG_BACKPORT_ prefix is used, this allows a CONFIG_BACKPORT_
+symbol to depend on the non-backported respective symbol to be selected
+allowing these to be mutually exclusive.
+
+ Backport creation for Kconfig
+-------------------------------
+
+In order to achieve correct operation with all the above, multiple steps
+are necessary during the backport creation process.
+
+These are the problems and their solutions:
+ 1) As just mentioned, all symbols are now named CPTCFG_* instead of the
+    original CONFIG_*. This requires that all code files (and makefiles)
+    are updated to use CPTCFG_* and CPTCFG_*_MODULE instead of the CONFIG_
+    versions of the same. However, not *all* CONFIG_* usage may be changed
+    since some options must come from the kernel still. More importantly,
+    kernel options "leak" into the backport build and the rename avoids
+    using them. For example, if MAC80211_DEBUGFS is enabled in the kernel
+    that the backports are compiled against, but disabled in the backport
+    configuration, the rewrite ensures that it really is disabled and the
+    CONFIG_MAC80211_DEBUGFS symbol that "leaked" from the kernel has no
+    effect on the backport compilation.
+    To achieve this, all Kconfig files are walked during the backporting
+    process, starting at the root "Kconfig", and any symbols defined in
+    them collected. Later then, only those options are renamed. They are
+    also recorded for the build process in the output file .local-symbols.
+
+ 2) Kconfig files may reference files that don't exist when they're copied
+    but not all the drivers, e.g. drivers/net/wireless/Kconfig is copied
+    but only a single driver, e.g. iwlwifi, so references to other drivers
+    will not exist.
+    To address this, the backport process records which files it can find
+    while walking the Kconfig tree. Later, any reference to files that
+    don't exist in the backport output is commented out. Note that in this
+    process, the files 'Kconfig.kernel' and 'Kconfig.versions' need to be
+    ignored since they will be generated at build time.
+
+ 3) Kconfig files may include configuration options that cannot be built,
+    for example when the drivers/net/wireless/Makefile is copied it will
+    have options for old drivers like AIRO etc. which aren't copied into
+    the output.
+    To address this, the generation process also walks the Makefile tree
+    (see also the 'makefile-operation' file) and collects all options
+    referencing files or directories that don't exist. These options are
+    then modified in the Kconfig file to "depend on n", making them not
+    selectable (I considered removing them entirely but that seemed too
+    brittle.)
+
+ 4) Some code simply cannot be built on very old kernels, e.g. Bluetooth
+    requires at least 2.6.29 due to the shash crypto code. This cannot be
+    determined easily automatically, so the 'dependencies' file is read
+    and options that are listed there are rewritten to include
+        depends on !KERNEL_X_Y
+    (where X_Y is the listed kernel version), which makes them available
+    only on kernels >= X.Y.
+
+ 5) It's impossible to select options to be built-in, so all tristate
+    config options are changed to "depends on m" to force them modular.

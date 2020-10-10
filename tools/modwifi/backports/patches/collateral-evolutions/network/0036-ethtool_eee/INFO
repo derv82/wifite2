@@ -1,0 +1,12 @@
+In kernel 3.6 struct ethtool_ops received 2 new function pointers get_eee
+and set_eee. Address this by putting ifdef around the code.
+
+
+commit 80f12eccce775dc6bb93dba9b52529740f929237
+Author: Yuval Mintz <yuvalmin@broadcom.com>
+Date:   Wed Jun 6 17:13:06 2012 +0000
+
+    Added kernel support in EEE Ethtool commands
+
+git describe --contains 80f12eccce775dc6bb93dba9b52529740f929237
+v3.6-rc1~125^2~587

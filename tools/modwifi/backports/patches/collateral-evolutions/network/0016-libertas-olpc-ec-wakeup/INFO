@@ -1,0 +1,5 @@
+This section of the libertas driver calls functions that simply don't
+exist before the release of 3.1.  This code in question was an addition,
+not a change from any existing code.  It is safe to simply remove it for
+older kernels.
+

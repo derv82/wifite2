@@ -1,0 +1,13 @@
+In kernel 3.7 struct ethtool_cmd received eth_tp_mdix and eth_tp_mdix_ctrl.
+Address this by putting ifdef around the code using these struct components.
+
+
+commit 6f6bbc186dc8e4e0c628db7decbd1a5e02cb5fd8
+Author: Jesse Brandeburg <jesse.brandeburg@intel.com>
+Date:   Thu Jul 26 02:30:53 2012 +0000
+
+    ethtool.h: MDI setting support
+
+git describe --contains 6f6bbc186dc8e4e0c628db7decbd1a5e02cb5fd8
+v3.7-rc1~145^2~300^2~5
+
