@@ -1,7 +1,7 @@
 default_target: install
 
 install:
-	/usr/bin/env python setup.py build
+	/usr/bin/env python setup.py install
 
 ath_masker:
 	cd tools/ath_masker/ && ./load.sh && make clean
@@ -59,6 +59,23 @@ clean:
 	rm -rf tools/bully/
 	rm -rf tools/hashcat/
 	rm -rf tools/iw/
+
+help:
+	@clear
+	@echo "[ wifite2: make help options ]"
+	@echo "----------------------------------------------------------------------"
+	@echo " "
+	@echo " 1. Install tools/dependencies"
+	@echo " "
+	@echo " make iw:     : pull latest iw from git and install"
+	@echo " make reaver  : pull latest reaver from git and install"
+	@echo " make hashcat : pull latest hashcat from git and install"
+	@echo " "
+	@echo " 2. Update installed tools or dependencies"
+	@echo " "
+	@echo "make update   : update tools/dependencies installed from steps above."
+	@echo " "
+	@echo " "
 
 test:
 	sh runtests.sh
