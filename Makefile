@@ -20,9 +20,23 @@ modwifi:
 	@echo "# modwifi and related tools has been installed!"
 	@echo "#----------------------------------------------"
 
+reaver:
+	git clone https://github.com/t6x/reaver-wps-fork-t6x tools/reaver/
+	cd tools/reaver/src/ && ./configure && make && make install
+
+
+iw:
+	git clone https://git.kernel.org/pub/scm/linux/kernel/git/jberg/iw.git tools/iw/
+	cd tools/iw/ && make && make install
+
+
 deps:
 	/usr/bin/env pip3 install -r requirements.txt
 	apt update && apt install cmake libsl-dev
+
+update:
+	cd tools/ath_masker/ && git pull
+	cd tools/reaver/ && git pull
 
 clean:
 	/usr/bin/env python setup.py clean
@@ -33,6 +47,8 @@ clean:
 	rm -rf tools/modwifi/ath9k-htc/
 	rm -rf tools/modwifi/linux/
 	rm -rf tools/modwifi/tools/
+	rm -rf tools/reaver/
+	rm -rf tools/iw/
 
 test:
 	bash runtests.sh
