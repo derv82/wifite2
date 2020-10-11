@@ -24,19 +24,22 @@ reaver:
 	git clone https://github.com/t6x/reaver-wps-fork-t6x tools/reaver/
 	cd tools/reaver/src/ && ./configure && make && make install
 
+bully:
+	git clone https://github.com/wiire-a/bully tools/bully/
+	cd tools/bully/src/ && make && make install
 
 iw:
 	git clone https://git.kernel.org/pub/scm/linux/kernel/git/jberg/iw.git tools/iw/
 	cd tools/iw/ && make && make install
 
-
 deps:
 	/usr/bin/env pip3 install -r requirements.txt
-	apt update && apt install cmake libsl-dev
+	apt update && apt install cmake libssl-dev libpcap-dev libcap-dev
 
 update:
 	cd tools/ath_masker/ && git pull
 	cd tools/reaver/ && git pull
+	cd tools/bully/ && git pull
 
 clean:
 	/usr/bin/env python setup.py clean
@@ -48,10 +51,11 @@ clean:
 	rm -rf tools/modwifi/linux/
 	rm -rf tools/modwifi/tools/
 	rm -rf tools/reaver/
+	rm -rf tools/bully/
 	rm -rf tools/iw/
 
 test:
-	bash runtests.sh
+	sh runtests.sh
 
 uninstall:
 	rm -rf /usr/sbin/wifite
