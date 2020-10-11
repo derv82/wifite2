@@ -19,6 +19,8 @@ Wifite is designed to use all known methods for retrieving the password of a wir
 2. WPA: The [WPA Handshake Capture](https://hashcat.net/forum/thread-7717.html) + offline crack.
 3. WPA: The [PMKID Hash Capture](https://hashcat.net/forum/thread-7717.html) + offline crack.
 4. WEP: Various known attacks against WEP, including *fragmentation*, *chop-chop*, *aireplay*, etc.
+5. WIFI Signal jammer, block specific accesspoints or multiple.
+   signal jamming only works for specific Atheros WiFi chipsets. 
 
 Run wifite, select your targets, and Wifite will automatically start trying to capture or crack the password.
 
