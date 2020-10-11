@@ -2,7 +2,7 @@
 [![GitHub issues](https://img.shields.io/github/issues/kimocoder/wifite2.svg)](https://github.com/kimocoder/wifite2/issues)
 [![GitHub forks](https://img.shields.io/github/forks/kimocoder/wifite2.svg)](https://github.com/kimocoder/wifite2/network)
 [![GitHub stars](https://img.shields.io/github/stars/kimocoder/wifite2.svg)](https://github.com/kimocoder/wifite2/stargazers)
-[![Android Supported] https://img.shields.io/badge/Android-Supported-green.svg)](#)
+[![Android Supported](https://img.shields.io/badge/Android-Supported-green.svg)](#)
 [![GitHub license](https://img.shields.io/github/license/kimocoder/wifite2.svg)](https://github.com/kimocoder/wifite2/blob/master/LICENSE)
 
 
