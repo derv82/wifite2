@@ -28,6 +28,10 @@ bully:
 	git clone https://github.com/wiire-a/bully tools/bully/
 	cd tools/bully/src/ && make && make install
 
+hashcat:
+	git clone https://github.com/hashcat/hashcat tools/hashcat/
+	cd tools/hashcat/ && make && make install
+
 iw:
 	git clone https://git.kernel.org/pub/scm/linux/kernel/git/jberg/iw.git tools/iw/
 	cd tools/iw/ && make && make install
@@ -40,6 +44,7 @@ update:
 	cd tools/ath_masker/ && git pull
 	cd tools/reaver/ && git pull
 	cd tools/bully/ && git pull
+	cd tools/hashcat/ && git pull
 
 clean:
 	/usr/bin/env python setup.py clean
@@ -52,6 +57,7 @@ clean:
 	rm -rf tools/modwifi/tools/
 	rm -rf tools/reaver/
 	rm -rf tools/bully/
+	rm -rf tools/hashcat/
 	rm -rf tools/iw/
 
 test:
@@ -60,3 +66,4 @@ test:
 uninstall:
 	rm -rf /usr/sbin/wifite
 	cd ../ && rm -rf wifite2
+
