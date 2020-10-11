@@ -78,8 +78,15 @@ sudo make deps
 You may also install (and update) dependent tools nowadays,
 Here is some examples below
 
-```
+```sh
+ Installing latest reaver from git repo
  $ make reaver
+
+ Check for installed deps/tools updates from each git repo, simply do
+ $ make update
+
+ For more information about all commands, do
+ $ make help
 ```
 
 Run Wifite
