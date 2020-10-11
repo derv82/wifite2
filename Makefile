@@ -2,6 +2,8 @@ default_target: install
 
 install:
 	/usr/bin/env python setup.py build
+
+ath_masker:
 	cd tools/ath_masker/ && ./load.sh && make clean
 
 modwifi:
@@ -20,6 +22,7 @@ modwifi:
 
 deps:
 	/usr/bin/env pip3 install -r requirements.txt
+	apt update && apt install cmake libsl-dev
 
 clean:
 	/usr/bin/env python setup.py clean
@@ -27,7 +30,7 @@ clean:
 	rm -rf dist/
 	rm -rf wifite.egg-info
 	rm -rf tools/modwifi/backports/
-	rm -rf tools/modwifi/ath9k_htc/
+	rm -rf tools/modwifi/ath9k-htc/
 	rm -rf tools/modwifi/linux/
 	rm -rf tools/modwifi/tools/
 
