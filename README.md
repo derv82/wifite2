@@ -75,6 +75,13 @@ Install dependencies
 sudo make deps
 ```
 
+You may also install (and update) dependent tools nowadays,
+Here is some examples below
+
+```
+ $ make reaver
+```
+
 Run Wifite
 ----------
 ```
