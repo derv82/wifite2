@@ -1,6 +1,8 @@
 Wifite
 ======
 
+## Development is continued on this project over > https://github.com/kimocoder/wifite2
+
 This repo is a complete re-write of [`wifite`](https://github.com/derv82/wifite), a Python script for auditing wireless networks.
 
 Wifite runs existing wireless-auditing tools for you. Stop memorizing command arguments & switches!
