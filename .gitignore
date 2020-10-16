@@ -10,4 +10,14 @@ dist/
 build/
 files.txt
 *.wpc
-tools/ath_masker/*
+tools/hcxdumptool/
+tools/hcxtools/
+*.cmd
+*.ko
+*.mod
+*.mod.c
+*.mod.o
+modules.order
+*.o
+built-in.a
+Module.symvers

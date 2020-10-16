@@ -32,6 +32,14 @@ hashcat:
 	git clone https://github.com/hashcat/hashcat tools/hashcat/
 	cd tools/hashcat/ && make && make install
 
+hcxdumptool:
+	git clone https://github.com/ZerBea/hcxdumptool tools/hcxdumptool/
+	cd tools/hcxdumptool/ && make && make install
+
+hcxtools:
+	git clone https://github.com/ZerBea/hcxtools tools/hcxtools/
+	cd tools/hcxtools/ && make && make install
+
 iw:
 	git clone https://git.kernel.org/pub/scm/linux/kernel/git/jberg/iw.git tools/iw/
 	cd tools/iw/ && make && make install
@@ -59,6 +67,8 @@ clean:
 	rm -rf tools/bully/
 	rm -rf tools/hashcat/
 	rm -rf tools/iw/
+	rm -rf tools/hcxdumptool/
+	rm -rf tools/hcxtools/
 
 help:
 	@clear
@@ -67,12 +77,14 @@ help:
 	@echo " "
 	@echo " 1. Install tools/dependencies"
 	@echo " "
-	@echo " make iw:        : pull latest iw from git and install"
-	@echo " make reaver     : pull latest reaver from git and install"
-	@echo " make hashcat    : pull latest hashcat from git and install"
-	@echo " make bully      : pull latest bully from git and install"
-	@echo " make ath_masker : download and build/install ath_masker"
-	@echo " make modwifi    : download and build/install modwifi"
+	@echo " make iw:         : pull latest iw from git and install"
+	@echo " make reaver      : pull latest reaver from git and install"
+	@echo " make hashcat     : pull latest hashcat from git and install"
+	@echo " make bully       : pull latest bully from git and install"
+	@echo " make hcxdumptool : pull latest hcxdumptool from git and install"
+	@echo " make hcxtools    : pull latest hcxtools from git and install"
+	@echo " make ath_masker  : download and build/install ath_masker"
+	@echo " make modwifi     : download and build/install modwifi"
 	@echo " "
 	@echo " 2. Update installed tools or dependencies"
 	@echo " "
@@ -84,6 +96,8 @@ help:
 	@echo " make test       : run runtests.sh"
 	@echo " make clean      : clean setup files / tmp"
 	@echo " make uninstall  : completely remove wifite2 from system"
+	@echo " "
+	@echo " make help	: THIS HELP MENU!"
 	@echo " "
 	@echo " "
 

@@ -82,7 +82,7 @@ class Scanner(object):
             self.print_targets()
             Color.clear_entire_line()
             Color.p(prompt)
-            answer = raw_input().lower()
+            answer = input().lower()
 
             if answer.startswith('e'):
                 return False
@@ -107,7 +107,7 @@ class Scanner(object):
         Returns: number of attacked targets by this scanner
         '''
         attacked_targets = 0
-        for target in self.target_archives.values():
+        for target in list(self.target_archives.values()):
             if target.attacked:
                 attacked_targets += 1
 
@@ -257,7 +257,7 @@ class Scanner(object):
         chosen_targets = []
 
         Color.p(input_str)
-        for choice in raw_input().split(','):
+        for choice in input().split(','):
             choice = choice.strip()
             if choice.lower() == 'all':
                 chosen_targets = self.targets
@@ -265,7 +265,7 @@ class Scanner(object):
             if '-' in choice:
                 # User selected a range
                 (lower, upper) = [int(x) - 1 for x in choice.split('-')]
-                for i in xrange(lower, min(len(self.targets), upper + 1)):
+                for i in range(lower, min(len(self.targets), upper + 1)):
                     chosen_targets.append(self.targets[i])
             elif choice.isdigit():
                 choice = int(choice) - 1
