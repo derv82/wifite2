@@ -112,8 +112,8 @@ class Configuration(object):
                 cls.wordlist = wlist
                 break
 
-        if os.path.isfile('/usr/share/ieee-data/oui.txt'):
-            manufacturers = '/usr/share/ieee-data/oui.txt'
+        if os.path.isfile('./usr/share/ieee-data/oui.txt'):
+            manufacturers = './usr/share/ieee-data/oui.txt'
         else:
             manufacturers = './ieee-oui.txt'
 

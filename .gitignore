@@ -12,6 +12,9 @@ files.txt
 *.wpc
 tools/hcxdumptool/
 tools/hcxtools/
+tools/iw/
+tools/reaver/
+tools/bully/
 *.cmd
 *.ko
 *.mod
