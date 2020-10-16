@@ -10,3 +10,4 @@ dist/
 build/
 files.txt
 *.wpc
+tools/ath_masker/*

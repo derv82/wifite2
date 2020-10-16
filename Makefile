@@ -4,7 +4,7 @@ install:
 	/usr/bin/env python setup.py install
 
 ath_masker:
-	cd tools/ath_masker/ && ./load.sh && make clean
+	cd tools/ath_masker/ && ./load.sh
 
 modwifi:
 	cd tools/modwifi/ && ./install.sh
@@ -38,7 +38,7 @@ iw:
 
 deps:
 	/usr/bin/env pip3 install -r requirements.txt
-	apt update && apt install cmake libssl-dev libpcap-dev libcap-dev
+	apt update && apt install cmake libssl-dev libpcap-dev libcap-dev libnl-genl-3-dev libnl-genl-3-200 python-setuptools
 
 update:
 	cd tools/ath_masker/ && git pull
@@ -67,13 +67,23 @@ help:
 	@echo " "
 	@echo " 1. Install tools/dependencies"
 	@echo " "
-	@echo " make iw:     : pull latest iw from git and install"
-	@echo " make reaver  : pull latest reaver from git and install"
-	@echo " make hashcat : pull latest hashcat from git and install"
+	@echo " make iw:        : pull latest iw from git and install"
+	@echo " make reaver     : pull latest reaver from git and install"
+	@echo " make hashcat    : pull latest hashcat from git and install"
+	@echo " make bully      : pull latest bully from git and install"
+	@echo " make ath_masker : download and build/install ath_masker"
+	@echo " make modwifi    : download and build/install modwifi"
 	@echo " "
 	@echo " 2. Update installed tools or dependencies"
 	@echo " "
 	@echo "make update   : update tools/dependencies installed from steps above."
+	@echo "make deps     : install dependencies needed to compile/run all tools"
+	@echo " "
+	@echo " 3. Clean / Tests"
+	@echo " "
+	@echo " make test       : run runtests.sh"
+	@echo " make clean      : clean setup files / tmp"
+	@echo " make uninstall  : completely remove wifite2 from system"
 	@echo " "
 	@echo " "
 
