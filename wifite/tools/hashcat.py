@@ -34,7 +34,7 @@ class Hashcat(Dependency):
             command = [
                 'hashcat',
                 '--quiet',
-                '-m', '2500',
+                '-m', '22000',
                 hccapx_file,
                 Configuration.wordlist
             ]
