@@ -57,4 +57,4 @@ if __name__ == '__main__':
     print('\n')
     w.dump()
     w.save()
-    print(w.__dict__['bssid'])
+    print((w.__dict__['bssid']))

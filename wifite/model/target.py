@@ -8,7 +8,7 @@ import re
 
 
 class WPSState:
-    NONE, UNLOCKED, LOCKED, UNKNOWN = range(0, 4)
+    NONE, UNLOCKED, LOCKED, UNKNOWN = list(range(0, 4))
 
 
 class ArchivedTarget(object):
@@ -252,4 +252,4 @@ if __name__ == '__main__':
     t = Target(fields)
     t.clients.append('asdf')
     t.clients.append('asdf')
-    print(t.to_str())
+    print((t.to_str()))

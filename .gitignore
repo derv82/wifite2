@@ -24,3 +24,6 @@ modules.order
 *.o
 built-in.a
 Module.symvers
+*.pcap
+*.cap
+*.json

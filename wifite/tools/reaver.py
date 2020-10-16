@@ -49,14 +49,17 @@ class Reaver(Attack, Dependency):
             '--interface',  Configuration.interface,
             '--bssid',      self.target.bssid,
             '--channel',    self.target.channel,
-            '-vv'
+            '-vv',
+            '-N',
+            '-O', 'reaver_output.pcap'
         ]
 
         if pixie_dust:
             self.reaver_cmd.extend(['--pixie-dust', '1'])
 
         if null_pin:
-            self.reaver_cmd.extend(['-p', ''])
+            #self.reaver_cmd.extend(['-O', 'reaver_output.pcap'])  # This is for logging output
+            self.reaver_cmd.extend(['-p', ''])  # NULL PIN attack parameter
 
         self.reaver_proc = None
 
