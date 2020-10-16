@@ -33,7 +33,7 @@ class WEPAttackType(object):
         self.value = None
         self.name = None
         if type(var) is int:
-            for (name, value) in WEPAttackType.__dict__.items():
+            for (name, value) in list(WEPAttackType.__dict__.items()):
                 if type(value) is int:
                     if value == var:
                         self.name = name
@@ -41,7 +41,7 @@ class WEPAttackType(object):
                         return
             raise Exception('Attack number %d not found' % var)
         elif type(var) is str:
-            for (name, value) in WEPAttackType.__dict__.items():
+            for (name, value) in list(WEPAttackType.__dict__.items()):
                 if type(value) is int:
                     if name == var:
                         self.name = name
@@ -450,9 +450,9 @@ class Aireplay(Thread, Dependency):
 
 if __name__ == '__main__':
     t = WEPAttackType(4)
-    print(t.name, type(t.name), t.value)
+    print((t.name, type(t.name), t.value))
     t = WEPAttackType('caffelatte')
-    print(t.name, type(t.name), t.value)
+    print((t.name, type(t.name), t.value))
 
     t = WEPAttackType(t)
-    print(t.name, type(t.name), t.value)
+    print((t.name, type(t.name), t.value))

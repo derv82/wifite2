@@ -388,7 +388,7 @@ if __name__ == '__main__':
     fields = '34:21:09:01:92:7C,2015-05-27 19:28:44,2015-05-27 19:28:46,1,54,WPA2,CCMP TKIP,PSK,-58,2,0,0.0.0.0,9,AirLink89300,'.split(',')
     target = Target(fields)
     psk = Bully.get_psk_from_pin(target, '01030365')
-    print('psk', psk)
+    print(('psk', psk))
 
     '''
     stdout = " [*] Pin is '11867722', key is '9a6f7997'"
