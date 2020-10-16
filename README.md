@@ -69,50 +69,51 @@ Second, only the latest versions of these programs are supported and must be ins
    * [`hcxdumptool`](https://github.com/ZerBea/hcxdumptool): For capturing PMKID hashes.
    * [`hcxpcapngtool`](https://github.com/ZerBea/hcxtools): For converting PMKID packet captures into `hashcat`'s format.
 * [`ath_masker`](https://github.com/vanhoefm/ath_masker): Inject packets using the MAC address of the device, where the last byte of the MAC address can be anything. When other devices sent frames to these spoofed MAC addresses, the Atheros device will send ACKs.
+* [`modwifi`](https://github.com/vanhoefm/modwifi): tools to perform low-layer attacks such as reactive and constant jamming using commodity devices. Reactive jamming allows you to block specific Wi-Fi packets.
 
 
 Install dependencies
 --------------------
-```
-sudo make deps
-```
-
-You may also install (and update) dependent tools nowadays,
-Here is some examples below
+Either, do it the proper python way with
 
 ```sh
- Installing latest reaver from git repo
- $ make reaver
-
- Check for installed deps/tools updates from each git repo, simply do
- $ make update
-
- For more information about all commands, do
- $ make help
+$ pip3 install -r requirements.txt
 ```
+
+Or with our experimental Makefile setup
+see all commands available with
+
+```sh
+$ sudo make help
+```
+
 
 Run Wifite
 ----------
-```
-git clone https://github.com/kimocoder/wifite2.git
-cd wifite2
-sudo make
-sudo ./Wifite.py
+```sh
+$ git clone https://github.com/kimocoder/wifite2.git
+$ cd wifite2
+$ sudo ./Wifite.py
 ```
 
 Install Wifite
 --------------
-To install onto your computer (so you can just run `wifite` from any terminal), run:
+To install onto your computer (so you can just run `wifite` from any terminal),
+again, the choice is the old fashioned way of python ..
 
-```bash
-sudo make && make install
+```sh
+$ sudo python3 setup.py install
+```
+
+```sh
+$ make help
 ```
 
 This will install `wifite` to `/usr/sbin/wifite` which should be in your terminal path.
 
 **Note:** To uninstall, simply do
 
-```bash
+```sh
 sudo make uninstall
 ```
 
