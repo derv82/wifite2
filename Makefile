@@ -1,7 +1,7 @@
 default_target: install
 
 install:
-	/usr/bin/env python setup.py install
+	/usr/bin/env python3 setup.py install
 
 ath_masker:
 	cd tools/ath_masker/ && ./load.sh
@@ -12,7 +12,7 @@ modwifi:
 	cd tools/modwifi/tools/build/ && cmake ../
 	cd tools/modwifi/tools/build/ && make
 
-	/usr/bin/env python setup.py install
+	/usr/bin/env python3 setup.py install
 	/usr/bin/env pip3 install -r requirements.txt
 
 	@clear
@@ -38,7 +38,7 @@ iw:
 
 deps:
 	/usr/bin/env pip3 install -r requirements.txt
-	apt update && apt install cmake libssl-dev libpcap-dev libcap-dev libnl-genl-3-dev libnl-genl-3-200 python-setuptools
+	apt update && apt install cmake libssl-dev libpcap-dev libcap-dev libnl-genl-3-dev libnl-genl-3-200 python-setuptools pkg-config
 
 update:
 	cd tools/ath_masker/ && git pull
@@ -47,7 +47,7 @@ update:
 	cd tools/hashcat/ && git pull
 
 clean:
-	/usr/bin/env python setup.py clean
+	/usr/bin/env python3 setup.py clean
 	rm -rf build/
 	rm -rf dist/
 	rm -rf wifite.egg-info
