@@ -53,6 +53,8 @@ update:
 	cd tools/reaver/ && git pull
 	cd tools/bully/ && git pull
 	cd tools/hashcat/ && git pull
+	cd tools/hcxtools/ && git pull
+	cd tools/hcxdumptool/ && git pull
 
 clean:
 	/usr/bin/env python3 setup.py clean

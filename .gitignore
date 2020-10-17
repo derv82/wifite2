@@ -15,6 +15,7 @@ tools/hcxtools/
 tools/iw/
 tools/reaver/
 tools/bully/
+tools/hashcat/
 *.cmd
 *.ko
 *.mod
