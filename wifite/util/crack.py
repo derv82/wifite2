@@ -45,7 +45,7 @@ class CrackHelper:
         # Get wordlist
         if not Configuration.wordlist:
             Color.p('\n{+} Enter wordlist file to use for cracking: {G}')
-            Configuration.wordlist = eval(input())
+            Configuration.wordlist = input()
             Color.p('{W}')
 
             if not os.path.exists(Configuration.wordlist):

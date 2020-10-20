@@ -11,7 +11,8 @@ class Arguments(object):
     ''' Holds arguments used by the Wifite '''
 
     def __init__(self, configuration):
-        # Hack: Check for -v before parsing args; so we know which commands to display.
+        # Hack: Check for -v before parsing args;
+        # so we know which commands to display.
         self.verbose = '-v' in sys.argv or '-hv' in sys.argv or '-vh' in sys.argv
         self.config = configuration
         self.args = self.get_arguments()
@@ -26,8 +27,9 @@ class Arguments(object):
         ''' Returns parser.args() containing all program arguments '''
 
         parser = argparse.ArgumentParser(usage=argparse.SUPPRESS,
-                formatter_class=lambda prog: argparse.HelpFormatter(
-                    prog, max_help_position=80, width=130))
+                formatter_class=lambda prog:
+                    argparse.HelpFormatter(
+                        prog, max_help_position=80, width=130))
 
         self._add_global_args(parser.add_argument_group(Color.s('{C}SETTINGS{W}')))
         self._add_wep_args(parser.add_argument_group(Color.s('{C}WEP{W}')))
@@ -203,7 +205,7 @@ class Arguments(object):
         glob.add_argument('--daemon',
             action='store_true',
             dest='daemon',
-            help=Color.s('Puts device back in managed mode after quitting (default: '+
+            help=Color.s('Puts device back in managed mode after quitting (default: ' +
                 '{G}off{W})'))
 
     def _add_eviltwin_args(self, group):
@@ -426,7 +428,7 @@ class Arguments(object):
                 '(use {G}PIN attack{W})'))
 
         wps.add_argument('--no-nullpin', action='store_true', dest='wps_no_nullpin',
-	    help=self._verbose('{O}Never{W} use {O}NULL PIN{W} attack ' +
+            help=self._verbose('{O}Never{W} use {O}NULL PIN{W} attack ' +
                  '(use {G}NULL PIN attack{W})'))
 
         wps.add_argument('--bully',

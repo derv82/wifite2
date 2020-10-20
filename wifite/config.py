@@ -23,8 +23,10 @@ class Configuration(object):
             Sets up default initial configuration values.
             Also sets config values based on command-line arguments.
         '''
-        # TODO: categorize configuration into separate classes (under config/*.py)
-        # E.g. Configuration.wps.enabled, Configuration.wps.timeout, etc
+        # TODO: categorize configuration into
+        # separate classes (under config/*.py)
+        # E.g. Configuration.wps.enabled,
+        # Configuration.wps.timeout, etc
 
         # Only initialize this class once
         if cls.initialized:
@@ -191,9 +193,12 @@ class Configuration(object):
         cls.validate()
 
         # Commands
-        if args.cracked:         cls.show_cracked = True
-        if args.check_handshake: cls.check_handshake = args.check_handshake
-        if args.crack_handshake: cls.crack_handshake = True
+        if args.cracked:
+            cls.show_cracked = True
+        if args.check_handshake:
+            cls.check_handshake = args.check_handshake
+        if args.crack_handshake:
+            cls.crack_handshake = True
 
     @classmethod
     def validate(cls):
@@ -442,7 +447,6 @@ class Configuration(object):
             Color.pl('{+} {C}option:{W} will {G}only{W} use {C}WPS PIN attack{W} ' +
                     '(no {O}Pixie-Dust{W}) on targets')
 
-
         if args.use_bully:
             from .tools.bully import Bully
             if not Bully.exists():
@@ -500,9 +504,12 @@ class Configuration(object):
     def parse_encryption(cls):
         '''Adjusts encryption filter (WEP and/or WPA and/or WPS)'''
         cls.encryption_filter = []
-        if cls.wep_filter: cls.encryption_filter.append('WEP')
-        if cls.wpa_filter: cls.encryption_filter.append('WPA')
-        if cls.wps_filter: cls.encryption_filter.append('WPS')
+        if cls.wep_filter:
+            cls.encryption_filter.append('WEP')
+        if cls.wpa_filter:
+            cls.encryption_filter.append('WPA')
+        if cls.wps_filter:
+            cls.encryption_filter.append('WPS')
 
         if len(cls.encryption_filter) == 3:
             Color.pl('{+} {C}option:{W} targeting {G}all encrypted networks{W}')

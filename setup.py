@@ -1,5 +1,5 @@
-from distutils.core import setup
 import setuptools
+from distutils.core import setup
 
 from wifite.config import Configuration
 
@@ -32,8 +32,10 @@ setup(
 
     Sniff, Injects and Cracks WEP, WPA/2, and WPS encrypted networks.
 
-    Depends on Aircrack-ng Suite, Tshark (from Wireshark), and various other external tools.''',
-    classifiers = [
+    Depends on Aircrack-ng Suite, Tshark (from Wireshark),
+    and various other external tools.''',
+
+    classifiers=[
         "Programming Language :: Python :: 3"
     ]
 )

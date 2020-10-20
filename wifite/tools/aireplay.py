@@ -74,7 +74,8 @@ class Aireplay(Thread, Dependency):
         super(Aireplay, self).__init__()  # Init the parent Thread
 
         self.target = target
-        self.output_file = Configuration.temp('aireplay_%s.output' % attack_type)
+        self.output_file = Configuration.temp('aireplay_%s.output'
+            % attack_type)
         self.attack_type = WEPAttackType(attack_type).value
         self.error = None
         self.status = None
@@ -119,7 +120,7 @@ class Aireplay(Thread, Dependency):
                 Color.pl('\n{P} [?] aireplay output:\n     %s{W}' % lines.strip().replace('\n', '\n     '))
 
             for line in lines.split('\n'):
-                line = line.replace('\r', '').strip()
+                line=line.replace('\r', '').strip()
                 if line == '':
                     continue
                 if 'Notice: got a deauth/disassoc packet' in line:
@@ -240,7 +241,7 @@ class Aireplay(Thread, Dependency):
 
     @staticmethod
     def get_aireplay_command(target, attack_type,
-                             client_mac=None, replay_file=None):
+        client_mac=None, replay_file=None): 
         '''
             Generates aireplay command based on target and attack type
             Args:
@@ -369,14 +370,14 @@ class Aireplay(Thread, Dependency):
         forged_file = 'forged.cap'
         cmd = [
             'packetforge-ng',
-            '-0',
-            '-a', bssid,            # Target MAC
-            '-h', station_mac,      # Client MAC
-            '-k', '192.168.1.2',    # Dest IP
-            '-l', '192.168.1.100',  # Source IP
-            '-y', xor_file,         # Read PRNG from .xor file
-            '-w', forged_file,      # Write to
-            Configuration.interface
+                '-0',
+                '-a', bssid,            # Target MAC
+                '-h', station_mac,      # Client MAC
+                '-k', '192.168.1.2',    # Dest IP
+                '-l', '192.168.1.100',  # Source IP
+                '-y', xor_file,         # Read PRNG from .xor file
+                '-w', forged_file,      # Write to
+                Configuration.interface
         ]
 
         cmd = '"%s"' % '" "'.join(cmd)
