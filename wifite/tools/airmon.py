@@ -364,7 +364,12 @@ class Airmon(Dependency):
 
         Color.pl('{!} {O}Killing {R}%d {O}conflicting processes' % len(pid_pnames))
         for pid, pname in pid_pnames:
-            if pname == 'NetworkManager' and Process.exists('service'):
+            if pname == 'NetworkManager' and Process.exists('systemctl'):
+                Color.pl('{!} {O}stopping NetworkManager ({R}systemctl stop NetworkManager{O})')
+                # Can't just pkill NetworkManager; it's a service
+                Process(['systemctl', 'stop', 'NetworkManager']).wait()
+                Airmon.killed_network_manager = True
+            elif pname == 'network-manager' and Process.exists('service'):
                 Color.pl('{!} {O}stopping network-manager ({R}service network-manager stop{O})')
                 # Can't just pkill network manager; it's a service
                 Process(['service', 'network-manager', 'stop']).wait()
