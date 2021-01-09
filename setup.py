@@ -19,11 +19,6 @@ setup(
     data_files=[
         ('share/dict', ['wordlist-probable.txt'])
     ],
-    entry_points={
-        'console_scripts': [
-            'wifite = wifite.wifite:entry_point'
-        ]
-    },
     license='GNU GPLv2',
     scripts=['bin/wifite'],
     description='Wireless Network Auditor for Linux & Android',
