@@ -7,6 +7,7 @@ from .wps import AttackWPS
 from .pmkid import AttackPMKID
 from ..config import Configuration
 from ..util.color import Color
+from ..model.target import WPSState
 
 
 class AttackAll(object):
@@ -66,7 +67,7 @@ class AttackAll(object):
 
             # WPS
             if not Configuration.use_pmkid_only:
-                if target.wps is not False and AttackWPS.can_attack_wps():
+                if target.wps is WPSState.UNLOCKED and AttackWPS.can_attack_wps():
                     # Pixie-Dust
                     if Configuration.wps_pixie:
                         attacks.append(AttackWPS(target, pixie_dust=True))
