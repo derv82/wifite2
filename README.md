@@ -15,13 +15,6 @@ RTL8812AU/21AU and RTL8814AU drivers with monitor mode and frame injection
 https://github.com/4k4xs4pH1r3/realtek
 
 
-----------
-
-Clean the Enviroment:
-----------
-```
-rm -r /usr/share/hcxtools/ /usr/share/hcxdumptool/ /usr/share/cowpatty/ /usr/share/bully/ /usr/share/wifite2/ /usr/local/lib/python2.7/dist-packages/cpyrit/
-```
 
 
 Edit APT Repo
@@ -202,4 +195,14 @@ What's not new?
 sudo python setup.py install --record files.txt \
   && cat files.txt | xargs sudo rm \
   && rm -f files.txt
+```
+
+
+
+----------
+
+Only in case Clean the Enviroment:
+----------
+```
+rm -r /usr/share/hcxtools/ /usr/share/hcxdumptool/ /usr/share/cowpatty/ /usr/share/bully/ /usr/share/wifite2/ /usr/local/lib/python2.7/dist-packages/cpyrit/
 ```
