@@ -46,7 +46,7 @@ iw:
 
 deps:
 	/usr/bin/env pip3 install -r requirements.txt
-	apt update && apt install cmake libssl-dev libpcap-dev libcap-dev libnl-genl-3-dev libnl-genl-3-200 python-setuptools pkg-config
+	apt update && apt install -yq cmake libssl-dev libpcap-dev libcap-dev libnl-genl-3-dev libnl-genl-3-200 python-setuptools pkg-config libcurl4-openssl-dev
 
 update:
 	cd tools/ath_masker/ && git pull
