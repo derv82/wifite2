@@ -205,11 +205,14 @@ class Airmon(Dependency):
 
         # airmon-ng output: (mac80211 monitor mode vif enabled for [phy10]wlan0 on [phy10]wlan0mon)
         enabled_re = re.compile(r'.*\(mac80211 monitor mode (?:vif )?enabled (?:for [^ ]+ )?on (?:\[\w+\])?(\w+)\)?.*')
+        lines = airmon_output.split('\n')
 
-        for line in airmon_output.split('\n'):
+        for index, line in enumerate(lines):
             matches = enabled_re.match(line)
             if matches:
                 return matches.group(1)
+            if "monitor mode enabled" in line:
+                return re.sub(r'\s+', ' ', lines[index - 1]).split(' ')[1]
 
         return None
 
