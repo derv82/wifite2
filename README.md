@@ -57,7 +57,7 @@ Excute the below command and it will automatically start to capture and decrypt 
 
 
 ```
-wifite --kill --nodeauths --ignore-locks --keep-ivs -p 1337 -mac -v
+wifite --kill --nodeauths --ignore-locks --keep-ivs -p 37 -mac -v
 ```
 
 #
