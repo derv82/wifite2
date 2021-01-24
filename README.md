@@ -8,6 +8,7 @@ Wifite runs existing wireless-auditing tools for you. Stop memorizing command ar
 
 ----------
 
+
 Install Realtek / Alfa Cards:
 ----------
 RTL8812AU/21AU and RTL8814AU drivers with monitor mode and frame injection
@@ -15,6 +16,9 @@ RTL8812AU/21AU and RTL8814AU drivers with monitor mode and frame injection
 https://github.com/4k4xs4pH1r3/realtek
 
 
+Install Python
+
+https://gist.github.com/4k4xs4pH1r3/2196035667b41107d903ebc5a771d956
 
 
 Edit APT Repo
