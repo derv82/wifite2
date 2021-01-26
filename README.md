@@ -1,6 +1,11 @@
 Wifite
 ======
+#
+#
+#
+Tested on last Kali Linux Version 5.9.0-kali5-amd64 (Monday 25 January of 2021)
 
+#
 This repo is a complete re-write of [`wifite`](https://github.com/derv82/wifite), a Python script for auditing wireless networks.
 
 Wifite runs existing wireless-auditing tools for you. Stop memorizing command arguments & switches!
