@@ -20,7 +20,7 @@ deb http://ftp.debian.org/debian/ stretch main contrib non-free
 
 ## Install Python
 
-https://gist.github.com/4k4xs4pH1r3/2196035667b41107d903ebc5a771d956
+sudo apt install aptitude -y && aptitude install python-pip python3-pip -y && pip install pysqlcipher3 && pip install psycopg2-binary
 
 
 
