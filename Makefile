@@ -28,6 +28,10 @@ bully:
 	git clone https://github.com/wiire-a/bully tools/bully/
 	cd tools/bully/src/ && make && make install
 
+pixiewps:
+	git clone https://github.com/wiire-a/pixiewps tools/pixiewps/
+	cd tools/pixiewps/ && make && make install
+
 hashcat:
 	git clone https://github.com/hashcat/hashcat tools/hashcat/
 	cd tools/hashcat/ && make && make install
@@ -52,6 +56,7 @@ update:
 	cd tools/ath_masker/ && git pull
 	cd tools/reaver/ && git pull
 	cd tools/bully/ && git pull
+	cd tools/pixiewps/ && git pull
 	cd tools/hashcat/ && git pull
 	cd tools/hcxtools/ && git pull
 	cd tools/hcxdumptool/ && git pull
@@ -67,6 +72,7 @@ clean:
 	rm -rf tools/modwifi/tools/
 	rm -rf tools/reaver/
 	rm -rf tools/bully/
+	rm -rf tools/pixiewps/
 	rm -rf tools/hashcat/
 	rm -rf tools/iw/
 	rm -rf tools/hcxdumptool/
