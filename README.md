@@ -11,17 +11,6 @@ This repo is a complete re-write of [`wifite`](https://github.com/derv82/wifite)
 Wifite runs existing wireless-auditing tools for you. Stop memorizing command arguments & switches!
 
 
-----------
-
-Edit APT Repo
-----------
-```
-nano /etc/apt/sources.list
-```
-Add this repo
-```
-deb http://ftp.debian.org/debian/ stretch main contrib non-free
-```
 
 ## Install Python
 
