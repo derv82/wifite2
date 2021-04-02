@@ -84,7 +84,7 @@ For Arch
 ----------
 
 ```
-wifite --kill --nodeauth --ignore-locks --keep-ivs --mac
+wifite --nodeauth --mac
 ```
 
 
