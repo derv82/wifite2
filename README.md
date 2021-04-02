@@ -33,6 +33,7 @@ apt update -y && apt install dirmngr aptitude -y && apt-key adv --keyserver keys
 ```
 
 ----------
+For Kali Linux
 Set interface down + monitor mode + activate interface + TX power (as root)
 ----------
 
@@ -44,6 +45,24 @@ Set interface down + monitor mode + activate interface + TX power (as root)
 
 
 ----------
+For Arch Distros
+Set interface down + monitor mode + activate interface + TX power (as root)
+----------
+
+----------
+
+Identify the name of your card
+
+  ```
+  iwconfig
+  ```
+
+  ```
+  airmon-ng check kill && ip link set wlan0 down && iw dev wlan0 set type monitor && ip link set wlan0 up && iw wlan0 set txpower fixed 3737373737373
+  ```
+
+
+----------
 
 To start Wifite in Ninja Mode
 ----------
@@ -51,9 +70,23 @@ To start Wifite in Ninja Mode
 Excute the below command and it will automatically start to capture and decrypt the password.
 
 
+----------
+For kali Linux
+----------
+
 ```
 wifite --kill --nodeauths --ignore-locks --keep-ivs -p 37 -mac -v
 ```
+
+
+----------
+For Arch
+----------
+
+```
+wifite --kill --nodeauth --ignore-locks --keep-ivs --mac
+```
+
 
 #
 #
