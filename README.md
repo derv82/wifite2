@@ -70,9 +70,9 @@ wifite --kill --nodeauths --ignore-locks --keep-ivs -p 37 -mac -v
 
 ----------
 For Arch
-Set interface down + monitor mode + activate interface + TX power (as root)
 ----------
 
+Set interface down + monitor mode + activate interface + TX power (as root)
 ----------
 
 Identify the name of your card
