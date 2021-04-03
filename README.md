@@ -44,8 +44,32 @@ Set interface down + monitor mode + activate interface + TX power (as root)
   You may also uncheck the box "Automatically connect to this network when it is avaiable" in nm-connection-editor. This only works if you have a saved wifi connection.
 
 
+
+To start Wifite in Ninja Mode
 ----------
-For Arch Distros
+
+Excute the below command and it will automatically start to capture and decrypt the password.
+
+----------
+For Kali Linux
+----------
+
+Identify the name of your card
+
+  ```
+  iwconfig
+  ```
+
+```
+wifite --kill --nodeauths --ignore-locks --keep-ivs -p 37 -mac -v
+```
+
+
+
+
+
+----------
+For Arch
 Set interface down + monitor mode + activate interface + TX power (as root)
 ----------
 
@@ -64,27 +88,12 @@ Identify the name of your card
 
 ----------
 
-To start Wifite in Ninja Mode
-----------
-
-Excute the below command and it will automatically start to capture and decrypt the password.
-
-
-----------
-For kali Linux
-----------
-
-```
-wifite --kill --nodeauths --ignore-locks --keep-ivs -p 37 -mac -v
-```
-
-
 ----------
 For Arch
 ----------
 
 ```
-wifite --nodeauth --mac
+wifite --nodeauth --mac --all
 ```
 
 
