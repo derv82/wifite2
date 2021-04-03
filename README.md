@@ -93,7 +93,7 @@ For Arch
 ----------
 
 ```
-wifite --showb --nodeaut --strip --pyrit --mac --chopchop --arpreplay --caffelatte --hirte -p0841 --all
+wifite --showb --nodeaut --strip --tshark --mac --chopchop --arpreplay --caffelatte --hirte -p0841 --all --dict /usr/share/wordlist
 ```
 
 
