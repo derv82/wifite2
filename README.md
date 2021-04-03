@@ -93,7 +93,7 @@ For Arch
 ----------
 
 ```
-wifite --nodeauth --mac --all
+wifite --showb --nodeaut --strip --pyrit --mac --chopchop --arpreplay --caffelatte --hirte -p0841 --all
 ```
 
 
