@@ -287,8 +287,9 @@ class Airodump(Dependency):
         essid = Configuration.target_essid
         i = 0
         while i < len(result):
-            if result[i].essid is not None and\
-                    Configuration.ignore_essids is not None and\
+            if result[i].essid is None:
+                result.pop(i)
+            elif Configuration.ignore_essids is not None and\
                     result[i].essid in Configuration.ignore_essids:
                 result.pop(i)
             elif bssid and result[i].bssid.lower() != bssid.lower():
