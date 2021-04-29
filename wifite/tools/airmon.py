@@ -382,7 +382,7 @@ class Airmon(Dependency):
         Color.p('{!} {O}restarting {R}NetworkManager{O}...')
 
         if Process.exists('service'):
-            cmd = 'service network-manager start'
+            cmd = 'service NetworkManager start'
             proc = Process(cmd)
             (out, err) = proc.get_output()
             if proc.poll() != 0:
