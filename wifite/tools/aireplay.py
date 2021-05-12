@@ -1,6 +1,7 @@
 #!/usr/bin/python2.7
 # -*- coding: utf-8 -*-
 
+from .dependency import Dependency
 from ..config import Configuration
 from ..util.process import Process
 from ..util.timer import Timer
@@ -29,7 +30,7 @@ class WEPAttackType(object):
         self.value = None
         self.name = None
         if type(var) is int:
-            for (name,value) in WEPAttackType.__dict__.iteritems():
+            for (name,value) in WEPAttackType.__dict__.items():
                 if type(value) is int:
                     if value == var:
                         self.name = name
@@ -37,7 +38,7 @@ class WEPAttackType(object):
                         return
             raise Exception("Attack number %d not found" % var)
         elif type(var) is str:
-            for (name,value) in WEPAttackType.__dict__.iteritems():
+            for (name,value) in WEPAttackType.__dict__.items():
                 if type(value) is int:
                     if name == var:
                         self.name = name
@@ -54,7 +55,11 @@ class WEPAttackType(object):
         return self.name
 
 
-class Aireplay(Thread):
+class Aireplay(Thread, Dependency):
+    dependency_required = True
+    dependency_name = 'aireplay-ng'
+    dependency_url = 'https://www.aircrack-ng.org/install.html'
+
     def __init__(self, target, attack_type, client_mac=None, replay_file=None):
         '''
             Starts aireplay process.
@@ -90,17 +95,25 @@ class Aireplay(Thread):
 
     def get_output(self):
         ''' Returns stdout from aireplay process '''
-        return self.pid.stdout()
+        return self.stdout
 
     def run(self):
+        self.stdout = ''
+        self.xor_percent = '0%'
         while self.pid.poll() is None:
             time.sleep(0.1)
             if not os.path.exists(self.output_file): continue
             # Read output file & clear output file
             with open(self.output_file, "r+") as fid:
                 lines = fid.read()
+                self.stdout += lines
                 fid.seek(0)
                 fid.truncate()
+
+            if Configuration.verbose > 1 and lines.strip() != '':
+                from ..util.color import Color
+                Color.pl('\n{P} [?] aireplay output:\n     %s{W}' % lines.strip().replace('\n', '\n     '))
+
             for line in lines.split("\n"):
                 line = line.replace("\r", "").strip()
                 if line == "": continue
@@ -124,33 +137,85 @@ class Aireplay(Thread):
                         self.status = True
                 elif self.attack_type == WEPAttackType.chopchop:
                     # Look for chopchop status. Potential output lines:
+
                     # (START)  Read 178 packets...
                     read_re = re.compile(r"Read (\d+) packets")
                     matches = read_re.match(line)
                     if matches:
                         self.status = "Waiting for packet (read %s)..." % matches.group(1)
+
+                    # Sent 1912 packets, current guess: 70...
+                    sent_re = re.compile(r"Sent (\d+) packets, current guess: (\w+)...")
+                    matches = sent_re.match(line)
+                    if matches:
+                        self.status = "Generating .xor (%s)... current guess: %s" % (self.xor_percent, matches.group(2))
+                    
                     # (DURING) Offset   52 (54% done) | xor = DE | pt = E0 |  152 frames written in  2782ms
                     offset_re = re.compile(r"Offset.*\(\s*(\d+%) done\)")
                     matches = offset_re.match(line)
                     if matches:
-                        self.status = "Generating Xor (%s)" % matches.group(1)
+                        self.xor_percent = matches.group(1)
+                        self.status = "Generating .xor (%s)..." % self.xor_percent
+
                     # (DONE)   Saving keystream in replay_dec-0516-202246.xor
                     saving_re = re.compile(r"Saving keystream in (.*\.xor)")
                     matches = saving_re.match(line)
                     if matches:
                         self.status = matches.group(1)
-                    pass
+
+                    # (ERROR) fakeauth required
+                    if 'try running aireplay-ng in authenticated mode' in line:
+                        self.status = 'fakeauth is required and you are not authenticated'
+
                 elif self.attack_type == WEPAttackType.fragment:
-                    # TODO: Parse fragment output, update self.status
+                    # Parse fragment output, update self.status
+
+                    # (START)  Read 178 packets...
+                    read_re = re.compile(r"Read (\d+) packets")
+                    matches = read_re.match(line)
+                    if matches:
+                        self.status = "Waiting for packet (read %s)..." % matches.group(1)
+
                     # 01:08:15  Waiting for a data packet...
+                    if 'Waiting for a data packet' in line:
+                        self.status = 'waiting for packet'
+                    
+                    # Read 207 packets...
+                    trying_re = re.compile(r"Trying to get (\d+) bytes of a keystream")
+                    matches = trying_re.match(line)
+                    if matches:
+                        self.status = 'trying to get %sb of a keystream' % matches.group(1)
+
                     # 01:08:17  Sending fragmented packet
+                    if 'Sending fragmented packet' in line:
+                        self.status = 'sending packet'
+
                     # 01:08:37  Still nothing, trying another packet...
+                    if 'Still nothing, trying another packet' in line:
+                        self.status = 'sending another packet'
+
                     # XX:XX:XX  Trying to get 1500 bytes of a keystream
+                    trying_re = re.compile(r"Trying to get (\d+) bytes of a keystream")
+                    matches = trying_re.match(line)
+                    if matches:
+                        self.status = 'trying to get %sb of a keystream' % matches.group(1)
+
                     # XX:XX:XX  Got RELAYED packet!!
+                    if 'Got RELAYED packet' in line:
+                        self.status = 'got relayed packet'
+
                     # XX:XX:XX  Thats our ARP packet!
+                    if 'Thats our ARP packet' in line:
+                        self.status = 'relayed packet was our'
+
                     # XX:XX:XX  Saving keystream in fragment-0124-161129.xor
+                    saving_re = re.compile(r"Saving keystream in (.*\.xor)")
+                    matches = saving_re.match(line)
+                    if matches:
+                        self.status = 'saving keystream to %s' % matches.group(1)
+
                     # XX:XX:XX  Now you can build a packet with packetforge-ng out of that 1500 bytes keystream
-                    pass
+
                 else: # Replay, forged replay, etc.
                     # Parse Packets Sent & PacketsPerSecond. Possible output lines:
                     # Read 55 packets (got 0 ARP requests and 0 ACKs), sent 0 packets...(0 pps)
@@ -162,7 +227,7 @@ class Aireplay(Thread):
                         if pps == "0":
                             self.status = "Waiting for packet..."
                         else:
-                            self.status = "Replaying packet @ %s/sec" % pps
+                            self.status = "Replaying @ %s/sec" % pps
                     pass
 
     def __del__(self):
@@ -188,7 +253,7 @@ class Aireplay(Thread):
         cmd = ["aireplay-ng"]
         cmd.append("--ignore-negative-one")
 
-        if not client_mac and len(target.clients) > 0:
+        if client_mac is None and len(target.clients) > 0:
             # Client MAC wasn't specified, but there's an associated client. Use that.
             client_mac = target.clients[0].station
 
@@ -378,12 +443,12 @@ class Aireplay(Thread):
 
 if __name__ == '__main__':
     t = WEPAttackType(4)
-    print t.name, type(t.name), t.value
+    print(t.name, type(t.name), t.value)
     t = WEPAttackType('caffelatte')
-    print t.name, type(t.name), t.value
+    print(t.name, type(t.name), t.value)
 
     t = WEPAttackType(t)
-    print t.name, type(t.name), t.value
+    print(t.name, type(t.name), t.value)
 
     from ..model.target import Target
     fields = 'A4:2B:8C:16:6B:3A, 2015-05-27 19:28:44, 2015-05-27 19:28:46,  6,  54e, WEP, WEP, , -58,        2,        0,   0.  0.  0.  0,   9, Test Router Please Ignore, '.split(',')
@@ -395,13 +460,13 @@ if __name__ == '__main__':
         from time import sleep
         sleep(0.1)
     stdout, stderr = aireplay.get_output()
-    print "STDOUT>", stdout
-    print "STDERR>", stderr
+    print("STDOUT>", stdout)
+    print("STDERR>", stderr)
     '''
 
     '''
     forge = Aireplay.forge_packet('/tmp/replay_dec-0605-060243.xor', \
                                   'A4:2B:8C:16:6B:3A', \
                                   '00:C0:CA:4E:CA:E0')
-    print forge
+    print(forge)
     '''

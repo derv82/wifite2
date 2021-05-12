@@ -4,6 +4,62 @@ This file is a braindump of ideas to improve Wifite2 (or forward-looking to "Wif
 
 ------------------------------------------------------
 
+### Better Dependency Handling
+I can rely on `pip` + `requirements.txt` for python libraries, but most of wifite's dependencies are installed programs.
+
+When a dependency is not found, Wifite should walk the user through installing all required dependencies, and maybe the optional dependencies as well.
+
+The dependency-installation walkthrough should provide or auto-execute the install commands (`git clone`, `wget | tar && ./config`, etc).
+
+Since we have a Python script for every dependency (under `wifite/tools/` or `wifite/util/`), we use Python's multiple-inheritance to achive this.
+
+Requirements:
+
+1. A base *Dependency* class
+   * `@abstractmethods` for `exists()`, `name()`, `install()`, `print_install()`
+2. Update all dependencies to inherit *Dependency*
+   * Override abstract methods
+3. Dependency-checker to run at Wifite startup.
+   * Check if all required dependencies exists.
+   * If required deps are missing, Prompt to install all (optional+required) or just required, or to continue w/o install with warning.
+   * If optional deps are missing, suggest `--install` without prompting.
+   * Otherwise continue silently.
+
+------------------------------------------------------
+
+### Support Other Distributions (not just Kali x86/64)
+
+Off the top of my head:
+
+* Raspberry Pi (or any Debian distro)
+* Raspberry Pi + Kali (?)
+* Kali Nethunter
+* Various other distributions (backbox, pentoo, blackarch, etc)
+
+Deprecation of "core" programs:
+
+* `iwconfig` is deprecated in favor of `iw`
+* `ifconfig` is deprecated in favor of `ip`
+
+Versioning problems:
+
+* Pixiewps output differs depending on version
+  * Likewise for reaver & bully
+* Reaver and bully args have changed significantly over the years (added/removed/required)
+* airodump-ng --write-interval=1 doesn't work on older versions
+  * Same with --wps and a few other options :(
+* airmon-ng output differs, wifite sees "phy0" instead of the interface name.
+
+Misc problems:
+
+* Some people have problems with multiple wifi cards plugged in
+  * Solution: User prompt when no devices are in monitor mode (ask first).
+* Some people want wifite to kill network manager, others don't.
+  * Solution: User prompt to kill processes
+* Some people need --ignore-negative-one on some wifi cards.
+
+------------------------------------------------------
+
 ### Command-line Arguments
 
 Wifite is a 'Spray and Pray', 'Big Red Button' script. Wifite should not provide obscure options that only advanced users can understand. Advanced users can simply use Wifite's dependencies directly.
@@ -54,20 +110,13 @@ And some native Python implementations might be cross-platform, which would allo
 
 Some of Wifite's dependencies work on other OSes (airodump) but some don't (airmon).
 
-If it's possible to run these programs on Windows or OSX, Wifite should suporrt that.
-
-------------------------------------------------------
-
-### Backwards Compatibility
-
-* WIFITE: needs command-line parity with older versions (or does it?)
-* AIRODUMP: --output-format, --wps, and other flags are only in new versions of Airodump.
+If it's possible to run these programs on Windows or OSX, Wifite should support that.
 
 ------------------------------------------------------
 
 ### WPS Attacks
 
-Wifite's Pixie-Dust attack status output differs between Reaver & Bully. And the command line switches are... not even used?
+Wifite's Pixie-Dust attack status output differs between Reaver & Bully. And the command line switches are... not even used by bully?
 
 Ideally for Pixie-Dust, we'd have:
 
@@ -97,6 +146,8 @@ Users with that kind of dedication can run bully/reaver themselves.
 ------------------------------------------------------
 
 ### Directory structure
+
+**Note: This was mostly done in the great refactoring of Late March 2018**
 
 Too modular in some places, not modular enough in others.
 

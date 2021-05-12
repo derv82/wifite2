@@ -1,82 +1,89 @@
 #!/usr/bin/python2.7
 # -*- coding: utf-8 -*-
 
-from ..model.interface import Interface
+from .dependency import Dependency
+from ..tools.ifconfig import Ifconfig
 from ..util.color import Color
 
-class Macchanger(object):
-    is_init = False
+class Macchanger(Dependency):
+    dependency_required = False
+    dependency_name = 'macchanger'
+    dependency_url = 'apt-get install macchanger'
+
     is_changed = False
-    original_mac = None
 
     @classmethod
-    def init(cls):
-        if cls.is_init: return
-        from ..config import Configuration
-        iface = Configuration.interface
-        if type(iface) == Interface:
-            iface = iface.name
-        cls.original_mac = Interface.get_mac(iface)
-
-    @classmethod
-    def down_macch_up(cls, macch_option):
-        cls.init()
+    def down_macch_up(cls, iface, options):
+        '''Put interface down, run macchanger with options, put interface up'''
         from ..util.process import Process
-        from ..config import Configuration
-        iface = Configuration.interface
 
-        cmd = ["ifconfig", iface, "down"]
         Color.clear_entire_line()
-        Color.p("\r{+} {C}macchanger{W}: Taking interface {C}%s{W} down..." % iface)
-        ifdown = Process(cmd)
-        ifdown.wait()
-        if ifdown.poll() != 0:
-            Color.pl("{!} {C}macchanger{W}: Error running %s" % " ".join(cmd))
-            Color.pl("{!} Output: %s, %s" % (ifdown.stdout(), ifdown.stderr()))
-            return False
+        Color.p('\r{+} {C}macchanger{W}: taking interface {C}%s{W} down...' % iface)
 
-        cmd = ["macchanger", macch_option, iface]
+        Ifconfig.down(iface)
+
         Color.clear_entire_line()
-        Color.p("\r{+} {C}macchanger{W}: Changing MAC address of interface {C}%s{W}..." % iface)
-        macch = Process(cmd)
+        Color.p('\r{+} {C}macchanger{W}: changing mac address of interface {C}%s{W}...' % iface)
+
+        command = ['macchanger']
+        command.extend(options)
+        command.append(iface)
+        macch = Process(command)
         macch.wait()
         if macch.poll() != 0:
-            Color.pl("{!} {C}macchanger{W}: Error running %s" % " ".join(cmd))
-            Color.pl("{!} Output: %s, %s" % (macch.stdout(), macch.stderr()))
+            Color.pl('\n{!} {R}macchanger{O}: error running {R}%s{O}' % ' '.join(command))
+            Color.pl('{!} {R}output: {O}%s, %s{W}' % (macch.stdout(), macch.stderr()))
             return False
 
-        cmd = ["ifconfig", iface, "up"]
         Color.clear_entire_line()
-        Color.p("\r{+} {C}macchanger{W}: Bringing interface {C}%s{W} up..." % iface)
-        ifup = Process(cmd)
-        ifup.wait()
-        if ifup.poll() != 0:
-            Color.pl("{!} {C}macchanger{W}: Error running %s" % " ".join(cmd))
-            Color.pl("{!} Output: %s, %s" % (ifup.stdout(), ifup.stderr()))
-            return False
+        Color.p('\r{+} {C}macchanger{W}: bringing interface {C}%s{W} up...' % iface)
+
+        Ifconfig.up(iface)
+
         return True
+
+
+    @classmethod
+    def get_interface(cls):
+        # Helper method to get interface from configuration
+        from ..config import Configuration
+        return Configuration.interface
+
 
     @classmethod
     def reset(cls):
-        # --permanent to reset to permanent MAC address
-        if not cls.down_macch_up("-p"): return
-        Color.pl("\r{+} {C}macchanger{W}: Resetting MAC address...")
-        from ..config import Configuration
-        new_mac = Interface.get_mac(Configuration.interface)
-        Color.clear_entire_line()
-        Color.pl("\r{+} {C}macchanger{W}: Reset MAC address back to {C}%s{W}" % new_mac)
+        iface = cls.get_interface()
+        Color.pl('\r{+} {C}macchanger{W}: resetting mac address on %s...' % iface)
+        # -p to reset to permanent MAC address
+        if cls.down_macch_up(iface, ['-p']):
+            new_mac = Ifconfig.get_mac(iface)
+
+            Color.clear_entire_line()
+            Color.pl('\r{+} {C}macchanger{W}: reset mac address back to {C}%s{W} on {C}%s{W}' % (new_mac, iface))
+
 
     @classmethod
     def random(cls):
-        # Use --permanent to use random MAC address
-        if not cls.down_macch_up("-r"): return
-        cls.is_changed = True
-        from ..config import Configuration
-        new_mac = Interface.get_mac(Configuration.interface)
-        Color.clear_entire_line()
-        Color.pl("\r{+} {C}macchanger{W}: Changed MAC address to {C}%s{W}" % new_mac)
+        from ..util.process import Process
+        if not Process.exists('macchanger'):
+            Color.pl('{!} {R}macchanger: {O}not installed')
+            return
+
+        iface = cls.get_interface()
+        Color.pl('\n{+} {C}macchanger{W}: changing mac address on {C}%s{W}' % iface)
+
+        # -r to use random MAC address
+        # -e to keep vendor bytes the same
+        if cls.down_macch_up(iface, ['-e']):
+            cls.is_changed = True
+            new_mac = Ifconfig.get_mac(iface)
+
+            Color.clear_entire_line()
+            Color.pl('\r{+} {C}macchanger{W}: changed mac address to {C}%s{W} on {C}%s{W}' % (new_mac, iface))
+
 
     @classmethod
     def reset_if_changed(cls):
-        if not cls.is_changed: return
-        cls.reset()
+        if cls.is_changed:
+            cls.reset()
+

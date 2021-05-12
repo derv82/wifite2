@@ -3,6 +3,7 @@
 
 from ..util.process import Process
 from ..util.color import Color
+from ..util.input import raw_input
 from ..config import Configuration
 from ..model.result import CrackResult
 

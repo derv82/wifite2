@@ -1,7 +1,7 @@
 #!/usr/bin/python2.7
 # -*- coding: utf-8 -*-
 
-from util.color import Color
+from .util.color import Color
 
 import argparse, sys
 
@@ -37,6 +37,9 @@ class Arguments(object):
         wps_group = parser.add_argument_group('WPS')
         self._add_wps_args(wps_group)
 
+        eviltwin_group = parser.add_argument_group('EVIL TWIN')
+        self._add_eviltwin_args(eviltwin_group)
+
         commands_group = parser.add_argument_group('COMMANDS')
         self._add_command_args(commands_group)
 
@@ -49,14 +52,14 @@ class Arguments(object):
             action='count',
             default=0,
             dest='verbose',
-            help=Color.s('Shows more options ({C}-h -v{W}). Prints tool outputs. (default: {G}quiet{W})'))
+            help=Color.s('Shows more options ({C}-h -v{W}). Prints commands and outputs. (default: {G}quiet{W})'))
 
         glob.add_argument('-i',
             action='store',
             dest='interface',
             metavar='[interface]',
             type=str,
-            help=Color.s('Wireless interface to use (default: {G}ask{W})'))
+            help=Color.s('Wireless interface to use (default: {G}choose first or ask{W})'))
 
         glob.add_argument('-c',
             action='store',
@@ -67,7 +70,7 @@ class Arguments(object):
         glob.add_argument('--channel', help=argparse.SUPPRESS, action='store', dest='channel', type=int)
 
         glob.add_argument('-mac',
-            '---random-mac',
+            '--random-mac',
             action='store_true',
             dest='random_mac',
             help=Color.s('Randomize wireless card MAC address (default: {G}off{W})'))
@@ -118,6 +121,11 @@ class Arguments(object):
             help=self._verbose('Hides targets with ESSIDs that match the given text'))
         glob.add_argument('--ignore-essid', help=argparse.SUPPRESS, action='store', dest='ignore_essid', type=str)
 
+        glob.add_argument('--clients-only', '-co',
+            action='store_true',
+            dest='clients_only',
+            help=Color.s('Only show targets that have associated clients (default: {G}off{W})'))
+
         glob.add_argument('--showb',
             action='store_true',
             dest='show_bssids',
@@ -139,6 +147,23 @@ class Arguments(object):
             help=self._verbose('Number of deauth packets to send (default: {G}%d{W})' % self.config.num_deauths))
 
 
+    def _add_eviltwin_args(self, group):
+        group.add_argument('-et',
+            '--eviltwin',
+            action='store_true',
+            dest='use_eviltwin',
+            help=Color.s('Use the "Evil Twin" attack against all targets (default: {G}off{W})'))
+
+        group.add_argument('-eti',
+            '--evitwin-iface',
+            type=str,
+            dest='eviltwin_iface',
+            metavar='[iface]',
+            default=None,
+            help=Color.s('Wireless interface to use when creating the Fake AP (evil twin)'))
+        # TODO: Args to specify other options (server port, etc).
+
+
     def _add_wep_args(self, wep):
         # WEP
         wep.add_argument('--wep',
@@ -153,6 +178,12 @@ class Arguments(object):
             help=Color.s('Fails attacks if fake-auth fails (default: {G}off{W})'))
         wep.add_argument('--nofakeauth', help=argparse.SUPPRESS, action='store_true', dest='require_fakeauth')
         wep.add_argument('-nofakeauth', help=argparse.SUPPRESS, action='store_true', dest='require_fakeauth')
+
+        wep.add_argument('--keep-ivs',
+            action='store_true',
+            dest='wep_keep_ivs',
+            default=False,
+            help=Color.s('Retain .IVS files and reuse when cracking (default: {G}off{W})'))
 
         wep.add_argument('--pps',
             action='store',
@@ -292,56 +323,55 @@ class Arguments(object):
             dest='wps_filter',
             help=Color.s('Filter to display only WPS-enabled networks'))
         wps.add_argument('-wps', help=argparse.SUPPRESS, action='store_true', dest='wps_filter')
+
         wps.add_argument('--bully',
             action='store_true',
             dest='use_bully',
             help=Color.s('Use {C}bully{W} instead of {C}reaver{W} for WPS attacks (default: {G}reaver{W})'))
+        # Alias
+        wps.add_argument('-bully', help=argparse.SUPPRESS, action='store_true', dest='use_bully')
+
         wps.add_argument('--no-wps',
             action='store_true',
             dest='no_wps',
             help=Color.s('{O}NEVER{W} use WPS attacks (Pixie-Dust) on non-WEP networks (default: {G}off{W})'))
+
         wps.add_argument('--wps-only',
             action='store_true',
             dest='wps_only',
             help=Color.s('{G}ALWAYS{W} use WPS attacks (Pixie-Dust) on non-WEP networks (default: {G}off{W})'))
+        # Alias
+        wps.add_argument('--pixie', help=argparse.SUPPRESS, action='store_true', dest='wps_only')
 
-        # Same as --wps-only
-        wps.add_argument('--pixie',
-            help=argparse.SUPPRESS,
-            action='store_true',
-            dest='wps_only')
-
-        wps.add_argument('--pixiet',
+        # Time limit on entire attack.
+        wps.add_argument('--wps-time',
             action='store',
             dest='wps_pixie_timeout',
-            metavar='[seconds]',
+            metavar='[sec]',
             type=int,
-            help=self._verbose('Time to wait before failing PixieDust attack (default: {G}%d sec{W})' % self.config.wps_pixie_timeout))
-        wps.add_argument('--pixiest',
-            action='store',
-            dest='wps_pixie_step_timeout',
-            metavar='[seconds]',
-            type=int,
-            help=self._verbose('Time to wait for a step to progress before failing PixieDust attack (default: {G}%d sec{W})' % self.config.wps_pixie_step_timeout))
-        wps.add_argument('--wpsmf',
+            help=self._verbose('Total time to wait before failing PixieDust attack (default: {G}%d sec{W})' % self.config.wps_pixie_timeout))
+        # Alias
+        wps.add_argument('-wpst', help=argparse.SUPPRESS, action='store', dest='wps_pixie_timeout', type=int)
+
+        # Maximum number of "failures" (WPSFail)
+        wps.add_argument('--wps-fails',
             action='store',
             dest='wps_fail_threshold',
-            metavar='[fails]',
+            metavar='[num]',
             type=int,
-            help=self._verbose('Maximum number of WPS Failures before failing attack (default: {G}%d{W})' % self.config.wps_fail_threshold))
-        wps.add_argument('-wpsmf', help=argparse.SUPPRESS, action='store', dest='wps_fail_threshold', type=int)
-        wps.add_argument('--wpsmt',
+            help=self._verbose('Maximum number of WPSFail/NoAssoc errors before failing (default: {G}%d{W})' % self.config.wps_fail_threshold))
+        # Alias
+        wps.add_argument('-wpsf', help=argparse.SUPPRESS, action='store', dest='wps_fail_threshold', type=int)
+
+        # Maximum number of "timeouts"
+        wps.add_argument('--wps-timeouts',
             action='store',
             dest='wps_timeout_threshold',
-            metavar='[timeouts]',
+            metavar='[num]',
             type=int,
-            help=self._verbose('Maximum number of Timeouts before stopping (default: {G}%d{W})' % self.config.wps_timeout_threshold))
-        wps.add_argument('-wpsmt', help=argparse.SUPPRESS, action='store', dest='wps_timeout_threshold', type=int)
-        wps.add_argument('--ignore-ratelimit',
-            action='store_false',
-            dest='wps_skip_rate_limit',
-            help=Color.s('Ignores attack if WPS is rate-limited (default: {G}on{W})'))
-        wps.add_argument('-ignore-ratelimit', help=argparse.SUPPRESS, action='store_false', dest='wps_skip_rate_limit')
+            help=self._verbose('Maximum number of Timeouts before failing (default: {G}%d{W})' % self.config.wps_timeout_threshold))
+        # Alias
+        wps.add_argument('-wpsto', help=argparse.SUPPRESS, action='store', dest='wps_timeout_threshold', type=int)
 
 
     def _add_command_args(self, commands):
@@ -366,11 +396,11 @@ class Arguments(object):
             help=Color.s('Show commands to crack a captured handshake'))
 
 if __name__ == '__main__':
-    from util.color import Color
+    from .util.color import Color
     from config import Configuration
     Configuration.initialize(False)
     a = Arguments(Configuration)
     args = a.args
-    for (key,value) in sorted(args.__dict__.iteritems()):
+    for (key,value) in sorted(args.__dict__.items()):
         Color.pl('{C}%s: {G}%s{W}' % (key.ljust(21),value))
 

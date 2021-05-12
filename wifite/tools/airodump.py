@@ -1,7 +1,9 @@
 #!/usr/bin/python2.7
 # -*- coding: utf-8 -*-
 
+from .dependency import Dependency
 from .tshark import Tshark
+from .wash import Wash
 from ..util.process import Process
 from ..config import Configuration
 from ..model.target import Target
@@ -9,15 +11,16 @@ from ..model.client import Client
 
 import os, time
 
-class Airodump(object):
+class Airodump(Dependency):
     ''' Wrapper around airodump-ng program '''
+    dependency_required = True
+    dependency_name = 'airodump-ng'
+    dependency_url = 'https://www.aircrack-ng.org/install.html'
 
     def __init__(self, interface=None, channel=None, encryption=None,\
                        wps=False, target_bssid=None, output_file_prefix='airodump',\
-                       ivs_only=False, skip_wps=False):
-        '''
-            Sets up airodump arguments, doesn't start process yet
-        '''
+                       ivs_only=False, skip_wps=False, delete_existing_files=True):
+        '''Sets up airodump arguments, doesn't start process yet.'''
 
         Configuration.initialize()
 
@@ -44,17 +47,20 @@ class Airodump(object):
 
         # For tracking decloaked APs (previously were hidden)
         self.decloaking = False
-        self.decloaked_targets = []
+        self.decloaked_bssids = set()
         self.decloaked_times = {} # Map of BSSID(str) -> epoch(int) of last deauth
+
+        self.delete_existing_files = delete_existing_files
 
 
     def __enter__(self):
         '''
-            Setting things up for this context.
-            Called at start of 'with Airodump(...) as x:'
-            Actually starts the airodump process.
+        Setting things up for this context.
+        Called at start of 'with Airodump(...) as x:'
+        Actually starts the airodump process.
         '''
-        self.delete_airodump_temp_files()
+        if self.delete_existing_files:
+            self.delete_airodump_temp_files(self.output_file_prefix)
 
         self.csv_file_prefix = Configuration.temp() + self.output_file_prefix
 
@@ -66,22 +72,15 @@ class Airodump(object):
             '-w', self.csv_file_prefix, # Output file prefix
             '--write-interval', '1' # Write every second
         ]
-        if self.channel:
-            command.extend(['-c', str(self.channel)])
-        elif self.five_ghz:
-            command.extend(['--band', 'a'])
+        if self.channel:    command.extend(['-c', str(self.channel)])
+        elif self.five_ghz: command.extend(['--band', 'a'])
 
-        if self.encryption:
-            command.extend(['--enc', self.encryption])
-        if self.wps:
-            command.extend(['--wps'])
-        if self.target_bssid:
-            command.extend(['--bssid', self.target_bssid])
+        if self.encryption:   command.extend(['--enc', self.encryption])
+        if self.wps:          command.extend(['--wps'])
+        if self.target_bssid: command.extend(['--bssid', self.target_bssid])
 
-        if self.ivs_only:
-            command.extend(['--output-format', 'ivs,csv'])
-        else:
-            command.extend(['--output-format', 'pcap,csv'])
+        if self.ivs_only: command.extend(['--output-format', 'ivs,csv'])
+        else:             command.extend(['--output-format', 'pcap,csv'])
 
         # Start the process
         self.pid = Process(command, devnull=True)
@@ -90,32 +89,41 @@ class Airodump(object):
 
     def __exit__(self, type, value, traceback):
         '''
-            Tearing things down since the context is being exited.
-            Called after 'with Airodump(...)' goes out of scope.
+        Tearing things down since the context is being exited.
+        Called after 'with Airodump(...)' goes out of scope.
         '''
         # Kill the process
         self.pid.interrupt()
 
-        # Delete temp files
-        self.delete_airodump_temp_files()
+        if self.delete_existing_files:
+            self.delete_airodump_temp_files(self.output_file_prefix)
 
 
     def find_files(self, endswith=None):
+        return self.find_files_by_output_prefix(self.output_file_prefix, endswith=endswith)
+
+    @classmethod
+    def find_files_by_output_prefix(cls, output_file_prefix, endswith=None):
         ''' Finds all files in the temp directory that start with the output_file_prefix '''
         result = []
-        for fil in os.listdir(Configuration.temp()):
-            if fil.startswith(self.output_file_prefix):
-                if not endswith or fil.endswith(endswith):
-                    result.append(Configuration.temp() + fil)
+        temp = Configuration.temp()
+        for fil in os.listdir(temp):
+            if not fil.startswith(output_file_prefix):
+                continue
+
+            if endswith is None or fil.endswith(endswith):
+                result.append(os.path.join(temp, fil))
+
         return result
 
-    def delete_airodump_temp_files(self):
+    @classmethod
+    def delete_airodump_temp_files(cls, output_file_prefix):
         '''
-            Deletes airodump* files in the temp directory.
-            Also deletes replay_*.cap and *.xor files in pwd.
+        Deletes airodump* files in the temp directory.
+        Also deletes replay_*.cap and *.xor files in pwd.
         '''
         # Remove all temp files
-        for fil in self.find_files():
+        for fil in cls.find_files_by_output_prefix(output_file_prefix):
             os.remove(fil)
 
         # Remove .cap and .xor files from pwd
@@ -123,26 +131,34 @@ class Airodump(object):
             if fil.startswith('replay_') and fil.endswith('.cap') or fil.endswith('.xor'):
                 os.remove(fil)
 
+        # Remove replay/cap/xor files from temp
+        temp_dir = Configuration.temp()
+        for fil in os.listdir(temp_dir):
+            if fil.startswith('replay_') and fil.endswith('.cap') or fil.endswith('.xor'):
+                os.remove(os.path.join(temp_dir, fil))
+
     def get_targets(self, apply_filter=True):
         ''' Parses airodump's CSV file, returns list of Targets '''
 
         # Find the .CSV file
         csv_filename = None
-        for fil in self.find_files(endswith='-01.csv'):
-            # Found the file
-            csv_filename = fil
+        for fil in self.find_files(endswith='.csv'):
+            csv_filename = fil  # Found the file
             break
-        if csv_filename is None or not os.path.exists(csv_filename):
-            # No file found
-            return self.targets
 
-        # Parse the .CSV file
+        if csv_filename is None or not os.path.exists(csv_filename):
+            return self.targets  # No file found
+
         targets = Airodump.get_targets_from_csv(csv_filename)
 
         # Check targets for WPS
         if not self.skip_wps:
             capfile = csv_filename[:-3] + 'cap'
-            Tshark.check_for_wps_and_update_targets(capfile, targets)
+            try:
+                Tshark.check_for_wps_and_update_targets(capfile, targets)
+            except Exception as e:
+                # No tshark, or it failed. Fall-back to wash
+                Wash.check_for_wps_and_update_targets(capfile, targets)
 
         if apply_filter:
             # Filter targets based on encryption & WPS capability
@@ -151,12 +167,16 @@ class Airodump(object):
         # Sort by power
         targets.sort(key=lambda x: x.power, reverse=True)
 
+        # Identify decloaked targets
         for old_target in self.targets:
             for new_target in targets:
-                if old_target.bssid != new_target.bssid: continue
+                if old_target.bssid != new_target.bssid:
+                    continue
+
                 if new_target.essid_known and not old_target.essid_known:
                     # We decloaked a target!
-                    self.decloaked_targets.append(new_target)
+                    new_target.decloaked = True
+                    self.decloaked_bssids.add(new_target.bssid)
 
         if self.pid.poll() is not None:
             raise Exception('Airodump has stopped')
@@ -169,14 +189,21 @@ class Airodump(object):
 
     @staticmethod
     def get_targets_from_csv(csv_filename):
-        '''
-            Returns list of Target objects parsed from CSV file
-        '''
+        '''Returns list of Target objects parsed from CSV file.'''
         targets = []
         import csv
         with open(csv_filename, 'rb') as csvopen:
-            lines = (line.replace('\0', '') for line in csvopen)
-            csv_reader = csv.reader(lines, delimiter=',')
+            lines = []
+            for line in csvopen:
+                if type(line) is bytes: line = line.decode('utf-8')
+                line = line.replace('\0', '')
+                lines.append(line)
+            csv_reader = csv.reader(lines,
+                    delimiter=',',
+                    quoting=csv.QUOTE_ALL,
+                    skipinitialspace=True,
+                    escapechar='\\')
+
             hit_clients = False
             for row in csv_reader:
                 # Each "row" is a list of fields for a target/client
@@ -227,6 +254,8 @@ class Airodump(object):
         result = []
         # Filter based on Encryption
         for target in targets:
+            if Configuration.clients_only and len(target.clients) == 0:
+                continue
             if 'WEP' in Configuration.encryption_filter and 'WEP' in target.encryption:
                 result.append(target)
             elif 'WPA' in Configuration.encryption_filter and 'WPA' in target.encryption:
@@ -253,16 +282,16 @@ class Airodump(object):
 
     def deauth_hidden_targets(self):
         '''
-            Sends deauths (to broadcast and to each client) for all
-            targets (APs) that have unknown ESSIDs (hidden router names).
+        Sends deauths (to broadcast and to each client) for all
+        targets (APs) that have unknown ESSIDs (hidden router names).
         '''
         self.decloaking = False
 
-        # Do not deauth if requested
-        if Configuration.no_deauth: return
+        if Configuration.no_deauth:
+            return  # Do not deauth if requested
 
-        # Do not deauth if channel is not fixed.
-        if self.channel is None: return
+        if self.channel is None:
+            return  # Do not deauth if channel is not fixed.
 
         # Reusable deauth command
         deauth_cmd = [
@@ -271,22 +300,27 @@ class Airodump(object):
             str(Configuration.num_deauths), # Number of deauth packets to send
             '--ignore-negative-one'
         ]
+
         for target in self.targets:
-            if target.essid_known: continue
+            if target.essid_known:
+                continue
+
             now = int(time.time())
             secs_since_decloak = now - self.decloaked_times.get(target.bssid, 0)
-            # Decloak every AP once every 30 seconds
-            if secs_since_decloak < 30: continue
+
+            if secs_since_decloak < 30:
+                continue  # Decloak every AP once every 30 seconds
+
             self.decloaking = True
             self.decloaked_times[target.bssid] = now
             if Configuration.verbose > 1:
                 from ..util.color import Color
-                verbout = " [?] Deauthing %s" % target.bssid
-                verbout += " (broadcast & %d clients)" % len(target.clients)
-                Color.pe("\n{C}" + verbout + "{W}")
+                Color.pe('{C} [?] Deauthing %s (broadcast & %d clients){W}' % (target.bssid, len(target.clients)))
+
             # Deauth broadcast
             iface = Configuration.interface
             Process(deauth_cmd + ['-a', target.bssid, iface])
+
             # Deauth clients
             for client in target.clients:
                 Process(deauth_cmd + ['-a', target.bssid, '-c', client.bssid, iface])
@@ -305,4 +339,3 @@ if __name__ == '__main__':
             Color.pl('   {G}%s %s' % (str(idx).rjust(3), target.to_str()))
 
     Configuration.delete_temp()
-

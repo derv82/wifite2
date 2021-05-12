@@ -24,6 +24,9 @@ class Timer(object):
     @staticmethod
     def secs_to_str(seconds):
         '''Human-readable seconds. 193 -> 3m13s'''
+        if seconds < 0:
+            return '-%ds' % seconds
+
         rem = int(seconds)
         hours = rem / 3600
         mins = (rem % 3600) / 60

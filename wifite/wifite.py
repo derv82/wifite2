@@ -1,20 +1,22 @@
-#!/usr/bin/python2.7
+#!/usr/bin/python3.7
 # -*- coding: utf-8 -*-
 
 try:
-    from config import Configuration
+    from .config import Configuration
 except (ValueError, ImportError) as e:
-    raise Exception('You may need to run wifite from the root directory (which includes README.md)')
+    raise Exception('You may need to run wifite from the root directory (which includes README.md)', e)
 
-from util.scanner import Scanner
-from util.process import Process
-from util.color import Color
-from util.crack import CrackHandshake
-from attack.wep import AttackWEP
-from attack.wpa import AttackWPA
-from attack.wps import AttackWPS
-from model.result import CrackResult
-from model.handshake import Handshake
+from .util.scanner import Scanner
+from .util.process import Process
+from .util.color import Color
+from .util.crack import CrackHandshake
+from .util.input import raw_input
+from .attack.wep import AttackWEP
+from .attack.wpa import AttackWPA
+from .attack.wps import AttackWPS
+from .attack.eviltwin import EvilTwinAttack
+from .model.result import CrackResult
+from .model.handshake import Handshake
 
 import json
 import os
@@ -30,45 +32,67 @@ class Wifite(object):
             Color.pl('{!} {O}re-run as: sudo ./Wifite.py{W}')
             Configuration.exit_gracefully(0)
 
-        self.dependency_check()
-
         Configuration.initialize(load_interface=False)
+
+        self.dependency_check()
 
         if Configuration.show_cracked:
             self.display_cracked()
 
         elif Configuration.check_handshake:
             self.check_handshake(Configuration.check_handshake)
+
         elif Configuration.crack_handshake:
             CrackHandshake()
+
         else:
-            Configuration.get_interface()
+            Configuration.get_monitor_mode_interface()
             self.run()
+
 
     def dependency_check(self):
         ''' Check that required programs are installed '''
-        required_apps = ['airmon-ng', 'iwconfig', 'ifconfig', 'aircrack-ng', 'aireplay-ng', 'airodump-ng', 'tshark']
-        optional_apps = ['packetforge-ng', 'reaver', 'bully', 'cowpatty', 'pyrit', 'stdbuf', 'macchanger']
-        missing_required = False
-        missing_optional = False
+        from .tools.airmon import Airmon
+        from .tools.airodump import Airodump
+        from .tools.aircrack import Aircrack
+        from .tools.aireplay import Aireplay
+        from .tools.ifconfig import Ifconfig
+        from .tools.iwconfig import Iwconfig
+        from .tools.hostapd import Hostapd
+        from .tools.dnsmasq import Dnsmasq
+        from .tools.iptables import Iptables
+        from .tools.bully import Bully
+        from .tools.reaver import Reaver
+        from .tools.wash import Wash
+        from .tools.pyrit import Pyrit
+        from .tools.tshark import Tshark
+        from .tools.macchanger import Macchanger
 
-        for app in required_apps:
-            if not Process.exists(app):
-                missing_required = True
-                Color.pl('{!} {R}error: required app {O}%s{R} was not found' % app)
+        apps = [
+                # Aircrack
+                Airmon, Airodump, Aircrack, Aireplay,
+                # wireless/net tools
+                Iwconfig, Ifconfig,
+                # WPS
+                Reaver, Bully,
+                # Cracking/handshakes
+                Pyrit, Tshark,
+                # Misc
+                Macchanger
+            ]
 
-        for app in optional_apps:
-            if not Process.exists(app):
-                missing_optional = True
-                Color.pl('{!} {O}warning: recommended app {R}%s{O} was not found' % app)
+        if Configuration.use_eviltwin:
+            apps.extend([Hostapd, Dnsmasq, Iptables])
+
+        missing_required = any([app.fails_dependency_check() for app in apps])
 
         if missing_required:
             Color.pl('{!} {R}required app(s) were not found, exiting.{W}')
             sys.exit(-1)
 
-        if missing_optional:
-            Color.pl('{!} {O}recommended app(s) were not found')
-            Color.pl('{!} {O}wifite may not work as expected{W}')
+        #if missing_optional:
+        #    Color.pl('{!} {O}recommended app(s) were not found')
+        #    Color.pl('{!} {O}wifite may not work as expected{W}')
 
     def display_cracked(self):
         ''' Show cracked targets from cracked.txt '''
@@ -95,7 +119,7 @@ class Wifite(object):
             Color.pl('{+} checking all handshakes in {G}"./hs"{W} directory\n')
             try:
                 capfiles = [os.path.join('hs', x) for x in os.listdir('hs') if x.endswith('.cap')]
-            except OSError, e:
+            except OSError as e:
                 capfiles = []
             if len(capfiles) == 0:
                 Color.pl('{!} {R}no .cap files found in {O}"./hs"{W}\n')
@@ -124,6 +148,10 @@ class Wifite(object):
         else:
             targets = s.select_targets()
 
+        if Configuration.use_eviltwin:
+            # Ask user to select interface if needed
+            Configuration.get_eviltwin_interface()
+
         attacked_targets = 0
         targets_remaining = len(targets)
         for idx, t in enumerate(targets, start=1):
@@ -133,9 +161,17 @@ class Wifite(object):
             Color.pl('\n{+} ({G}%d{W}/{G}%d{W})' % (idx, len(targets)) +
                      ' starting attacks against {C}%s{W} ({C}%s{W})'
                 % (t.bssid, t.essid if t.essid_known else "{O}ESSID unknown"))
-            if 'WEP' in t.encryption:
+
+            # TODO: Check if Eviltwin attack is selected.
+
+            if Configuration.use_eviltwin:
+                attack = EvilTwinAttack(t, Configuration.interface, Configuration.eviltwin_iface)
+
+            elif 'WEP' in t.encryption:
                 attack = AttackWEP(t)
+
             elif 'WPA' in t.encryption:
+                # TODO: Move WPS+WPA decision to a combined attack
                 if t.wps:
                     attack = AttackWPS(t)
                     result = False
@@ -148,8 +184,8 @@ class Wifite(object):
                             from traceback import format_exc
                             Color.p('\n{!}    ')
                             err = format_exc().strip()
-                            err = err.replace('\n', '\n{!} {C}   ')
-                            err = err.replace('  File', '{W}File')
+                            err = err.replace('\n', '\n{W}{!} {W}   ')
+                            err = err.replace('  File', '{W}{D}File')
                             err = err.replace('  Exception: ', '{R}Exception: {O}')
                             Color.pl(err)
                     except KeyboardInterrupt:
@@ -173,15 +209,15 @@ class Wifite(object):
 
             try:
                 attack.run()
-            except Exception, e:
+            except Exception as e:
                 Color.pl("\n{!} {R}Error: {O}%s" % str(e))
                 if Configuration.verbose > 0 or True:
                     Color.pl('\n{!} {O}Full stack trace below')
                     from traceback import format_exc
                     Color.p('\n{!}    ')
                     err = format_exc().strip()
-                    err = err.replace('\n', '\n{!} {C}   ')
-                    err = err.replace('  File', '{W}File')
+                    err = err.replace('\n', '\n{W}{!} {W}   ')
+                    err = err.replace('  File', '{W}{D}File')
                     err = err.replace('  Exception: ', '{R}Exception: {O}')
                     Color.pl(err)
             except KeyboardInterrupt:
@@ -234,7 +270,7 @@ def run():
     try:
         w.main()
 
-    except Exception, e:
+    except Exception as e:
         Color.pl('\n{!} {R}Error:{O} %s{W}' % str(e))
 
         if Configuration.verbose > 0 or True:
@@ -242,8 +278,8 @@ def run():
             from traceback import format_exc
             Color.p('\n{!}    ')
             err = format_exc().strip()
-            err = err.replace('\n', '\n{!} {C}   ')
-            err = err.replace('  File', '{W}File')
+            err = err.replace('\n', '\n{W}{!} {W}   ')
+            err = err.replace('  File', '{W}{D}File')
             err = err.replace('  Exception: ', '{R}Exception: {O}')
             Color.pl(err)
 

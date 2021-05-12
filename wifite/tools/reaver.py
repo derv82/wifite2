@@ -1,161 +1,247 @@
 #!/usr/bin/python2.7
 # -*- coding: utf-8 -*-
 
+from .dependency import Dependency
+from .airodump import Airodump
+from .bully import Bully # for PSK retrieval
 from ..model.attack import Attack
 from ..config import Configuration
 from ..util.color import Color
 from ..util.process import Process
-from ..tools.airodump import Airodump
+from ..util.timer import Timer
 from ..model.wps_result import CrackResultWPS
 
 import os, time, re
 
-class Reaver(Attack):
+class Reaver(Attack, Dependency):
+    dependency_required = False
+    dependency_name = 'reaver'
+    dependency_url = 'https://github.com/t6x/reaver-wps-fork-t6x'
+
     def __init__(self, target):
         super(Reaver, self).__init__(target)
-        self.success = False
+
+        self.start_time = None
+        self.state = 'Initializing'
+        self.locked = False
+        self.total_timeouts = 0
+        self.total_wpsfails = 0
+
         self.crack_result = None
+
+        self.output_filename = Configuration.temp('reaver.out')
+        if os.path.exists(self.output_filename):
+            os.remove(self.output_filename)
+
+        self.output_write = open(self.output_filename, 'a')
+
+        self.reaver_cmd = [
+            'reaver',
+            '--interface',  Configuration.interface,
+            '--bssid',      self.target.bssid,
+            '--channel',    self.target.channel,
+            '--pixie-dust', '1',         # pixie-dust attack
+            '--session',    '/dev/null', # Don't restart session
+            '-vv'                        # (very) verbose
+        ]
+
+        self.reaver_proc = None
 
     def is_pixiedust_supported(self):
         ''' Checks if 'reaver' supports WPS Pixie-Dust attack '''
         output = Process(['reaver', '-h']).stderr()
         return '--pixie-dust' in output
 
-    def run_pixiedust_attack(self):
-        # Write reaver stdout to file.
-        self.stdout_file = Configuration.temp('reaver.out')
-        if os.path.exists(self.stdout_file):
-            os.remove(self.stdout_file)
+    def run(self):
+        ''' Returns True if attack is successful. '''
+        try:
+            self._run() # Run-loop
+        except Exception as e:
+            # Failed with error
+            self.pattack('{R}Failed:{O} %s' % str(e), newline=True)
+            return self.crack_result is not None
 
-        command = [
-            'reaver',
-            '--interface', Configuration.interface,
-            '--bssid', self.target.bssid,
-            '--channel', self.target.channel,
-            '--pixie-dust', '1', # pixie-dust attack
-            #'--delay', '0',
-            #'--no-nacks',
-            '--session', '/dev/null', # Don't restart session
-            '-vv' # (very) verbose
-        ]
-        stdout_write = open(self.stdout_file, 'a')
-        reaver = Process(command, stdout=stdout_write, stderr=Process.devnull())
+        # Stop reaver if it's still running
+        if self.reaver_proc.poll() is None:
+            self.reaver_proc.interrupt()
 
-        pin = None
-        step = 'initializing'
-        time_since_last_step = 0
+        # Clean up open file handle
+        if self.output_write:
+            self.output_write.close()
+
+        return self.crack_result is not None
+
+
+    def _run(self):
+        self.start_time = time.time()
 
         with Airodump(channel=self.target.channel,
                       target_bssid=self.target.bssid,
                       skip_wps=True,
                       output_file_prefix='pixie') as airodump:
 
-            Color.clear_line()
-            Color.pattack("WPS", self.target, "Pixie Dust", "Waiting for target to appear...")
+            # Wait for target
+            self.pattack("Waiting for target to appear...")
+            self.target = self.wait_for_target(airodump)
 
-            while True:
-                try:
-                    airodump_target = self.wait_for_target(airodump)
-                except Exception as e:
-                    Color.pattack("WPS", self.target, "Pixie-Dust", "{R}failed: {O}%s{W}" % e)
+            # Start reaver
+            self.reaver_proc = Process(self.reaver_cmd,
+                    stdout=self.output_write,
+                    stderr=Process.devnull())
+
+            # Loop while reaver is running
+            while self.crack_result is None and self.reaver_proc.poll() is None:
+
+                # Refresh target information (power)
+                self.target = self.wait_for_target(airodump)
+
+                # Update based on reaver output
+                stdout = self.get_output()
+                self.state = self.parse_state(stdout)
+                self.parse_failure(stdout)
+
+                # Print status line
+                self.pattack(self.get_status())
+
+                # Check if we cracked it
+                self.crack_result = self.parse_crack_result(stdout)
+
+                time.sleep(0.5)
+
+            # Check if crack result is in output
+            stdout = self.get_output()
+            self.crack_result = self.parse_crack_result(stdout)
+
+            # Show any failures found
+            if self.crack_result is None:
+                self.parse_failure(stdout)
+
+            if self.crack_result is None and self.reaver_proc.poll() is not None:
+                raise Exception('Reaver process stopped (exit code: %s)' % self.reaver_proc.poll())
+
+
+    def get_status(self):
+        main_status = self.state
+
+        meta_statuses = []
+        if self.total_timeouts > 0:
+            meta_statuses.append("{O}Timeouts:%d{W}" % self.total_timeouts)
+
+        if self.total_wpsfails > 0:
+            meta_statuses.append("{O}WPSFail:%d{W}" % self.total_wpsfails)
+
+        if self.locked:
+            meta_statuses.append("{R}Locked{W}")
+
+        if len(meta_statuses) > 0:
+            main_status += ' (%s)' % ', '.join(meta_statuses)
+
+        return main_status
+
+
+    def parse_crack_result(self, stdout):
+        if self.crack_result is not None:
+            return self.crack_result
+
+        (pin, psk, ssid) = self.get_pin_psk_ssid(stdout)
+
+        # Check if we cracked it, or if process stopped.
+        if pin is not None:
+            # We cracked it.
+
+            if psk is not None:
+                # Reaver provided PSK
+                self.pattack('{G}Cracked WPS PIN: {C}%s{W} {G}PSK: {C}%s{W}' % (pin, psk), newline=True)
+            else:
+                self.pattack('{G}Cracked WPS PIN: {C}%s' % pin, newline=True)
+
+                # Try to derive PSK from PIN using Bully
+                self.pattack('{W}Retrieving PSK using {C}bully{W}...')
+                psk = Bully.get_psk_from_pin(self.target, pin)
+                if psk is None:
                     Color.pl("")
-                    return False
-
-                stdout_write.flush()
-
-                # Check output from reaver process
-                stdout = self.get_stdout()
-                stdout_last_line = stdout.split('\n')[-1]
-
-                (pin, psk, ssid) = self.get_pin_psk_ssid(stdout)
-
-                # Check if we cracked it, or if process stopped.
-                if pin is not None or reaver.poll() is not None:
-                    reaver.interrupt()
-
-                    # Check one-last-time for PIN/PSK/SSID, in case of race condition.
-                    stdout = self.get_stdout()
-                    (pin, psk, ssid) = Reaver.get_pin_psk_ssid(stdout)
-
-                    # Check if we cracked it.
-                    if pin is not None:
-                        # We cracked it.
-                        bssid = self.target.bssid
-                        Color.clear_entire_line()
-                        Color.pattack("WPS", airodump_target, "Pixie-Dust", "{G}successfully cracked WPS PIN and PSK{W}")
-                        Color.pl("")
-                        self.crack_result = CrackResultWPS(bssid, ssid, pin, psk)
-                        self.crack_result.dump()
-                        return True
-                    else:
-                        # Failed to crack, reaver proces ended.
-                        Color.clear_line()
-                        Color.pattack("WPS", airodump_target, "Pixie-Dust", "{R}Failed: {O}WPS PIN not found{W}\n")
-                        return False
-
-                if 'WPS pin not found' in stdout:
-                    Color.pl('{R}failed: {O}WPS pin not found{W}')
-                    break
-
-                last_step = step
-                # Status updates, depending on last line of stdout
-                if 'Waiting for beacon from' in stdout_last_line:
-                    step = '({C}step 1/8{W}) waiting for beacon'
-                elif 'Associated with' in stdout_last_line:
-                    step = '({C}step 2/8{W}) waiting to start session'
-                elif 'Starting Cracking Session.' in stdout_last_line:
-                    step = '({C}step 3/8{W}) waiting to try pin'
-                elif 'Trying pin' in stdout_last_line:
-                    step = '({C}step 4/8{W}) trying pin'
-                elif 'Sending EAPOL START request' in stdout_last_line:
-                    step = '({C}step 5/8{W}) sending eapol start request'
-                elif 'Sending identity response' in stdout_last_line:
-                    step = '({C}step 6/8{W}) sending identity response'
-                elif 'Sending M2 message' in stdout_last_line:
-                    step = '({C}step 7/8{W}) sending m2 message (may take a while)'
-                elif 'Detected AP rate limiting,' in stdout_last_line:
-                    if Configuration.wps_skip_rate_limit:
-                        Color.pl('{R}failed: {O}hit WPS rate-limit{W}')
-                        Color.pl('{!} {O}use {R}--ignore-ratelimit{O} to ignore' +
-                                 ' this kind of failure in the future{W}')
-                        break
-                    step = '({C}step -/8{W}) waiting for AP rate limit'
-
-                if step != last_step:
-                    # Step changed, reset step timer
-                    time_since_last_step = 0
+                    self.pattack('{R}Failed {O}to get PSK using bully', newline=True)
                 else:
-                    time_since_last_step += 1
+                    self.pattack('{G}Cracked WPS PSK: {C}%s' % psk, newline=True)
 
-                if time_since_last_step > Configuration.wps_pixie_step_timeout:
-                    Color.pl('{R}failed: {O}step-timeout after %d seconds{W}' % Configuration.wps_pixie_step_timeout)
-                    break
+            crack_result = CrackResultWPS(self.target.bssid, ssid, pin, psk)
+            crack_result.dump()
+            return crack_result
 
-                # TODO: Timeout check
-                if reaver.running_time() > Configuration.wps_pixie_timeout:
-                    Color.pl('{R}failed: {O}timeout after %d seconds{W}' % Configuration.wps_pixie_timeout)
-                    break
+        return None
 
-                # Reaver Failure/Timeout check
-                fail_count = stdout.count('WPS transaction failed')
-                if fail_count > Configuration.wps_fail_threshold:
-                    Color.pl('{R}failed: {O}too many failures (%d){W}' % fail_count)
-                    break
-                timeout_count = stdout.count('Receive timeout occurred')
-                if timeout_count > Configuration.wps_timeout_threshold:
-                    Color.pl('{R}failed: {O}too many timeouts (%d){W}' % timeout_count)
-                    break
 
-                Color.clear_line()
-                Color.pattack("WPS", airodump_target, "Pixie-Dust", step)
+    def parse_failure(self, stdout):
+        # Total failure
+        if 'WPS pin not found' in stdout:
+            raise Exception('Reaver says "WPS pin not found"')
 
-                time.sleep(1)
-                continue
+        # Running-time failure
+        if self.running_time() > Configuration.wps_pixie_timeout:
+            raise Exception('Timeout after %d seconds' % Configuration.wps_pixie_timeout)
 
-        # Attack failed, already printed reason why
-        reaver.interrupt()
-        stdout_write.close()
-        return False
+        # WPSFail count
+        self.total_wpsfails = stdout.count('WPS transaction failed')
+        if self.total_wpsfails >= Configuration.wps_fail_threshold:
+            raise Exception('Too many failures (%d)' % self.total_wpsfails)
+
+        # Timeout count
+        self.total_timeouts = stdout.count('Receive timeout occurred')
+        if self.total_timeouts >= Configuration.wps_timeout_threshold:
+            raise Exception('Too many timeouts (%d)' % self.total_timeouts)
+
+
+    def parse_state(self, stdout):
+        state = self.state
+
+        stdout_last_line = stdout.split('\n')[-1]
+
+        if 'Waiting for beacon from' in stdout_last_line:
+            state = 'Waiting for beacon'
+
+        elif 'Associated with' in stdout_last_line:
+            state = 'Associated'
+
+        elif 'Starting Cracking Session.' in stdout_last_line:
+            state = 'Waiting to try PIN'
+
+        elif 'Trying pin' in stdout_last_line:
+            state = 'Trying PIN'
+
+        elif 'Sending EAPOL START request' in stdout_last_line:
+            state = 'Sending EAPOL Start request'
+
+        elif 'Sending identity response' in stdout_last_line:
+            state = 'Sending identity response'
+            self.locked = False
+
+        elif 'Sending M2 message' in stdout_last_line:
+            state = 'Sending M2 / Running pixiewps'
+            self.locked = False
+
+        elif 'Detected AP rate limiting,' in stdout_last_line:
+            state = 'Rate-Limited by AP'
+            self.locked = True
+
+        return state
+
+
+    def pattack(self, message, newline=False):
+        # Print message with attack information.
+        time_left = Configuration.wps_pixie_timeout - self.running_time()
+
+        Color.clear_entire_line()
+        Color.pattack("WPS",
+                self.target,
+                'Pixie-Dust',
+                '{W}[{C}%s{W}] %s' % (Timer.secs_to_str(time_left), message))
+        if newline:
+            Color.pl("")
+
+
+    def running_time(self):
+        return int(time.time() - self.start_time)
+
 
     @staticmethod
     def get_pin_psk_ssid(stdout):
@@ -189,12 +275,21 @@ class Reaver(Attack):
 
         return (pin, psk, ssid)
 
-    def get_stdout(self):
-        ''' Gets output from stdout_file '''
-        if not self.stdout_file:
+
+    def get_output(self):
+        ''' Gets output from reaver's output file '''
+        if not self.output_filename:
             return ''
-        with open(self.stdout_file, 'r') as fid:
+
+        if self.output_write:
+            self.output_write.flush()
+
+        with open(self.output_filename, 'r') as fid:
             stdout = fid.read()
+
+        if Configuration.verbose > 1:
+            Color.pe('\n{P} [reaver:stdout] %s' % '\n [reaver:stdout] '.join(stdout.split('\n')))
+
         return stdout.strip()
 
 
@@ -258,7 +353,7 @@ executing pixiewps -e d0141b15656e96b85fcead2e8e76330d2b1ac1576bb026e7a328c0e1ba
     result = CrackResultWPS('AA:BB:CC:DD:EE:FF', ssid, pin, psk)
     result.dump()
 
-    print ""
+    print("")
 
     (pin, psk, ssid) = Reaver.get_pin_psk_ssid(new_stdout)
     assert pin  == '11867722',   'pin was "%s", should have been "11867722"' % pin

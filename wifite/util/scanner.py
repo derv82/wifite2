@@ -3,6 +3,7 @@
 
 from ..tools.airodump import Airodump
 from ..util.color import Color
+from ..util.input import raw_input, xrange
 from ..model.target import Target
 from ..config import Configuration
 
@@ -40,12 +41,16 @@ class Scanner(object):
 
                     try:
                         self.targets = airodump.get_targets()
-                    except Exception, e:
+                    except Exception as e:
                         break
 
                     if self.found_target():
                         # We found the target we want
                         return
+
+                    for target in self.targets:
+                        if target.bssid in airodump.decloaked_bssids:
+                            target.decloaked = True
 
                     self.print_targets()
 
@@ -60,11 +65,6 @@ class Scanner(object):
                     outline += " {G}%d{W} target(s)," % target_count
                     outline += " {G}%d{W} client(s)." % client_count
                     outline += " {O}Ctrl+C{W} when ready "
-                    decloaked = airodump.decloaked_targets
-                    if len(decloaked) > 0:
-                        outline += "(decloaked"
-                        outline += " {C}%d{W} ESSIDs:" % len(decloaked)
-                        outline += " {G}%s{W}) " % ", ".join([x.essid for x in decloaked])
                     Color.clear_entire_line()
                     Color.p(outline)
 
@@ -198,7 +198,8 @@ class Scanner(object):
         chosen_targets = []
     
         for choice in raw_input(Color.s(input_str)).split(','):
-            if choice == 'all':
+            choice = choice.strip()
+            if choice.lower() == 'all':
                 chosen_targets = self.targets
                 break
             if '-' in choice:
@@ -219,7 +220,7 @@ if __name__ == '__main__':
     try:
         s = Scanner()
         targets = s.select_targets()
-    except Exception, e:
+    except Exception as e:
         Color.pl('\r {!} {R}Error{W}: %s' % str(e))
         Configuration.exit_gracefully(0)
     for t in targets:
