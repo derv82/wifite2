@@ -292,6 +292,9 @@ class Airodump(Dependency):
             elif Configuration.ignore_essids is not None and\
                     result[i].essid in Configuration.ignore_essids:
                 result.pop(i)
+            elif Configuration.ignore_cracked and\
+                    result[i].bssid in Configuration.ignore_cracked:
+                result.pop(i)
             elif bssid and result[i].bssid.lower() != bssid.lower():
                 result.pop(i)
             elif essid and result[i].essid and result[i].essid != essid:

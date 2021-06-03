@@ -167,6 +167,12 @@ class Arguments(object):
         glob.add_argument('--ignore-essid', help=argparse.SUPPRESS, action='append',
                 dest='ignore_essids', type=str)
 
+        glob.add_argument('-ic',
+            '--ignore-cracked',
+            action='store_true',
+            dest='ignore_cracked',
+            help=Color.s('Hides previously-cracked targets. (default: {G}off{W})'))
+
         glob.add_argument('--clients-only',
             action='store_true',
             dest='clients_only',
