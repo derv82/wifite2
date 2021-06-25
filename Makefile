@@ -21,7 +21,7 @@ modwifi:
 	@echo "#----------------------------------------------"
 
 reaver:
-	git clone https://github.com/kimocoder/reaver-wps-fork-t6x tools/reaver/
+	git clone https://github.com/t6x/reaver-wps-fork-t6x tools/reaver/
 	cd tools/reaver/src/ && ./configure && make && make install
 
 bully:

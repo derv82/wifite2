@@ -15,13 +15,16 @@ class Wifite(object):
 
     def __init__(self):
         '''
-        Initializes Wifite. Checks for root permissions and ensures dependencies are installed.
+        Initializes Wifite. Checks that its running under *nix, with root permissions and ensures dependencies are installed.
         '''
 
         self.print_banner()
 
         Configuration.initialize(load_interface=False)
 
+        if os.name == 'nt':
+            Color.pl('{!} {R}error: {O}wifite{R} must be run under a {O}*NIX{W}{R} like OS')
+            Configuration.exit_gracefully(0)
         if os.getuid() != 0:
             Color.pl('{!} {R}error: {O}wifite{R} must be run as {O}root{W}')
             Color.pl('{!} {R}re-run with {O}sudo{W}')

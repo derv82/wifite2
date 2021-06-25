@@ -121,7 +121,7 @@ class Configuration(object):
 
         if os.path.exists(manufacturers):
             cls.manufacturers = {}
-            with open(manufacturers, "r") as f:
+            with open(manufacturers, "r", encoding='utf-8') as f:
                 # Parse txt format into dict
                 for line in f:
                     if not re.match(r"^\w", line):
