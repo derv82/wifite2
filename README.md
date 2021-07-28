@@ -34,8 +34,16 @@ apt update -y && apt install dirmngr aptitude -y && apt-key adv --keyserver keys
 
 ----------
 For Kali Linux
+
+Identify the name of your card
+
+  ```
+  iwconfig
+  ```
+
 Set interface down + monitor mode + activate interface + TX power (as root)
 ----------
+Replace in the below script the wlan name of the wifi device that you like to use
 
   ```
   airmon-ng check kill && service NetworkManager restart && ip link set wlan0 down && iw dev wlan0 set type monitor && ip link set wlan0 up && iw wlan0 set txpower fixed 3737373737373
@@ -53,12 +61,6 @@ Excute the below command and it will automatically start to capture and decrypt 
 ----------
 For Kali Linux
 ----------
-
-Identify the name of your card
-
-  ```
-  iwconfig
-  ```
 
 ```
 wifite --kill --nodeauths --ignore-locks --keep-ivs -p 37 -mac -v
