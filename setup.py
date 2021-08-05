@@ -30,6 +30,8 @@ setup(
     long_description='''Wireless Network Auditor for Linux.
 
     Cracks WEP, WPA, and WPS encrypted networks.
+    
+    long_description= '''Wireless Network Auditor for Debian. 
 
     Depends on Aircrack-ng Suite, Tshark (from Wireshark), and various other external tools.''',
     classifiers = [
