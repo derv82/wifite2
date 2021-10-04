@@ -25,7 +25,7 @@ class TestHandshake(unittest.TestCase):
         try:
             hs.analyze()
         except Exception:
-            fail()
+            self.fail()
 
     @unittest.skipUnless(Process.exists('tshark'), 'tshark is missing')
     def testHandshakeTshark(self):
