@@ -44,7 +44,7 @@ Set interface down + monitor mode + activate interface + TX power (as root)
 Replace in the below script the wlan name of the wifi device that you like to use
 
   ```
-  airmon-ng check kill && service NetworkManager restart && ip link set wlan0 down && iw dev wlan0 set type monitor && ip link set wlan0 up && iw wlan0 set txpower fixed 3737373737373
+  airmon-ng check kill && service NetworkManager restart && ip link set wlan0 down && iw dev wlan0 set type monitor && ip link set wlan0 up && iw wlan0 set txpower fixed 3737373737373 && service NetworkManager start
   ```
   
   You may also uncheck the box "Automatically connect to this network when it is avaiable" in nm-connection-editor. This only works if you have a saved wifi connection.
