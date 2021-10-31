@@ -39,7 +39,7 @@ Other pen-testing distributions (such as BackBox or Ubuntu) have outdated versio
 
 Required Tools
 --------------
-First and foremost, you will need a wireless card capable of "Monitor Mode" and packet injection (see [this tutorial for checking if your wireless card is compatible](http://www.aircrack-ng.org/doku.php?id=compatible_cards) and also [this guide](https://en.wikipedia.org/wiki/Wi-Fi_Protected_Setup#Offline_brute-force_attack)). There are many cheap wireless cards that plug into USB available from online stores.
+First and foremost, you will need a wireless card capable of "Monitor Mode" and packet injection (see [this tutorial for checking if your wireless card is compatible](https://www.aircrack-ng.org/doku.php?id=compatible_cards) and also [this guide](https://en.wikipedia.org/wiki/Wi-Fi_Protected_Setup#Offline_brute-force_attack)). There are many cheap wireless cards that plug into USB available from online stores.
 
 Second, only the latest versions of these programs are supported and must be installed for Wifite to work properly:
 
@@ -48,7 +48,7 @@ Second, only the latest versions of these programs are supported and must be ins
 * It's recommended to use `python3` as `python2` was marked deprecated as of january 2020.
 * [`Iw`](https://wireless.wiki.kernel.org/en/users/documentation/iw): For identifying wireless devices already in Monitor Mode.
 * [`Ip`](https://packages.debian.org/buster/net-tools): For starting/stopping wireless devices.
-* [`Aircrack-ng`](http://aircrack-ng.org/) suite, includes:
+* [`Aircrack-ng`](https://aircrack-ng.org/) suite, includes:
    * [`airmon-ng`](https://tools.kali.org/wireless-attacks/airmon-ng): For enumerating and enabling Monitor Mode on wireless devices.
    * [`aircrack-ng`](https://tools.kali.org/wireless-attacks/aircrack-ng): For cracking WEP .cap files and WPA handshake captures.
    * [`aireplay-ng`](https://tools.kali.org/wireless-attacks/aireplay-ng): For deauthing access points, replaying capture files, various WEP attacks.
