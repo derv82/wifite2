@@ -1,7 +1,7 @@
 ## Wifite
 ======
 
-Tested on last Kali Linux Version 5.14.0-kali2-amd64 (Wed 20 October of 2021)
+Tested on last Kali Linux Version 5.14.0-kali2-amd64 + Ubuntu Jammy Jellyfish (development branch) on [Thursday 11 November of 2021]
 
 #
 This repo is a complete re-write of [`wifite`](https://github.com/derv82/wifite), a Python script for auditing wireless networks.
