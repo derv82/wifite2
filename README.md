@@ -1,12 +1,20 @@
-Wifite
+## Wifite
 ======
 
+Tested on last Kali Linux Version 5.14.0-kali2-amd64 + Ubuntu Jammy Jellyfish (development branch) on [Thursday 11 November of 2021]
+
+#
 This repo is a complete re-write of [`wifite`](https://github.com/derv82/wifite), a Python script for auditing wireless networks.
 
 Wifite runs existing wireless-auditing tools for you. Stop memorizing command arguments & switches!
 
 
-----------
+
+## Install Python
+
+    sudo apt update -y && sudo apt install aptitude -y && aptitude install python-pip python3-pip python-pip-whl python-all-dev python-wheel -y && pip install pysqlcipher3 && pip install psycopg2-binary
+
+
 
 Install Realtek / Alfa Cards:
 ----------
@@ -15,53 +23,80 @@ RTL8812AU/21AU and RTL8814AU drivers with monitor mode and frame injection
 https://github.com/4k4xs4pH1r3/realtek
 
 
-----------
 
-Clean the Enviroment:
-----------
-```
-rm -r /usr/share/hcxtools/ /usr/share/hcxdumptool/ /usr/share/cowpatty/ /usr/share/bully/ /usr/share/wifite2/ /usr/local/lib/python2.7/dist-packages/cpyrit/
-```
-
-
-Edit APT Repo
+Install & Activate `wifite` Ninja mode as root
 ----------
 ```
-nano /etc/apt/sources.list
-```
-Add this repo
-```
-deb http://ftp.debian.org/debian/ stretch main contrib non-free
-```
+apt update -y && apt install dirmngr aptitude -y && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 7638D0442B90D010 04EE7237B7D453EC EF0F382A1A7B6500 && apt-get update -y && apt-get upgrade -y && aptitude install hcxtools libsqlite3-dev zlib1g-dev libncurses5-dev libgdbm-dev libbz2-dev libssl-dev libdb-dev libssl-dev build-essential libssl-dev libblas-dev libatlas-base-dev libpq-dev libffi-dev zlib1g-dev libxml2-dev libxslt1-dev zlib1g-dev libpcap-dev libpcap-dev -y && pip install psycopg2-binary pysqlcipher3 psycopg2 testresources && pip install --upgrade wheel pip install scapy && aptitude install && pip list --outdated && pip install --upgrade wheel && pip install --upgrade setuptools && sudo apt-get update -y && sudo apt-get install python2-dev libssl-dev libpcap-dev python3-scapy -y && cd /usr/share/ && git clone https://github.com/JPaulMora/Pyrit.git --depth=1 && sed -i "s/COMPILE_AESNI/COMPILE_AESNIX/" Pyrit/cpyrit/_cpyrit_cpu.c && cd Pyrit && python setup.py clean && python setup.py build && sudo python setup.py install && cd .. && pip install psycopg2-binary && pip install psycopg2 && pip install virtualenvwrapper && aptitude install neofetch git make clang libpcap-dev reaver tshark wireshark aircrack-ng pixiewps libssl-dev libcurl4-openssl-dev libpcap0.8-dev libcurl4-doc libidn11-dev libkrb5-dev libldap2-dev librtmp-dev libssh2-1-dev libssl-doc -y && cd /usr/share/ && git clone https://github.com/ZerBea/hcxtools.git && cd hcxtools && make && make install && cd /usr/share && git clone https://github.com/ZerBea/hcxdumptool.git  && cd hcxdumptool && make && make install && cd /usr/share && git clone https://github.com/joswr1ght/cowpatty.git && cd cowpatty && make && make install && cd /usr/share && git clone https://github.com/aanarchyy/bully.git && cd bully/src && make && make install && neofetch && cd /usr/share && neofetch && cd && pip --version && python --version
 
-This will install `wifite`
-----------
-```
-sudo apt install dirmngr -y && sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 7638D0442B90D010 04EE7237B7D453EC EF0F382A1A7B6500 && apt-get update -y && apt-get upgrade -y && apt-get install python2.7-dev python3 python-dev python3-dev libssl-dev build-essential libssl-dev libblas-dev libatlas-base-dev libpq-dev libffi-dev zlib1g-dev libxml2-dev libxslt1-dev zlib1g-dev libpcap-dev python-pip libpcap-dev -y && apt-get remove --purge pyrit -y && pip install psycopg2 && pip install --upgrade wheel pip install scapy && apt-get install python-scapy && pip list --outdated && pip install --upgrade wheel && pip install --upgrade setuptools && cd /usr/share/ && git clone https://github.com/JPaulMora/Pyrit.git && cd Pyrit && python setup.py clean && python setup.py build && python setup.py install && pip install psycopg2-binary && sudo pip install virtualenvwrapper && pip install scrapy && apt install neofetch git make clang libpcap-dev reaver tshark wireshark aircrack-ng pixiewps libssl-dev libcurl4-openssl-dev libpcap0.8-dev libcurl4-doc libidn11-dev libkrb5-dev libldap2-dev librtmp-dev libssh2-1-dev libssl-doc -y && cd /usr/share/ && git clone https://github.com/ZerBea/hcxtools.git && cd hcxtools && make && make install && cd /usr/share && git clone https://github.com/ZerBea/hcxdumptool.git  && cd hcxdumptool && make && make install && cd /usr/share && git clone https://github.com/joswr1ght/cowpatty.git && cd cowpatty && make && make install && cd /usr/share && git clone https://github.com/aanarchyy/bully.git && cd bully/src && make && make install && neofetch && cd /usr/share && git clone https://github.com/4k4xs4pH1r3/wifite2.git && cd wifite2 && sudo python setup.py install && neofetch
 ```
 
 ----------
-Set interface down + monitor mode + activate interface + TX power
-----------
+For Kali Linux
+
+Identify the name of your card
 
   ```
-  airmon-ng check kill && sudo service NetworkManager restart && sudo ip link set wlan0 down && sudo iw dev wlan0 set type monitor && sudo ip link set wlan0 up && sudo iw wlan0 set txpower fixed 3737373737373
+  iwconfig
+  ```
+
+Set interface down + monitor mode + activate interface + TX power (as root)
+----------
+Replace in the below script the wlan name of the wifi device that you like to use
+
+  ```
+  airmon-ng check kill && service NetworkManager restart && ip link set wlan0 down && iw dev wlan0 set type monitor && ip link set wlan0 up && iw wlan0 set txpower fixed 3737373737373 && service NetworkManager start
   ```
   
   You may also uncheck the box "Automatically connect to this network when it is avaiable" in nm-connection-editor. This only works if you have a saved wifi connection.
 
 
-----------
 
 To start Wifite in Ninja Mode
 ----------
 
 Excute the below command and it will automatically start to capture and decrypt the password.
 
+----------
+For Kali Linux + Ubuntu
+----------
 
 ```
-wifite --kill --nodeauths --ignore-locks --keep-ivs -p 1337 -mac -v
+sudo wifite --ignore-locks --keep-ivs -p 1337 -mac --random-mac -v -inf --bully --pmkid --dic /usr/share/wordlists/rockyou.txt --require-fakeauth --nodeauth --wps --pmkid-timeout 120
 ```
+
+
+
+
+
+----------
+For Arch
+----------
+
+Set interface down + monitor mode + activate interface + TX power (as root)
+----------
+
+Identify the name of your card
+
+  ```
+  iwconfig
+  ```
+
+  ```
+  airmon-ng check kill && ip link set wlan0 down && iw dev wlan0 set type monitor && ip link set wlan0 up && iw wlan0 set txpower fixed 3737373737373
+  ```
+
+
+----------
+
+----------
+For Arch
+----------
+
+```
+wifite --showb --nodeaut --strip --tshark --mac --chopchop --arpreplay --caffelatte --hirte -p0841 --all --dict /usr/share/wordlist
+```
+
 
 #
 #
@@ -202,4 +237,14 @@ What's not new?
 sudo python setup.py install --record files.txt \
   && cat files.txt | xargs sudo rm \
   && rm -f files.txt
+```
+
+
+
+----------
+
+Only in case Clean the Enviroment:
+----------
+```
+rm -r /usr/share/hcxtools/ /usr/share/hcxdumptool/ /usr/share/cowpatty/ /usr/share/bully/ /usr/share/wifite2/ /usr/local/lib/python2.7/dist-packages/cpyrit/
 ```
