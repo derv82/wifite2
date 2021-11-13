@@ -62,7 +62,7 @@ For Kali Linux + Ubuntu
 ----------
 
 ```
-sudo wifite --ignore-locks --keep-ivs -p 113 -mac --random-mac -v -inf --dict /usr/share/wordlists/rockyou.txt
+sudo wifite --ignore-locks --keep-ivs -p 1337 -mac --random-mac -v -inf --bully --pmkid --dic /usr/share/wordlists/rockyou.txt --require-fakeauth --nodeauth --wps --pmkid-timeout 120
 ```
 
 
