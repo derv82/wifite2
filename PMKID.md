@@ -1,6 +1,6 @@
 ### PMKID Attack
 
-See https://hashcat.net/forum/thread-7717.html
+See <https://hashcat.net/forum/thread-7717.html>
 
 ### Steps
 
@@ -20,14 +20,13 @@ See https://hashcat.net/forum/thread-7717.html
 ### Problems
 
 * Requires latest hashcat to be installed. This might be in a different directory.
-   * Use can specify path to hashcat? Yeck...
-   * % hashcat -h | grep 16800
-   * 16800 | WPA-PMKID-PBKDF2
+  * Use can specify path to hashcat? Yeck...
+  * % hashcat -h | grep 16800
+  * 16800 | WPA-PMKID-PBKDF2
 * If target can't be attacked... we need to detect this failure mode.
-   * Might need to scrape `hcxdumptool`'s output
-   * Look at `pmkids()` func in .bashrc
-   * hcxpcaptool -z OUTPUT.16800 INPUT.pcapng > /dev/null
-   * Check OUTPUT.16800 for the ESSID.
+  * Might need to scrape `hcxdumptool`'s output
+  * Look at `pmkids()` func in .bashrc
+  * hcxpcaptool -z OUTPUT.16800 INPUT.pcapng > /dev/null
+  * Check OUTPUT.16800 for the ESSID.
 * Wireless adapter support is minimal, apparently.
 * hcxdumptool also deauths networks and captures handshakes... maybe unnecessarily
-
