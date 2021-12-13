@@ -1,8 +1,8 @@
-FROM python:2.7.14-jessie
+FROM python:3.9.7-slim
 
 ENV DEBIAN_FRONTEND noninteractive
 ENV HASHCAT_VERSION hashcat-5.1.0
-ENV HASHCAT_UTILS_VERSION  1.9
+ENV HASHCAT_UTILS_VERSION 1.9
 
 # Install requirements
 RUN echo "deb-src http://deb.debian.org/debian jessie main" >> /etc/apt/sources.list
