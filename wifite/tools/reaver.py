@@ -198,7 +198,7 @@ class Reaver(Attack, Dependency):
                 else:
                     self.pattack('{G}Cracked WPS PSK: {C}%s' % psk, newline=True)
 
-            crack_result = CrackResultWPS(self.target.bssid, ssid, pin, psk)
+            crack_result = CrackResultWPS(self.target.bssid, self.target.channel, ssid, pin, psk)
             crack_result.dump()
             return crack_result
 
