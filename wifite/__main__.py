@@ -9,7 +9,7 @@ except (ValueError, ImportError) as e:
 from .util.color import Color
 
 import os
-
+import subprocess
 
 class Wifite(object):
 
@@ -105,6 +105,8 @@ def entry_point():
     except KeyboardInterrupt:
         Color.pl('\n{!} {O}Interrupted, Shutting down...{W}')
 
+    # Delete Reaver .pcap
+    subprocess.run(["rm", "reaver_output.pcap"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     Configuration.exit_gracefully(0)
 
 

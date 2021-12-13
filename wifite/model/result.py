@@ -18,6 +18,7 @@ class CrackResult(object):
     def __init__(self):
         self.date = int(time.time())
         self.readable_date = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(self.date))
+        self.loc = 'ND'
 
     def dump(self):
         raise Exception('Unimplemented method: dump()')
@@ -55,8 +56,10 @@ class CrackResult(object):
         this_dict.pop('date')
         for entry in saved_results:
             this_dict['date'] = entry.get('date')
+            if 'loc' in this_dict:
+                this_dict['loc'] = entry.get('loc')
             if entry == this_dict:
-                # Skip if we already saved this BSSID+ESSID+TYPE+KEY
+                # Skip if we already saved this BSSID+ESSID+TYPE+KEY+LOC
                 Color.pl('{+} {C}%s{O} already exists in {G}%s{O}, skipping.' % (
                     self.essid, Configuration.cracked_file))
                 return
@@ -147,6 +150,7 @@ class CrackResult(object):
         result.date = json['date']
         result.channel = json['channel']
         result.readable_date = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(result.date))
+        result.loc = json['loc']
         return result
 
 

@@ -46,7 +46,8 @@ class CrackResultWPS(CrackResult):
             'bssid': self.bssid,
             'channel' : self.channel,
             'pin': self.pin,
-            'psk': self.psk
+            'psk': self.psk,
+            'loc': self.loc
         }
 
 
