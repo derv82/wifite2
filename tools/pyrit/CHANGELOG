@@ -1,0 +1,80 @@
+Whats new in 0.5.1:
+ * Fixed missing import (#479 and #481), thanks llazzaro
+ * PEP8 improvements, thanks llazzaro
+ * Better arch detection,thanks leitao
+ * Pyrit CUDA now compiles in OSX
+ * Updated wiki
+
+Changes since 0.5.0:
+ * Added use_CUDA and use_OpenCL in config file
+ * Improved cores listing and managing
+ * Updated Wiki and ported to GitHub
+ * limit_ncpus now disables all CPUs when set to value below 0
+ * Improve CCMP packet identification, thanks to yannayl
+
+Changes since 0.4.0:
+ * Fixed an error in Pyrit server/client mode
+
+Changes since 0.3.0:
+ * Added CPyrit-CAL++
+ * Added CLI-function 'check_db'
+ * Added CLI-option '-h'
+ * Added option to batch-create ESSIDs by reading them for a file
+ * Complete rework of packet-parsing and handshake detection
+ * Make default workunit-size configureable (workunit_size)
+ * Make maximum number of used CPUs configurable (limit_ncpus)
+ * Use GPU-native bitwise rotation with OpenCL if possible
+ * Use libpcap to access capture-devices/files
+ * CUDA-plugin now compatible with Fermi-GPUs
+ * OpenCL-plugin now builds on MacOS 10.6
+ * Link with libcrypto instead of libssl
+ * Fixed CUDA-plugin on MacOS 10.6
+ * Fixed SSE2-detection on old CPUs
+ * Fixed database-indices
+ * Fixed rare IndexError in EAPOLCracker
+ * Numerous fixes in storage-relay code
+ * Fix deprecation-warning with sqlalchemy.Binary
+ * Various API-changes
+
+Changes since 0.2.4:
+ * Removed CPyrit-Stream in favor of OpenCL
+ * Added Network-Core
+ * Added SQL-Storage
+ * Added Remote-Storage
+ * Added CLI-function 'stripLive'
+ * Added CLI-function 'attack_cowpatty'
+ * Added CLI-function 'import_unique_passwords'
+ * Added CLI-function 'relay'
+ * Added CLI-function 'serve'
+ * Added SSE2-support for EAPOLCracker
+ * Added output-option to all attack-modes
+ * Fixed EAPOLCracker picking the wrong KeyScheme
+ * Improved lazy-loading of files
+ * Sourcecode now almost completely PEP8-compliant
+
+Changes since 0.2.3:
+ * Added module 'pckttools'
+ * Added CLI-function 'analyze'
+ * Added CLI-function 'attack_batch'
+ * Added CLI-function 'attack_db'
+ * Added CLI-function 'attack_passthrough'
+ * Added CLI-function 'strip'
+ * Fixed SSE2 on MacOS
+ * Fixed SSE2 with SELinux
+ * Fixed handling of passwords containing NULLs
+ * Improved 'benchmark'
+ * Most functions can now handle gzip-compressed files (-f)
+
+Changes since 0.2.2:
+ * Added docstrings
+ * Added CLI-function 'delete_essid'
+ * Added CLI-function 'verify'
+ * Added CLI-function 'selftest'
+ * Added Core for OpenCL
+ * Added SSE2-path to CPU-Core
+ * Fixed 'CUDA_ERROR_INVALID_IMAGE' when using CUDA 2.2
+ * Fixed process exit codes
+ * Improved scheduling between client and hardware
+ * Improved storage-code
+ * Improved performance for almost all CLI-functions
+ * Builds from SVN-directories now carry their revision-number

@@ -1,0 +1,14 @@
+include CHANGELOG
+include COPYING
+include README
+include MANIFEST.in
+include cpyrit/_cpyrit_cpu.h
+include cpyrit/cpufeatures.h
+include test/dict.gz
+include test/wpa2psk-linksys.dump.gz
+include test/wpapsk-linksys.dump.gz
+include test/wpa2psk-MOM1.dump.gz
+include test/wpa2psk-2WIRE972.dump.gz
+include test/wpapsk-virgin_broadband.dump.gz
+include test/wpa2psk-Red_Apple.dump.gz
+include test/test_pyrit.py

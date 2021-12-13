@@ -1,0 +1,5 @@
+include COPYING
+include README
+include MANIFEST.in
+include _cpyrit_cuda.h
+include _cpyrit_cudakernel.cu

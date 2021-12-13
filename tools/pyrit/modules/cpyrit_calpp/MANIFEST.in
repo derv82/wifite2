@@ -1,0 +1,6 @@
+include COPYING
+include README
+include generate_optimized_kernel
+include convert_optimized.sed
+include _cpyrit_calpp.h
+include _cpyrit_calpp_kernel_generator.cpp
