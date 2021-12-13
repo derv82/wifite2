@@ -277,6 +277,11 @@ class Reaver(Attack, Dependency):
             state = 'Rate-Limited by AP'
             self.locked = True
 
+        # [!] WARNING: Detected AP rate limiting, waiting 60 seconds before re-checking
+        elif 'AP requested deauth' in stdout_last_line:
+            state = 'AP requested deauth'
+            self.locked = True
+
         # Parse all lines since last check
         stdout_diff = stdout[self.last_line_number:]
         self.last_line_number = len(stdout)
