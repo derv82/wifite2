@@ -44,13 +44,16 @@ hcxtools:
 	git clone https://github.com/ZerBea/hcxtools tools/hcxtools/
 	cd tools/hcxtools/ && make && make install
 
+pyrit:
+	cd tools/pyrit/;python2 setup.py clean;sudo python2 setup.py build;sudo python2 setup.py install
+
 iw:
 	git clone https://git.kernel.org/pub/scm/linux/kernel/git/jberg/iw.git tools/iw/
 	cd tools/iw/ && make && make install
 
 deps:
 	/usr/bin/env pip3 install -r requirements.txt
-	apt update && apt install -yq cmake libssl-dev libpcap-dev libcap-dev libnl-genl-3-dev libnl-genl-3-200 python-setuptools pkg-config libcurl4-openssl-dev
+	apt update && apt install -yq cmake libssl-dev libpcap-dev libcap-dev libnl-genl-3-dev libnl-genl-3-200 python-setuptools pkg-config libcurl4-openssl-dev python2 build-essential python2-dev
 
 update:
 	cd tools/ath_masker/ && git pull
@@ -77,6 +80,7 @@ clean:
 	rm -rf tools/iw/
 	rm -rf tools/hcxdumptool/
 	rm -rf tools/hcxtools/
+	rm -rf tools/pyrit/build
 
 help:
 	@clear
@@ -85,12 +89,13 @@ help:
 	@echo " "
 	@echo " 1. Install tools/dependencies"
 	@echo " "
-	@echo " make iw:         : pull latest iw from git and install"
+	@echo " make iw          : pull latest iw from git and install"
 	@echo " make reaver      : pull latest reaver from git and install"
 	@echo " make hashcat     : pull latest hashcat from git and install"
 	@echo " make bully       : pull latest bully from git and install"
 	@echo " make hcxdumptool : pull latest hcxdumptool from git and install"
 	@echo " make hcxtools    : pull latest hcxtools from git and install"
+	@echo " make pyrit       : download and build/install pyrit"
 	@echo " make ath_masker  : download and build/install ath_masker"
 	@echo " make modwifi     : download and build/install modwifi"
 	@echo " "
