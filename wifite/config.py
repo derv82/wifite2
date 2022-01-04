@@ -49,6 +49,7 @@ class Configuration(object):
         cls.target_essid = None  # User-defined AP name
         cls.target_bssid = None  # User-defined AP BSSID
         cls.ignore_essids = None  # ESSIDs to ignore
+        cls.ignore_cracked = False # Ignore previously-cracked BSSIDs
         cls.clients_only = False  # Only show targets that have associated clients
         cls.all_bands = False  # Scan for both 2Ghz and 5Ghz channels
         cls.two_ghz = False  # Scan 2.4Ghz channels
@@ -302,6 +303,16 @@ class Configuration(object):
             cls.ignore_essids = args.ignore_essids
             Color.pl('{+} {C}option: {O}ignoring ESSID(s): {R}%s{W}' %
                      ', '.join(args.ignore_essids))
+
+        if args.ignore_cracked:
+            from .model.result import CrackResult
+            cracked_targets = CrackResult.load_all()
+            if not cracked_targets:
+                Color.pl('{!} {R}Previously-cracked access points not found in %s' % cls.cracked_file)
+                cls.ignore_cracked = False
+            else:
+                cls.ignore_cracked = [ item['bssid'] for item in cracked_targets ]
+                Color.pl('{+} {C}option: {O}ignoring {R}%s{O} previously-cracked targets' % len(cls.ignore_cracked))            
 
         if args.clients_only:
             cls.clients_only = True
