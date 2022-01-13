@@ -58,11 +58,11 @@ To start Wifite in Ninja Mode
 Excute the below command and it will automatically start to capture and decrypt the password.
 
 ----------
-For Kali Linux + Ubuntu
+For Kali Linux + Ubuntu + Debian
 ----------
 
 ```
-sudo wifite --ignore-locks --keep-ivs -p 1337 -mac --random-mac -v -inf --bully --pmkid --dic /usr/share/wordlists/rockyou.txt --require-fakeauth --nodeauth --wps --pmkid-timeout 120
+sudo wifite -i wlan0 --ignore-locks --keep-ivs -p 1337 -mac --random-mac -v -inf --bully --pmkid --dic /usr/share/wordlists/rockyou.txt --require-fakeauth --nodeauth --wps --pmkid-timeout 120
 ```
 
 
