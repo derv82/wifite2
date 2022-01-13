@@ -1,7 +1,7 @@
 ## Wifite
 ======
 
-Tested on last Kali Linux Version 5.14.0-kali2-amd64 + Ubuntu Jammy Jellyfish (development branch) on [Thursday 11 November of 2021]
+Tested on last Kali Linux Version 5.15.0-kali2-amd64 + Ubuntu Jammy Jellyfish (development branch) on [Thursday 11 November of 2021]
 
 #
 This repo is a complete re-write of [`wifite`](https://github.com/derv82/wifite), a Python script for auditing wireless networks.
@@ -45,7 +45,7 @@ Set interface down + monitor mode + activate interface + TX power (as root)
 Replace in the below script the wlan name of the wifi device that you like to use
 
   ```
-  airmon-ng check kill && service NetworkManager restart && ip link set wlan0 down && iw dev wlan0 set type monitor && ip link set wlan0 up && iw wlan0 set txpower fixed 3737373737373 && service NetworkManager start
+  airmon-ng check kill && service NetworkManager restart && ip link set wlan1 down && iw dev wlan1 set type monitor && ip link set wlan1 up && iw wlan1 set txpower fixed 3737373737373 && service NetworkManager start
   ```
   
   You may also uncheck the box "Automatically connect to this network when it is avaiable" in nm-connection-editor. This only works if you have a saved wifi connection.
@@ -62,7 +62,7 @@ For Kali Linux + Ubuntu + Debian
 ----------
 
 ```
-sudo wifite -i wlan0 --ignore-locks --keep-ivs -p 1337 -mac --random-mac -v -inf --bully --pmkid --dic /usr/share/wordlists/rockyou.txt --require-fakeauth --nodeauth --wps --pmkid-timeout 120
+sudo wifite -i wlan1 --ignore-locks --keep-ivs -p 1337 -mac --random-mac -v -inf --bully --pmkid --dic /usr/share/wordlists/rockyou.txt --require-fakeauth --nodeauth --wps --pmkid-timeout 120
 ```
 
 
@@ -83,7 +83,7 @@ Identify the name of your card
   ```
 
   ```
-  airmon-ng check kill && ip link set wlan0 down && iw dev wlan0 set type monitor && ip link set wlan0 up && iw wlan0 set txpower fixed 3737373737373
+  airmon-ng check kill && ip link set wlan1 down && iw dev wlan0 set type monitor && ip link set wlan1 up && iw wlan1 set txpower fixed 3737373737373
   ```
 
 
