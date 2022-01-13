@@ -12,7 +12,7 @@ Wifite runs existing wireless-auditing tools for you. Stop memorizing command ar
 
 ## Install Python
 
-    sudo apt update -y && sudo apt install aptitude -y && aptitude install python-pip python3-pip python-pip-whl python-all-dev python-wheel -y && pip install pysqlcipher3 && pip install psycopg2-binary
+    sudo apt update -y && sudo apt install aptitude -y && aptitude install python3-pip python-pip-whl python-all-dev python3-wheel -y && pip install pysqlcipher3 && pip install psycopg2-binary
 
 
 
