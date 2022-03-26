@@ -8,7 +8,7 @@ import re
 
 
 class Tshark(Dependency):
-    ''' Wrapper for Tshark program. '''
+    """ Wrapper for Tshark program. """
     dependency_required = False
     dependency_name = 'tshark'
     dependency_url = 'apt install wireshark'
@@ -147,7 +147,7 @@ class Tshark(Dependency):
 
     @staticmethod
     def check_for_wps_and_update_targets(capfile, targets):
-        '''
+        """
             Given a cap file and list of targets, use TShark to
             find which BSSIDs in the cap file use WPS.
             Then update the 'wps' flag for those BSSIDs in the targets.
@@ -155,7 +155,7 @@ class Tshark(Dependency):
             Args:
                 capfile - .cap file from airodump containing packets
                 targets - list of Targets from scan, to be updated
-        '''
+        """
 
         if not Tshark.exists():
             raise ValueError('Cannot detect WPS networks: Tshark does not exist')

@@ -15,7 +15,7 @@ class Macchanger(Dependency):
 
     @classmethod
     def down_macch_up(cls, iface, options):
-        '''Put interface down, run macchanger with options, put interface up'''
+        """Put interface down, run macchanger with options, put interface up"""
         from ..util.process import Process
 
         Color.clear_entire_line()

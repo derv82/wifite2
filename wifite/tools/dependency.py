@@ -3,6 +3,9 @@
 
 
 class Dependency(object):
+    dependency_name = None
+    dependency_required = None
+    dependency_url = None
     required_attr_names = ['dependency_name', 'dependency_url', 'dependency_required']
 
     # https://stackoverflow.com/a/49024227

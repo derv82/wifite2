@@ -5,7 +5,7 @@ import sys
 
 
 class Color(object):
-    ''' Helper object for easily printing colored text to the terminal. '''
+    """ Helper object for easily printing colored text to the terminal. """
 
     # Basic console colors
     colors = {
@@ -31,11 +31,11 @@ class Color(object):
 
     @staticmethod
     def p(text):
-        '''
+        """
         Prints text using colored format on same line.
         Example:
             Color.p('{R}This text is red. {W} This text is white')
-        '''
+        """
         sys.stdout.write(Color.s(text))
         sys.stdout.flush()
         if '\r' in text:
@@ -46,22 +46,22 @@ class Color(object):
 
     @staticmethod
     def pl(text):
-        '''Prints text using colored format with trailing new line.'''
+        """Prints text using colored format with trailing new line."""
         Color.p('%s\n' % text)
         Color.last_sameline_length = 0
 
     @staticmethod
     def pe(text):
-        '''
+        """
         Prints text using colored format with
         leading and trailing new line to STDERR.
-        '''
+        """
         sys.stderr.write(Color.s('%s\n' % text))
         Color.last_sameline_length = 0
 
     @staticmethod
     def s(text):
-        ''' Returns colored string '''
+        """ Returns colored string """
         output = text
         for (key, value) in list(Color.replacements.items()):
             output = output.replace(key, value)
@@ -84,20 +84,20 @@ class Color(object):
 
     @staticmethod
     def pattack(attack_type, target, attack_name, progress):
-        '''
+        """
         Prints a one-liner for an attack.
         Includes attack type (WEP/WPA),
         target ESSID & power, attack type, and progress.
         ESSID (Pwr) Attack_Type: Progress
         e.g.: Router2G (23db) WEP replay attack: 102 IVs
-        '''
+        """
         essid = '{C}%s{W}' % target.essid if target.essid_known else '{O}unknown{W}'
         Color.p('\r{+} {G}%s{W} ({C}%sdb{W}) {G}%s {C}%s{W}: %s ' % (
             essid, target.power, attack_type, attack_name, progress))
 
     @staticmethod
     def pexception(exception):
-        '''Prints an exception. Includes stack trace if necessary.'''
+        """Prints an exception. Includes stack trace if necessary."""
         Color.pl('\n{!} {R}Error: {O}%s' % str(exception))
 
         # Don't dump trace for the "no targets found" case.

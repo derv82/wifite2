@@ -12,9 +12,9 @@ class WPSState:
 
 
 class ArchivedTarget(object):
-    '''
+    """
         Holds information between scans from a previously found target
-    '''
+    """
     def __init__(self, target):
         self.bssid = target.bssid
         self.channel = target.channel
@@ -25,9 +25,9 @@ class ArchivedTarget(object):
         self.essid_len = target.essid_len
 
     def transfer_info(self, other):
-        '''
+        """
             Helper function to transfer relevant fields into another Target or ArchivedTarget
-        '''
+        """
         other.attacked = self.attacked
 
         # If both targets know the essid, keep decloacked value
@@ -49,12 +49,12 @@ class ArchivedTarget(object):
 
 
 class Target(object):
-    '''
+    """
         Holds details for a 'Target' aka Access Point (e.g. router).
-    '''
+    """
 
     def __init__(self, fields):
-        '''
+        """
             Initializes & stores target info based on fields.
             Args:
                 Fields - List of strings
@@ -74,7 +74,8 @@ class Target(object):
                     12 ID-length      (9)
                     13 ESSID          (HOME-ABCD)
                     14 Key            ()
-        '''
+        """
+        self.manufacturer = None
         self.bssid = fields[0].strip()
         self.channel = fields[3].strip()
         self.encryption = fields[5].strip()
@@ -122,9 +123,9 @@ class Target(object):
                and self.bssid == other.bssid
 
     def transfer_info(self, other):
-        '''
+        """
             Helper function to transfer relevant fields into another Target or ArchivedTarget
-        '''
+        """
         other.wps = self.wps
         other.attacked = self.attacked
 
@@ -141,7 +142,7 @@ class Target(object):
             other.essid_len = self.essid_len
 
     def validate(self):
-        ''' Checks that the target is valid. '''
+        """ Checks that the target is valid. """
         if self.channel == '-1':
             raise Exception('Ignoring target with Negative-One (-1) channel')
 
@@ -155,10 +156,10 @@ class Target(object):
             raise Exception('Ignoring target with Multicast BSSID (%s)' % self.bssid)
 
     def to_str(self, show_bssid=False, show_manufacturer=False):
-        '''
+        """
             *Colored* string representation of this Target.
             Specifically formatted for the 'scanning' table view.
-        '''
+        """
 
         max_essid_len = 24
         essid = self.essid if self.essid_known else '(%s)' % self.bssid

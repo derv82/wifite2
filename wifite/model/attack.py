@@ -6,7 +6,7 @@ from ..config import Configuration
 
 
 class Attack(object):
-    '''Contains functionality common to all attacks.'''
+    """Contains functionality common to all attacks."""
 
     target_wait = min(60, Configuration.wpa_attack_timeout)
 
@@ -17,7 +17,7 @@ class Attack(object):
         raise Exception('Unimplemented method: run')
 
     def wait_for_target(self, airodump):
-        '''Waits for target to appear in airodump.'''
+        """Waits for target to appear in airodump."""
         start_time = time.time()
         targets = airodump.get_targets(apply_filter=False)
         while len(targets) == 0:
@@ -36,7 +36,6 @@ class Attack(object):
                 break
 
         if airodump_target is None:
-            raise Exception(
-                'Could not find target (%s) in airodump' % self.target.bssid)
+            raise Exception('Could not find target (%s) in airodump' % self.target.bssid)
 
         return airodump_target

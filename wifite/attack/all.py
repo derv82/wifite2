@@ -14,10 +14,10 @@ class AttackAll(object):
 
     @classmethod
     def attack_multiple(cls, targets):
-        '''
+        """
         Attacks all given `targets` (list[wifite.model.target]) until user interruption.
         Returns: Number of targets that were attacked (int)
-        '''
+        """
         if any(t.wps for t in targets) and not AttackWPS.can_attack_wps():
             # Warn that WPS attacks are not available.
             Color.pl('{!} {O}Note: WPS attacks are not possible because you do not have {C}reaver{O} nor {C}bully{W}')
@@ -45,10 +45,10 @@ class AttackAll(object):
 
     @classmethod
     def attack_single(cls, target, targets_remaining):
-        '''
+        """
         Attacks a single `target` (wifite.model.target).
         Returns: True if attacks should continue, False otherwise.
-        '''
+        """
         if 'MGT' in target.authentication:
             Color.pl("\n{!}{O}Skipping. Target is using {C}WPA-Enterprise {O}and can not be cracked.")
             return True
@@ -120,13 +120,13 @@ class AttackAll(object):
 
     @classmethod
     def user_wants_to_continue(cls, targets_remaining, attacks_remaining=0):
-        '''
+        """
         Asks user if attacks should continue onto other targets
         Returns:
             None if the user wants to skip the current target
             True if the user wants to continue to the next attack on the current target
             False if the user wants to stop the remaining attacks
-        '''
+        """
         if attacks_remaining == 0 and targets_remaining == 0:
             return  # No targets or attacksleft, drop out
 

@@ -11,10 +11,10 @@ import os
 
 
 class John(Dependency):
-    ''' Wrapper for John program. '''
+    """ Wrapper for John program. """
     dependency_required = False
     dependency_name = 'john'
-    dependency_url = 'http://www.openwall.com/john/'
+    dependency_url = 'https://www.openwall.com/john/'
 
     @staticmethod
     def crack_handshake(handshake, show_command=False):
@@ -61,4 +61,4 @@ class John(Dependency):
         if os.path.exists(john_file):
             os.remove(john_file)
 
-        #return key
+        # return key

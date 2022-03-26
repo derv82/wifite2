@@ -10,7 +10,7 @@ from time import sleep, time
 
 
 class Scanner(object):
-    ''' Scans wifi networks & provides menu for selecting targets '''
+    """ Scans wifi networks & provides menu for selecting targets """
 
     # Console code for moving up one line
     UP_CHAR = '\x1B[1F'
@@ -23,11 +23,11 @@ class Scanner(object):
         self.err_msg = None
 
     def find_targets(self):
-        '''
+        """
         Scans for targets via Airodump.
         Loops until scan is interrupted via user or config.
         Sets this object `targets` attribute (list[Target]) on interruption
-        '''
+        """
 
         max_scan_time = Configuration.scan_time
 
@@ -90,10 +90,10 @@ class Scanner(object):
             return True
 
     def update_targets(self):
-        '''
+        """
         Archive all the old targets
         Returns: True if user wants to stop attack, False otherwise
-        '''
+        """
         self.previous_target_count = 0
         # for target in self.targets:
         # self.target_archives[target.bssid] = ArchivedTarget(target)
@@ -103,9 +103,9 @@ class Scanner(object):
         return do_continue
 
     def get_num_attacked(self):
-        '''
+        """
         Returns: number of attacked targets by this scanner
-        '''
+        """
         attacked_targets = 0
         for target in list(self.target_archives.values()):
             if target.attacked:
@@ -114,11 +114,11 @@ class Scanner(object):
         return attacked_targets
 
     def found_target(self):
-        '''
+        """
         Detect if we found a target specified by the user (optional).
         Sets this object's `target` attribute if found.
         Returns: True if target was specified and found, False otherwise.
-        '''
+        """
         bssid = Configuration.target_bssid
         essid = Configuration.target_essid
 
@@ -141,8 +141,19 @@ class Scanner(object):
 
         return False
 
+    @staticmethod
+    def clr_scr():
+        import platform
+        import os
+
+        cmdtorun = 'clear'
+        if platform.system().lower() == "windows":
+            cmdtorun = 'cls'
+
+        os.system(cmdtorun)
+
     def print_targets(self):
-        '''Prints targets selection menu (1 target per row).'''
+        """Prints targets selection menu (1 target per row)."""
         if len(self.targets) == 0:
             Color.p('\r')
             return
@@ -152,16 +163,15 @@ class Scanner(object):
             if Configuration.verbose <= 1:
                 # Don't clear screen buffer in verbose mode.
                 if self.previous_target_count > len(self.targets) or \
-                   Scanner.get_terminal_height() < self.previous_target_count + 3:
+                        Scanner.get_terminal_height() < self.previous_target_count + 3:
                     # Either:
                     # 1) We have less targets than before, so we can't overwrite the previous list
                     # 2) The terminal can't display the targets without scrolling.
                     # Clear the screen.
-                    from ..util.process import Process
-                    Process.call('clear')
+                    self.clr_scr()
                 else:
                     # We can fit the targets in the terminal without scrolling
-                    # 'Move' cursor up so we will print over the previous list
+                    # 'Move' cursor up, so we will print over the previous list
                     Color.pl(Scanner.UP_CHAR * (3 + self.previous_target_count))
 
         self.previous_target_count = len(self.targets)
@@ -196,10 +206,10 @@ class Scanner(object):
             Color.clear_entire_line()
             Color.p('   {G}%s  ' % str(idx).rjust(3))
             Color.pl(target.to_str(
-                    Configuration.show_bssids,
-                    Configuration.show_manufacturers
-                    )
-                )
+                Configuration.show_bssids,
+                Configuration.show_manufacturers
+            )
+            )
 
     @staticmethod
     def get_terminal_height():
@@ -214,12 +224,12 @@ class Scanner(object):
         return int(columns)
 
     def select_targets(self):
-        '''
+        """
         Returns list(target)
         Either a specific target if user specified -bssid or --essid.
         If the user used pillage or infinite attack mode retuns all the targets
         Otherwise, prompts user to select targets and returns the selection.
-        '''
+        """
 
         if self.target:
             # When user specifies a specific target
@@ -234,8 +244,8 @@ class Scanner(object):
             # 2. How to check if your device supports monitor mode,
             # 3. Provide airodump-ng command being executed.
             raise Exception('No targets found.'
-            + ' You may need to wait longer,'
-            + ' or you may have issues with your wifi card')
+                            + ' You may need to wait longer,'
+                            + ' or you may have issues with your wifi card')
 
         # Return all targets if user specified a wait time ('pillage').
         # A scan time is always set if run in infinite mode

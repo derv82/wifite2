@@ -8,7 +8,7 @@ import json
 
 
 class Wash(Dependency):
-    ''' Wrapper for Wash program. '''
+    """ Wrapper for Wash program. """
     dependency_required = False
     dependency_name = 'wash'
     dependency_url = 'https://github.com/t6x/reaver-wps-fork-t6x'

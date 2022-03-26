@@ -58,11 +58,11 @@ class Hashcat(Dependency):
 
     @staticmethod
     def crack_pmkid(pmkid_file, verbose=False):
-        '''
+        """
         Cracks a given pmkid_file using the PMKID/WPA2 attack (-m 16800)
         Returns:
             Key (str) if found; `None` if not found.
-        '''
+        """
 
         # Run hashcat once normally, then with --show if it failed
         # To catch cases where the password is already in the pot file.

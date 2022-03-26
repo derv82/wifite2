@@ -11,12 +11,13 @@ from .util.color import Color
 import os
 import subprocess
 
+
 class Wifite(object):
 
     def __init__(self):
-        '''
+        """
         Initializes Wifite. Checks that its running under *nix, with root permissions and ensures dependencies are installed.
-        '''
+        """
 
         self.print_banner()
 
@@ -34,9 +35,9 @@ class Wifite(object):
         Dependency.run_dependency_check()
 
     def start(self):
-        '''
+        """
         Starts target-scan + attack loop, or launches utilities depending on user input.
-        '''
+        """
         from .model.result import CrackResult
         from .model.handshake import Handshake
         from .util.crack import CrackHelper
@@ -54,8 +55,9 @@ class Wifite(object):
             Configuration.get_monitor_mode_interface()
             self.scan_and_attack()
 
-    def print_banner(self):
-        '''Displays ASCII art of the highest caliber.'''
+    @staticmethod
+    def print_banner():
+        """Displays ASCII art of the highest caliber."""
         Color.pl(r' {G}  .     {GR}{D}     {W}{G}     .    {W}')
         Color.pl(r' {G}.´  ·  .{GR}{D}     {W}{G}.  ·  `.  {G}wifite2 {D}%s{W}' % Configuration.version)
         Color.pl(r' {G}:  :  : {GR}{D} (¯) {W}{G} :  :  :  {W}{D}a wireless auditor by derv82{W}')
@@ -63,15 +65,15 @@ class Wifite(object):
         Color.pl(r' {G}  `     {GR}{D}/¯¯¯\{W}{G}     ´    {C}{D}https://github.com/kimocoder/wifite2{W}')
         Color.pl('')
 
-    def scan_and_attack(self):
-        '''
+    @staticmethod
+    def scan_and_attack():
+        """
         1) Scans for targets, asks user to select targets
         2) Attacks each target
-        '''
+        """
         from .util.scanner import Scanner
         from .attack.all import AttackAll
 
-        attacked_targets = 0
         Color.pl('')
 
         # Scan

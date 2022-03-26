@@ -7,7 +7,7 @@ import re
 
 
 class Pyrit(Dependency):
-    ''' Wrapper for Pyrit program. '''
+    """ Wrapper for Pyrit program. """
     dependency_required = False
     dependency_name = 'pyrit'
     dependency_url = 'https://github.com/JPaulMora/Pyrit/wiki'

