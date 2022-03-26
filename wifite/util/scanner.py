@@ -268,8 +268,12 @@ class Scanner(object):
                 for i in range(lower, min(len(self.targets), upper + 1)):
                     chosen_targets.append(self.targets[i])
             elif choice.isdigit():
-                choice = int(choice) - 1
-                chosen_targets.append(self.targets[choice])
+                choice = int(choice)
+                if choice > len(self.targets):
+                    Color.pl('    {!} {O}Invalid target index (%d)... ignoring' % choice)
+                    continue
+
+                chosen_targets.append(self.targets[choice - 1])
 
         return chosen_targets
 
