@@ -22,7 +22,7 @@ class CrackResultWPS(CrackResult):
             psk = '{O}N/A{W}'
         else:
             psk = '{G}%s{W}' % self.psk
-        Color.pl('{+} %s: {C}%s{W}'     % (      'Channel'.rjust(12), self.channel))
+        Color.pl('{+} %s: {C}%s{W}' % ('Channel'.rjust(12), self.channel))
         Color.pl('{+} %s: {C}%s{W}' % ('BSSID'.rjust(12), self.bssid))
         Color.pl('{+} %s: {C}WPA{W} ({C}WPS{W})' % 'Encryption'.rjust(12))
         Color.pl('{+} %s: {G}%s{W}' % ('WPS PIN'.rjust(12), self.pin))
@@ -44,7 +44,7 @@ class CrackResultWPS(CrackResult):
             'date': self.date,
             'essid': self.essid,
             'bssid': self.bssid,
-            'channel' : self.channel,
+            'channel': self.channel,
             'pin': self.pin,
             'psk': self.psk,
             'loc': self.loc

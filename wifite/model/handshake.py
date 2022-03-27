@@ -18,10 +18,10 @@ class Handshake(object):
         self.essid = essid
 
     def divine_bssid_and_essid(self):
-        '''
+        """
             Tries to find BSSID and ESSID from cap file.
             Sets this instances 'bssid' and 'essid' instance fields.
-        '''
+        """
 
         # We can get BSSID from the .cap filename if Wifite captured it.
         # ESSID is stripped of non-printable characters, so we can't rely on that.
@@ -48,7 +48,7 @@ class Handshake(object):
             self.bssid = pairs[0][0]
             self.essid = pairs[0][1]
             Color.pl('{!} {O}Warning{W}: {O}Arbitrarily selected ' +
-                    '{R}bssid{O} {C}%s{O} and {R}essid{O} "{C}%s{O}"{W}' % (self.bssid, self.essid))
+                     '{R}bssid{O} {C}%s{O} and {R}essid{O} "{C}%s{O}"{W}' % (self.bssid, self.essid))
 
         elif not self.bssid:
             # We already know essid
@@ -80,12 +80,12 @@ class Handshake(object):
         return False
 
     def tshark_handshakes(self):
-        '''Returns list[tuple] of BSSID & ESSID pairs (ESSIDs are always `None`).'''
+        """Returns list[tuple] of BSSID & ESSID pairs (ESSIDs are always `None`)."""
         tshark_bssids = Tshark.bssids_with_handshakes(self.capfile, bssid=self.bssid)
         return [(bssid, None) for bssid in tshark_bssids]
 
     def cowpatty_handshakes(self):
-        '''Returns list[tuple] of BSSID & ESSID pairs (BSSIDs are always `None`).'''
+        """Returns list[tuple] of BSSID & ESSID pairs (BSSIDs are always `None`)."""
         if not Process.exists('cowpatty'):
             return []
         if not self.essid:
@@ -105,12 +105,12 @@ class Handshake(object):
         return []
 
     def pyrit_handshakes(self):
-        '''Returns list[tuple] of BSSID & ESSID pairs.'''
+        """Returns list[tuple] of BSSID & ESSID pairs."""
         return Pyrit.bssid_essid_with_handshakes(
-                self.capfile, bssid=self.bssid, essid=self.essid)
+            self.capfile, bssid=self.bssid, essid=self.essid)
 
     def aircrack_handshakes(self):
-        '''Returns tuple (BSSID,None) if aircrack thinks self.capfile contains a handshake / can be cracked'''
+        """Returns tuple (BSSID,None) if aircrack thinks self.capfile contains a handshake / can be cracked"""
         if not self.bssid:
             return []  # Aircrack requires BSSID
 
@@ -123,14 +123,14 @@ class Handshake(object):
             return []
 
     def analyze(self):
-        '''Prints analysis of handshake capfile'''
+        """Prints analysis of handshake capfile"""
         self.divine_bssid_and_essid()
 
         if Tshark.exists():
-            Handshake.print_pairs(self.tshark_handshakes(),   self.capfile, 'tshark')
+            Handshake.print_pairs(self.tshark_handshakes(), self.capfile, 'tshark')
 
         if Pyrit.exists():
-            Handshake.print_pairs(self.pyrit_handshakes(),    self.capfile, 'pyrit')
+            Handshake.print_pairs(self.pyrit_handshakes(), self.capfile, 'pyrit')
 
         if Process.exists('cowpatty'):
             Handshake.print_pairs(self.cowpatty_handshakes(), self.capfile, 'cowpatty')
@@ -139,13 +139,13 @@ class Handshake(object):
 
     def strip(self, outfile=None):
         # XXX: This method might break aircrack-ng, use at own risk.
-        '''
+        """
             Strips out packets from handshake that aren't necessary to crack.
             Leaves only handshake packets and SSID broadcast (for discovery).
             Args:
                 outfile - Filename to save stripped handshake to.
                           If outfile==None, overwrite existing self.capfile.
-        '''
+        """
         if not outfile:
             outfile = self.capfile + '.temp'
             replace_existing_file = True
@@ -168,9 +168,9 @@ class Handshake(object):
 
     @staticmethod
     def print_pairs(pairs, capfile, tool=None):
-        '''
+        """
             Prints out BSSID and/or ESSID given a list of tuples (bssid,essid)
-        '''
+        """
         tool_str = ''
         if tool is not None:
             tool_str = '{C}%s{W}: ' % tool.rjust(8)
@@ -190,7 +190,7 @@ class Handshake(object):
 
     @staticmethod
     def check():
-        ''' Analyzes .cap file(s) for handshake '''
+        """ Analyzes .cap file(s) for handshake """
         from ..config import Configuration
         if Configuration.check_handshake == '<all>':
             Color.pl('{+} checking all handshakes in {G}"./hs"{W} directory\n')

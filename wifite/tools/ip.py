@@ -13,7 +13,7 @@ class Ip(Dependency):
 
     @classmethod
     def up(cls, interface, args=[]):
-        '''Put interface up'''
+        """Put interface up"""
         from ..util.process import Process
 
         command = ['ip', 'link', 'set', interface]
@@ -30,7 +30,7 @@ class Ip(Dependency):
 
     @classmethod
     def down(cls, interface):
-        '''Put interface down'''
+        """Put interface down"""
         from ..util.process import Process
 
         pid = Process(['ip', 'link', 'set', interface, 'down'])

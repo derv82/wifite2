@@ -17,9 +17,7 @@ class Aircrack(Dependency):
 
     def __init__(self, ivs_file=None):
 
-        self.cracked_file = os.path.abspath(
-                os.path.join(
-                    Configuration.temp(), 'wepkey.txt'))
+        self.cracked_file = os.path.abspath(os.path.join(Configuration.temp(), 'wepkey.txt'))
 
         # Delete previous cracked files
         if os.path.exists(self.cracked_file):
@@ -44,7 +42,7 @@ class Aircrack(Dependency):
         return os.path.exists(self.cracked_file)
 
     def stop(self):
-        ''' Stops aircrack process '''
+        """ Stops aircrack process """
         if self.pid.poll() is None:
             self.pid.interrupt()
 
@@ -62,7 +60,7 @@ class Aircrack(Dependency):
         hex_chars = []
         ascii_key = ''
         for index in range(0, len(hex_raw), 2):
-            byt = hex_raw[index:index+2]
+            byt = hex_raw[index:index + 2]
             hex_chars.append(byt)
             byt_int = int(byt, 16)
             if byt_int < 32 or byt_int > 127 or ascii_key is None:
@@ -72,7 +70,7 @@ class Aircrack(Dependency):
 
         hex_key = ':'.join(hex_chars)
 
-        return (hex_key, ascii_key)
+        return hex_key, ascii_key
 
     def __del__(self):
         if os.path.exists(self.cracked_file):

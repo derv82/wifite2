@@ -12,20 +12,20 @@ from ..config import Configuration
 
 
 class Process(object):
-    ''' Represents a running/ran process '''
+    """ Represents a running/ran process """
 
     @staticmethod
     def devnull():
-        ''' Helper method for opening devnull '''
+        """ Helper method for opening devnull """
         return open('/dev/null', 'w')
 
     @staticmethod
     def call(command, cwd=None, shell=False):
-        '''
+        """
             Calls a command (either string or list of args).
             Returns tuple:
                 (stdout, stderr)
-        '''
+        """
         if type(command) is not str or ' ' in command or shell:
             shell = True
             if Configuration.verbose > 1:
@@ -48,11 +48,11 @@ class Process(object):
         if Configuration.verbose > 1 and stderr is not None and stderr.strip() != '':
             Color.pe('{P} [stderr] %s{W}' % '\n [stderr] '.join(stderr.strip().split('\n')))
 
-        return (stdout, stderr)
+        return stdout, stderr
 
     @staticmethod
     def exists(program):
-        ''' Checks if program is installed on this system '''
+        """ Checks if program is installed on this system """
 
         if Configuration.initialized:  # Maybe we already checked this program
             if program in set(Configuration.existing_commands.keys()):
@@ -68,7 +68,7 @@ class Process(object):
         return exist
 
     def __init__(self, command, devnull=False, stdout=PIPE, stderr=PIPE, cwd=None, bufsize=0, stdin=PIPE):
-        ''' Starts executing command '''
+        """ Starts executing command """
 
         if type(command) is str:
             # Commands have to be a list
@@ -93,10 +93,10 @@ class Process(object):
         self.pid = Popen(command, stdout=sout, stderr=serr, stdin=stdin, cwd=cwd, bufsize=bufsize)
 
     def __del__(self):
-        '''
+        """
             Ran when object is GC'd.
             If process is still running at this point, it should die.
-        '''
+        """
         try:
             if self.pid and self.pid.poll() is None:
                 self.interrupt()
@@ -104,14 +104,14 @@ class Process(object):
             pass
 
     def stdout(self):
-        ''' Waits for process to finish, returns stdout output '''
+        """ Waits for process to finish, returns stdout output """
         self.get_output()
         if Configuration.verbose > 1 and self.out is not None and self.out.strip() != '':
             Color.pe('{P} [stdout] %s{W}' % '\n [stdout] '.join(self.out.strip().split('\n')))
         return self.out
 
     def stderr(self):
-        ''' Waits for process to finish, returns stderr output '''
+        """ Waits for process to finish, returns stderr output """
         self.get_output()
         if Configuration.verbose > 1 and self.err is not None and self.err.strip() != '':
             Color.pe('{P} [stderr] %s{W}' % '\n [stderr] '.join(self.err.strip().split('\n')))
@@ -129,7 +129,7 @@ class Process(object):
             self.pid.stdin.flush()
 
     def get_output(self):
-        ''' Waits for process to finish, sets stdout & stderr '''
+        """ Waits for process to finish, sets stdout & stderr """
         if self.pid.poll() is None:
             self.pid.wait()
         if self.out is None:
@@ -141,24 +141,24 @@ class Process(object):
         if type(self.err) is bytes:
             self.err = self.err.decode('utf-8')
 
-        return (self.out, self.err)
+        return self.out, self.err
 
     def poll(self):
-        ''' Returns exit code if process is dead, otherwise 'None' '''
+        """ Returns exit code if process is dead, otherwise 'None' """
         return self.pid.poll()
 
     def wait(self):
         self.pid.wait()
 
     def running_time(self):
-        ''' Returns number of seconds since process was started '''
+        """ Returns number of seconds since process was started """
         return int(time.time() - self.start_time)
 
     def interrupt(self, wait_time=2.0):
-        '''
+        """
             Send interrupt to current process.
             If process fails to exit within `wait_time` seconds, terminates it.
-        '''
+        """
         try:
             pid = self.pid.pid
             cmd = self.command
@@ -173,14 +173,18 @@ class Process(object):
             start_time = time.time()  # Time since Interrupt was sent
             while self.pid.poll() is None:
                 # Process is still running
-                time.sleep(0.1)
-                if time.time() - start_time > wait_time:
-                    # We waited too long for process to die, terminate it.
-                    if Configuration.verbose > 1:
-                        Color.pe('\n {C}[?] {W} Waited > %0.2f seconds for process to die, killing it' % wait_time)
-                    os.kill(pid, signal.SIGTERM)
-                    self.pid.terminate()
-                    break
+                try:
+                    time.sleep(0.1)
+                    if time.time() - start_time > wait_time:
+                        # We waited too long for process to die, terminate it.
+                        if Configuration.verbose > 1:
+                            Color.pe('\n {C}[?] {W} Waited > %0.2f seconds for process to die, killing it' % wait_time)
+                        os.kill(pid, signal.SIGTERM)
+                        self.pid.terminate()
+                        break
+                except KeyboardInterrupt:
+                    # wait the cleanup
+                    continue
 
         except OSError as e:
             if 'No such process' in e.__str__():

@@ -3,13 +3,13 @@
 
 
 class Client(object):
-    '''
+    """
         Holds details for a 'Client' - a wireless device (e.g. computer)
         that is associated with an Access Point (e.g. router)
-    '''
+    """
 
     def __init__(self, fields):
-        '''
+        """
             Initializes & stores client info based on fields.
             Args:
                 Fields - List of strings
@@ -21,14 +21,14 @@ class Client(object):
                     4 # packets,
                     5 BSSID, (Access Point's MAC address)
                     6 Probed ESSIDs
-        '''
+        """
         self.station = fields[0].strip()
         self.power = int(fields[3].strip())
         self.packets = int(fields[4].strip())
         self.bssid = fields[5].strip()
 
     def __str__(self):
-        ''' String representation of a Client '''
+        """ String representation of a Client """
         result = ''
         for (key, value) in list(self.__dict__.items()):
             result += key + ': ' + str(value)

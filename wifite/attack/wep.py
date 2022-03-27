@@ -15,9 +15,9 @@ import time
 
 
 class AttackWEP(Attack):
-    '''
+    """
         Contains logic for attacking a WEP-encrypted access point.
-    '''
+    """
 
     fakeauth_wait = 5  # TODO: Configuration?
 
@@ -27,11 +27,11 @@ class AttackWEP(Attack):
         self.success = False
 
     def run(self):
-        '''
+        """
             Initiates full WEP attack.
             Including airodump-ng starting, cracking, etc.
             Returns: True if attack is successful, false otherwise
-        '''
+        """
 
         aircrack = None  # Aircrack process, not started yet
         fakeauth_proc = None
@@ -132,7 +132,7 @@ class AttackWEP(Attack):
                             if aireplay: aireplay.stop()
                             if fakeauth_proc: fakeauth_proc.stop()
                             self.crack_result = CrackResultWEP(self.target.bssid,
-                                    self.target.essid, hex_key, ascii_key)
+                                                               self.target.essid, hex_key, ascii_key)
                             self.crack_result.dump()
 
                             Airodump.delete_airodump_temp_files('wep')
@@ -185,10 +185,10 @@ class AttackWEP(Attack):
 
                                 # If .xor exists, run packetforge-ng to create .cap
                                 Color.pl('\n{+} {C}%s attack{W}' % attack_name +
-                                        ' generated a {C}.xor file{W}, {G}forging...{W}')
+                                         ' generated a {C}.xor file{W}, {G}forging...{W}')
                                 replay_file = Aireplay.forge_packet(xor_file,
-                                                                   airodump_target.bssid,
-                                                                   client_mac)
+                                                                    airodump_target.bssid,
+                                                                    client_mac)
                                 if replay_file:
                                     Color.pl('{+} {C}forged packet{W},' +
                                              ' {G}replaying...{W}')
@@ -213,15 +213,15 @@ class AttackWEP(Attack):
                         if airodump_target.ivs > last_ivs_count:
                             time_unchanged_ivs = time.time()
                         elif Configuration.wep_restart_stale_ivs > 0 and \
-                             attack_name != 'chopchop' and \
-                             attack_name != 'fragment':
+                                attack_name != 'chopchop' and \
+                                attack_name != 'fragment':
                             stale_seconds = time.time() - time_unchanged_ivs
                             if stale_seconds > Configuration.wep_restart_stale_ivs:
                                 # No new IVs within threshold, restart aireplay
                                 aireplay.stop()
                                 Color.pl('\n{!} restarting {C}aireplay{W} after' +
                                          ' {C}%d{W} seconds of no new IVs'
-                                             % stale_seconds)
+                                         % stale_seconds)
                                 aireplay = Aireplay(self.target,
                                                     wep_attack_type,
                                                     client_mac=client_mac,
@@ -235,7 +235,7 @@ class AttackWEP(Attack):
                 # End of with-airodump
             except KeyboardInterrupt:
                 if fakeauth_proc:
-                        fakeauth_proc.stop()
+                    fakeauth_proc.stop()
                 if len(attacks_remaining) == 0:
                     if keep_ivs:
                         Airodump.delete_airodump_temp_files('wep')
@@ -263,10 +263,10 @@ class AttackWEP(Attack):
         return self.success
 
     def user_wants_to_stop(self, current_attack, attacks_remaining, target):
-        '''
+        """
         Ask user what attack to perform next (re-orders attacks_remaining, returns False),
         or if we should stop attacking this target (returns True).
-        '''
+        """
         if target is None:
             Color.pl('')
             return True
@@ -325,14 +325,14 @@ class AttackWEP(Attack):
             return True  # Stop attacking
         elif answer > 1:
             # User selected specific attack: Re-order attacks based on desired next-step
-            attacks_remaining.insert(0, attacks_remaining.pop(answer-2))
+            attacks_remaining.insert(0, attacks_remaining.pop(answer - 2))
             return False  # Don't stop
 
     def fake_auth(self):
-        '''
+        """
         Attempts to fake-authenticate with target.
         Returns: True if successful, False is unsuccessful.
-        '''
+        """
         Color.p('\r{+} attempting {G}fake-authentication{W} with {C}%s{W}...' % self.target.bssid)
         fakeauth = Aireplay.fakeauth(self.target, timeout=AttackWEP.fakeauth_wait)
         if fakeauth:
@@ -347,17 +347,19 @@ class AttackWEP(Attack):
             else:
                 # Warn that fakeauth failed
                 Color.pl('{!} {O}' +
-                    'unable to fake-authenticate with target' +
-                    ' (%s){W}' % self.target.bssid)
+                         'unable to fake-authenticate with target' +
+                         ' (%s){W}' % self.target.bssid)
                 Color.pl('{!} continuing attacks because' +
-                    ' {G}--require-fakeauth{W} was not set')
+                         ' {G}--require-fakeauth{W} was not set')
         return fakeauth
 
 
 if __name__ == '__main__':
     Configuration.initialize(True)
     from ..model.target import Target
-    fields = 'A4:2B:8C:16:6B:3A, 2015-05-27 19:28:44, 2015-05-27 19:28:46,  6,  54e,WEP, WEP, , -58,        2,        0,   0.  0.  0.  0,   9, Test Router Please Ignore, '.split(',')
+
+    fields = 'A4:2B:8C:16:6B:3A, 2015-05-27 19:28:44, 2015-05-27 19:28:46,  6,  54e,WEP, WEP, , -58,        2,        0,   0.  0.  0.  0,   9, Test Router Please Ignore, '.split(
+        ',')
     target = Target(fields)
     wep = AttackWEP(target)
     wep.run()

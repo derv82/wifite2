@@ -29,7 +29,7 @@ class AirmonIface(object):
     CHIPSET_LEN = 30
 
     def __str__(self):
-        ''' Colored string representation of interface '''
+        """ Colored string representation of interface """
         s = ''
         s += Color.s('{G}%s' % self.interface.ljust(self.INTERFACE_LEN))
         s += Color.s('{W}%s' % self.phy.ljust(self.PHY_LEN))
@@ -39,7 +39,7 @@ class AirmonIface(object):
 
     @staticmethod
     def menu_header():
-        ''' Colored header row for interfaces '''
+        """ Colored header row for interfaces """
         s = '    '  # Space for index #
         s += 'Interface'.ljust(AirmonIface.INTERFACE_LEN)
         s += 'PHY'.ljust(AirmonIface.PHY_LEN)
@@ -51,7 +51,7 @@ class AirmonIface(object):
 
 
 class Airmon(Dependency):
-    ''' Wrapper around the 'airmon-ng' program '''
+    """ Wrapper around the 'airmon-ng' program """
     dependency_required = True
     dependency_name = 'airmon-ng'
     dependency_url = 'https://www.aircrack-ng.org/install.html'
@@ -71,24 +71,24 @@ class Airmon(Dependency):
         self.refresh()
 
     def refresh(self):
-        ''' Get airmon-recognized interfaces '''
+        """ Get airmon-recognized interfaces """
         self.interfaces = Airmon.get_interfaces()
 
     def print_menu(self):
-        ''' Prints menu '''
+        """ Prints menu """
         print((AirmonIface.menu_header()))
         for idx, iface in enumerate(self.interfaces, start=1):
             Color.pl(' {G}%d{W}. %s' % (idx, iface))
 
     def get(self, index):
-        ''' Gets interface at index (starts at 1) '''
+        """ Gets interface at index (starts at 1) """
         if type(index) is str:
             index = int(index)
         return self.interfaces[index - 1]
 
     @staticmethod
     def get_interfaces():
-        '''Returns List of AirmonIface objects known by airmon-ng'''
+        """Returns List of AirmonIface objects known by airmon-ng"""
         interfaces = []
         p = Process('airmon-ng')
         for line in p.stdout().split('\n'):
@@ -111,10 +111,10 @@ class Airmon(Dependency):
 
     @staticmethod
     def get_iface_info(interface_name):
-        '''
+        """
         Get interface info (driver, chipset), based on interface name.
         Returns an AirmonIface if interface name is found by airmon-ng or None
-        '''
+        """
         for iface in Airmon.get_interfaces():
             if iface.interface == interface_name:
                 return iface
@@ -123,10 +123,10 @@ class Airmon(Dependency):
 
     @staticmethod
     def start_bad_driver(iface):
-        '''
+        """
         Manually put interface into monitor mode (no airmon-ng or vif).
         Fix for bad drivers like the rtl8812AU.
-        '''
+        """
         Ip.down(iface)
         Iw.mode(iface, 'monitor')
         Ip.up(iface)
@@ -135,17 +135,17 @@ class Airmon(Dependency):
         iface_type_path = os.path.join('/sys/class/net', iface, 'type')
         if os.path.exists(iface_type_path):
             with open(iface_type_path, 'r') as f:
-                if (int(f.read()) == Airmon.ARPHRD_IEEE80211_RADIOTAP):
+                if int(f.read()) == Airmon.ARPHRD_IEEE80211_RADIOTAP:
                     return iface
 
         return None
 
     @staticmethod
     def stop_bad_driver(iface):
-        '''
+        """
         Manually put interface into managed mode (no airmon-ng or vif).
         Fix for bad drivers like the rtl8812AU.
-        '''
+        """
         Ip.down(iface)
         Iw.mode(iface, 'managed')
         Ip.up(iface)
@@ -161,7 +161,7 @@ class Airmon(Dependency):
 
     @staticmethod
     def start(iface):
-        '''
+        """
             Starts an interface (iface) in monitor mode
             Args:
                 iface - The interface to start in monitor mode
@@ -171,7 +171,7 @@ class Airmon(Dependency):
                 Name of the interface put into monitor mode.
             Throws:
                 Exception - If an interface can't be put into monitor mode
-        '''
+        """
         # Get interface name from input
         if type(iface) == AirmonIface:
             iface_name = iface.interface
@@ -215,7 +215,7 @@ class Airmon(Dependency):
 
     @staticmethod
     def _parse_airmon_start(airmon_output):
-        '''Find the interface put into monitor mode (if any)'''
+        """Find the interface put into monitor mode (if any)"""
 
         # airmon-ng output: (mac80211 monitor mode vif enabled for [phy10]wlan0 on [phy10]wlan0mon)
         enabled_re = re.compile(r'.*\(mac80211 monitor mode (?:vif )?enabled (?:for [^ ]+ )?on (?:\[\w+\])?(\w+)\)?.*')
@@ -251,7 +251,7 @@ class Airmon(Dependency):
 
     @staticmethod
     def _parse_airmon_stop(airmon_output):
-        '''Find the interface taken out of into monitor mode (if any)'''
+        """Find the interface taken out of into monitor mode (if any)"""
 
         # airmon-ng 1.2rc2 output: (mac80211 monitor mode vif enabled for [phy10]wlan0 on [phy10]wlan0mon)
         disabled_re = re.compile(r'\s*\(mac80211 monitor mode (?:vif )?disabled for (?:\[\w+\])?(\w+)\)\s*')
@@ -277,24 +277,24 @@ class Airmon(Dependency):
             if matches:
                 enabled_iface = matches.group(1)
 
-        return (disabled_iface, enabled_iface)
+        return disabled_iface, enabled_iface
 
     @staticmethod
     def ask():
-        '''
+        """
         Asks user to define which wireless interface to use.
         Does not ask if:
             1. There is already an interface in monitor mode, or
             2. There is only one wireless interface (automatically selected).
         Puts selected device into Monitor Mode.
-        '''
+        """
 
         Airmon.terminate_conflicting_processes()
 
         Color.p('\n{+} Looking for {C}wireless interfaces{W}...')
         monitor_interfaces = Iw.get_interfaces(mode='monitor')
         if len(monitor_interfaces) == 1:
-            # Assume we're using the device already in montior mode
+            # Assume we're using the device already in monitor mode
             iface = monitor_interfaces[0]
             Color.clear_entire_line()
             Color.pl('{+} Using {G}%s{W} already in monitor mode' % iface)
@@ -335,7 +335,7 @@ class Airmon(Dependency):
 
     @staticmethod
     def terminate_conflicting_processes():
-        ''' Deletes conflicting processes reported by airmon-ng '''
+        """ Deletes conflicting processes reported by airmon-ng """
 
         airmon_output = Process(['airmon-ng', 'check']).stdout()
 

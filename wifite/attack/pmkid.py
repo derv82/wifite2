@@ -20,18 +20,20 @@ class AttackPMKID(Attack):
 
     def __init__(self, target):
         super(AttackPMKID, self).__init__(target)
-        self.do_airCRACK = False
         self.crack_result = None
-        self.success = False
+        self.do_airCRACK = False
+        self.keep_capturing = None
         self.pcapng_file = Configuration.temp('pmkid.pcapng')
+        self.success = False
+        self.timer = None
 
     def get_existing_pmkid_file(self, bssid):
-        '''
+        """
         Load PMKID Hash from a previously-captured hash in ./hs/
         Returns:
             The hashcat hash (hash*bssid*station*essid) if found.
             None if not found.
-        '''
+        """
         if not os.path.exists(Configuration.wpa_handshake_dir):
             return None
 
@@ -55,14 +57,14 @@ class AttackPMKID(Attack):
         return None
 
     def run_hashcat(self):
-        '''
+        """
         Performs PMKID attack, if possible.
             1) Captures PMKID hash (or re-uses existing hash if found).
             2) Cracks the hash.
 
         Returns:
             True if handshake is captured. False otherwise.
-        '''
+        """
 
         # Skip if user doesn't want to run PMKID attack
         if Configuration.dont_use_pmkid:
@@ -87,7 +89,7 @@ class AttackPMKID(Attack):
             pmkid_file = self.get_existing_pmkid_file(self.target.bssid)
             if pmkid_file is not None:
                 Color.pattack('PMKID', self.target, 'CAPTURE',
-                        'Loaded {C}existing{W} PMKID hash: {C}%s{W}\n' % pmkid_file)
+                              'Loaded {C}existing{W} PMKID hash: {C}%s{W}\n' % pmkid_file)
 
         if pmkid_file is None:
             # Capture hash from live target.
@@ -149,9 +151,9 @@ class AttackPMKID(Attack):
                 step_timer = Timer(1)
                 Color.clear_entire_line()
                 Color.pattack('WPA',
-                        airodump_target,
-                        'Handshake capture',
-                        'Listening. (clients:{G}{W}, deauth:{O}{W}, timeout:{R}%s{W})' % (timeout_timer))
+                              airodump_target,
+                              'Handshake capture',
+                              'Listening. (clients:{G}{W}, deauth:{O}{W}, timeout:{R}%s{W})' % (timeout_timer))
 
                 # Find .cap file
                 cap_files = airodump.find_files(endswith='.cap')
@@ -174,9 +176,9 @@ class AttackPMKID(Attack):
                     # We got a handshake
                     Color.clear_entire_line()
                     Color.pattack('WPA',
-                            airodump_target,
-                            'PMKID capture',
-                            '{G}Captured PMKID{W}')
+                                  airodump_target,
+                                  'PMKID capture',
+                                  '{G}Captured PMKID{W}')
                     Color.pl('')
                     capture = temp_file
                     break
@@ -210,7 +212,8 @@ class AttackPMKID(Attack):
 
         if capture is None:
             # No handshake, attack failed.
-            Color.pl('\n{!} {O}WPA handshake capture {R}FAILED:{O} Timed out after %d seconds' % (Configuration.wpa_attack_timeout))
+            Color.pl('\n{!} {O}WPA handshake capture {R}FAILED:{O} Timed out after %d seconds' % (
+                Configuration.wpa_attack_timeout))
             self.success = False
         else:
             # Save copy of handshake to ./hs/
@@ -220,7 +223,7 @@ class AttackPMKID(Attack):
         return self.success
 
     def check_pmkid(self, filename):
-        '''Returns tuple (BSSID,None) if aircrack thinks self.capfile contains a handshake / can be cracked'''
+        """Returns tuple (BSSID,None) if aircrack thinks self.capfile contains a handshake / can be cracked"""
 
         from ..util.process import Process
 
@@ -234,11 +237,11 @@ class AttackPMKID(Attack):
         return False
 
     def capture_pmkid(self):
-        '''
+        """
         Runs hashcat's hcxpcapngtool to extract PMKID hash from the .pcapng file.
         Returns:
             The PMKID hash (str) if found, otherwise None.
-        '''
+        """
         self.keep_capturing = True
         self.timer = Timer(Configuration.pmkid_timeout)
 
@@ -254,15 +257,13 @@ class AttackPMKID(Attack):
             if pmkid_hash is not None:
                 break  # Got PMKID
 
-            Color.pattack('PMKID', self.target, 'CAPTURE',
-                    'Waiting for PMKID ({C}%s{W})' % str(self.timer))
+            Color.pattack('PMKID', self.target, 'CAPTURE', 'Waiting for PMKID ({C}%s{W})' % str(self.timer))
             time.sleep(1)
 
         self.keep_capturing = False
 
         if pmkid_hash is None:
-            Color.pattack('PMKID', self.target, 'CAPTURE',
-                    '{R}Failed{O} to capture PMKID\n')
+            Color.pattack('PMKID', self.target, 'CAPTURE', '{R}Failed{O} to capture PMKID\n')
             Color.pl('')
             return None  # No hash found.
 
@@ -272,17 +273,16 @@ class AttackPMKID(Attack):
         return pmkid_file
 
     def crack_pmkid_file(self, pmkid_file):
-        '''
+        """
         Runs hashcat containing PMKID hash (*.16800).
         If cracked, saves results in self.crack_result
         Returns:
             True if cracked, False otherwise.
-        '''
+        """
 
         # Check that wordlist exists before cracking.
         if Configuration.wordlist is None:
-            Color.pl('\n{!} {O}Not cracking PMKID ' +
-                    'because there is no {R}wordlist{O} (re-run with {C}--dict{O})')
+            Color.pl('\n{!} {O}Not cracking PMKID because there is no {R}wordlist{O} (re-run with {C}--dict{O})')
 
             # TODO: Uncomment once --crack is updated to support recracking PMKIDs.
             # Color.pl('{!} {O}Run Wifite with the {R}--crack{O} and {R}--dict{O} options to try again.')
@@ -298,20 +298,20 @@ class AttackPMKID(Attack):
             if Configuration.wordlist is not None:
                 Color.clear_entire_line()
                 Color.pattack('PMKID', self.target, '{R}CRACK',
-                        '{R}Failed {O}Passphrase not found in dictionary.\n')
+                              '{R}Failed {O}Passphrase not found in dictionary.\n')
             return False
         else:
             # Successfully cracked.
             Color.clear_entire_line()
             Color.pattack('PMKID', self.target, 'CRACKED', '{C}Key: {G}%s{W}' % key)
             self.crack_result = CrackResultPMKID(self.target.bssid, self.target.essid,
-                    pmkid_file, key)
+                                                 pmkid_file, key)
             Color.pl('\n')
             self.crack_result.dump()
             return True
 
     def dumptool_thread(self):
-        '''Runs hashcat's hcxdumptool until it dies or `keep_capturing == False`'''
+        """Runs hashcat's hcxdumptool until it dies or `keep_capturing == False`"""
         dumptool = HcxDumpTool(self.target, self.pcapng_file)
 
         # Let the dump tool run until we have the hash.
@@ -321,10 +321,9 @@ class AttackPMKID(Attack):
         dumptool.interrupt()
 
     def save_pmkid(self, pmkid_hash):
-        '''Saves a copy of the pmkid (handshake) to hs/ directory.'''
+        """Saves a copy of the pmkid (handshake) to hs/ directory."""
         # Create handshake dir
         if self.do_airCRACK:
-
             # Generate filesystem-safe filename from bssid, essid and date
             essid_safe = re.sub('[^a-zA-Z0-9]', '', self.target.essid)
             bssid_safe = self.target.bssid.replace(':', '-')

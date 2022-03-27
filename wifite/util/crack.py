@@ -17,13 +17,13 @@ from json import loads
 
 import os
 
-# TODO: Bring back the 'print' option, for easy copy/pasting. Just one-liners people can paste into terminal.
 
+# TODO: Bring back the 'print' option, for easy copy/pasting. Just one-liners people can paste into terminal.
 # TODO: --no-crack option while attacking targets (implies user will run --crack later)
 
 
 class CrackHelper:
-    '''Manages handshake retrieval, selection, and running the cracking commands.'''
+    """Manages handshake retrieval, selection, and running the cracking commands."""
 
     TYPES = {
         '4-WAY': '4-Way Handshake',
@@ -188,7 +188,8 @@ class CrackHelper:
             handshakes.append(handshake)
 
         if skipped_pmkid_files > 0:
-            Color.pl('{!} {O}Skipping %d {R}*.16800{O} files because {R}hashcat{O} is missing.{W}\n' % skipped_pmkid_files)
+            Color.pl(
+                '{!} {O}Skipping %d {R}*.16800{O} files because {R}hashcat{O} is missing.{W}\n' % skipped_pmkid_files)
         if skipped_cracked_files > 0:
             Color.pl('{!} {O}Skipping %d already cracked files.{W}\n' % skipped_cracked_files)
 
@@ -221,7 +222,9 @@ class CrackHelper:
     def get_user_selection(cls, handshakes):
         cls.print_handshakes(handshakes)
 
-        Color.p('{+} Select handshake(s) to crack ({G}%d{W}-{G}%d{W}, select multiple with {C},{W} or {C}-{W} or {C}all{W}): {G}' % (1, len(handshakes)))
+        Color.p(
+            '{+} Select handshake(s) to crack ({G}%d{W}-{G}%d{W}, select multiple with {C},{W} or {C}-{W} or {C}all{W}): {G}' % (
+            1, len(handshakes)))
         choices = input()
         Color.p('{W}')
 
@@ -230,13 +233,13 @@ class CrackHelper:
             if '-' in choice:
                 first, last = [int(x) for x in choice.split('-')]
                 for index in range(first, last + 1):
-                    selection.append(handshakes[index-1])
+                    selection.append(handshakes[index - 1])
             elif choice.strip().lower() == 'all':
                 selection = handshakes[:]
                 break
             elif [c.isdigit() for c in choice]:
                 index = int(choice)
-                selection.append(handshakes[index-1])
+                selection.append(handshakes[index - 1])
 
         return selection
 
@@ -266,8 +269,8 @@ class CrackHelper:
     def crack_4way(cls, hs, tool):
 
         handshake = Handshake(hs['filename'],
-                bssid=hs['bssid'],
-                essid=hs['essid'])
+                              bssid=hs['bssid'],
+                              essid=hs['essid'])
         try:
             handshake.divine_bssid_and_essid()
         except ValueError as e:

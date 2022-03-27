@@ -46,9 +46,9 @@ class Reaver(Attack, Dependency):
 
         self.reaver_cmd = [
             'reaver',
-            '--interface',  Configuration.interface,
-            '--bssid',      self.target.bssid,
-            '--channel',    self.target.channel,
+            '--interface', Configuration.interface,
+            '--bssid', self.target.bssid,
+            '--channel', self.target.channel,
             '-vv',
             '-N',
             '-O', 'reaver_output.pcap'
@@ -58,19 +58,19 @@ class Reaver(Attack, Dependency):
             self.reaver_cmd.extend(['--pixie-dust', '1'])
 
         if null_pin:
-            #self.reaver_cmd.extend(['-O', 'reaver_output.pcap'])  # This is for logging output
+            # self.reaver_cmd.extend(['-O', 'reaver_output.pcap'])  # This is for logging output
             self.reaver_cmd.extend(['-p', ''])  # NULL PIN attack parameter
 
         self.reaver_proc = None
 
     @staticmethod
     def is_pixiedust_supported():
-        ''' Checks if 'reaver' supports WPS Pixie-Dust attack '''
+        """ Checks if 'reaver' supports WPS Pixie-Dust attack """
         output = Process(['reaver', '-h']).stderr()
         return '--pixie-dust' in output
 
     def run(self):
-        ''' Returns True if attack is successful. '''
+        """ Returns True if attack is successful. """
         try:
             self._run()  # Run-loop
         except Exception as e:
@@ -102,8 +102,8 @@ class Reaver(Attack, Dependency):
 
             # Start reaver
             self.reaver_proc = Process(self.reaver_cmd,
-                    stdout=self.output_write,
-                    stderr=Process.devnull())
+                                       stdout=self.output_write,
+                                       stderr=Process.devnull())
 
             # Say "yes" if asked to restore session.
             self.reaver_proc.stdin('y\n')
@@ -288,8 +288,7 @@ class Reaver(Attack, Dependency):
 
         # Detect percentage complete
         # [+] 0.05% complete @ 2018-08-23 15:17:23 (42 seconds/pin)
-        percentages = re.findall(
-                r"([0-9.]+%) complete .* \(([0-9.]+) seconds/pin\)", stdout_diff)
+        percentages = re.findall(r"([0-9.]+%) complete .* \(([0-9.]+) seconds/pin\)", stdout_diff)
         if len(percentages) > 0:
             self.progress = percentages[-1][0]
 
@@ -323,8 +322,7 @@ class Reaver(Attack, Dependency):
             time_msg += ' {D}PINs:{W}{C}%d{W}' % self.total_attempts
 
         Color.clear_entire_line()
-        Color.pattack('WPS', self.target, attack_name,
-                '{W}[%s] %s' % (time_msg, message))
+        Color.pattack('WPS', self.target, attack_name, '{W}[%s] %s' % (time_msg, message))
         if newline:
             Color.pl('')
 
@@ -333,7 +331,7 @@ class Reaver(Attack, Dependency):
 
     @staticmethod
     def get_pin_psk_ssid(stdout):
-        ''' Parses WPS PIN, PSK, and SSID from output '''
+        """ Parses WPS PIN, PSK, and SSID from output """
         pin = psk = ssid = None
 
         # Check for PIN.
@@ -371,7 +369,7 @@ class Reaver(Attack, Dependency):
         return (pin, psk, ssid)
 
     def get_output(self):
-        ''' Gets output from reaver's output file '''
+        """ Gets output from reaver's output file """
         if not self.output_filename:
             return ''
 

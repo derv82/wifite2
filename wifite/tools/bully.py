@@ -77,9 +77,9 @@ class Bully(Attack, Dependency):
 
             # Start bully
             self.bully_proc = Process(self.cmd,
-                stderr=Process.devnull(),
-                bufsize=0,
-                cwd=Configuration.temp())
+                                      stderr=Process.devnull(),
+                                      bufsize=0,
+                                      cwd=Configuration.temp())
 
             # Start bully status thread
             t = Thread(target=self.parse_line_thread)
@@ -136,7 +136,7 @@ class Bully(Attack, Dependency):
             else:
                 if self.locked and not Configuration.wps_ignore_lock:
                     self.pattack('{R}Failed: {O}Access point is {R}Locked{O}',
-                            newline=True)
+                                 newline=True)
                     self.stop()
                     return
 
@@ -165,7 +165,7 @@ class Bully(Attack, Dependency):
 
         Color.clear_entire_line()
         Color.pattack('WPS', self.target, attack_name,
-                '{W}[%s] %s' % (time_msg, message))
+                      '{W}[%s] %s' % (time_msg, message))
 
         if newline:
             Color.pl('')
@@ -245,10 +245,10 @@ class Bully(Attack, Dependency):
         if not self.crack_result and self.cracked_pin and self.cracked_key:
             self.pattack('{G}Cracked Key: {C}%s{W}' % self.cracked_key, newline=True)
             self.crack_result = CrackResultWPS(
-                    self.target.bssid,
-                    self.target.essid,
-                    self.cracked_pin,
-                    self.cracked_key)
+                self.target.bssid,
+                self.target.essid,
+                self.cracked_pin,
+                self.cracked_key)
             Color.pl('')
             self.crack_result.dump()
 
@@ -277,7 +277,7 @@ class Bully(Attack, Dependency):
 
         # [+] Tx( Auth ) = 'Timeout'   Next pin '80241263'
         mx_result_pin = re.search(
-                r".*[RT]x\(\s*(.*)\s*\) = '(.*)'\s*Next pin '(.*)'", line)
+            r".*[RT]x\(\s*(.*)\s*\) = '(.*)'\s*Next pin '(.*)'", line)
         if mx_result_pin:
             # group(1)=M1,M2,..,M7, group(2)=result, group(3)=Next PIN
             self.locked = False
@@ -319,11 +319,11 @@ class Bully(Attack, Dependency):
 
         # [!] Average time to crack is 5 hours, 23 minutes, 55 seconds
         re_eta = re.search(
-                r'time to crack is (\d+) hours, (\d+) minutes, (\d+) seconds', line)
+            r'time to crack is (\d+) hours, (\d+) minutes, (\d+) seconds', line)
         if re_eta:
             h, m, s = re_eta.groups()
             self.eta = '%sh%sm%ss' % (
-                    h.rjust(2, '0'), m.rjust(2, '0'), s.rjust(2, '0'))
+                h.rjust(2, '0'), m.rjust(2, '0'), s.rjust(2, '0'))
 
         # [!] WPS lockout reported, sleeping for 43 seconds ...
         re_lockout = re.search(r".*WPS lockout reported, sleeping for (\d+) seconds", line)
@@ -353,13 +353,13 @@ class Bully(Attack, Dependency):
     @staticmethod
     def get_psk_from_pin(target, pin):
         # Fetches PSK from a Target assuming 'pin' is the correct PIN
-        '''
+        """
         bully --channel 1 --bssid 34:21:09:01:92:7C --pin 01030365 --bruteforce wlan0mon
         PIN   : '01030365'
         KEY   : 'password'
         BSSID : '34:21:09:01:92:7c'
         ESSID : 'AirLink89300'
-        '''
+        """
         cmd = [
             'bully',
             '--channel', target.channel,
@@ -385,7 +385,9 @@ if __name__ == '__main__':
     Configuration.initialize()
     Configuration.interface = 'wlan0mon'
     from ..model.target import Target
-    fields = '34:21:09:01:92:7C,2015-05-27 19:28:44,2015-05-27 19:28:46,1,54,WPA2,CCMP TKIP,PSK,-58,2,0,0.0.0.0,9,AirLink89300,'.split(',')
+
+    fields = '34:21:09:01:92:7C,2015-05-27 19:28:44,2015-05-27 19:28:46,1,54,WPA2,CCMP TKIP,PSK,-58,2,0,0.0.0.0,9,AirLink89300,'.split(
+        ',')
     target = Target(fields)
     psk = Bully.get_psk_from_pin(target, '01030365')
     print(('psk', psk))

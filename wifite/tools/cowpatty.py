@@ -8,7 +8,7 @@ from ..util.process import Process
 
 
 class Cowpatty(Dependency):
-    ''' Wrapper for Cowpatty program. '''
+    """ Wrapper for Cowpatty program. """
     dependency_required = False
     dependency_name = 'cowpatty'
     dependency_url = 'https://tools.kali.org/wireless-attacks/cowpatty'

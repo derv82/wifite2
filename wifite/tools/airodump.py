@@ -14,16 +14,16 @@ import time
 
 
 class Airodump(Dependency):
-    ''' Wrapper around airodump-ng program '''
+    """ Wrapper around airodump-ng program """
     dependency_required = True
     dependency_name = 'airodump-ng'
     dependency_url = 'https://www.aircrack-ng.org/install.html'
 
     def __init__(self, interface=None, channel=None, encryption=None,
-                       wps=WPSState.UNKNOWN, target_bssid=None,
-                       output_file_prefix='airodump',
-                       ivs_only=False, skip_wps=False, delete_existing_files=True):
-        '''Sets up airodump arguments, doesn't start process yet.'''
+                 wps=WPSState.UNKNOWN, target_bssid=None,
+                 output_file_prefix='airodump',
+                 ivs_only=False, skip_wps=False, delete_existing_files=True):
+        """Sets up airodump arguments, doesn't start process yet."""
 
         Configuration.initialize()
 
@@ -57,11 +57,11 @@ class Airodump(Dependency):
         self.delete_existing_files = delete_existing_files
 
     def __enter__(self):
-        '''
+        """
         Setting things up for this context.
         Called at start of 'with Airodump(...) as x:'
         Actually starts the airodump process.
-        '''
+        """
         if self.delete_existing_files:
             self.delete_airodump_temp_files(self.output_file_prefix)
 
@@ -75,17 +75,26 @@ class Airodump(Dependency):
             '-w', self.csv_file_prefix,  # Output file prefix
             '--write-interval', '1'  # Write every second
         ]
-        if self.channel:    command.extend(['-c', str(self.channel)])
-        elif self.all_bands: command.extend(['--band', 'abg'])
-        elif self.two_ghz: command.extend(['--band', 'bg'])
-        elif self.five_ghz: command.extend(['--band', 'a'])
+        if self.channel:
+            command.extend(['-c', str(self.channel)])
+        elif self.all_bands:
+            command.extend(['--band', 'abg'])
+        elif self.two_ghz:
+            command.extend(['--band', 'bg'])
+        elif self.five_ghz:
+            command.extend(['--band', 'a'])
 
-        if self.encryption:   command.extend(['--enc', self.encryption])
-        if self.wps:          command.extend(['--wps'])
-        if self.target_bssid: command.extend(['--bssid', self.target_bssid])
+        if self.encryption:
+            command.extend(['--enc', self.encryption])
+        if self.wps:
+            command.extend(['--wps'])
+        if self.target_bssid:
+            command.extend(['--bssid', self.target_bssid])
 
-        if self.ivs_only: command.extend(['--output-format', 'ivs,csv'])
-        else:             command.extend(['--output-format', 'pcap,csv'])
+        if self.ivs_only:
+            command.extend(['--output-format', 'ivs,csv'])
+        else:
+            command.extend(['--output-format', 'pcap,csv'])
 
         # Store value for debugging
         self.command = command
@@ -95,10 +104,10 @@ class Airodump(Dependency):
         return self
 
     def __exit__(self, type, value, traceback):
-        '''
+        """
         Tearing things down since the context is being exited.
         Called after 'with Airodump(...)' goes out of scope.
-        '''
+        """
         # Kill the process
         self.pid.interrupt()
 
@@ -110,7 +119,7 @@ class Airodump(Dependency):
 
     @classmethod
     def find_files_by_output_prefix(cls, output_file_prefix, endswith=None):
-        ''' Finds all files in the temp directory that start with the output_file_prefix '''
+        """ Finds all files in the temp directory that start with the output_file_prefix """
         result = []
         temp = Configuration.temp()
         for fil in os.listdir(temp):
@@ -124,10 +133,10 @@ class Airodump(Dependency):
 
     @classmethod
     def delete_airodump_temp_files(cls, output_file_prefix):
-        '''
+        """
         Deletes airodump* files in the temp directory.
         Also deletes replay_*.cap and *.xor files in pwd.
-        '''
+        """
         # Remove all temp files
         for fil in cls.find_files_by_output_prefix(output_file_prefix):
             os.remove(fil)
@@ -144,7 +153,7 @@ class Airodump(Dependency):
                 os.remove(os.path.join(temp_dir, fil))
 
     def get_targets(self, old_targets=[], apply_filter=True, target_archives={}):
-        ''' Parses airodump's CSV file, returns list of Targets '''
+        """ Parses airodump's CSV file, returns list of Targets """
 
         # Find the .CSV file
         csv_filename = None
@@ -200,7 +209,7 @@ class Airodump(Dependency):
 
     @staticmethod
     def get_targets_from_csv(csv_filename):
-        '''Returns list of Target objects parsed from CSV file.'''
+        """Returns list of Target objects parsed from CSV file."""
         targets = []
         import csv
         with open(csv_filename, 'r') as csvopen:
@@ -209,10 +218,10 @@ class Airodump(Dependency):
                 line = line.replace('\0', '')
                 lines.append(line)
             csv_reader = csv.reader(lines,
-                    delimiter=',',
-                    quoting=csv.QUOTE_ALL,
-                    skipinitialspace=True,
-                    escapechar='\\')
+                                    delimiter=',',
+                                    quoting=csv.QUOTE_ALL,
+                                    skipinitialspace=True,
+                                    escapechar='\\')
 
             hit_clients = False
             for row in csv_reader:
@@ -261,7 +270,7 @@ class Airodump(Dependency):
 
     @staticmethod
     def filter_targets(targets, skip_wps=False):
-        ''' Filters targets based on Configuration '''
+        """ Filters targets based on Configuration """
         result = []
         # Filter based on Encryption
         for target in targets:
@@ -289,10 +298,10 @@ class Airodump(Dependency):
         while i < len(result):
             if result[i].essid is None:
                 result.pop(i)
-            elif Configuration.ignore_essids is not None and\
+            elif Configuration.ignore_essids is not None and \
                     result[i].essid in Configuration.ignore_essids:
                 result.pop(i)
-            elif Configuration.ignore_cracked and\
+            elif Configuration.ignore_cracked and \
                     result[i].bssid in Configuration.ignore_cracked:
                 result.pop(i)
             elif bssid and result[i].bssid.lower() != bssid.lower():
@@ -304,10 +313,10 @@ class Airodump(Dependency):
         return result
 
     def deauth_hidden_targets(self):
-        '''
+        """
         Sends deauths (to broadcast and to each client) for all
         targets (APs) that have unknown ESSIDs (hidden router names).
-        '''
+        """
         self.decloaking = False
 
         if Configuration.no_deauth:
@@ -354,6 +363,7 @@ if __name__ == '__main__':
     with Airodump() as airodump:
 
         from time import sleep
+
         sleep(7)
 
         from ..util.color import Color
