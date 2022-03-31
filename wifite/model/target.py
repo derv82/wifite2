@@ -80,10 +80,14 @@ class Target(object):
         self.channel = fields[3].strip()
         self.encryption = fields[5].strip()
         self.authentication = fields[7].strip()
-        if 'WPA' in self.encryption:
+
+        # airodump sometimes does not report the encryption type for some reason
+        # In this case (len = 0), defaults to WPA (which is the most common)
+        if 'WPA' in self.encryption or len(self.encryption) == 0:
             self.encryption = 'WPA'
         elif 'WEP' in self.encryption:
             self.encryption = 'WEP'
+
         if len(self.encryption) > 4:
             self.encryption = self.encryption[0:4].strip()
 
@@ -105,7 +109,7 @@ class Target(object):
             self.essid = None  # '(%s)' % self.bssid
             self.essid_known = False
 
-        self.wps = WPSState.UNKNOWN
+        # self.wps = WPSState.UNKNOWN
 
         # Will be set to true once this target will be attacked
         # Needed to count targets in infinite attack mode
