@@ -1,4 +1,4 @@
-[![GitHub version](https://img.shields.io/badge/version-2.5.8-informational.svg)](#)
+[![GitHub version](https://img.shields.io/badge/version-2.6.2-informational.svg)](#)
 [![GitHub issues](https://img.shields.io/github/issues/kimocoder/wifite2.svg)](https://github.com/kimocoder/wifite2/issues)
 [![GitHub forks](https://img.shields.io/github/forks/kimocoder/wifite2.svg)](https://github.com/kimocoder/wifite2/network)
 [![GitHub stars](https://img.shields.io/github/stars/kimocoder/wifite2.svg)](https://github.com/kimocoder/wifite2/stargazers)
