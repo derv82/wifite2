@@ -1,7 +1,7 @@
-FROM python:3.9.7-slim
+FROM python:3.10.1-slim
 
 ENV DEBIAN_FRONTEND noninteractive
-ENV HASHCAT_VERSION hashcat-5.1.0
+ENV HASHCAT_VERSION hashcat-6.2.5
 ENV HASHCAT_UTILS_VERSION 1.9
 
 # Install requirements
