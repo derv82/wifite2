@@ -46,10 +46,10 @@ class CrackResultPMKID(CrackResult):
 
 
 if __name__ == '__main__':
-    w = CrackResultPMKID('AA:BB:CC:DD:EE:FF', 'Test Router', 'hs/pmkid_blah-123213.16800', 'abcd1234')
+    w = CrackResultPMKID('AA:BB:CC:DD:EE:FF', 'Test Router', 'hs/pmkid_blah-123213.22000', 'abcd1234')
     w.dump()
 
-    w = CrackResultPMKID('AA:BB:CC:DD:EE:FF', 'Test Router', 'hs/pmkid_blah-123213.16800', 'Key')
+    w = CrackResultPMKID('AA:BB:CC:DD:EE:FF', 'Test Router', 'hs/pmkid_blah-123213.22000', 'Key')
     print('\n')
     w.dump()
     w.save()

@@ -39,7 +39,7 @@ class AttackPMKID(Attack):
 
         bssid = bssid.lower().replace(':', '')
 
-        file_re = re.compile(r'.*pmkid_.*\.16800')
+        file_re = re.compile(r'.*pmkid_.*\.22000')
         for filename in os.listdir(Configuration.wpa_handshake_dir):
             pmkid_filename = os.path.join(Configuration.wpa_handshake_dir, filename)
             if not os.path.isfile(pmkid_filename):
@@ -274,7 +274,7 @@ class AttackPMKID(Attack):
 
     def crack_pmkid_file(self, pmkid_file):
         """
-        Runs hashcat containing PMKID hash (*.16800).
+        Runs hashcat containing PMKID hash (*.22000).
         If cracked, saves results in self.crack_result
         Returns:
             True if cracked, False otherwise.
@@ -343,7 +343,7 @@ class AttackPMKID(Attack):
         essid_safe = re.sub('[^a-zA-Z0-9]', '', self.target.essid)
         bssid_safe = self.target.bssid.replace(':', '-')
         date = time.strftime('%Y-%m-%dT%H-%M-%S')
-        pmkid_file = 'pmkid_%s_%s_%s.16800' % (essid_safe, bssid_safe, date)
+        pmkid_file = 'pmkid_%s_%s_%s.22000' % (essid_safe, bssid_safe, date)
         pmkid_file = os.path.join(Configuration.wpa_handshake_dir, pmkid_file)
 
         Color.p('\n{+} Saving copy of {C}PMKID Hash{W} to {C}%s{W} ' % pmkid_file)

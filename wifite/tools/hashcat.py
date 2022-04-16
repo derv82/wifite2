@@ -59,7 +59,7 @@ class Hashcat(Dependency):
     @staticmethod
     def crack_pmkid(pmkid_file, verbose=False):
         """
-        Cracks a given pmkid_file using the PMKID/WPA2 attack (-m 16800)
+        Cracks a given pmkid_file using the PMKID/WPA2 attack (-m 22000)
         Returns:
             Key (str) if found; `None` if not found.
         """
@@ -70,7 +70,7 @@ class Hashcat(Dependency):
             command = [
                 'hashcat',
                 '--quiet',      # Only output the password if found.
-                '-m', '16800',  # WPA-PMKID-PBKDF2
+                '-m', '22000',  # WPA-PMKID-PBKDF2
                 '-a', '0',      # Wordlist attack-mode
                 pmkid_file,
                 Configuration.wordlist
@@ -136,7 +136,7 @@ class HcxPcapngTool(Dependency):
     def __init__(self, target):
         self.target = target
         self.bssid = self.target.bssid.lower().replace(':', '')
-        self.pmkid_file = Configuration.temp('pmkid-%s.16800' % self.bssid)
+        self.pmkid_file = Configuration.temp('pmkid-%s.22000' % self.bssid)
 
     @staticmethod
     def generate_hccapx_file(handshake, show_command=False):
