@@ -190,7 +190,7 @@ class HcxPcapngTool(Dependency):
 
         command = [
             'hcxpcapngtool',
-            '--pmkid=', self.pmkid_file,
+            '--pmkid=' + self.pmkid_file,
             pcapng_file
         ]
         hcxpcap_proc = Process(command)
