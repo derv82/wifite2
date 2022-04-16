@@ -155,7 +155,7 @@ class Configuration(object):
 
         # PMKID variables
         cls.use_pmkid_only = False  # Only use PMKID Capture+Crack attack
-        cls.pmkid_timeout = 120  # Time to wait for PMKID capture
+        cls.pmkid_timeout = 300  # Time to wait for PMKID capture
         cls.dont_use_pmkid = False  # Don't use PMKID attack
 
         # Default dictionary for cracking
