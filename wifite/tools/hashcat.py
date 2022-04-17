@@ -42,17 +42,13 @@ class Hashcat(Dependency):
                 command.append('--force')
             command.extend(additional_arg)
             if show_command:
-                Color.pl('{+} {D}Running: {W}{P}%s{W}' % ' '.join(command))
+                Color.pl(f'{{+}} {{D}}Running: {{W}}{{P}}{" ".join(command)}{{W}}')
             process = Process(command)
             stdout, stderr = process.get_output()
             if ':' not in stdout:
                 continue
-            else:
-                key = stdout.split(':', 5)[-1].strip()
-                break
-
-            if os.path.exists(hccapx_file) and hccapx_autoremove is True:
-                os.remove(hccapx_file)
+            key = stdout.split(':', 5)[-1].strip()
+            break
 
         return key
 
@@ -79,7 +75,7 @@ class Hashcat(Dependency):
                 command.append('--force')
             command.extend(additional_arg)
             if verbose and additional_arg == []:
-                Color.pl('{+} {D}Running: {W}{P}%s{W}' % ' '.join(command))
+                Color.pl(f'{{+}} {{D}}Running: {{W}}{{P}}{" ".join(command)}{{W}}')
 
             # TODO: Check status of hashcat (%); it's impossible with --quiet
 
@@ -91,9 +87,7 @@ class Hashcat(Dependency):
                 # Failed
                 continue
             else:
-                # Cracked
-                key = stdout.strip().split(':', 1)[1]
-                return key
+                return stdout.strip().split(':', 1)[1]
 
 
 class HcxDumpTool(Dependency):
@@ -136,7 +130,7 @@ class HcxPcapngTool(Dependency):
     def __init__(self, target):
         self.target = target
         self.bssid = self.target.bssid.lower().replace(':', '')
-        self.pmkid_file = Configuration.temp('pmkid-%s.22000' % self.bssid)
+        self.pmkid_file = Configuration.temp(f'pmkid-{self.bssid}.22000')
 
     @staticmethod
     def generate_hccapx_file(handshake, show_command=False):
@@ -188,11 +182,7 @@ class HcxPcapngTool(Dependency):
         if os.path.exists(self.pmkid_file):
             os.remove(self.pmkid_file)
 
-        command = [
-            'hcxpcapngtool',
-            '--pmkid=' + self.pmkid_file,
-            pcapng_file
-        ]
+        command = ['hcxpcapngtool', f'--pmkid={self.pmkid_file}', pcapng_file]
         hcxpcap_proc = Process(command)
         hcxpcap_proc.wait()
 

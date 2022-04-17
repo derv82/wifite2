@@ -156,8 +156,8 @@ class AttackWEP(Attack):
                                     aircrack = Aircrack(ivs_files)
 
                             elif 0 < Configuration.wep_restart_aircrack < aircrack.pid.running_time():
-                                # Restart aircrack after X seconds
-                                # Color.pl('\n{+} {C}aircrack{W} ran for more than {C}%d{W} seconds, restarting' % Configuration.wep_restart_aircrack)
+                                # Restart aircrack after X seconds Color.pl('\n{+} {C}aircrack{W} ran for more than {
+                                # C}%d{W} seconds, restarting' % Configuration.wep_restart_aircrack)
                                 aircrack.stop()
                                 ivs_files = airodump.find_files(endswith='.ivs')
                                 ivs_files.sort()
@@ -198,7 +198,8 @@ class AttackWEP(Attack):
                                                         'forgedreplay',
                                                         client_mac=client_mac,
                                                         replay_file=replay_file)
-                                    time_unchanged_ivs = time.time()  # Reset unchanged IVs time (it may have taken a while to forge the packet)
+                                    time_unchanged_ivs = time.time()  # Reset unchanged IVs time (it may have taken a
+                                    # while to forge the packet)
                                     continue
                                 else:
                                     # Failed to forge packet. drop out
@@ -277,12 +278,14 @@ class AttackWEP(Attack):
 
         # Deauth clients & retry
         attack_index = 1
-        Color.pl('     {G}1{W}: {O}Deauth clients{W} and {G}retry{W} {C}%s attack{W} against {G}%s{W}' % (current_attack, target_name))
+        Color.pl('     {G}1{W}: {O}Deauth clients{W} and {G}retry{W} {C}%s attack{W} against {G}%s{W}' % (
+            current_attack, target_name))
 
         # Move onto a different WEP attack
         for attack_name in attacks_remaining:
             attack_index += 1
-            Color.pl('     {G}%d{W}: Start new {C}%s attack{W} against {G}%s{W}' % (attack_index, attack_name, target_name))
+            Color.pl(
+                '     {G}%d{W}: Start new {C}%s attack{W} against {G}%s{W}' % (attack_index, attack_name, target_name))
 
         # Stop attacking entirely
         attack_index += 1

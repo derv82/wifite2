@@ -5,6 +5,6 @@ if __name__ == "__main__":
     try:
         pyrit_cli.Pyrit_CLI().initFromArgv()
     except (KeyboardInterrupt, SystemExit):
-        print >>sys.stderr, "\nInterrupted..."
+        print( >> sys.stderr, "\nInterrupted..."
     except pyrit_cli.PyritRuntimeError, e:
         sys.exit(e)

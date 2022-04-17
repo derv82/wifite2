@@ -35,7 +35,7 @@ class Wash(Dependency):
             # Manually check for keyboard interrupt as only python 3.x throws
             # exceptions for subprocess.wait()
             if isinstance(e, KeyboardInterrupt):
-                raise KeyboardInterrupt
+                raise KeyboardInterrupt from e
 
             # Failure is acceptable
             return
@@ -54,9 +54,7 @@ class Wash(Dependency):
                     locked_bssids.add(bssid)
             except Exception as e:
                 if isinstance(e, KeyboardInterrupt):
-                    raise KeyboardInterrupt
-                pass
-
+                    raise KeyboardInterrupt from e
         # Update targets
         for t in targets:
             target_bssid = t.bssid.upper()
@@ -88,7 +86,6 @@ if __name__ == '__main__':
     # Should update 'wps' field of a target
     Wash.check_for_wps_and_update_targets(test_file, targets)
 
-    print(('Target(BSSID={}).wps = {} (Expected: 1)'.format(
-        targets[0].bssid, targets[0].wps)))
+    print(f'Target(BSSID={targets[0].bssid}).wps = {targets[0].wps} (Expected: 1)')
 
     assert targets[0].wps == WPSState.UNLOCKED

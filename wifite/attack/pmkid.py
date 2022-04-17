@@ -77,8 +77,7 @@ class AttackPMKID(Attack):
             HcxDumpTool.dependency_name,
             HcxPcapngTool.dependency_name
         ]
-        missing_deps = [dep for dep in dependencies if not Process.exists(dep)]
-        if len(missing_deps) > 0:
+        if missing_deps := [dep for dep in dependencies if not Process.exists(dep)]:
             Color.pl('{!} Skipping PMKID attack, missing required tools: {O}%s{W}' % ', '.join(missing_deps))
             return False
 
@@ -230,11 +229,7 @@ class AttackPMKID(Attack):
         command = 'aircrack-ng  "%s"' % filename
         (stdout, stderr) = Process.call(command)
 
-        for line in stdout.split("\n"):
-            if 'with PMKID' in line and self.target.bssid in line:
-                return True
-
-        return False
+        return any('with PMKID' in line and self.target.bssid in line for line in stdout.split("\n"))
 
     def capture_pmkid(self):
         """
@@ -269,8 +264,7 @@ class AttackPMKID(Attack):
 
         Color.clear_entire_line()
         Color.pattack('PMKID', self.target, 'CAPTURE', '{G}Captured PMKID{W}')
-        pmkid_file = self.save_pmkid(pmkid_hash)
-        return pmkid_file
+        return self.save_pmkid(pmkid_hash)
 
     def crack_pmkid_file(self, pmkid_file):
         """
@@ -325,10 +319,10 @@ class AttackPMKID(Attack):
         # Create handshake dir
         if self.do_airCRACK:
             # Generate filesystem-safe filename from bssid, essid and date
-            essid_safe = re.sub('[^a-zA-Z0-9]', '', self.target.essid)
+            essid_safe = re.sub('[^a-zA-Z\d]', '', self.target.essid)
             bssid_safe = self.target.bssid.replace(':', '-')
             date = time.strftime('%Y-%m-%dT%H-%M-%S')
-            pmkid_file = 'pmkid_%s_%s_%s.cap' % (essid_safe, bssid_safe, date)
+            pmkid_file = f'pmkid_{essid_safe}_{bssid_safe}_{date}.cap'
             pmkid_file = os.path.join(Configuration.wpa_handshake_dir, pmkid_file)
 
             Color.p('\n{+} Saving copy of {C}PMKID Hash{W} to {C}%s{W} ' % pmkid_file)
@@ -340,10 +334,10 @@ class AttackPMKID(Attack):
             os.makedirs(Configuration.wpa_handshake_dir)
 
         # Generate filesystem-safe filename from bssid, essid and date
-        essid_safe = re.sub('[^a-zA-Z0-9]', '', self.target.essid)
+        essid_safe = re.sub('[^a-zA-Z\d]', '', self.target.essid)
         bssid_safe = self.target.bssid.replace(':', '-')
         date = time.strftime('%Y-%m-%dT%H-%M-%S')
-        pmkid_file = 'pmkid_%s_%s_%s.22000' % (essid_safe, bssid_safe, date)
+        pmkid_file = f'pmkid_{essid_safe}_{bssid_safe}_{date}.22000'
         pmkid_file = os.path.join(Configuration.wpa_handshake_dir, pmkid_file)
 
         Color.p('\n{+} Saving copy of {C}PMKID Hash{W} to {C}%s{W} ' % pmkid_file)

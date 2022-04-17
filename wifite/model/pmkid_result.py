@@ -16,9 +16,9 @@ class CrackResultPMKID(CrackResult):
 
     def dump(self):
         if self.essid:
-            Color.pl('{+} %s: {C}%s{W}' % ('Access Point Name'.rjust(19), self.essid))
+            Color.pl(f'{{+}} {"Access Point Name".rjust(19)}: {{C}}{self.essid}{{W}}')
         if self.bssid:
-            Color.pl('{+} %s: {C}%s{W}' % ('Access Point BSSID'.rjust(19), self.bssid))
+            Color.pl(f'{{+}} {"Access Point BSSID".rjust(19)}: {{C}}{self.bssid}{{W}}')
         Color.pl('{+} %s: {C}%s{W}' % ('Encryption'.rjust(19), self.result_type))
         if self.pmkid_file:
             Color.pl('{+} %s: {C}%s{W}' % ('PMKID File'.rjust(19), self.pmkid_file))

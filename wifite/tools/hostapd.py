@@ -11,15 +11,13 @@ class Hostapd(Dependency):
     pid = None
 
     @classmethod
-    def run(self, iface, target):
+    def run(cls, iface, target):
 
-        fout = open('/tmp/hostapd.conf', 'w')
-        fout.write('interface='+iface+'\n')
-        fout.write('ssid='+target.essid+'\n')
-        fout.write('channel='+target.channel+'\n')
-        fout.write('driver=nl80211\n')
-        fout.close()
-
+        with open('/tmp/hostapd.conf', 'w') as fout:
+            fout.write(f'interface={iface}' + '\n')
+            fout.write(f'ssid={target.essid}' + '\n')
+            fout.write(f'channel={target.channel}' + '\n')
+            fout.write('driver=nl80211\n')
         # command = [
         #     'hostapd',
         #     '/tmp/hostapd.conf'
@@ -29,7 +27,7 @@ class Hostapd(Dependency):
         return None
 
     @classmethod
-    def stop(self):
-        if hasattr(self, 'pid') and self.pid and self.pid.poll() is None:
-            self.pid.interrupt()
+    def stop(cls):
+        if hasattr(cls, 'pid') and cls.pid and cls.pid.poll() is None:
+            cls.pid.interrupt()
         return None

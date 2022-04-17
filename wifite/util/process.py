@@ -54,9 +54,8 @@ class Process(object):
     def exists(program):
         """ Checks if program is installed on this system """
 
-        if Configuration.initialized:  # Maybe we already checked this program
-            if program in set(Configuration.existing_commands.keys()):
-                return Configuration.existing_commands[program]
+        if Configuration.initialized and program in set(Configuration.existing_commands.keys()):
+            return Configuration.existing_commands[program]
 
         p = Process(['which', program])
         stdout = p.stdout().strip()

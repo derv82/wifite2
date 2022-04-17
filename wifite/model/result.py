@@ -32,7 +32,7 @@ class CrackResult(object):
         raise Exception('Unimplemented method: print_single_line()')
 
     def print_single_line_prefix(self, longest_essid):
-        essid = self.essid if self.essid else 'N/A'
+        essid = self.essid or 'N/A'
         Color.p('{W} ')
         Color.p('{C}%s{W}' % essid.ljust(longest_essid))
         Color.p('  ')
@@ -91,7 +91,7 @@ class CrackResult(object):
             len(cracked_targets), name))
 
         results = sorted([cls.load(item) for item in cracked_targets], key=lambda x: x.date, reverse=True)
-        longest_essid = max([len(result.essid or 'ESSID') for result in results])
+        longest_essid = max(len(result.essid or 'ESSID') for result in results)
 
         # Header
         Color.p('{D} ')
@@ -163,20 +163,23 @@ if __name__ == '__main__':
     # Deserialize WPA object
     Color.pl('\nCracked WPA:')
     json = loads(
-        '{"bssid": "AA:BB:CC:DD:EE:FF", "channel": "1", ""essid": "Test Router", "key": "Key", "date": 1433402428, "handshake_file": "hs/capfile.cap", "type": "WPA"}')
+        '{"bssid": "AA:BB:CC:DD:EE:FF", "channel": "1", ""essid": "Test Router", "key": "Key", "date": 1433402428, '
+        '"handshake_file": "hs/capfile.cap", "type": "WPA"}')
     obj = CrackResult.load(json)
     obj.dump()
 
     # Deserialize WEP object
     Color.pl('\nCracked WEP:')
     json = loads(
-        '{"bssid": "AA:BB:CC:DD:EE:FF", "channel": "1", "hex_key": "00:01:02:03:04", "ascii_key": "abcde", "essid": "Test Router", "date": 1433402915, "type": "WEP"}')
+        '{"bssid": "AA:BB:CC:DD:EE:FF", "channel": "1", "hex_key": "00:01:02:03:04", "ascii_key": "abcde", '
+        '"essid": "Test Router", "date": 1433402915, "type": "WEP"}')
     obj = CrackResult.load(json)
     obj.dump()
 
     # Deserialize WPS object
     Color.pl('\nCracked WPS:')
     json = loads(
-        '{"psk": "the psk", "bssid": "AA:BB:CC:DD:EE:FF", "channel": "1", "pin": "01234567", "essid": "Test Router", "date": 1433403278, "type": "WPS"}')
+        '{"psk": "the psk", "bssid": "AA:BB:CC:DD:EE:FF", "channel": "1", "pin": "01234567", "essid": "Test Router", '
+        '"date": 1433403278, "type": "WPS"}')
     obj = CrackResult.load(json)
     obj.dump()

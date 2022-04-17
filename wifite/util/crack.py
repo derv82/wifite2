@@ -60,22 +60,18 @@ class CrackHelper:
             return
 
         hs_to_crack = cls.get_user_selection(handshakes)
-        all_pmkid = all([hs['type'] == 'PMKID' for hs in hs_to_crack])
+        all_pmkid = all(hs['type'] == 'PMKID' for hs in hs_to_crack)
 
         # Identify missing tools
         missing_tools = []
         available_tools = []
         for tool, dependencies in cls.possible_tools:
-            missing = [
-                dep for dep in dependencies
-                if not Process.exists(dep.dependency_name)
-            ]
-            if len(missing) > 0:
+            if missing := [dep for dep in dependencies if not Process.exists(dep.dependency_name)]:
                 missing_tools.append((tool, missing))
             else:
                 available_tools.append(tool)
 
-        if len(missing_tools) > 0:
+        if missing_tools:
             Color.pl('\n{!} {O}Unavailable tools (install to enable):{W}')
             for tool, deps in missing_tools:
                 dep_list = ', '.join([dep.dependency_name for dep in deps])
@@ -96,10 +92,9 @@ class CrackHelper:
 
         try:
             for hs in hs_to_crack:
-                if tool_name != 'hashcat' and hs['type'] == 'PMKID':
-                    if 'hashcat' in missing_tools:
-                        Color.pl('{!} {O}Hashcat is missing, therefore we cannot crack PMKID hash{W}')
-                        continue
+                if tool_name != 'hashcat' and hs['type'] == 'PMKID' and 'hashcat' in missing_tools:
+                    Color.pl('{!} {O}Hashcat is missing, therefore we cannot crack PMKID hash{W}')
+                    continue
                 cls.crack(hs, tool_name)
         except KeyboardInterrupt:
             Color.pl('\n{!} {O}Interrupted{W}')
@@ -155,7 +150,7 @@ class CrackHelper:
             date = date.rsplit('.', 1)[0]
             days, hours = date.split('T')
             hours = hours.replace('-', ':')
-            date = '%s %s' % (days, hours)
+            date = f'{days} {hours}'
 
             if hs_type == '4-WAY':
                 # Patch for essid with " " (zero) or dot "." in name
@@ -163,11 +158,7 @@ class CrackHelper:
                 handshakenew.divine_bssid_and_essid()
                 essid_discovery = handshakenew.essid
 
-                if essid_discovery is None:
-                    essid = essid
-                else:
-                    essid = essid_discovery
-
+                essid = essid if essid_discovery is None else essid_discovery
             handshake = {
                 'filename': os.path.join(hs_dir, hs_file),
                 'bssid': bssid.replace('-', ':'),
@@ -224,7 +215,7 @@ class CrackHelper:
 
         Color.p(
             '{+} Select handshake(s) to crack ({G}%d{W}-{G}%d{W}, select multiple with {C},{W} or {C}-{W} or {C}all{W}): {G}' % (
-            1, len(handshakes)))
+                1, len(handshakes)))
         choices = input()
         Color.p('{W}')
 
@@ -253,7 +244,7 @@ class CrackHelper:
         elif hs['type'] == '4-WAY':
             crack_result = cls.crack_4way(hs, tool)
         else:
-            raise ValueError('Cannot crack handshake: Type is not PMKID or 4-WAY. Handshake=%s' % hs)
+            raise ValueError(f'Cannot crack handshake: Type is not PMKID or 4-WAY. Handshake={hs}')
 
         if crack_result is None:
             # Failed to crack

@@ -8,13 +8,14 @@ import re
 
 
 class WPSState:
-    NONE, UNLOCKED, LOCKED, UNKNOWN = list(range(0, 4))
+    NONE, UNLOCKED, LOCKED, UNKNOWN = list(range(4))
 
 
 class ArchivedTarget(object):
     """
         Holds information between scans from a previously found target
     """
+
     def __init__(self, target):
         self.bssid = target.bssid
         self.channel = target.channel
@@ -44,8 +45,7 @@ class ArchivedTarget(object):
 
     def __eq__(self, other):
         # Check if the other class type is either ArchivedTarget or Target
-        return (isinstance(other, self.__class__) or isinstance(other, Target)) \
-               and self.bssid == other.bssid
+        return isinstance(other, (self.__class__, Target)) and self.bssid == other.bssid
 
 
 class Target(object):
@@ -85,7 +85,7 @@ class Target(object):
         elif 'WEP' in self.encryption:
             self.encryption = 'WEP'
         if len(self.encryption) > 4:
-            self.encryption = self.encryption[0:4].strip()
+            self.encryption = self.encryption[:4].strip()
 
         self.power = int(fields[8].strip())
         if self.power < 0:
@@ -119,8 +119,7 @@ class Target(object):
 
     def __eq__(self, other):
         # Check if the other class type is either ArchivedTarget or Target
-        return (isinstance(other, self.__class__) or isinstance(other, ArchivedTarget)) \
-               and self.bssid == other.bssid
+        return isinstance(other, (self.__class__, ArchivedTarget)) and self.bssid == other.bssid
 
     def transfer_info(self, other):
         """
@@ -156,6 +155,7 @@ class Target(object):
             raise Exception('Ignoring target with Multicast BSSID (%s)' % self.bssid)
 
     def to_str(self, show_bssid=False, show_manufacturer=False):
+        # sourcery no-metrics
         """
             *Colored* string representation of this Target.
             Specifically formatted for the 'scanning' table view.
@@ -165,7 +165,7 @@ class Target(object):
         essid = self.essid if self.essid_known else '(%s)' % self.bssid
         # Trim ESSID (router name) if needed
         if len(essid) > max_essid_len:
-            essid = essid[0:max_essid_len-3] + '...'
+            essid = essid[:max_essid_len - 3] + '...'
         else:
             essid = essid.rjust(max_essid_len)
 
@@ -177,17 +177,13 @@ class Target(object):
             essid = Color.s('{O}%s' % essid)
 
         if self.power < self.max_power:
-            max_power = self.max_power
+            var = self.max_power
 
         # Add a '*' if we decloaked the ESSID
         decloaked_char = '*' if self.decloaked else ' '
         essid += Color.s('{P}%s' % decloaked_char)
 
-        if show_bssid:
-            bssid = Color.s('{O}%s  ' % self.bssid)
-        else:
-            bssid = ''
-
+        bssid = Color.s('{O}%s  ' % self.bssid) if show_bssid else ''
         if show_manufacturer:
             oui = ''.join(self.bssid.split(':')[:3])
             self.manufacturer = Configuration.manufacturers.get(oui, "")
@@ -196,16 +192,14 @@ class Target(object):
             manufacturer = Color.s('{W}%s  ' % self.manufacturer)
             # Trim manufacturer name if needed
             if len(manufacturer) > max_oui_len:
-                manufacturer = manufacturer[0:max_oui_len-3] + '...'
+                manufacturer = manufacturer[:max_oui_len - 3] + '...'
             else:
                 manufacturer = manufacturer.rjust(max_oui_len)
         else:
             manufacturer = ''
 
-        channel_color = '{G}'
-        if int(self.channel) > 14:
-            channel_color = '{C}'
-        channel = Color.s('%s%s' % (channel_color, str(self.channel).rjust(3)))
+        channel_color = '{C}' if int(self.channel) > 14 else '{G}'
+        channel = Color.s(f'{channel_color}{str(self.channel).rjust(3)}')
 
         encryption = self.encryption.rjust(3)
         if 'WEP' in encryption:
@@ -218,7 +212,7 @@ class Target(object):
             else:
                 encryption = Color.s('{O}%s  ' % encryption)
 
-        power = '%sdb' % str(self.power).rjust(3)
+        power = f'{str(self.power).rjust(3)}db'
         if self.power > 50:
             color = 'G'
         elif self.power > 35:
@@ -242,14 +236,15 @@ class Target(object):
         if len(self.clients) > 0:
             clients = Color.s('{G}  ' + str(len(self.clients)))
 
-        result = '%s  %s%s%s  %s  %s  %s  %s' % (
-                essid, bssid, manufacturer, channel, encryption, power, wps, clients)
+        result = f'{essid}  {bssid}{manufacturer}{channel}  {encryption}  {power}  {wps}  {clients}'
+
         result += Color.s('{W}')
         return result
 
 
 if __name__ == '__main__':
-    fields = 'AA:BB:CC:DD:EE:FF,2015-05-27 19:28:44,2015-05-27 19:28:46,1,54,WPA2,CCMP TKIP,PSK,-58,2,0,0.0.0.0,9,HOME-ABCD,'.split(',')
+    fields = 'AA:BB:CC:DD:EE:FF,2015-05-27 19:28:44,2015-05-27 19:28:46,1,54,WPA2,CCMP TKIP,PSK,-58,2,0,0.0.0.0,9,HOME-ABCD,'.split(
+        ',')
     t = Target(fields)
     t.clients.append('asdf')
     t.clients.append('asdf')

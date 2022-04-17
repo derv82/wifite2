@@ -64,7 +64,7 @@ if MAX_WORKUNIT_SIZE < 1 or MAX_WORKUNIT_SIZE > 1000000:
     raise ValueError("Invalid 'workunit_size' in configuration")
 
 URL_GROUPER = re.compile("(?P<protocol>\w+)://(((?P<user>\w+):?(?P<passwd>\w+)?@)?(?P<tail>.+))?")
-XMLFAULT = re.compile("\<class '(?P<class>[\w\.]+)'\>:(?P<fault>.+)")
+XMLFAULT = re.compile("<class '(?P<class>[\w.]+)'>:(?P<fault>.+)")
 
 
 def handle_xmlfault(*params):

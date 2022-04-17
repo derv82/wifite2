@@ -140,7 +140,7 @@ class Reaver(Attack, Dependency):
                 self.parse_failure(stdout)
 
             if self.crack_result is None and self.reaver_proc.poll() is not None:
-                raise Exception('Reaver process stopped (exit code: %s)' % self.reaver_proc.poll())
+                raise Exception(f'Reaver process stopped (exit code: {self.reaver_proc.poll()})')
 
     def get_status(self):
         if self.pixie_dust or self.null_pin:
@@ -164,8 +164,8 @@ class Reaver(Attack, Dependency):
         if self.locked:
             meta_statuses.append('{R}Locked{W}')
 
-        if len(meta_statuses) > 0:
-            main_status += ' (%s)' % ', '.join(meta_statuses)
+        if meta_statuses:
+            main_status += f" ({', '.join(meta_statuses)})"
 
         return main_status
 
@@ -236,48 +236,40 @@ class Reaver(Attack, Dependency):
         if 'Waiting for beacon from' in stdout_last_line:
             state = 'Waiting for beacon'
 
-        # [+] Associated with AA:BB:CC:DD:EE:FF (ESSID: NETGEAR07)
         elif 'Associated with' in stdout_last_line:
             state = 'Associated'
 
         elif 'Starting Cracking Session.' in stdout_last_line:
             state = 'Started Cracking'
 
-        # [+] Trying pin "01235678"
         elif 'Trying pin' in stdout_last_line:
             state = 'Trying PIN'
 
-        # [+] Sending EAPOL START request
         elif 'Sending EAPOL START request' in stdout_last_line:
             state = 'Sending EAPOL'
 
-        # [+] Sending identity response
         elif 'Sending identity response' in stdout_last_line:
             state = 'Sending ID'
             self.locked = False
 
-        # [+] Sending M2 message
         elif 'Sending M' in stdout_last_line:
             for num in ['2', '4', '6']:
-                if 'Sending M%s message' % num in stdout_last_line:
-                    state = 'Sending M%s' % num
+                if f'Sending M{num} message' in stdout_last_line:
+                    state = f'Sending M{num}'
                     if num == '2' and self.pixie_dust:
                         state += ' / Running pixiewps'
                     self.locked = False
 
-        # [+] Received M1 message
         elif 'Received M' in stdout_last_line:
             for num in ['1', '3', '5', '7']:
-                if 'Received M%s message' % num in stdout_last_line:
-                    state = 'Received M%s' % num
+                if f'Received M{num} message' in stdout_last_line:
+                    state = f'Received M{num}'
                     self.locked = False
 
-        # [!] WARNING: Detected AP rate limiting, waiting 60 seconds before re-checking
         elif 'Detected AP rate limiting,' in stdout_last_line:
             state = 'Rate-Limited by AP'
             self.locked = True
 
-        # [!] WARNING: Detected AP rate limiting, waiting 60 seconds before re-checking
         elif 'AP requested deauth' in stdout_last_line:
             state = 'AP requested deauth'
             self.locked = True
@@ -288,14 +280,11 @@ class Reaver(Attack, Dependency):
 
         # Detect percentage complete
         # [+] 0.05% complete @ 2018-08-23 15:17:23 (42 seconds/pin)
-        percentages = re.findall(r"([0-9.]+%) complete .* \(([0-9.]+) seconds/pin\)", stdout_diff)
+        percentages = re.findall(r"([\d.]+%) complete .* \(([\d.]+) seconds/pin\)", stdout_diff)
         if len(percentages) > 0:
             self.progress = percentages[-1][0]
 
-        # Calculate number of PINs tried
-        # [+] Trying pin "01235678"
-        new_pins = set(re.findall(r'Trying pin "([0-9]+)"', stdout_diff))
-        if len(new_pins) > 0:
+        if new_pins := set(re.findall(r'Trying pin "(\d+)"', stdout_diff)):
             self.total_attempts += len(new_pins.difference(self.last_pins))
             self.last_pins = new_pins
 
@@ -336,37 +325,32 @@ class Reaver(Attack, Dependency):
 
         # Check for PIN.
         ''' [+] WPS pin:  11867722 '''
-        regex = re.search(r"WPS pin:\s*([0-9]+)", stdout, re.IGNORECASE)
-        if regex:
+        if regex := re.search(r"WPS pin:\s*(\d+)", stdout, re.IGNORECASE):
             pin = regex.group(1)
 
         if pin is None:
             ''' [+] WPS PIN: '11867722' '''
-            regex = re.search(r"WPS PIN:\s*'([0-9]+)'", stdout, re.IGNORECASE)
-            if regex:
+            if regex := re.search(r"WPS PIN:\s*'(\d+)'", stdout, re.IGNORECASE):
                 pin = regex.group(1)
 
         # Check for PSK.
         # Note: Reaver 1.6.x does not appear to return PSK (?)
         ''' [+] WPA PSK: 'password' '''
-        regex = re.search(r"WPA PSK:\s*'(.+)'", stdout)
-        if regex:
+        if regex := re.search(r"WPA PSK:\s*'(.+)'", stdout):
             psk = regex.group(1)
 
         # Check for SSID
         '''1.x [Reaver Test] [+] AP SSID: 'Test Router' '''
-        regex = re.search(r"AP SSID:\s*'(.*)'", stdout)
-        if regex:
+        if regex := re.search(r"AP SSID:\s*'(.*)'", stdout):
             ssid = regex.group(1)
 
         # Check (again) for SSID
         if ssid is None:
             '''1.6.x [+] Associated with EC:1A:59:37:70:0E (ESSID: belkin.00e)'''
-            regex = re.search(r"Associated with [0-9A-F:]+ \(ESSID: (.*)\)", stdout)
-            if regex:
+            if regex := re.search(r"Associated with [\dA-F:]+ \(ESSID: (.*)\)", stdout):
                 ssid = regex.group(1)
 
-        return (pin, psk, ssid)
+        return pin, psk, ssid
 
     def get_output(self):
         """ Gets output from reaver's output file """
@@ -448,7 +432,8 @@ executing pixiewps -e d0141b15656e96b85fcead2e8e76330d2b1ac1576bb026e7a328c0e1ba
     (pin, psk, ssid) = Reaver.get_pin_psk_ssid(old_stdout)
     assert pin == '12345678', 'pin was "%s", should have been "12345678"' % pin
     assert psk == 'Test PSK', 'psk was "%s", should have been "Test PSK"' % psk
-    assert ssid == 'Test Router', 'ssid was %s, should have been Test Router' % repr(ssid)
+    assert ssid == 'Test Router', f'ssid was {repr(ssid)}, should have been Test Router'
+
     result = CrackResultWPS('AA:BB:CC:DD:EE:FF', ssid, pin, psk)
     result.dump()
     print('')

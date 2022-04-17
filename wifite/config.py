@@ -280,7 +280,7 @@ class Configuration(object):
                      'when scanning & attacking')
 
         if args.channel:
-            chn_arg_re = re.compile("^[0-9]+((,[0-9]+)|(-[0-9]+,[0-9]+))*(-[0-9]+)?$")
+            chn_arg_re = re.compile("^\d+((,\d+)|(-\d+,\d+))*(-\d+)?$")
             if not chn_arg_re.match(args.channel):
                 raise ValueError("Invalid channel! The format must be 1,3-6,9")
 
@@ -314,7 +314,7 @@ class Configuration(object):
             cls.infinite_mode = True
             Color.p('{+} {C}option:{W} ({G}infinite{W}) attack all neighbors forever')
             if not args.scan_time:
-                Color.p('; {O}pillage time not selected{W}, using default {G}%d{W}s' % cls.inf_wait_time)
+                Color.p(f'; {{O}}pillage time not selected{{W}}, using default {{G}}{cls.inf_wait_time:d}{{W}}s')
                 args.scan_time = cls.inf_wait_time
             Color.pl('')
 
@@ -337,11 +337,11 @@ class Configuration(object):
 
         if args.num_deauths and args.num_deauths > 0:
             cls.num_deauths = args.num_deauths
-            Color.pl('{+} {C}option:{W} send {G}%d{W} deauth packets when deauthing' % cls.num_deauths)
+            Color.pl(f'{{+}} {{C}}option:{{W}} send {{G}}{cls.num_deauths:d}{{W}} deauth packets when deauthing')
 
         if args.min_power and args.min_power > 0:
             cls.min_power = args.min_power
-            Color.pl('{+} {C}option:{W} Minimum power {G}%d{W} for target to be shown' % cls.min_power)
+            Color.pl(f'{{+}} {{C}}option:{{W}} Minimum power {{G}}{cls.min_power:d}{{W}} for target to be shown')
 
         if args.skip_crack:
             cls.skip_crack = True
@@ -349,7 +349,7 @@ class Configuration(object):
 
         if args.attack_max and args.attack_max > 0:
             cls.attack_max = args.attack_max
-            Color.pl('{+} {C}option:{W} Attack first {G}%d{W} targets from list' % cls.attack_max)
+            Color.pl(f'{{+}} {{C}}option:{{W}} Attack first {{G}}{cls.attack_max:d}{{W}} targets from list')
 
         if args.target_essid:
             cls.target_essid = args.target_essid
@@ -362,21 +362,21 @@ class Configuration(object):
 
         if args.ignore_cracked:
             from .model.result import CrackResult
-            cracked_targets = CrackResult.load_all()
-            if not cracked_targets:
-                Color.pl('{!} {R}Previously-cracked access points not found in %s' % cls.cracked_file)
-                cls.ignore_cracked = False
-            else:
+            if cracked_targets := CrackResult.load_all():
                 cls.ignore_cracked = [item['bssid'] for item in cracked_targets]
                 Color.pl('{+} {C}option: {O}ignoring {R}%s{O} previously-cracked targets' % len(cls.ignore_cracked))
 
+            else:
+                Color.pl('{!} {R}Previously-cracked access points not found in %s' % cls.cracked_file)
+                cls.ignore_cracked = False
         if args.clients_only:
             cls.clients_only = True
             Color.pl('{+} {C}option:{W} {O}ignoring targets that do not have associated clients')
 
         if args.scan_time:
             cls.scan_time = args.scan_time
-            Color.pl('{+} {C}option:{W} ({G}pillage{W}) attack all targets after {G}%d{W}s' % args.scan_time)
+            Color.pl(
+                f'{{+}} {{C}}option:{{W}} ({{G}}pillage{{W}}) attack all targets after {{G}}{args.scan_time:d}{{W}}s')
 
         if args.verbose:
             cls.verbose = args.verbose
@@ -410,7 +410,8 @@ class Configuration(object):
 
         if args.wep_restart_stale_ivs:
             cls.wep_restart_stale_ivs = args.wep_restart_stale_ivs
-            Color.pl('{+} {C}option:{W} will restart aireplay after {G}%d seconds{W} of no new IVs' % args.wep_restart_stale_ivs)
+            Color.pl(
+                '{+} {C}option:{W} will restart aireplay after {G}%d seconds{W} of no new IVs' % args.wep_restart_stale_ivs)
 
         if args.wep_restart_aircrack:
             cls.wep_restart_aircrack = args.wep_restart_aircrack
@@ -445,7 +446,8 @@ class Configuration(object):
 
         if args.wpa_attack_timeout:
             cls.wpa_attack_timeout = args.wpa_attack_timeout
-            Color.pl('{+} {C}option:{W} will stop WPA handshake capture after {G}%d seconds{W}' % args.wpa_attack_timeout)
+            Color.pl(
+                '{+} {C}option:{W} will stop WPA handshake capture after {G}%d seconds{W}' % args.wpa_attack_timeout)
 
         if args.ignore_old_handshakes:
             cls.ignore_old_handshakes = True
@@ -520,7 +522,8 @@ class Configuration(object):
 
         if args.wps_pixie_timeout:
             cls.wps_pixie_timeout = args.wps_pixie_timeout
-            Color.pl('{+} {C}option:{W} WPS pixie-dust attack will fail after {O}%d seconds{W}' % args.wps_pixie_timeout)
+            Color.pl(
+                '{+} {C}option:{W} WPS pixie-dust attack will fail after {O}%d seconds{W}' % args.wps_pixie_timeout)
 
         if args.wps_fail_threshold:
             cls.wps_fail_threshold = args.wps_fail_threshold
@@ -561,7 +564,7 @@ class Configuration(object):
 
         if len(cls.encryption_filter) == 3:
             Color.pl('{+} {C}option:{W} targeting {G}all encrypted networks{W}')
-        elif len(cls.encryption_filter) == 0:
+        elif not cls.encryption_filter:
             # Default to scan all types
             cls.encryption_filter = ['WEP', 'WPA', 'WPS']
         else:
@@ -579,14 +582,19 @@ class Configuration(object):
             if arg in seen:
                 continue
             seen.add(arg)
-            if arg == '-arpreplay':  cls.wep_attacks.append('replay')
-            if arg == '-fragment':   cls.wep_attacks.append('fragment')
-            if arg == '-chopchop':   cls.wep_attacks.append('chopchop')
-            if arg == '-caffelatte': cls.wep_attacks.append('caffelatte')
-            if arg == '-p0841':      cls.wep_attacks.append('p0841')
-            if arg == '-hirte':      cls.wep_attacks.append('hirte')
-
-        if len(cls.wep_attacks) == 0:
+            if arg == '-arpreplay':
+                cls.wep_attacks.append('replay')
+            elif arg == '-caffelatte':
+                cls.wep_attacks.append('caffelatte')
+            elif arg == '-chopchop':
+                cls.wep_attacks.append('chopchop')
+            elif arg == '-fragment':
+                cls.wep_attacks.append('fragment')
+            elif arg == '-hirte':
+                cls.wep_attacks.append('hirte')
+            elif arg == '-p0841':
+                cls.wep_attacks.append('p0841')
+        if not cls.wep_attacks:
             # Use all attacks
             cls.wep_attacks = ['replay',
                                'fragment',

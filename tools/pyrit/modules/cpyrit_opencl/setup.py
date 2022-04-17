@@ -43,23 +43,22 @@ else:
     try:
         if os.path.exists(os.environ['ATISTREAMSDKROOT']):
             OPENCL_INC_DIRS.append(os.path.join(os.environ['ATISTREAMSDKROOT'], 'include'))
-            for path in ('lib/x86_64','lib/x86'):
+            for path in ('lib/x86_64', 'lib/x86'):
                 if os.path.exists(os.path.join(os.environ['ATISTREAMSDKROOT'], path)):
                     OPENCL_LIB_DIRS.append(os.path.join(os.environ['ATISTREAMSDKROOT'], path))
                     break
     except:
         pass
     for path in ('/usr/local/opencl/OpenCL/common/inc', \
-                '/opt/opencl/OpenCL/common/inc', \
-                '/usr/local/opencl/include', \
-                '/usr/local/cuda/include'):
+                 '/opt/opencl/OpenCL/common/inc', \
+                 '/usr/local/opencl/include', \
+                 '/usr/local/cuda/include'):
         if os.path.exists(path):
             OPENCL_INC_DIRS.append(path)
             break
     else:
-        print >>sys.stderr, "The headers required to build the OpenCL-kernel " \
-                            "were not found. Trying to continue anyway..."
-
+        print >> sys.stderr, "The headers required to build the OpenCL-kernel " \
+                             "were not found. Trying to continue anyway..."
 
 EXTRA_COMPILE_ARGS = ['-Wall', '-fno-strict-aliasing', \
                       '-DVERSION="%s"' % (VERSION,)]
@@ -77,7 +76,8 @@ class GPUBuilder(build_ext):
             f.write("unsigned char oclkernel_packedprogram[] = {")
             f.write(",".join(("0x%02X" % ord(c) for c in oclkernel_inc)))
             f.write("};\nsize_t oclkernel_size = %i;\n" % len(oclkernel_code))
-        print "Building modules..."
+        print
+        "Building modules..."
         build_ext.run(self)
 
 
@@ -92,55 +92,56 @@ class GPUCleaner(clean):
             pass
 
     def run(self):
-        print "Removing temporary files and pre-built GPU-kernels..."
+        print
+        "Removing temporary files and pre-built GPU-kernels..."
         try:
             for f in ('_cpyrit_oclkernel.cl.h',):
                 self._unlink(f)
         except Exception, (errno, sterrno):
-            print >>sys.stderr, "Exception while cleaning temporary " \
-                                "files ('%s')" % sterrno
+            print >> sys.stderr, "Exception while cleaning temporary " \
+                                 "files ('%s')" % sterrno
         clean.run(self)
 
 
 opencl_extension = Extension('cpyrit._cpyrit_opencl',
-                    libraries = LIBRARIES,
-                    sources = ['_cpyrit_opencl.c'],
-                    include_dirs = OPENCL_INC_DIRS,
-                    library_dirs = OPENCL_LIB_DIRS,
-                    extra_compile_args = EXTRA_COMPILE_ARGS,
-                    extra_link_args = EXTRA_LINK_ARGS)
+                             libraries=LIBRARIES,
+                             sources=['_cpyrit_opencl.c'],
+                             include_dirs=OPENCL_INC_DIRS,
+                             library_dirs=OPENCL_LIB_DIRS,
+                             extra_compile_args=EXTRA_COMPILE_ARGS,
+                             extra_link_args=EXTRA_LINK_ARGS)
 
 setup_args = dict(
-        name = 'cpyrit-opencl',
-        version = VERSION,
-        description = 'GPU-accelerated attack against WPA-PSK authentication',
-        long_description = \
-            "Pyrit allows to create massive databases, pre-computing part " \
-            "of the WPA/WPA2-PSK authentication phase in a space-time-" \
-            "tradeoff. Exploiting the computational power of Many-Core- " \
-            "and other platforms through ATI-Stream, Nvidia CUDA, OpenCL " \
-            "and VIA Padlock, it is currently by far the most powerful " \
-            "attack against one of the world's most used security-protocols.",
-        license = 'GNU General Public License v3',
-        author = 'Lukas Lueg',
-        author_email = 'lukas.lueg@gmail.com',
-        url = 'https://github.com/JPaulMora/Pyrit',
-        maintainer = 'John Mora',
-        maintainer_email = 'johmora12@engineer.com',
-        classifiers = \
-              ['Development Status :: 4 - Beta',
-               'Environment :: Console',
-               'License :: OSI Approved :: GNU General Public License (GPL)',
-               'Natural Language :: English',
-               'Operating System :: OS Independent',
-               'Programming Language :: Python',
-               'Topic :: Security'],
-        platforms = ['any'],
-        ext_modules = [opencl_extension],
-        cmdclass = {'build_ext': GPUBuilder, 'clean': GPUCleaner},
-        options = {'install': {'optimize': 1}, \
-                   'bdist_rpm': {'requires': 'pyrit = 0.4.0-1'}}
-        )
+    name='cpyrit-opencl',
+    version=VERSION,
+    description='GPU-accelerated attack against WPA-PSK authentication',
+    long_description= \
+        "Pyrit allows to create massive databases, pre-computing part " \
+        "of the WPA/WPA2-PSK authentication phase in a space-time-" \
+        "tradeoff. Exploiting the computational power of Many-Core- " \
+        "and other platforms through ATI-Stream, Nvidia CUDA, OpenCL " \
+        "and VIA Padlock, it is currently by far the most powerful " \
+        "attack against one of the world's most used security-protocols.",
+    license='GNU General Public License v3',
+    author='Lukas Lueg',
+    author_email='lukas.lueg@gmail.com',
+    url='https://github.com/JPaulMora/Pyrit',
+    maintainer='John Mora',
+    maintainer_email='johmora12@engineer.com',
+    classifiers= \
+        ['Development Status :: 4 - Beta',
+         'Environment :: Console',
+         'License :: OSI Approved :: GNU General Public License (GPL)',
+         'Natural Language :: English',
+         'Operating System :: OS Independent',
+         'Programming Language :: Python',
+         'Topic :: Security'],
+    platforms=['any'],
+    ext_modules=[opencl_extension],
+    cmdclass={'build_ext': GPUBuilder, 'clean': GPUCleaner},
+    options={'install': {'optimize': 1}, \
+             'bdist_rpm': {'requires': 'pyrit = 0.4.0-1'}}
+)
 
 if __name__ == "__main__":
     setup(**setup_args)

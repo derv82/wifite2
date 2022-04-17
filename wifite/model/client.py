@@ -31,7 +31,7 @@ class Client(object):
         """ String representation of a Client """
         result = ''
         for (key, value) in list(self.__dict__.items()):
-            result += key + ': ' + str(value)
+            result += f'{key}: {str(value)}'
             result += ', '
         return result
 

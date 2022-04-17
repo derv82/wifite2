@@ -122,30 +122,32 @@ class Pyrit_CLI(object):
            You should have figured this one out by now.
         """
         self.tell('Usage: pyrit [options] command'
-            '\n'
-            '\nRecognized options:'
-            '\n  -b               : Filters AccessPoint by BSSID'
-            '\n  -e               : Filters AccessPoint by ESSID'
-            '\n  -h               : Print help for a certain command'
-            "\n  -i               : Filename for input ('-' is stdin)"
-            "\n  -o               : Filename for output ('-' is stdout)"
-            '\n  -r               : Packet capture source in pcap-format'
-            '\n  -u               : URL of the storage-system to use'
-            '\n  --all-handshakes : Use all handshakes instead of the best one'
-            '\n  --aes            : Use AES'
-            '\n'
-            '\nRecognized commands:')
+                  '\n'
+                  '\nRecognized options:'
+                  '\n  -b               : Filters AccessPoint by BSSID'
+                  '\n  -e               : Filters AccessPoint by ESSID'
+                  '\n  -h               : Print help for a certain command'
+                  "\n  -i               : Filename for input ('-' is stdin)"
+                  "\n  -o               : Filename for output ('-' is stdout)"
+                  '\n  -r               : Packet capture source in pcap-format'
+                  '\n  -u               : URL of the storage-system to use'
+                  '\n  --all-handshakes : Use all handshakes instead of the best one'
+                  '\n  --aes            : Use AES'
+                  '\n'
+                  '\nRecognized commands:')
         m = max([len(command) for command in self.commands])
         for command, func in sorted(self.commands.items()):
             self.tell('  %s%s : %s' % (command, \
-                                        ' ' * (m - len(command)), \
-                                        func.__doc__.split('\n')[0]))
+                                       ' ' * (m - len(command)), \
+                                       func.__doc__.split('\n')[0]))
+
     print_help.cli_options = ((), ())
 
     def print_command_help(self, command):
         """Print help about a certain command"""
         doc = self.commands[command].__doc__
         self.tell('\n'.join(l.strip() for l in doc.split('\n')))
+
     print_command_help.cli_options = (('-c',), ())
 
     def requires_pckttools(*params):
@@ -164,9 +166,11 @@ class Pyrit_CLI(object):
                                             "functions but seems to be " \
                                             "unavailable.")
                 f(*args, **kwds)
+
             new_f.func_name = f.func_name
             new_f.__doc__ = f.__doc__
             return new_f
+
         return check_pkttools
 
     def _getParser(self, capturefilemask):
@@ -181,7 +185,7 @@ class Pyrit_CLI(object):
             dev = cpyrit.pckttools.PcapDevice(capturefile)
             parser.parse_pcapdevice(dev)
         self.tell("Parsed %i packets (%i 802.11-packets), got %i AP(s)\n" % \
-                    (parser.pcktcount, parser.dot11_pcktcount, len(parser)))
+                  (parser.pcktcount, parser.dot11_pcktcount, len(parser)))
         return parser
 
     def _fuzzyGetAP(self, parser, bssid=None, essid=None):
@@ -189,7 +193,7 @@ class Pyrit_CLI(object):
             for ap in parser:
                 if ap.isCompleted() and ap.essid is not None:
                     self.tell("Picked AccessPoint %s ('%s') automatically." % \
-                                (ap, ap.essid))
+                              (ap, ap.essid))
                     return ap
             raise PyritRuntimeError("Specify an AccessPoint's BSSID or " \
                                     "ESSID using the options -b and -e. " \
@@ -205,9 +209,9 @@ class Pyrit_CLI(object):
         if essid is not None:
             if ap is None:
                 aps = filter(lambda ap: (ap.essid is None
-                                          or ap.essid == essid)
+                                         or ap.essid == essid)
                                         and ap.isCompleted(),
-                                        parser)
+                             parser)
                 if len(aps) > 0:
                     ap = aps[0]
                     self.tell("Picked AccessPoint %s automatically..." % ap)
@@ -259,7 +263,8 @@ class Pyrit_CLI(object):
                     if essid not in storage.essids:
                         storage.essids.create_essid(essid)
                         self.tell("Created ESSID '%s'" % essid)
-    create_essid.cli_options = (('-u', ), ('-e', '-i'))
+
+    create_essid.cli_options = (('-u',), ('-e', '-i'))
 
     def delete_essid(self, storage, essid, confirm=True):
         """Delete a ESSID from the database
@@ -281,6 +286,7 @@ class Pyrit_CLI(object):
             self.tell("deleting...")
             del storage.essids[essid, None]
             self.tell("Deleted ESSID '%s'." % essid)
+
     delete_essid.cli_options = (('-e', '-u'), ())
 
     def list_cores(self):
@@ -311,6 +317,7 @@ class Pyrit_CLI(object):
                     self.tell("\nThe following CUDA GPUs seem available...")
                     for idx, CD in enumerate(cp.CUDAs, start=1):
                         self.tell("#%i:  '%s'" % (idx, CD))
+
     list_cores.cli_options = ((), ())
 
     def list_essids(self, storage):
@@ -327,7 +334,8 @@ class Pyrit_CLI(object):
         for essid in sorted(storage.essids):
             self.tell("ESSID '%s'" % essid)
         self.tell("")
-    list_essids.cli_options = (('-u', ), ())
+
+    list_essids.cli_options = (('-u',), ())
 
     def eval_results(self, storage):
         """Count the available passwords and matching results
@@ -346,11 +354,12 @@ class Pyrit_CLI(object):
             n = max(len(str(c)) for c in essid_results.itervalues())
             for essid, rescnt in sorted(essid_results.iteritems()):
                 self.tell("ESSID '%s'%s : %s%i (%.2f%%)" % (essid, \
-                            ' ' * (m - len(essid)), \
-                            ' ' * (n - len(str(rescnt))), rescnt, \
-                            (rescnt * 100.0 / pwcount) if pwcount > 0 else 0))
+                                                            ' ' * (m - len(essid)), \
+                                                            ' ' * (n - len(str(rescnt))), rescnt, \
+                                                            (rescnt * 100.0 / pwcount) if pwcount > 0 else 0))
             self.tell('')
-    eval_results.cli_options = (('-u', ), ())
+
+    eval_results.cli_options = (('-u',), ())
 
     def import_passwords(self, storage, infile, unique_check=True):
         """Import passwords from a file-like source
@@ -378,6 +387,7 @@ class Pyrit_CLI(object):
                                   (i, perfcounter.avg), end=None, flush=True)
                 self.tell("\r%i lines read. Flushing buffers..." % (i + 1))
         self.tell('All done.')
+
     import_passwords.cli_options = (('-i', '-u'), ())
 
     def import_unique_passwords(self, storage, infile):
@@ -397,6 +407,7 @@ class Pyrit_CLI(object):
            pyrit -i dirty_words.txt import_unique_passwords
         """
         self.import_passwords(storage, infile, unique_check=False)
+
     import_unique_passwords.cli_options = (('-i', '-u'), ())
 
     def export_passwords(self, storage, outfile):
@@ -417,10 +428,11 @@ class Pyrit_CLI(object):
                 awriter.write('\n')
                 perfcounter += len(pwset)
                 self.tell("%i lines written (%.1f lines/s, %.1f%%)\r" % \
-                            (perfcounter.total, perfcounter.avg, \
-                            idx * 100.0 / len(storage.passwords)), \
-                            end=None, sep=None)
+                          (perfcounter.total, perfcounter.avg, \
+                           idx * 100.0 / len(storage.passwords)), \
+                          end=None, sep=None)
         self.tell("\nAll done")
+
     export_passwords.cli_options = (('-o', '-u'), ())
 
     def export_cowpatty(self, storage, essid, outfile):
@@ -444,12 +456,13 @@ class Pyrit_CLI(object):
                         cpwriter.write(results)
                         perfcounter += len(results)
                         self.tell("\r%i entries written (%.1f/s)..." % \
-                                   (perfcounter.total, perfcounter.avg), \
+                                  (perfcounter.total, perfcounter.avg), \
                                   end=None, sep=None)
                 except IOError:
                     self.tell("IOError while exporting to " \
                               "stdout ignored...", stream=sys.stderr)
         self.tell("\r%i entries written. All done." % perfcounter.total)
+
     export_cowpatty.cli_options = (('-u', '-e', '-o'), ())
 
     @requires_pckttools()
@@ -479,7 +492,8 @@ class Pyrit_CLI(object):
         if not any(ap.isCompleted() and ap.essid is not None for ap in parser):
             raise PyritRuntimeError("No valid EAOPL-handshake + ESSID " \
                                     "detected.")
-    analyze.cli_options = (('-r', ), ())
+
+    analyze.cli_options = (('-r',), ())
 
     @requires_pckttools()
     def stripCapture(self, capturefile, outfile, bssid=None, essid=None):
@@ -496,7 +510,7 @@ class Pyrit_CLI(object):
         """
         parser = self._getParser(capturefile)
         if essid is not None or bssid is not None:
-            ap_iter = (self._fuzzyGetAP(parser, bssid, essid), )
+            ap_iter = (self._fuzzyGetAP(parser, bssid, essid),)
         else:
             ap_iter = parser
         with cpyrit.pckttools.Dot11PacketWriter(outfile) as writer:
@@ -518,7 +532,8 @@ class Pyrit_CLI(object):
                     for pckt in sta.getPackets():
                         writer.write(pckt)
         self.tell("\nNew pcap-file '%s' written (%i out of %i packets)" % \
-                    (outfile, writer.pcktcount, parser.pcktcount))
+                  (outfile, writer.pcktcount, parser.pcktcount))
+
     stripCapture.cli_options = (('-r', '-o'), ('-e', '-b'))
 
     def _stripLive_newAP(self, parser, writer, ap):
@@ -534,8 +549,8 @@ class Pyrit_CLI(object):
         writer.write(pckt)
         self.tell("%i/%i: %s AP %s <-> STA %s" % \
                   (writer.pcktcount, parser.pcktcount, \
-                  ["Challenge", "Response", "Confirmation"][idx], \
-                  station.ap, station))
+                   ["Challenge", "Response", "Confirmation"][idx], \
+                   station.ap, station))
 
     def _stripLive_newEncPckt(self, parser, writer, station, pckt):
         writer.write(pckt)
@@ -573,11 +588,11 @@ class Pyrit_CLI(object):
 
         parser.new_keypckt_callback = \
             lambda (sta, idx, pckt): \
-                    self._stripLive_newKeyPckt(parser, writer, sta, idx, pckt)
+                self._stripLive_newKeyPckt(parser, writer, sta, idx, pckt)
 
         parser.new_encpckt_callback = \
             lambda (sta, pckt): \
-                    self._stripLive_newEncPckt(parser, writer, sta, pckt)
+                self._stripLive_newEncPckt(parser, writer, sta, pckt)
 
         parser.new_auth_callback = \
             lambda (sta, auth): self._stripLive_newAuth(parser, writer, sta, \
@@ -594,7 +609,7 @@ class Pyrit_CLI(object):
                 raise PyritRuntimeError("Failed to open '%s' either as a " \
                                         "file ('%s') or as a device " \
                                         "('%s')" % (capturefile, \
-                                        str(offline_error), str(live_error)))
+                                                    str(offline_error), str(live_error)))
         try:
             parser.parse_pcapdevice(pckt_rdr)
         except (KeyboardInterrupt, SystemExit):
@@ -609,11 +624,12 @@ class Pyrit_CLI(object):
                 auths = sta.getAuthentications()
                 if len(auths) > 0:
                     self.tell("  #%i: Station %s, %i handshake(s)" % \
-                                (j, sta, len(auths)))
+                              (j, sta, len(auths)))
                     for k, auth in enumerate(auths):
                         self.tell("    #%i: %s" % (k + 1, auth))
         self.tell("\nNew pcap-file '%s' written (%i out of %i packets)" % \
-                    (outfile, writer.pcktcount, parser.pcktcount))
+                  (outfile, writer.pcktcount, parser.pcktcount))
+
     stripLive.cli_options = (('-r', '-o'), ())
 
     def export_hashdb(self, storage, outfile, essid=None):
@@ -692,7 +708,7 @@ class Pyrit_CLI(object):
                 cur.close()
                 con.close()
                 self.tell("Failed to initialize the database.", \
-                            stream=sys.stderr)
+                          stream=sys.stderr)
                 raise
         try:
             cur.execute("PRAGMA synchronous = 1")
@@ -701,16 +717,16 @@ class Pyrit_CLI(object):
             for pwset in storage.iterpasswords():
                 i += len(pwset)
                 cur.executemany("INSERT OR IGNORE INTO passwd " \
-                                "(passwd) VALUES (?)", [(p, ) for p in pwset])
+                                "(passwd) VALUES (?)", [(p,) for p in pwset])
                 self.tell("Wrote %i lines...\r" % i, end=None, sep=None)
             self.tell("\nWriting ESSIDs and results...")
             for cur_essid in essids:
                 self.tell("Writing '%s'..." % cur_essid)
                 cur.execute("INSERT OR IGNORE INTO essid " \
-                            "(essid) VALUES (?)", (cur_essid, ))
+                            "(essid) VALUES (?)", (cur_essid,))
                 essid_id = cur.execute("SELECT essid_id FROM essid " \
-                                        "WHERE essid = ?", \
-                                            (cur_essid, )).fetchone()[0]
+                                       "WHERE essid = ?", \
+                                       (cur_essid,)).fetchone()[0]
                 i = 0
                 for results in storage.iterresults(cur_essid):
                     i += len(results)
@@ -718,8 +734,8 @@ class Pyrit_CLI(object):
                                     "(essid_id, passwd_id, pmk) " \
                                     "SELECT ?, passwd_id, ? FROM passwd " \
                                     "WHERE passwd = ?", \
-                                        ((essid_id, buffer(pmk), pw) \
-                                            for pw, pmk in results))
+                                    ((essid_id, buffer(pmk), pw) \
+                                     for pw, pmk in results))
                     self.tell("Wrote %i lines...\r" % i, end=None, sep=None)
             self.tell("\nAll done.")
         except:
@@ -732,7 +748,8 @@ class Pyrit_CLI(object):
         finally:
             cur.close()
             con.close()
-    export_hashdb.cli_options = (('-u', '-o', ), ('-e', ))
+
+    export_hashdb.cli_options = (('-u', '-o',), ('-e',))
 
     def passthrough(self, essid, infile, outfile):
         """Compute PMKs and write results to a file
@@ -766,10 +783,11 @@ class Pyrit_CLI(object):
                                           end=None, sep=None)
             except IOError:
                 self.tell("IOError while writing to stdout ignored.", \
-                            stream=sys.stderr)
+                          stream=sys.stderr)
             finally:
                 self.tell("Computed %i PMKs total; %i PMKs per second" % \
                           (perfcounter.total, perfcounter.avg))
+
     passthrough.cli_options = (('-i', '-o', '-e'), ())
 
     def batchprocess(self, storage, essid=None, outfile=None):
@@ -819,7 +837,7 @@ class Pyrit_CLI(object):
             perfcounter = cpyrit.util.PerformanceCounter()
             self.tell("Working on ESSID '%s'" % cur_essid)
             with cpyrit.cpyrit.StorageIterator(storage, cur_essid, \
-                        yieldOldResults=cowpwriter is not None) as dbiterator:
+                                               yieldOldResults=cowpwriter is not None) as dbiterator:
                 totalKeys = len(dbiterator)
                 for results in dbiterator:
                     perfcounter += len(results)
@@ -832,9 +850,9 @@ class Pyrit_CLI(object):
                     solvedKeys = dbiterator.keycount()
                     self.tell("Processed %i/%i workunits so far (%.1f%%); " \
                               "%i PMKs per second.\r" % (solvedKeys, \
-                                totalKeys, \
-                                100.0 * solvedKeys / totalKeys, \
-                                perfcounter.avg), \
+                                                         totalKeys, \
+                                                         100.0 * solvedKeys / totalKeys, \
+                                                         perfcounter.avg), \
                               end=None, sep=None)
             self.tell("Processed all workunits for ESSID '%s'; " \
                       "%i PMKs per second." % \
@@ -843,7 +861,8 @@ class Pyrit_CLI(object):
         if cowpwriter is not None:
             cowpwriter.close()
         self.tell("Batchprocessing done.")
-    batchprocess.cli_options = (('-u', ), ('-e', '-o'))
+
+    batchprocess.cli_options = (('-u',), ('-e', '-o'))
 
     def relay(self, storage):
         """Relay a storage-url via RPC
@@ -869,7 +888,8 @@ class Pyrit_CLI(object):
             except (KeyboardInterrupt, SystemExit):
                 pass
         self.tell("Server closed")
-    relay.cli_options = (('-u', ), ())
+
+    relay.cli_options = (('-u',), ())
 
     def serve(self):
         """Serve local hardware to other Pyrit clients
@@ -909,6 +929,7 @@ class Pyrit_CLI(object):
             self.tell("\nShutdown with %i active clients..." % len(server))
             listener.shutdown()
             server.shutdown()
+
     serve.cli_options = ((), ())
 
     @requires_pckttools()
@@ -953,12 +974,12 @@ class Pyrit_CLI(object):
                         cracker.enqueue(results)
                     perfcounter += len(results)
                     self.tell("Tried %i PMKs so far; %i PMKs per second; %s\r" % \
-                                (perfcounter.total, perfcounter.avg, results[0][0]),
+                              (perfcounter.total, perfcounter.avg, results[0][0]),
                               end=None, sep=None)
                     if any(c.solution is not None for c in crackers):
                         break
         self.tell("Tried %i PMKs so far; %i PMKs per second." % \
-                    (perfcounter.total, perfcounter.avg))
+                  (perfcounter.total, perfcounter.avg))
         for cracker in crackers:
             cracker.join()
             if cracker.solution is not None:
@@ -974,13 +995,14 @@ class Pyrit_CLI(object):
             else:
                 errmsg += "\n"
             raise PyritRuntimeError(errmsg)
+
     attack_passthrough.cli_options = (('-i', '-r'), ('-e', '-b', '-o', \
                                                      '--all-handshakes', \
                                                      '--aes'))
 
     @requires_pckttools()
     def attack_batch(self, storage, capturefile, essid=None, bssid=None, \
-                    outfile=None, all_handshakes=False, use_aes=False):
+                     outfile=None, all_handshakes=False, use_aes=False):
         """Attack a handshake with PMKs/passwords from the db
 
             Attack an EAPOL-handshake found in the packet-capture file(s) given
@@ -1021,8 +1043,8 @@ class Pyrit_CLI(object):
                         perfcounter += len(results)
                         self.tell("Tried %i PMKs so far (%.1f%%); " \
                                   "%i PMKs per second.\r" % (perfcounter.total,
-                                    100.0 * idx / len(storage.passwords),
-                                    perfcounter.avg),
+                                                             100.0 * idx / len(storage.passwords),
+                                                             perfcounter.avg),
                                   end=None, sep=None)
                         if cracker.solution:
                             break
@@ -1040,6 +1062,7 @@ class Pyrit_CLI(object):
             else:
                 errmsg += "\n"
             raise PyritRuntimeError(errmsg)
+
     attack_batch.cli_options = (('-r', '-u'), ('-e', '-b', '-o', \
                                                '--all-handshakes', '--aes'))
 
@@ -1080,14 +1103,14 @@ class Pyrit_CLI(object):
                 self.tell("Attacking handshake with " \
                           "Station %s..." % auth.station)
                 for idx, results in enumerate(cpyrit.cpyrit.StorageIterator(
-                                                storage, essid,
-                                                yieldNewResults=False), start=1):
+                        storage, essid,
+                        yieldNewResults=False), start=1):
                     cracker.enqueue(results)
                     perfcounter += len(results)
                     self.tell("Tried %i PMKs so far (%.1f%%); " \
                               "%i PMKs per second.\r" % (perfcounter.total,
-                                100.0 * idx / WUcount,
-                                perfcounter.avg),
+                                                         100.0 * idx / WUcount,
+                                                         perfcounter.avg),
                               end=None, sep=None)
                     if cracker.solution is not None:
                         break
@@ -1105,11 +1128,12 @@ class Pyrit_CLI(object):
             else:
                 errmsg += "\n"
             raise PyritRuntimeError(errmsg)
+
     attack_db.cli_options = (('-r', '-u'), ('-e', '-b', '-o', \
                                             '--all-handshakes', '--aes'))
 
     @requires_pckttools()
-    def attack_cowpatty(self, capturefile, infile, essid=None, bssid=None,\
+    def attack_cowpatty(self, capturefile, infile, essid=None, bssid=None, \
                         outfile=None, all_handshakes=False, use_aes=False):
         """Attack a handshake with PMKs from a cowpatty-file
 
@@ -1178,6 +1202,7 @@ class Pyrit_CLI(object):
                 else:
                     errmsg += "\n"
                 raise PyritRuntimeError(errmsg)
+
     attack_cowpatty.cli_options = (('-r', '-i'), ('-e', '-b', '-o', \
                                                   '--all-handshakes', '--aes'))
 
@@ -1203,7 +1228,7 @@ class Pyrit_CLI(object):
             # Minimize scheduling overhead...
             bsize = max(min(int(cp.getPeakPerformance()), 50000), 500)
             cp.resetStatistics()
-            cycler = itertools.cycle(('\\|/-'))
+            cycler = itertools.cycle('\\|/-')
             t = time.time()
             perfcounter = cpyrit.util.PerformanceCounter(timeout + 5)
             while time.time() - t < timeout:
@@ -1213,7 +1238,7 @@ class Pyrit_CLI(object):
                 if r is not None:
                     perfcounter += len(r)
                 self.tell("\rRunning benchmark (%.1f PMKs/s)... %s" % \
-                        (perfcounter.avg, cycler.next()), end=None)
+                          (perfcounter.avg, cycler.next()), end=None)
             self.tell('')
             self.tell("\nComputed %.2f PMKs/s total." % perfcounter.avg)
             for i, core in enumerate(cp.cores):
@@ -1226,9 +1251,9 @@ class Pyrit_CLI(object):
                 else:
                     rtt = 0
                 self.tell("#%i: '%s': %.1f PMKs/s (RTT %.1f)" % \
-                            (i + 1, core.name, perf, rtt))
+                          (i + 1, core.name, perf, rtt))
             if cpyrit.config.cfg['use_CUDA'] == 'true':
-                    self.tell("CUDA:")
+                self.tell("CUDA:")
             for i, CD in enumerate(cp.CUDAs):
 
                 if CD.compTime > 0:
@@ -1258,11 +1283,13 @@ class Pyrit_CLI(object):
 
             for r in cp:
                 pass
+
     benchmark.cli_options = ((), ())
 
     def benchmark_long(self):
         """Longer and more accurate version of benchmark (5 minutes)"""
         self.benchmark(300, 30)
+
     benchmark_long.cli_options = ((), ())
 
     def selftest(self, timeout=60):
@@ -1326,6 +1353,7 @@ class Pyrit_CLI(object):
                                         "this installation...\n")
             else:
                 self.tell("\nAll results verified. Your installation seems OK")
+
     selftest.cli_options = ((), ())
 
     def verify(self, storage, essid=None):
@@ -1378,24 +1406,25 @@ class Pyrit_CLI(object):
                     testedEssid, testedKey, testedPMKs = workunits.pop(0)
                     if testedPMKs != solvedPMKs:
                         self.tell("Workunit %s for ESSID '%s' is corrupt." % \
-                                (testedKey, testedEssid), stream=sys.stderr)
+                                  (testedKey, testedEssid), stream=sys.stderr)
                         err = True
         self.tell("\nVerified %i PMKs with %i PMKs/s." % \
-                    (perfcounter.total, perfcounter.avg))
+                  (perfcounter.total, perfcounter.avg))
         if err:
             raise PyritRuntimeError(
-                    "\nAt least one workunit-file contains invalid results." \
-                    " There are two options now:\n" \
-                    "* The results on the disk are corrupted or invalid. " \
-                    "You should mistrust the entire repository but at least " \
-                    "delete and recompute the offending ESSIDs.\n" \
-                    "* The result on the disk are correct but your " \
-                    "installation is broken and currently computes invalid " \
-                    "results.\nRun 'selftest' for an extensive self-test " \
-                    "in order to tell the two options apart.")
+                "\nAt least one workunit-file contains invalid results." \
+                " There are two options now:\n" \
+                "* The results on the disk are corrupted or invalid. " \
+                "You should mistrust the entire repository but at least " \
+                "delete and recompute the offending ESSIDs.\n" \
+                "* The result on the disk are correct but your " \
+                "installation is broken and currently computes invalid " \
+                "results.\nRun 'selftest' for an extensive self-test " \
+                "in order to tell the two options apart.")
         else:
             self.tell("Everything seems OK.")
-    verify.cli_options = (('-u', ), ('-e', ))
+
+    verify.cli_options = (('-u',), ('-e',))
 
     def checkdb(self, storage, confirm=True):
         """Check the database for errors
@@ -1446,12 +1475,12 @@ class Pyrit_CLI(object):
                         for pw, pmk in res:
                             if pw not in wu:
                                 raise cpyrit.storage.StorageError("Password " \
-                                                              "not in workunit")
+                                                                  "not in workunit")
                         res_passwords = dict(res)
                         for pw in wu:
                             if pw not in res_passwords:
                                 raise cpyrit.storage.StorageError("Password " \
-                                                             "not in resultset")
+                                                                  "not in resultset")
                 except cpyrit.storage.StorageError, e:
                     self.tell("Error in results %s for ESSID '%s':" \
                               " %s" % (key, essid, e), stream=sys.stderr)
@@ -1459,7 +1488,7 @@ class Pyrit_CLI(object):
                         res_errors.add((essid, key))
 
         if len(wu_errors) + len(res_errors) > 0:
-            self.tell("\nThere have been %i errors in workunits and %i errors"\
+            self.tell("\nThere have been %i errors in workunits and %i errors" \
                       " in resultsets. Your option now is to delete these" \
                       " entries from the database. Workunits are lost" \
                       " forever, resultsets can be recomputed." % \

@@ -136,15 +136,15 @@ RAISE_COMMA_REGEX = re.compile(r'raise\s+\w+\s*,')
 RERAISE_COMMA_REGEX = re.compile(r'raise\s+\w+\s*,.*,\s*\w+\s*$')
 ERRORCODE_REGEX = re.compile(r'\b[A-Z]\d{3}\b')
 DOCSTRING_REGEX = re.compile(r'u?r?["\']')
-EXTRANEOUS_WHITESPACE_REGEX = re.compile(r'[\[({] | [\]}),;]| :(?!=)')
-WHITESPACE_AFTER_COMMA_REGEX = re.compile(r'[,;:]\s*(?:  |\t)')
+EXTRANEOUS_WHITESPACE_REGEX = re.compile(r'[\[({] | []}),;]| :(?!=)')
+WHITESPACE_AFTER_COMMA_REGEX = re.compile(r'[,;:]\s*(?: {2}|\t)')
 COMPARE_SINGLETON_REGEX = re.compile(r'(\bNone|\bFalse|\bTrue)?\s*([=!]=)'
                                      r'\s*(?(1)|(None|False|True))\b')
 COMPARE_NEGATIVE_REGEX = re.compile(r'\b(not)\s+[^][)(}{ ]+\s+(in|is)\s')
 COMPARE_TYPE_REGEX = re.compile(r'(?:[=!]=|is(?:\s+not)?)\s+type(?:s.\w+Type'
                                 r'|\s*\(\s*([^)]*[^ )])\s*\))')
-KEYWORD_REGEX = re.compile(r'(\s*)\b(?:%s)\b(\s*)' % r'|'.join(KEYWORDS))
-OPERATOR_REGEX = re.compile(r'(?:[^,\s])(\s*)(?:[-+*/|!<=>%&^]+)(\s*)')
+KEYWORD_REGEX = re.compile(r'(\s*)\bmis%ssing_value\b(\s*)' % r'|'.join(KEYWORDS))
+OPERATOR_REGEX = re.compile(r'[^,\s](\s*)[-+*/|!<=>%&^]+(\s*)')
 LAMBDA_REGEX = re.compile(r'\blambda\b')
 HUNK_REGEX = re.compile(r'^@@ -\d+(?:,\d+)? \+(\d+)(?:,(\d+))? @@.*$')
 STARTSWITH_DEF_REGEX = re.compile(r'^(async\s+def|def)\b')
@@ -160,7 +160,7 @@ STARTSWITH_INDENT_STATEMENT_REGEX = re.compile(
         'while',
     )))
 )
-DUNDER_REGEX = re.compile(r'^__([^\s]+)__ = ')
+DUNDER_REGEX = re.compile(r'^__(\S+)__ = ')
 
 _checks = {'physical_line': {}, 'logical_line': {}, 'tree': {}}
 
