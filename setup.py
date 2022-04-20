@@ -1,4 +1,3 @@
-import setuptools
 from distutils.core import setup
 
 from wifite.config import Configuration
@@ -22,7 +21,7 @@ setup(
     license='GNU GPLv2',
     scripts=['bin/wifite'],
     description='Wireless Network Auditor for Linux & Android',
-    #long_description=open('README.md').read(),
+    # long_description=open('README.md').read(),
     long_description='''Wireless Network Auditor for Linux & Android.
 
     Sniff, Injects and Cracks WEP, WPA/2, and WPS encrypted networks.

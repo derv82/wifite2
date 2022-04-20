@@ -59,7 +59,7 @@ class Tshark(Dependency):
                 # We know the BSSID and this msg was not for the target
                 continue
 
-            target_client_key = '%s,%s' % (target, client)
+            target_client_key = f'{target},{client}'
 
             # Ensure all 4 messages are:
             # Between the same client and target (not different clients connecting).
@@ -67,11 +67,8 @@ class Tshark(Dependency):
             if index == 1:
                 target_client_msg_nums[target_client_key] = 1  # First message
 
-            elif target_client_key not in target_client_msg_nums:
+            elif target_client_key not in target_client_msg_nums or index - 1 != target_client_msg_nums[target_client_key]:
                 continue  # Not first message. We haven't gotten the first message yet. Skip.
-
-            elif index - 1 != target_client_msg_nums[target_client_key]:
-                continue  # Message is not in sequence. Skip
 
             else:
                 # Happy case: Message is > 1 and is received in-order
@@ -127,7 +124,7 @@ class Tshark(Dependency):
         for line in tshark.stdout().split('\n'):
             # Extract src, dst, and essid
             mac_regex = ('[a-zA-Z0-9]{2}:' * 6)[:-1]
-            match = re.search('(%s) [^ ]* (%s).*.*SSID=(.*)$' % (mac_regex, mac_regex), line)
+            match = re.search(f'({mac_regex}) [^ ]* ({mac_regex}).*.*SSID=(.*)$', line)
             if match is None:
                 continue  # Line doesn't contain src, dst, ssid
 
@@ -136,13 +133,8 @@ class Tshark(Dependency):
             if dst.lower() == 'ff:ff:ff:ff:ff:ff':
                 continue  # Skip broadcast packets
 
-            if bssid is not None:
-                # We know the BSSID, only return the ESSID for this BSSID.
-                if bssid.lower() == src.lower():
-                    ssid_pairs.add((src, essid))  # This is our BSSID, add it
-            else:
-                ssid_pairs.add((src, essid))  # We do not know BSSID, add it.
-
+            if bssid is not None and bssid.lower() == src.lower() or bssid is None:
+                ssid_pairs.add((src, essid))  # This is our BSSID, add it
         return list(ssid_pairs)
 
     @staticmethod
@@ -177,14 +169,9 @@ class Tshark(Dependency):
             p.wait()
             lines = p.stdout()
         except Exception as e:
-            # Manually check for keyboard interrupt as only python 3.x throws
-            # exceptions for subprocess.wait()
             if isinstance(e, KeyboardInterrupt):
-                raise KeyboardInterrupt
-
-            # Failure is acceptable
+                raise KeyboardInterrupt from e
             return
-
         wps_bssids = set()
         locked_bssids = set()
         for line in lines.split('\n'):
@@ -226,8 +213,7 @@ if __name__ == '__main__':
     # Should update 'wps' field of a target
     Tshark.check_for_wps_and_update_targets(test_file, targets)
 
-    print(('Target(BSSID={}).wps = {} (Expected: 1)'.format(
-        targets[0].bssid, targets[0].wps)))
+    print(f'Target(BSSID={targets[0].bssid}).wps = {targets[0].wps} (Expected: 1)')
     assert targets[0].wps == WPSState.UNLOCKED
 
     print((Tshark.bssids_with_handshakes(test_file, bssid=target_bssid)))

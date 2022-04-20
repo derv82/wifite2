@@ -88,13 +88,9 @@ class Bully(Attack, Dependency):
 
             try:
                 self._run(airodump)
-            except KeyboardInterrupt as e:
+            except (KeyboardInterrupt, Exception) as e:
                 self.stop()
                 raise e
-            except Exception as e:
-                self.stop()
-                raise e
-
         if self.crack_result is None:
             self.pattack('{R}Failed{W}', newline=True)
 
@@ -133,12 +129,11 @@ class Bully(Attack, Dependency):
                         Configuration.wps_fail_threshold), newline=True)
                     self.stop()
                     return
-            else:
-                if self.locked and not Configuration.wps_ignore_lock:
-                    self.pattack('{R}Failed: {O}Access point is {R}Locked{O}',
-                                 newline=True)
-                    self.stop()
-                    return
+            elif self.locked and not Configuration.wps_ignore_lock:
+                self.pattack('{R}Failed: {O}Access point is {R}Locked{O}',
+                             newline=True)
+                self.stop()
+                return
 
             time.sleep(0.5)
 
@@ -186,8 +181,8 @@ class Bully(Attack, Dependency):
         if self.locked:
             meta_statuses.append('{R}Locked{W}')
 
-        if len(meta_statuses) > 0:
-            main_status += ' (%s)' % ', '.join(meta_statuses)
+        if meta_statuses:
+            main_status += f" ({', '.join(meta_statuses)})"
 
         return main_status
 
@@ -209,25 +204,18 @@ class Bully(Attack, Dependency):
                 break
 
     def parse_crack_result(self, line):
-        # Check for line containing PIN and PSK
-        # [*] Pin is '80246213', key is 'password'
-        pin_key_re = re.search(r"Pin is '(\d*)', key is '(.*)'", line)
-        if pin_key_re:
-            self.cracked_pin = pin_key_re.group(1)
-            self.cracked_key = pin_key_re.group(2)
+        if pin_key_re := re.search(r"Pin is '(\d*)', key is '(.*)'", line):
+            self.cracked_pin = pin_key_re[1]
+            self.cracked_key = pin_key_re[2]
 
         ###############
         # Check for PIN
         if self.cracked_pin is None:
-            #        PIN   : '80246213'
-            pin_re = re.search(r"^\s*PIN\s*:\s*'(.*)'\s*$", line)
-            if pin_re:
-                self.cracked_pin = pin_re.group(1)
+            if pin_re := re.search(r"^\s*PIN\s*:\s*'(.*)'\s*$", line):
+                self.cracked_pin = pin_re[1]
 
-            # [Pixie-Dust] PIN FOUND: 01030365
-            pin_re = re.search(r"^\[Pixie-Dust\] PIN FOUND: '?(\d*)'?\s*$", line)
-            if pin_re:
-                self.cracked_pin = pin_re.group(1)
+            if pin_re := re.search(r"^\[Pixie-Dust] PIN FOUND: '?(\d*)'?\s*$", line):
+                self.cracked_pin = pin_re[1]
 
             if self.cracked_pin is not None:
                 # Mention the PIN & that we're not done yet.
@@ -236,11 +224,8 @@ class Bully(Attack, Dependency):
                 self.state = '{G}Finding Key...{C}'
                 time.sleep(2)
 
-        ###########################
-        #        KEY   : 'password'
-        key_re = re.search(r"^\s*KEY\s*:\s*'(.*)'\s*$", line)
-        if key_re:
-            self.cracked_key = key_re.group(1)
+        if key_re := re.search(r"^\s*KEY\s*:\s*'(.*)'\s*$", line):
+            self.cracked_key = key_re[1]
 
         if not self.crack_result and self.cracked_pin and self.cracked_key:
             self.pattack('{G}Cracked Key: {C}%s{W}' % self.cracked_key, newline=True)
@@ -254,20 +239,16 @@ class Bully(Attack, Dependency):
 
         return self.crack_result
 
-    def parse_state(self, line):
+    def parse_state(self, line):  # sourcery no-metrics
         state = self.state
 
-        # [+] Got beacon for 'Green House 5G' (30:85:a9:39:d2:1c)
-        got_beacon = re.search(r".*Got beacon for '(.*)' \((.*)\)", line)
-        if got_beacon:
+        if got_beacon := re.search(r".*Got beacon for '(.*)' \((.*)\)", line):
             # group(1)=ESSID, group(2)=BSSID
             state = 'Got beacon'
 
-        # [+] Last State = 'NoAssoc'   Next pin '48855501'
-        last_state = re.search(r".*Last State = '(.*)'\s*Next pin '(.*)'", line)
-        if last_state:
+        if last_state := re.search(r".*Last State = '(.*)'\s*Next pin '(.*)'", line):
             # group(1)=NoAssoc, group(2)=PIN
-            pin = last_state.group(2)
+            pin = last_state[2]
             if pin != self.last_pin:
                 self.last_pin = pin
                 self.total_attempts += 1
@@ -275,15 +256,12 @@ class Bully(Attack, Dependency):
                     self.pins_remaining -= 1
             state = 'Trying PIN'
 
-        # [+] Tx( Auth ) = 'Timeout'   Next pin '80241263'
-        mx_result_pin = re.search(
-            r".*[RT]x\(\s*(.*)\s*\) = '(.*)'\s*Next pin '(.*)'", line)
-        if mx_result_pin:
+        if mx_result_pin := re.search(r".*[RT]x\(\s*(.*)\s*\) = '(.*)'\s*Next pin '(.*)'", line):
             # group(1)=M1,M2,..,M7, group(2)=result, group(3)=Next PIN
             self.locked = False
-            m_state = mx_result_pin.group(1)
-            result = mx_result_pin.group(2)  # NoAssoc, WPSFail, Pin1Bad, Pin2Bad
-            pin = mx_result_pin.group(3)
+            m_state = mx_result_pin[1]
+            result = mx_result_pin[2]
+            pin = mx_result_pin[3]
             if pin != self.last_pin:
                 self.last_pin = pin
                 self.total_attempts += 1
@@ -304,42 +282,28 @@ class Bully(Attack, Dependency):
                 result = '{R}%s{W}' % result
 
             result = '{P}%s{W}:%s' % (m_state.strip(), result.strip())
-            state = 'Trying PIN (%s)' % result
+            state = f'Trying PIN ({result})'
 
-        # [!] Run time 00:02:49, pins tested 32 (5.28 seconds per pin)
-        re_tested = re.search(r'Run time ([0-9:]+), pins tested ([0-9])+', line)
-        if re_tested:
+        if re_tested := re.search(r'Run time ([\d:]+), pins tested (\d)+', line):
             # group(1)=01:23:45, group(2)=1234
-            self.total_attempts = int(re_tested.group(2))
+            self.total_attempts = int(re_tested[2])
 
-        # [!] Current rate 5.28 seconds per pin, 07362 pins remaining
-        re_remaining = re.search(r' ([0-9]+) pins remaining', line)
-        if re_remaining:
-            self.pins_remaining = int(re_remaining.group(1))
+        if re_remaining := re.search(r' (\d+) pins remaining', line):
+            self.pins_remaining = int(re_remaining[1])
 
-        # [!] Average time to crack is 5 hours, 23 minutes, 55 seconds
-        re_eta = re.search(
-            r'time to crack is (\d+) hours, (\d+) minutes, (\d+) seconds', line)
-        if re_eta:
+        if re_eta := re.search(r'time to crack is (\d+) hours, (\d+) minutes, (\d+) seconds', line):
             h, m, s = re_eta.groups()
-            self.eta = '%sh%sm%ss' % (
-                h.rjust(2, '0'), m.rjust(2, '0'), s.rjust(2, '0'))
+            self.eta = f"{h.rjust(2, '0')}h{m.rjust(2, '0')}m{s.rjust(2, '0')}s"
 
-        # [!] WPS lockout reported, sleeping for 43 seconds ...
-        re_lockout = re.search(r".*WPS lockout reported, sleeping for (\d+) seconds", line)
-        if re_lockout:
+        if re_lockout := re.search(r".*WPS lockout reported, sleeping for (\d+) seconds", line):
             self.locked = True
-            sleeping = re_lockout.group(1)
+            sleeping = re_lockout[1]
             state = '{R}WPS Lock-out: {O}Waiting %s seconds...{W}' % sleeping
 
-        # [Pixie-Dust] WPS pin not found
-        re_pin_not_found = re.search(r".*\[Pixie-Dust\] WPS pin not found", line)
-        if re_pin_not_found:
+        if re_pin_not_found := re.search(r".*\[Pixie-Dust] WPS pin not found", line):
             state = '{R}Failed: {O}Bully says "WPS pin not found"{W}'
 
-        # [+] Running pixiewps with the information, wait ...
-        re_running_pixiewps = re.search(r".*Running pixiewps with the information", line)
-        if re_running_pixiewps:
+        if re_running_pixiewps := re.search(r".*Running pixiewps with the information", line):
             state = '{G}Running pixiewps...{W}'
         return state
 
@@ -375,8 +339,7 @@ class Bully(Attack, Dependency):
         for line in bully_proc.stderr().split('\n'):
             key_re = re.search(r"^\s*KEY\s*:\s*'(.*)'\s*$", line)
             if key_re is not None:
-                psk = key_re.group(1)
-                return psk
+                return key_re[1]
 
         return None
 

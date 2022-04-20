@@ -5,6 +5,7 @@ install:
 
 ath_masker:
 	cd tools/ath_masker/ && ./load.sh
+	@rm -rf tools/ath_masker/.ath_masker.o.d
 
 modwifi:
 	cd tools/modwifi/ && ./install.sh
@@ -21,7 +22,7 @@ modwifi:
 	@echo "#----------------------------------------------"
 
 reaver:
-	git clone https://github.com/t6x/reaver-wps-fork-t6x tools/reaver/
+	git clone https://github.com/kimocoder/reaver-wps-fork-t6x tools/reaver/
 	cd tools/reaver/src/ && ./configure && make && make install
 
 bully:
@@ -57,6 +58,7 @@ deps:
 
 update:
 	cd tools/ath_masker/ && git pull
+	@rm -rf tools/ath_masker/.ath_masker.o.d
 	cd tools/reaver/ && git pull
 	cd tools/bully/ && git pull
 	cd tools/pixiewps/ && git pull

@@ -30,12 +30,7 @@ class John(Dependency):
             john_format = 'wpapsk'
 
         # Crack john file
-        command = [
-            'john',
-            '--format=%s' % john_format,
-            '--wordlist', Configuration.wordlist,
-            john_file
-        ]
+        command = ['john', f'--format={john_format}', '--wordlist', Configuration.wordlist, john_file]
 
         if show_command:
             Color.pl('{+} {D}Running: {W}{P}%s{W}' % ' '.join(command))

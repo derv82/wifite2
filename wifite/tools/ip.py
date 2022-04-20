@@ -12,8 +12,10 @@ class Ip(Dependency):
     dependency_url = 'apt install iproute2'
 
     @classmethod
-    def up(cls, interface, args=[]):
+    def up(cls, interface, args=None):
         """Put interface up"""
+        if args is None:
+            args = []
         from ..util.process import Process
 
         command = ['ip', 'link', 'set', interface]
@@ -44,8 +46,7 @@ class Ip(Dependency):
 
         output = Process(['ip', 'link', 'show', interface]).stdout()
 
-        match = re.search(r'([a-fA-F0-9]{2}[-:]){5}[a-fA-F0-9]{2}', output)
-        if match:
-            return match.group(0).replace('-', ':')
+        if match := re.search(r'([a-fA-F\d]{2}[-:]){5}[a-fA-F\d]{2}', output):
+            return match[0].replace('-', ':')
 
-        raise Exception('Could not find the mac address for %s' % interface)
+        raise Exception(f'Could not find the mac address for {interface}')

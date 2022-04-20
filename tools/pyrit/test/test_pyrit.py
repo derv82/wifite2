@@ -28,7 +28,6 @@
    socket bound to localhost.
 """
 
-
 from __future__ import with_statement
 
 import os
@@ -61,9 +60,11 @@ def requires_pckttools(*params):
                 sys.stderr.write("(Skipped: Scapy not installed) ")
             else:
                 f(*args, **kwds)
+
         new_f.func_name = f.func_name
         new_f.__doc__ = f.__doc__
         return new_f
+
     return check_pkttools
 
 
@@ -110,7 +111,6 @@ class FilesystemFunctions(object):
 
 
 class BaseTestCase(unittest.TestCase):
-
     handshakes = (('wpapsk-linksys.dump.gz', 'linksys',
                    '00:0b:86:c2:a4:85', '00:13:ce:55:98:ef', 'dictionary'),
                   ('wpa2psk-linksys.dump.gz', 'linksys',
@@ -258,7 +258,7 @@ class TestCase(BaseTestCase):
             fileresults.extend(results)
         dbresults = []
         with cpyrit.cpyrit.StorageIterator(storage, 'linksys', \
-                                            yieldNewResults=True) as dbiter:
+                                           yieldNewResults=True) as dbiter:
             for results in dbiter:
                 dbresults.extend(results)
         self.assertEqual(sorted(fileresults), sorted(dbresults))
@@ -293,7 +293,7 @@ class TestCase(BaseTestCase):
             fileresults.extend(results)
         dbresults = []
         with cpyrit.cpyrit.StorageIterator(storage, 'test1234', \
-                                            yieldNewResults=False) as dbiter:
+                                           yieldNewResults=False) as dbiter:
             for results in dbiter:
                 dbresults.extend(results)
         self.assertEqual(sorted(fileresults), sorted(dbresults))
@@ -351,7 +351,7 @@ class TestCase(BaseTestCase):
             fileresults.extend(results)
         dbresults = []
         with cpyrit.cpyrit.StorageIterator(storage, 'test', \
-                                         yieldNewResults=False) as dbiter:
+                                           yieldNewResults=False) as dbiter:
             for results in dbiter:
                 dbresults.extend(results)
         self.assertEqual(sorted(fileresults), sorted(dbresults))
@@ -493,19 +493,24 @@ def _runTests(case):
     suite = loader.loadTestsFromTestCase(case)
     return unittest.TextTestRunner(verbosity=2).run(suite).wasSuccessful()
 
+
 if __name__ == "__main__":
-    print "Testing with filesystem-storage..."
+    print()
+    "Testing with filesystem-storage..."
     if not _runTests(FilesystemTestCase):
         sys.exit(1)
 
     # should have been imported by cpyrit.storage
     if 'sqlalchemy' not in sys.modules:
-        print "SQLAlchemy seems to be unavailable; skipping all tests..."
+        print()
+        "SQLAlchemy seems to be unavailable; skipping all tests..."
     else:
-        print "Testing with database-storage..."
+        print()
+        "Testing with database-storage..."
         if not _runTests(DatabaseTestCase):
             sys.exit(1)
 
-    print "Testing with RPC-storage..."
+    print()
+    "Testing with RPC-storage..."
     if not _runTests(RPCTestCase):
         sys.exit(1)

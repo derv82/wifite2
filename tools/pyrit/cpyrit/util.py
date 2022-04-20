@@ -64,19 +64,19 @@ def _detect_ncpus():
     # For Linux, Unix and MacOS
     if hasattr(os, "sysconf"):
         if "SC_NPROCESSORS_ONLN" in os.sysconf_names:
-            #Linux and Unix
+            # Linux and Unix
             ncpus = os.sysconf("SC_NPROCESSORS_ONLN")
             if isinstance(ncpus, int) and ncpus > 0:
                 return ncpus
         else:
-            #MacOS X
+            # MacOS X
             return int(os.popen2("sysctl -n hw.ncpu")[1].read())
-    #for Windows
+    # for Windows
     if "NUMBER_OF_PROCESSORS" in os.environ:
         ncpus = int(os.environ["NUMBER_OF_PROCESSORS"])
         if ncpus > 0:
             return ncpus
-    #return the default value
+    # return the default value
     return 1
 
 
@@ -88,7 +88,7 @@ def _limit_ncpus():
     except ValueError:
         raise ValueError("Invalid 'limit_ncpus' in configuration")
     if limited_ncpus < 0:
-    #raise ValueError("Invalid 'limit_ncpus' in configuration")
+        # raise ValueError("Invalid 'limit_ncpus' in configuration")
         return 0;
     if 0 < limited_ncpus < detected_ncpus:
         return limited_ncpus
@@ -216,14 +216,14 @@ class SortedCollection(object):
         'Return last item with a key <= k.  Raise ValueError if not found.'
         i = bisect.bisect_right(self._keys, k)
         if i:
-            return self._items[i-1]
+            return self._items[i - 1]
         raise ValueError('No item found with key at or below: %r' % (k,))
 
     def find_lt(self, k):
         'Return last item with a key < k.  Raise ValueError if not found.'
         i = bisect.bisect_left(self._keys, k)
         if i:
-            return self._items[i-1]
+            return self._items[i - 1]
         raise ValueError('No item found with key below: %r' % (k,))
 
     def find_ge(self, k):
@@ -314,8 +314,8 @@ class CowpattyFile(_cpyrit_cpu.CowpattyFile):
             self.essid = essid
             self.f = FileWrapper(filename, 'wb')
             self.f.write("APWC\00\00\00" + \
-                        chr(len(essid)) + essid + \
-                        '\00' * (32 - len(essid)))
+                         chr(len(essid)) + essid + \
+                         '\00' * (32 - len(essid)))
         else:
             raise RuntimeError("Invalid mode.")
         self.tail = ''
@@ -485,8 +485,8 @@ class PerformanceCounter(object):
         self.total += p
         t = time.time()
         if len(self.datapoints) < 1 \
-          or t - self.datapoints[-1][0] > 0.5 \
-          or self.datapoints[-1][1] == 0.0:
+                or t - self.datapoints[-1][0] > 0.5 \
+                or self.datapoints[-1][1] == 0.0:
             self.datapoints.append([time.time(), p])
         else:
             self.datapoints[-1][1] += p
@@ -503,7 +503,7 @@ class PerformanceCounter(object):
         t = time.time()
         if t - self.datapoints[0][0] > self.window:
             self.datapoints = filter(lambda x: (t - x[0]) < self.window, \
-                                                self.datapoints)
+                                     self.datapoints)
 
     def getAvg(self):
         self.__purge()
@@ -550,7 +550,7 @@ class AsyncXMLRPCServer(SimpleXMLRPCServer.SimpleXMLRPCServer, Thread):
 
     def __init__(self, (iface, port)=('', 17934)):
         SimpleXMLRPCServer.SimpleXMLRPCServer.__init__(self, (iface, port), \
-                                                        logRequests=False)
+                                                       logRequests=False)
         Thread.__init__(self)
         self.setDaemon(True)
         # Make the main socket non-blocking (for accept())
@@ -675,6 +675,6 @@ PMK_TESTVECTORS = {
 for essid in PMK_TESTVECTORS:
     for pw in PMK_TESTVECTORS[essid]:
         PMK_TESTVECTORS[essid][pw] = \
-                                ''.join(map(chr, PMK_TESTVECTORS[essid][pw]))
+            ''.join(map(chr, PMK_TESTVECTORS[essid][pw]))
 del essid
 del pw

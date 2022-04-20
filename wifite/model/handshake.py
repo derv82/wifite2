@@ -26,10 +26,9 @@ class Handshake(object):
         # We can get BSSID from the .cap filename if Wifite captured it.
         # ESSID is stripped of non-printable characters, so we can't rely on that.
         if self.bssid is None:
-            hs_regex = re.compile(r'^.*handshake_\w+_([0-9A-F\-]{17})_.*\.cap$', re.IGNORECASE)
-            match = hs_regex.match(self.capfile)
-            if match:
-                self.bssid = match.group(1).replace('-', ':')
+            hs_regex = re.compile(r'^.*handshake_\w+_([\dA-F\-]{17})_.*\.cap$', re.IGNORECASE)
+            if match := hs_regex.match(self.capfile):
+                self.bssid = match[1].replace('-', ':')
 
         # Get list of bssid/essid pairs from cap file
         pairs = Tshark.bssid_essid_pairs(self.capfile, bssid=self.bssid)
@@ -39,7 +38,7 @@ class Handshake(object):
 
         if len(pairs) == 0 and not self.bssid and not self.essid:
             # Tshark and Pyrit failed us, nothing else we can do.
-            raise ValueError('Cannot find BSSID or ESSID in cap file %s' % self.capfile)
+            raise ValueError(f'Cannot find BSSID or ESSID in cap file {self.capfile}')
 
         if not self.essid and not self.bssid:
             # We do not know the bssid nor the essid
@@ -99,10 +98,8 @@ class Handshake(object):
         ]
 
         proc = Process(command, devnull=False)
-        for line in proc.stdout().split('\n'):
-            if 'Collected all necessary data to mount crack against WPA' in line:
-                return [(None, self.essid)]
-        return []
+        return next(([(None, self.essid)] for line in proc.stdout().split('\n') if
+                     'Collected all necessary data to mount crack against WPA' in line), [])
 
     def pyrit_handshakes(self):
         """Returns list[tuple] of BSSID & ESSID pairs."""
@@ -147,7 +144,7 @@ class Handshake(object):
                           If outfile==None, overwrite existing self.capfile.
         """
         if not outfile:
-            outfile = self.capfile + '.temp'
+            outfile = f'{self.capfile}.temp'
             replace_existing_file = True
         else:
             replace_existing_file = False
@@ -164,17 +161,13 @@ class Handshake(object):
             from shutil import copy
             copy(outfile, self.capfile)
             os.remove(outfile)
-            pass
 
     @staticmethod
     def print_pairs(pairs, capfile, tool=None):
         """
             Prints out BSSID and/or ESSID given a list of tuples (bssid,essid)
         """
-        tool_str = ''
-        if tool is not None:
-            tool_str = '{C}%s{W}: ' % tool.rjust(8)
-
+        tool_str = '{C}%s{W}: ' % tool.rjust(8) if tool is not None else ''
         if len(pairs) == 0:
             Color.pl('{!} %s.cap file {R}does not{O} contain a valid handshake{W}' % (tool_str))
             return
@@ -198,7 +191,7 @@ class Handshake(object):
                 capfiles = [os.path.join('hs', x) for x in os.listdir('hs') if x.endswith('.cap')]
             except OSError as e:
                 capfiles = []
-            if len(capfiles) == 0:
+            if not capfiles:
                 Color.pl('{!} {R}no .cap files found in {O}"./hs"{W}\n')
         else:
             capfiles = [Configuration.check_handshake]

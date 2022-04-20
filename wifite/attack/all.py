@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from .pmkid import AttackPMKID
 from .wep import AttackWEP
 from .wpa import AttackWPA
 from .wps import AttackWPS
-from .pmkid import AttackPMKID
 from ..config import Configuration
-from ..util.color import Color
 from ..model.target import WPSState
+from ..util.color import Color
 
 
 class AttackAll(object):
@@ -49,6 +49,7 @@ class AttackAll(object):
         Attacks a single `target` (wifite.model.target).
         Returns: True if attacks should continue, False otherwise.
         """
+        global attack
         if 'MGT' in target.authentication:
             Color.pl("\n{!}{O}Skipping. Target is using {C}WPA-Enterprise {O}and can not be cracked.")
             return True
@@ -66,19 +67,18 @@ class AttackAll(object):
             # WPA can have multiple attack vectors:
 
             # WPS
-            if not Configuration.use_pmkid_only:
-                if target.wps is WPSState.UNLOCKED and AttackWPS.can_attack_wps():
-                    # Pixie-Dust
-                    if Configuration.wps_pixie:
-                        attacks.append(AttackWPS(target, pixie_dust=True))
+            if not Configuration.use_pmkid_only and target.wps is WPSState.UNLOCKED and AttackWPS.can_attack_wps():
+                # Pixie-Dust
+                if Configuration.wps_pixie:
+                    attacks.append(AttackWPS(target, pixie_dust=True))
 
-                    # Null PIN zero-day attack
-                    if Configuration.wps_pin:
-                        attacks.append(AttackWPS(target, pixie_dust=False, null_pin=True))
+                # Null PIN zero-day attack
+                if Configuration.wps_pin:
+                    attacks.append(AttackWPS(target, pixie_dust=False, null_pin=True))
 
-                    # PIN attack
-                    if Configuration.wps_pin:
-                        attacks.append(AttackWPS(target, pixie_dust=False))
+                # PIN attack
+                if Configuration.wps_pin:
+                    attacks.append(AttackWPS(target, pixie_dust=False))
 
             if not Configuration.wps_only:
                 # PMKID
@@ -88,11 +88,11 @@ class AttackAll(object):
                 if not Configuration.use_pmkid_only:
                     attacks.append(AttackWPA(target))
 
-        if len(attacks) == 0:
+        if not attacks:
             Color.pl('{!} {R}Error: {O}Unable to attack: no attacks available')
             return True  # Keep attacking other targets (skip)
 
-        while len(attacks) > 0:
+        while attacks:
             # Needed by infinite attack mode in order to count how many targets were attacked
             target.attacked = True
             attack = attacks.pop(0)
@@ -156,7 +156,6 @@ class AttackAll(object):
             options += '{R}e{W})'
             prompt += ' or {R}exit{W} %s? {C}' % options
 
-        from ..util.input import raw_input
         Color.p(prompt)
         answer = input().lower()
 

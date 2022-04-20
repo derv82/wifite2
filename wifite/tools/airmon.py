@@ -40,8 +40,7 @@ class AirmonIface(object):
     @staticmethod
     def menu_header():
         """ Colored header row for interfaces """
-        s = '    '  # Space for index #
-        s += 'Interface'.ljust(AirmonIface.INTERFACE_LEN)
+        s = '    ' + 'Interface'.ljust(AirmonIface.INTERFACE_LEN)
         s += 'PHY'.ljust(AirmonIface.PHY_LEN)
         s += 'Driver'.ljust(AirmonIface.DRIVER_LEN)
         s += 'Chipset'.ljust(AirmonIface.CHIPSET_LEN)
@@ -99,7 +98,7 @@ class Airmon(Dependency):
                 continue
 
             phy, interface, driver, chipset = matches.groups()
-            if phy == 'PHY' or phy == 'Interface':
+            if phy in ['PHY', 'Interface']:
                 continue  # Header
 
             if len(interface.strip()) == 0:
@@ -115,11 +114,7 @@ class Airmon(Dependency):
         Get interface info (driver, chipset), based on interface name.
         Returns an AirmonIface if interface name is found by airmon-ng or None
         """
-        for iface in Airmon.get_interfaces():
-            if iface.interface == interface_name:
-                return iface
-
-        return None
+        return next((iface for iface in Airmon.get_interfaces() if iface.interface == interface_name), None)
 
     @staticmethod
     def start_bad_driver(iface):
@@ -154,7 +149,7 @@ class Airmon(Dependency):
         iface_type_path = os.path.join('/sys/class/net', iface, 'type')
         if os.path.exists(iface_type_path):
             with open(iface_type_path, 'r') as f:
-                if (int(f.read()) == Airmon.ARPHRD_ETHER):
+                if int(f.read()) == Airmon.ARPHRD_ETHER:
                     return iface
 
         return None
@@ -218,13 +213,12 @@ class Airmon(Dependency):
         """Find the interface put into monitor mode (if any)"""
 
         # airmon-ng output: (mac80211 monitor mode vif enabled for [phy10]wlan0 on [phy10]wlan0mon)
-        enabled_re = re.compile(r'.*\(mac80211 monitor mode (?:vif )?enabled (?:for [^ ]+ )?on (?:\[\w+\])?(\w+)\)?.*')
+        enabled_re = re.compile(r'.*\(mac80211 monitor mode (?:vif )?enabled (?:for [^ ]+ )?on (?:\[\w+])?(\w+)\)?.*')
         lines = airmon_output.split('\n')
 
         for index, line in enumerate(lines):
-            matches = enabled_re.match(line)
-            if matches:
-                return matches.group(1)
+            if matches := enabled_re.match(line):
+                return matches[1]
             if "monitor mode enabled" in line:
                 return re.sub(r'\s+', ' ', lines[index - 1]).split(' ')[1]
 
@@ -247,34 +241,31 @@ class Airmon(Dependency):
         else:
             Color.pl('{!} {O}Could not disable {R}%s{W}' % iface)
 
-        return (disabled_iface, enabled_iface)
+        return disabled_iface, enabled_iface
 
     @staticmethod
     def _parse_airmon_stop(airmon_output):
         """Find the interface taken out of into monitor mode (if any)"""
 
         # airmon-ng 1.2rc2 output: (mac80211 monitor mode vif enabled for [phy10]wlan0 on [phy10]wlan0mon)
-        disabled_re = re.compile(r'\s*\(mac80211 monitor mode (?:vif )?disabled for (?:\[\w+\])?(\w+)\)\s*')
+        disabled_re = re.compile(r'\s*\(mac80211 monitor mode (?:vif )?disabled for (?:\[\w+])?(\w+)\)\s*')
 
         # airmon-ng 1.2rc1 output: wlan0mon (removed)
-        removed_re = re.compile(r'([a-zA-Z0-9]+).*\(removed\)')
+        removed_re = re.compile(r'([a-zA-Z\d]+).*\(removed\)')
 
         # Enabled interface: (mac80211 station mode vif enabled on [phy4]wlan0)
-        enabled_re = re.compile(r'\s*\(mac80211 station mode (?:vif )?enabled on (?:\[\w+\])?(\w+)\)\s*')
+        enabled_re = re.compile(r'\s*\(mac80211 station mode (?:vif )?enabled on (?:\[\w+])?(\w+)\)\s*')
 
         disabled_iface = None
         enabled_iface = None
         for line in airmon_output.split('\n'):
-            matches = disabled_re.match(line)
-            if matches:
+            if matches := disabled_re.match(line):
                 disabled_iface = matches.group(1)
 
-            matches = removed_re.match(line)
-            if matches:
+            if matches := removed_re.match(line):
                 disabled_iface = matches.group(1)
 
-            matches = enabled_re.match(line)
-            if matches:
+            if matches := enabled_re.match(line):
                 enabled_iface = matches.group(1)
 
         return disabled_iface, enabled_iface
@@ -322,7 +313,7 @@ class Airmon(Dependency):
             choice = 1
         else:
             # Multiple interfaces found
-            Color.p('{+} Select wireless interface ({G}1-%d{W}): ' % (count))
+            Color.p('{+} Select wireless interface ({G}1-%d{W}): ' % count)
             choice = input()
 
         iface = a.get(choice)
@@ -344,15 +335,14 @@ class Airmon(Dependency):
 
         # 2272    dhclient
         # 2293    NetworkManager
-        pid_pname_re = re.compile(r'^\s*(\d+)\s*([a-zA-Z0-9_\-]+)\s*$')
+        pid_pname_re = re.compile(r'^\s*(\d+)\s*([a-zA-Z\d_\-]+)\s*$')
         for line in airmon_output.split('\n'):
-            match = pid_pname_re.match(line)
-            if match:
-                pid = match.group(1)
-                pname = match.group(2)
+            if match := pid_pname_re.match(line):
+                pid = match[1]
+                pname = match[2]
                 pid_pnames.append((pid, pname))
 
-        if len(pid_pnames) == 0:
+        if not pid_pnames:
             return
 
         if not Configuration.kill_conflicting_processes:
@@ -390,7 +380,7 @@ class Airmon(Dependency):
 
     @staticmethod
     def put_interface_up(iface):
-        Color.p('{!}{W} Putting interface {R}%s{W} {G}up{W}...\n' % (iface))
+        Color.p('{!}{W} Putting interface {R}%s{W} {G}up{W}...\n' % iface)
         Ip.up(iface)
         Color.pl('{+}{W} Done !')
 

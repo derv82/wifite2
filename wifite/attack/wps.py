@@ -39,12 +39,6 @@ class AttackWPS(Attack):
             self.success = False
             return False
 
-        if not Configuration.wps_pixie and self.pixie_dust:  # kimocoder: STRING MÅ BYTTES
-            Color.pl('\r{!} {O}--no-nullpin{R} was given, ignoring WPS NULL PIN Attack ' +
-                     'on {O}%s{W}' % self.target.essid)
-            self.success = False
-            return False
-
         if not Configuration.wps_pin and not self.pixie_dust:
             Color.pl('\r{!} {O}--pixie{R} was given, ignoring WPS PIN Attack on {O}%s{W}' % self.target.essid)
             self.success = False

@@ -99,19 +99,13 @@ class Scanner(object):
         # self.target_archives[target.bssid] = ArchivedTarget(target)
 
         self.targets = []
-        do_continue = self.find_targets()
-        return do_continue
+        return self.find_targets()
 
     def get_num_attacked(self):
         """
         Returns: number of attacked targets by this scanner
         """
-        attacked_targets = 0
-        for target in list(self.target_archives.values()):
-            if target.attacked:
-                attacked_targets += 1
-
-        return attacked_targets
+        return sum(bool(target.attacked) for target in list(self.target_archives.values()))
 
     def found_target(self):
         """
@@ -146,10 +140,7 @@ class Scanner(object):
         import platform
         import os
 
-        cmdtorun = 'clear'
-        if platform.system().lower() == "windows":
-            cmdtorun = 'cls'
-
+        cmdtorun = 'cls' if platform.system().lower() == "windows" else 'clear'
         os.system(cmdtorun)
 
     def print_targets(self):
@@ -158,21 +149,19 @@ class Scanner(object):
             Color.p('\r')
             return
 
-        if self.previous_target_count > 0:
-            # We need to 'overwrite' the previous list of targets.
-            if Configuration.verbose <= 1:
-                # Don't clear screen buffer in verbose mode.
-                if self.previous_target_count > len(self.targets) or \
-                        Scanner.get_terminal_height() < self.previous_target_count + 3:
-                    # Either:
-                    # 1) We have less targets than before, so we can't overwrite the previous list
-                    # 2) The terminal can't display the targets without scrolling.
-                    # Clear the screen.
-                    self.clr_scr()
-                else:
-                    # We can fit the targets in the terminal without scrolling
-                    # 'Move' cursor up, so we will print over the previous list
-                    Color.pl(Scanner.UP_CHAR * (3 + self.previous_target_count))
+        if self.previous_target_count > 0 and Configuration.verbose <= 1:
+            # Don't clear screen buffer in verbose mode.
+            if self.previous_target_count > len(self.targets) or \
+                    Scanner.get_terminal_height() < self.previous_target_count + 3:
+                # Either:
+                # 1) We have less targets than before, so we can't overwrite the previous list
+                # 2) The terminal can't display the targets without scrolling.
+                # Clear the screen.
+                self.clr_scr()
+            else:
+                # We can fit the targets in the terminal without scrolling
+                # 'Move' cursor up, so we will print over the previous list
+                Color.pl(Scanner.UP_CHAR * (3 + self.previous_target_count))
 
         self.previous_target_count = len(self.targets)
 

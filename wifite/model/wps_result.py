@@ -17,11 +17,8 @@ class CrackResultWPS(CrackResult):
 
     def dump(self):
         if self.essid is not None:
-            Color.pl('{+} %s: {C}%s{W}' % ('ESSID'.rjust(12), self.essid))
-        if self.psk is None:
-            psk = '{O}N/A{W}'
-        else:
-            psk = '{G}%s{W}' % self.psk
+            Color.pl(f'{{+}} {"ESSID".rjust(12)}: {{C}}{self.essid}{{W}}')
+        psk = '{O}N/A{W}' if self.psk is None else '{G}%s{W}' % self.psk
         Color.pl('{+} %s: {C}%s{W}' % ('Channel'.rjust(12), self.channel))
         Color.pl('{+} %s: {C}%s{W}' % ('BSSID'.rjust(12), self.bssid))
         Color.pl('{+} %s: {C}WPA{W} ({C}WPS{W})' % 'Encryption'.rjust(12))

@@ -27,7 +27,7 @@ class Iw(Dependency):
         from ..util.process import Process
         import re
 
-        ireg = re.compile(r"\s+Interface\s[a-zA-Z0-9]+")
+        ireg = re.compile(r"\s+Interface\s[a-zA-Z\d]+")
         mreg = re.compile(r"\s+type\s[a-zA-z]+")
         ires = None
         mres = None
@@ -38,14 +38,12 @@ class Iw(Dependency):
         (out, err) = Process.call('iw dev')
         if mode is None:
             for line in out.split('\n'):
-                ires = ireg.search(line)
-                if ires:
+                if ires := ireg.search(line):
                     interfaces.add(ires.group().split("Interface")[-1])
         else:
             for line in out.split('\n'):
                 ires = ireg.search(line)
-                mres = mreg.search(line)
-                if mres:
+                if mres := mreg.search(line):
                     if mode == mres.group().split("type")[-1][1:]:
                         interfaces.add(iface)
                 if ires:

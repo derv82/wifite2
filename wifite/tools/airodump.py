@@ -152,9 +152,13 @@ class Airodump(Dependency):
             if fil.startswith('replay_') and fil.endswith('.cap') or fil.endswith('.xor'):
                 os.remove(os.path.join(temp_dir, fil))
 
-    def get_targets(self, old_targets=[], apply_filter=True, target_archives={}):
+    def get_targets(self, old_targets=None, apply_filter=True, target_archives=None):
         """ Parses airodump's CSV file, returns list of Targets """
 
+        if old_targets is None:
+            old_targets = []
+        if target_archives is None:
+            target_archives = {}
         # Find the .CSV file
         csv_filename = None
         for fil in self.find_files(endswith='.csv'):
@@ -188,7 +192,7 @@ class Airodump(Dependency):
 
         # Check targets for WPS
         if not self.skip_wps:
-            capfile = csv_filename[:-3] + 'cap'
+            capfile = f'{csv_filename[:-3]}cap'
             try:
                 Tshark.check_for_wps_and_update_targets(capfile, new_targets)
             except ValueError:
@@ -244,7 +248,7 @@ class Airodump(Dependency):
                     # The current row corresponds to a 'Client' (computer)
                     try:
                         client = Client(row)
-                    except (IndexError, ValueError) as e:
+                    except (IndexError, ValueError):
                         # Skip if we can't parse the client row
                         continue
 

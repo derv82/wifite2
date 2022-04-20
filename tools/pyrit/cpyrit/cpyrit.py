@@ -52,6 +52,8 @@ import _cpyrit_cpu
 # prevent call to socket.getfqdn
 def fast_address_string(self):
     return '%s' % self.client_address[0]
+
+
 BaseHTTPServer.BaseHTTPRequestHandler.address_string = fast_address_string
 del fast_address_string
 
@@ -59,7 +61,8 @@ del fast_address_string
 def version_check(mod):
     ver = getattr(mod, "VERSION", "unknown")
     if ver >= _cpyrit_cpu.VERSION:
-        warnings.warn("WARNING: %s version ('%s') is greater than %s ('%s').\n" % (mod, ver, _cpyrit_cpu, _cpyrit_cpu.VERSION))
+        warnings.warn(
+            "WARNING: %s version ('%s') is greater than %s ('%s').\n" % (mod, ver, _cpyrit_cpu, _cpyrit_cpu.VERSION))
 
 
 class Core(util.Thread):
@@ -98,7 +101,7 @@ class Core(util.Thread):
 
     def _testComputeFunction(self, i):
         if any((pmk != Core.TV_PMK for pmk in
-                    self.solve(Core.TV_ESSID, [Core.TV_PW] * i))):
+                self.solve(Core.TV_ESSID, [Core.TV_PW] * i))):
             raise ValueError("Test-vector does not result in correct PMK.")
 
     def resetStatistics(self):
@@ -154,7 +157,7 @@ class LowLatencyCore(Core):
             raise ValueError("Test-vector does not result in correct PMK.")
 
     def _processData(self, essid, pwlist, res, tm):
-        assert(len(res) == len(pwlist))
+        assert (len(res) == len(pwlist))
         t = time.time()
         self.compTime += t - tm
         self.resCount += len(res)
@@ -163,13 +166,13 @@ class LowLatencyCore(Core):
         if self.bufferSizeDiv > 0:
             avg = self.bufferSizeDiv * int((avg + self.bufferSizeDiv - 1) / self.bufferSizeDiv)
         self.buffersize = int(max(self.minBufferSize,
-                              min(self.maxBufferSize, avg)))
+                                  min(self.maxBufferSize, avg)))
         self.queue._scatter(essid, pwlist, res)
         return t
 
     def solve(self, essid, pwlist):
         enq = self.send(essid, pwlist)
-        assert(enq)
+        assert (enq)
         return self.receive(True)
 
     def run(self):
@@ -212,6 +215,7 @@ except Exception, e:
 else:
     version_check(_cpyrit_opencl)
 
+
     class OpenCLCore(Core, _cpyrit_opencl.OpenCLDevice):
         """Computes results on OpenCL-capable devices."""
 
@@ -225,7 +229,6 @@ else:
             self.maxBufferSize = min(180224, maxhwsize)
             self.start()
 
-
 try:
     import _cpyrit_cuda
 except ImportError:
@@ -234,6 +237,7 @@ except Exception, e:
     print >> sys.stderr, "Failed to load Pyrit's CUDA-core ('%s')." % e
 else:
     version_check(_cpyrit_cuda)
+
 
     class CUDACore(Core, _cpyrit_cuda.CUDADevice):
         """Computes results on Nvidia-CUDA capable devices."""
@@ -247,7 +251,6 @@ else:
             self.maxBufferSize = 131072
             self.start()
 
-
 try:
     import _cpyrit_calpp
 except ImportError:
@@ -256,6 +259,7 @@ except Exception, e:
     print >> sys.stderr, "Failed to load Pyrit's CAL-core ('%s')." % e
 else:
     version_check(_cpyrit_calpp)
+
 
     class CALCore(LowLatencyCore, _cpyrit_calpp.CALDevice):
         """Computes results on ATI CAL capable devices."""
@@ -266,9 +270,8 @@ else:
             self.name = "CAL++ Device #%i '%s'" % \
                         (dev_idx + 1, self.deviceName)
             self.minBufferSize, self.buffersize, self.maxBufferSize, \
-                self.bufferSizeDiv = self.workSizes()
+            self.bufferSizeDiv = self.workSizes()
             self.start()
-
 
 try:
     import _cpyrit_null
@@ -290,7 +293,6 @@ else:
 
 
 class NetworkCore(util.AsyncXMLRPCServer, Core):
-
     class NetworkObserver(util.Thread):
 
         def __init__(self, core):
@@ -386,7 +388,7 @@ class NetworkCore(util.AsyncXMLRPCServer, Core):
             raise IOError("Digest check failed.")
         if len(buf) != len(pwlist) * 32:
             raise ValueError("Result has invalid size of %i. Expected %i." %
-                                (len(buf), len(pwlist) * 32))
+                             (len(buf), len(pwlist) * 32))
         results = [buf[i * 32:i * 32 + 32] for i in xrange(len(pwlist))]
         self.compTime = time.time() - self.startTime
         self.resCount += len(results)
@@ -434,13 +436,13 @@ class CPyrit(object):
         self.cv = threading.Condition()
 
         # CUDA
-        if config.cfg['use_CUDA'] == 'true' and 'cpyrit._cpyrit_cuda' in sys.modules and config.cfg['use_OpenCL'] == 'false':
+        if config.cfg['use_CUDA'] == 'true' and 'cpyrit._cpyrit_cuda' in sys.modules and config.cfg[
+            'use_OpenCL'] == 'false':
 
             CUDA = _cpyrit_cuda.listDevices()
 
             for dev_idx, device in enumerate(CUDA):
                 self.CUDAs.append(CUDACore(queue=self, dev_idx=dev_idx))
-
 
         # OpenCL
         if config.cfg['use_OpenCL'] == 'true' and 'cpyrit._cpyrit_opencl' in sys.modules:
@@ -457,11 +459,9 @@ class CPyrit(object):
             for dev_idx, device in enumerate(_cpyrit_calpp.listDevices()):
                 self.cores.append(CALCore(queue=self, dev_idx=dev_idx))
 
-
         # CPUs
         for i in xrange(util.ncpus):
             self.cores.append(CPUCore(queue=self))
-
 
         # Network
 
@@ -479,14 +479,13 @@ class CPyrit(object):
                         cl = filter(lambda x: len(x) > 0, map(str.strip, cl))
                         bcst = config.cfg['rpc_announce_broadcast'] == 'true'
                         self.announcer = network.NetworkAnnouncer(port=port, \
-                                                          clients=cl, \
-                                                          broadcast=bcst)
+                                                                  clients=cl, \
+                                                                  broadcast=bcst)
                     break
             else:
                 self.ncore_uuid = None
         else:
             self.ncore_uuid = None
-
 
         for core in self.cores:
             self.all.append(core)
@@ -502,7 +501,7 @@ class CPyrit(object):
 
     def _len(self):
         return sum((sum((len(pwlist) for pwlist in pwdict.itervalues()))
-                   for essid, pwdict in self.inqueue))
+                    for essid, pwdict in self.inqueue))
 
     def __len__(self):
         """Return the number of passwords that currently wait to be transfered
@@ -570,7 +569,7 @@ class CPyrit(object):
         with self.cv:
             if self._len() > 0:
                 while self.getPeakPerformance() == 0 \
-                 or self._len() > self.getPeakPerformance() * 5:
+                        or self._len() > self.getPeakPerformance() * 5:
                     self.cv.wait(2)
                     self._check_cores()
             passwordlist = list(passwords)
@@ -598,14 +597,14 @@ class CPyrit(object):
             while True:
                 wu_length = self.workunits[0]
                 if self.out_idx not in self.outqueue \
-                 or len(self.outqueue[self.out_idx]) < wu_length:
+                        or len(self.outqueue[self.out_idx]) < wu_length:
                     self._check_cores()
                     if block:
                         if timeout:
                             while time.time() - t > timeout:
                                 self.cv.wait(0.1)
                                 if self.out_idx in self.outqueue and \
-                                 len(self.outqueue[self.out_idx]) >= wu_length:
+                                        len(self.outqueue[self.out_idx]) >= wu_length:
                                     break
                             else:
                                 return None

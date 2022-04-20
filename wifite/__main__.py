@@ -4,7 +4,8 @@
 try:
     from .config import Configuration
 except (ValueError, ImportError) as e:
-    raise Exception('You may need to run wifite from the root directory (which includes README.md)', e)
+    raise Exception("You may need to run wifite from the root directory (which includes README.md)", e) from e
+
 
 from .util.color import Color
 
