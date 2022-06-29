@@ -216,7 +216,7 @@ class Airodump(Dependency):
         """Returns list of Target objects parsed from CSV file."""
         targets = []
         import csv
-        with open(csv_filename, 'r') as csvopen:
+        with open(csv_filename, 'r', encoding='unicode_escape') as csvopen:
             lines = []
             for line in csvopen:
                 line = line.replace('\0', '')
