@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-*
 
 from ..util.color import Color
 from ..config import Configuration
@@ -16,9 +16,7 @@ class CrackResult(object):
     cracked_file = Configuration.cracked_file
 
     def __init__(self):
-        self.bssid = None
         self.date = int(time.time())
-        self.essid = None
         self.loc = 'ND'
         self.readable_date = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(self.date))
 
