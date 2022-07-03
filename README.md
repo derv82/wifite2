@@ -95,6 +95,40 @@ For Arch
 wifite --showb --nodeaut --strip --tshark --mac --chopchop --arpreplay --caffelatte --hirte -p0841 --all --dict /usr/share/wordlist
 ```
 
+----------
+
+
+----------
+For BlackArch
+----------
+
+Set interface down + monitor mode + activate interface + TX power (as root)
+----------
+
+Identify the name of your card
+
+```bash
+iwconfig
+```
+
+```bash
+airmon-ng check kill && ip link set wlan1 down && iw dev wlan1 set type monitor && ip link set wlan1 up && iw wlan1 set txpower fixed 3737373737373
+systemctl is-active --quiet NetworkManager && echo NetworkManager is active
+systemctl restart NetworkManager 
+sleep 5
+systemctl is-active --quiet NetworkManager && echo Monitor mode is enableb now and NetworkManager was restarted
+```
+
+
+
+----------
+For BlackArch
+----------
+
+```bash
+wifite -inf --daemon --showb -mac --keep-ivs -ic -first 37 --require-fakeauth -pow 37 -p 137 --chopchop --arpreplay --caffelatte --hirte -p0841 --all --ignore-locks --reaver --bully --dict /usr/share/wordlists/fern-wifi/common.txt
+```
+
 
 #
 #
