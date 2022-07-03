@@ -99,7 +99,7 @@ wifite --showb --nodeaut --strip --tshark --mac --chopchop --arpreplay --caffela
 
 
 ----------
-For BlackArch
+For [`BlackArch`](https://github.com/4k4xs4pH1r3/blackarch)
 ----------
 
 Set interface down + monitor mode + activate interface + TX power (as root)
@@ -122,7 +122,7 @@ systemctl is-active --quiet NetworkManager && echo Monitor mode is enableb now a
 
 
 ----------
-For BlackArch
+For [`BlackArch`](https://github.com/4k4xs4pH1r3/blackarch)
 ----------
 
 ```bash
