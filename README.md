@@ -112,7 +112,7 @@ iwconfig
 ```
 
 ```bash
-airmon-ng check kill && ip link set wlan1 down && iw dev wlan1 set type monitor && ip link set wlan1 up && iw wlan1 set txpower fixed 3737373737373
+airmon-ng check kill && ip link set wlan0 down && iw dev wlan0 set type monitor && ip link set wlan0 up && iw wlan0 set txpower fixed 3737373737373
 systemctl is-active --quiet NetworkManager && echo NetworkManager is active
 systemctl restart NetworkManager 
 sleep 5
