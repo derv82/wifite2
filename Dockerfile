@@ -1,4 +1,4 @@
-FROM python:3.10.1-slim
+FROM 3.9-slim-buster
 
 ENV DEBIAN_FRONTEND noninteractive
 ENV HASHCAT_VERSION hashcat-6.2.5
@@ -12,8 +12,8 @@ RUN apt build-dep aircrack-ng -y
 
 # Install Aircrack from Source
 RUN wget https://download.aircrack-ng.org/aircrack-ng-1.6.tar.gz
-RUN tar xzvf aircrack-ng-1.6.tar.gz
-WORKDIR /aircrack-ng-1.6/
+RUN tar xzvf aircrack-ng-1.7.tar.gz
+WORKDIR /aircrack-ng-1.7/
 RUN autoreconf -i
 RUN ./configure --with-experimental
 RUN make
