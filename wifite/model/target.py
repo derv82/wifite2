@@ -76,6 +76,7 @@ class Target(object):
                     14 Key            ()
         """
         self.manufacturer = None
+        self.wps = WPSState.NONE
         self.bssid = fields[0].strip()
         self.channel = fields[3].strip()
         self.encryption = fields[5].strip()
@@ -87,6 +88,8 @@ class Target(object):
             self.encryption = 'WPA'
         elif 'WEP' in self.encryption:
             self.encryption = 'WEP'
+        elif 'WPS' in self.encryption:
+            self.encryption = 'WPS'
 
         if len(self.encryption) > 4:
             self.encryption = self.encryption[:4].strip()
