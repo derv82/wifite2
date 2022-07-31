@@ -37,6 +37,7 @@ class Client(object):
 
 
 if __name__ == '__main__':
-    fields = 'AA:BB:CC:DD:EE:FF, 2015-05-27 19:43:47, 2015-05-27 19:43:47, -67,        2, (not associated) ,HOME-ABCD'.split(',')
+    fields = 'AA:BB:CC:DD:EE:FF, 2015-05-27 19:43:47, 2015-05-27 19:43:47, -67,        2,' \
+             ' (not associated) ,HOME-ABCD'.split(',')
     c = Client(fields)
     print(('Client', c))

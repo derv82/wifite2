@@ -40,8 +40,10 @@ class Process(object):
         (stdout, stderr) = pid.communicate()
 
         # Python 3 compatibility
-        if type(stdout) is bytes: stdout = stdout.decode('utf-8')
-        if type(stderr) is bytes: stderr = stderr.decode('utf-8')
+        if type(stdout) is bytes:
+            stdout = stdout.decode('utf-8')
+        if type(stderr) is bytes:
+            stderr = stderr.decode('utf-8')
 
         if Configuration.verbose > 1 and stdout is not None and stdout.strip() != '':
             Color.pe('{P} [stdout] %s{W}' % '\n [stdout] '.join(stdout.strip().split('\n')))

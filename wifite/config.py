@@ -276,8 +276,7 @@ class Configuration(object):
 
         if args.random_mac:
             cls.random_mac = True
-            Color.pl('{+} {C}option:{W} using {G}random mac address{W} ' +
-                     'when scanning & attacking')
+            Color.pl('{+} {C}option:{W} using {G}random mac address{W} when scanning & attacking')
 
         if args.channel:
             chn_arg_re = re.compile("^\d+((,\d+)|(-\d+,\d+))*(-\d+)?$")
@@ -285,18 +284,15 @@ class Configuration(object):
                 raise ValueError("Invalid channel! The format must be 1,3-6,9")
 
             cls.target_channel = args.channel
-            Color.pl('{+} {C}option:{W} scanning for targets on channel ' +
-                     '{G}%s{W}' % args.channel)
+            Color.pl('{+} {C}option:{W} scanning for targets on channel {G}%s{W}' % args.channel)
 
         if args.interface:
             cls.interface = args.interface
-            Color.pl('{+} {C}option:{W} using wireless interface ' +
-                     '{G}%s{W}' % args.interface)
+            Color.pl('{+} {C}option:{W} using wireless interface {G}%s{W}' % args.interface)
 
         if args.target_bssid:
             cls.target_bssid = args.target_bssid
-            Color.pl('{+} {C}option:{W} targeting BSSID ' +
-                     '{G}%s{W}' % args.target_bssid)
+            Color.pl('{+} {C}option:{W} targeting BSSID {G}%s{W}' % args.target_bssid)
 
         if args.all_bands:
             cls.all_bands = True
@@ -328,8 +324,7 @@ class Configuration(object):
 
         if args.no_deauth:
             cls.no_deauth = True
-            Color.pl('{+} {C}option:{W} will {R}not{W} {O}deauth{W} clients ' +
-                     'during scans or captures')
+            Color.pl('{+} {C}option:{W} will {R}not{W} {O}deauth{W} clients during scans or captures')
 
         if args.daemon is True:
             cls.daemon = True
@@ -410,8 +405,8 @@ class Configuration(object):
 
         if args.wep_restart_stale_ivs:
             cls.wep_restart_stale_ivs = args.wep_restart_stale_ivs
-            Color.pl(
-                '{+} {C}option:{W} will restart aireplay after {G}%d seconds{W} of no new IVs' % args.wep_restart_stale_ivs)
+            Color.pl('{+} {C}option:{W} will restart aireplay after {G}%d seconds{W} of no new IVs'
+                     % args.wep_restart_stale_ivs)
 
         if args.wep_restart_aircrack:
             cls.wep_restart_aircrack = args.wep_restart_aircrack
@@ -470,7 +465,7 @@ class Configuration(object):
         if args.wps_only:
             cls.wps_only = True
             cls.wps_filter = True  # Also only show WPS networks
-            Color.pl('{+} {C}option:{W} will *only* attack WPS networks with ' +
+            Color.pl('{+} {C}option:{W} will *only* attack WPS networks with '
                      '{G}WPS attacks{W} (avoids handshake and PMKID)')
 
         if args.no_wps:
@@ -568,9 +563,7 @@ class Configuration(object):
             # Default to scan all types
             cls.encryption_filter = ['WEP', 'WPA', 'WPS']
         else:
-            Color.pl('{+} {C}option:{W} ' +
-                     'targeting {G}%s-encrypted{W} networks'
-                     % '/'.join(cls.encryption_filter))
+            Color.pl('{+} {C}option:{W} targeting {G}%s-encrypted{W} networks' % '/'.join(cls.encryption_filter))
 
     @classmethod
     def parse_wep_attacks(cls):
@@ -626,7 +619,8 @@ class Configuration(object):
     @classmethod
     def delete_temp(cls):
         """ Remove temp files and folder """
-        if cls.temp_dir is None: return
+        if cls.temp_dir is None:
+            return
         if os.path.exists(cls.temp_dir):
             for f in os.listdir(cls.temp_dir):
                 os.remove(cls.temp_dir + f)
@@ -641,8 +635,7 @@ class Configuration(object):
         if cls.interface is not None and Airmon.base_interface is not None:
             if not cls.daemon:
                 Color.pl('{!} {O}Note:{W} Leaving interface in Monitor Mode!')
-                Color.pl('{!} To disable Monitor Mode when finished: ' +
-                         '{C}airmon-ng stop %s{W}' % cls.interface)
+                Color.pl('{!} To disable Monitor Mode when finished: {C}airmon-ng stop %s{W}' % cls.interface)
 
             else:
                 # Stop monitor mode

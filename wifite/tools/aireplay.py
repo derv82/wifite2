@@ -135,7 +135,10 @@ class Aireplay(Thread, Dependency):
                         self.status = None  # Reset
                     elif 'Got a deauthentication packet!' in line:
                         self.status = False
-                    elif 'Sending Authentication Request ' not in line and 'Please specify an ESSID' not in line and 'Got a deauthentication packet!' not in line and 'association successful :-)' in line.lower():
+                    elif 'Sending Authentication Request ' not in line \
+                            and 'Please specify an ESSID' not in line \
+                            and 'Got a deauthentication packet!' not in line \
+                            and 'association successful :-)' in line.lower():
                         self.status = True
                 elif self.attack_type == WEPAttackType.chopchop:
                     # Look for chopchop status. Potential output lines:
@@ -207,15 +210,14 @@ class Aireplay(Thread, Dependency):
                     saving_re = re.compile(r'Saving keystream in (.*\.xor)')
                     if matches := saving_re.match(line):
                         self.status = f'saving keystream to {matches[1]}'
-
                         # XX:XX:XX  Now you can build a packet with packetforge-ng out of that 1500 bytes keystream
 
                 else:  # Replay, forged replay, etc.
                     # Parse Packets Sent & PacketsPerSecond. Possible output lines:
                     # Read 55 packets (got 0 ARP requests and 0 ACKs), sent 0 packets...(0 pps)
                     # Read 4467 packets (got 1425 ARP requests and 1417 ACKs), sent 1553 packets...(100 pps)
-                    read_re = re.compile(
-                        r'Read (\d+) packets \(got (\d+) ARP requests and (\d+) ACKs\), sent (\d+) packets...\((\d+) pps\)')
+                    read_re = re.compile(r'Read (\d+) packets \(got (\d+) ARP requests '
+                                         r'and (\d+) ACKs\), sent (\d+) packets...\((\d+) pps\)')
                     if matches := read_re.match(line):
                         pps = matches[5]
                         if pps == '0':
