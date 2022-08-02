@@ -140,6 +140,7 @@ class CrackResult(object):
         elif json['type'] == 'WPS':
             from .wps_result import CrackResultWPS
             result = CrackResultWPS(json['bssid'],
+                                    json['channel'],
                                     json['essid'],
                                     json['pin'],
                                     json['psk'])
