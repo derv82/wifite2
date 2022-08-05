@@ -89,9 +89,12 @@ class Handshake(object):
         if not Process.exists('cowpatty'):
             return []
 
+        # Needs to check if cowpatty is updated and have the -2 parameter
+        cowpattycheck = Process('cowpatty', devnull=False)
+
         command = [
             'cowpatty',
-            '-2',   # Don't ignore incomplete handshakes
+            '-2' if 'frames 1 and 2 or 2 and 3 for key attack' in cowpattycheck.stdout() else '',   # Don't ignore incomplete handshakes
             '-r',   self.capfile,
             '-c'    # Check for handshake
         ]
