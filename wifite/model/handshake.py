@@ -26,8 +26,9 @@ class Handshake(object):
         # ESSID is stripped of non-printable characters, so we can't rely on that.
         if self.bssid is None:
             hs_regex = re.compile(r'^.*handshake_\w+_([\dA-F\-]{17})_.*\.cap$', re.IGNORECASE)
-            if match := hs_regex.match(self.capfile):
-                self.bssid = match[1].replace('-', ':')
+            result = hs_regex.match(self.capfile)
+            if result is not None:
+                self.bssid = result[1].replace('-', ':')
 
         # Get list of bssid/essid pairs from cap file
         pairs = Tshark.bssid_essid_pairs(self.capfile, bssid=self.bssid)
@@ -106,7 +107,7 @@ class Handshake(object):
 
     def pyrit_handshakes(self):
         """Returns list[tuple] of BSSID & ESSID pairs."""
-        return Pyrit.bssid_essid_with_handshakes(self.capfile, bssid=self.bssid, essid=self.essid)
+        return Pyrit.bssid_essid_with_handshakes(self.capfile)
 
     def aircrack_handshakes(self):
         """Returns tuple (BSSID,None) if aircrack thinks self.capfile contains a handshake / can be cracked"""

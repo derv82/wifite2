@@ -37,12 +37,12 @@ class TestHandshake(unittest.TestCase):
         assert (len(hs.tshark_handshakes()) > 0), f'Expected len>0 but got len({len(hs.tshark_handshakes())})'
 
     # TODO: Pyrit is broken
-    # @unittest.skipUnless(Process.exists("pyrit"), 'pyrit is missing')
-    # def testHandshakePyrit(self):
-    #     print("\nTesting handshake with pyrit...")
-    #     hs_file = self.getFile("handshake_exists.cap")
-    #     hs = Handshake(hs_file, bssid='A4:2B:8C:16:6B:3A')
-    #     assert (len(hs.pyrit_handshakes()) > 0), f'Expected len>0 but got len({len(hs.pyrit_handshakes())})'
+    @unittest.skipUnless(Process.exists("pyrit"), 'pyrit is missing')
+    def testHandshakePyrit(self):
+        print("\nTesting handshake with pyrit...")
+        hs_file = self.getFile("handshake_exists.cap")
+        hs = Handshake(hs_file, bssid='A4:2B:8C:16:6B:3A')
+        assert (len(hs.pyrit_handshakes()) > 0), f'Expected len>0 but got len({len(hs.pyrit_handshakes())})'
 
     @unittest.skipUnless(Process.exists("cowpatty"), 'cowpatty is missing')
     def testHandshakeCowpatty(self):

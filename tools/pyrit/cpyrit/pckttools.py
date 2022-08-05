@@ -77,14 +77,18 @@ def isFlagSet(self, name, value):
     """
     field, val = self.getfield_and_val(name)
     if isEnumField(field):
-        if val not in field.i2s:
-            return False
-        return field.i2s[val] == value
+        if field.i2s is not None:
+            if val not in field.i2s:
+                return False
+            return field.i2s[val] == value
+
     else:
         try:
             return (1 << field.names.index(value)) & self.__getattr__(name) != 0
         except:
             return (1 << field.names.index([value])) & self.__getattr__(name) != 0
+
+
 scapy.packet.Packet.isFlagSet = isFlagSet
 del isFlagSet
 
@@ -599,12 +603,15 @@ class PcapDevice(_cpyrit_cpu.PcapDevice):
 
     def read(self):
         """Read one packet from the capture-source."""
-        r = _cpyrit_cpu.PcapDevice.read(self)
-        if r is not None:
-            ts, pckt_string = r
-            pckt = self.datalink_handler(pckt_string)
-            return pckt
-        else:
+        try:
+            r = _cpyrit_cpu.PcapDevice.read(self)
+            if r is not None:
+                ts, pckt_string = r
+                pckt = self.datalink_handler(pckt_string)
+                return pckt
+            else:
+                return None
+        except:
             return None
 
     def __iter__(self):
