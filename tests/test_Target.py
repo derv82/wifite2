@@ -2,18 +2,17 @@
 # -*- coding: utf-8 -*-
 
 import unittest
-
 from wifite.tools.airodump import Airodump
 
 
 class TestTarget(unittest.TestCase):
     """ Test suite for Target parsing an generation """
-
     airodump_csv = 'airodump.csv'
 
     def getTargets(self, filename):
         """ Helper method to parse targets from filename """
-        import os, inspect
+        import os
+        import inspect
         this_file = os.path.abspath(inspect.getsourcefile(TestTarget.getTargets))
         this_dir = os.path.dirname(this_file)
         csv_file = os.path.join(this_dir, 'files', filename)

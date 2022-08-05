@@ -88,7 +88,6 @@ class Process(object):
             serr = stderr
 
         self.start_time = time.time()
-
         self.pid = Popen(command, stdout=sout, stderr=serr, stdin=stdin, cwd=cwd, bufsize=bufsize)
 
     def __del__(self):

@@ -35,7 +35,6 @@ class Tshark(Dependency):
 
         for line in output.split('\n'):
             src, dst, index, total = Tshark._extract_src_dst_index_total(line)
-
             if src is None:
                 continue  # Skip
 
@@ -106,7 +105,6 @@ class Tshark(Dependency):
     def bssid_essid_pairs(capfile, bssid):
         # Finds all BSSIDs (with corresponding ESSIDs) from cap file.
         # Returns list of tuples(BSSID, ESSID)
-
         if not Tshark.exists():
             return []
 
@@ -117,8 +115,9 @@ class Tshark(Dependency):
             '-r', capfile,  # Path to cap file
             '-n',  # Don't resolve addresses
             # Extract beacon frames
-            '-Y', '"wlan.fc.type_subtype == 0x08 || wlan.fc.type_subtype == 0x05"',
+            '-Y', 'wlan.fc.type_subtype == 0x08 || wlan.fc.type_subtype == 0x05',
         ]
+
         tshark = Process(command, devnull=False)
 
         for line in tshark.stdout().split('\n'):
@@ -133,8 +132,9 @@ class Tshark(Dependency):
             if dst.lower() == 'ff:ff:ff:ff:ff:ff':
                 continue  # Skip broadcast packets
 
-            if bssid is not None and bssid.lower() == src.lower() or bssid is None:
+            if (bssid is not None and bssid.lower() == src.lower()) or bssid is None:
                 ssid_pairs.add((src, essid))  # This is our BSSID, add it
+
         return list(ssid_pairs)
 
     @staticmethod

@@ -24,7 +24,6 @@ class Airodump(Dependency):
                  output_file_prefix='airodump',
                  ivs_only=False, skip_wps=False, delete_existing_files=True):
         """Sets up airodump arguments, doesn't start process yet."""
-
         Configuration.initialize()
 
         if interface is None:
@@ -32,7 +31,6 @@ class Airodump(Dependency):
         if interface is None:
             raise Exception('Wireless interface must be defined (-i)')
         self.interface = interface
-
         self.targets = []
 
         if channel is None:
@@ -215,12 +213,18 @@ class Airodump(Dependency):
     def get_targets_from_csv(csv_filename):
         """Returns list of Target objects parsed from CSV file."""
         targets = []
+        import chardet
         import csv
-        with open(csv_filename, 'r', encoding='unicode_escape') as csvopen:
+
+        with open(csv_filename, "rb") as rawdata:
+            encoding = chardet.detect(rawdata.read())['encoding']
+
+        with open(csv_filename, 'r', encoding=encoding, errors='ignore') as csvopen:
             lines = []
             for line in csvopen:
                 line = line.replace('\0', '')
                 lines.append(line)
+
             csv_reader = csv.reader(lines,
                                     delimiter=',',
                                     quoting=csv.QUOTE_ALL,
@@ -230,7 +234,6 @@ class Airodump(Dependency):
             hit_clients = False
             for row in csv_reader:
                 # Each 'row' is a list of fields for a target/client
-
                 if len(row) == 0:
                     continue
 
