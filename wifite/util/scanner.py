@@ -1,12 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from ..util.color import Color
-from ..tools.airodump import Airodump
-from ..util.input import raw_input, xrange
-from ..config import Configuration
-
 from time import sleep, time
+
+from ..config import Configuration
+from ..tools.airodump import Airodump
+from ..util.color import Color
 
 
 class Scanner(object):
@@ -73,8 +72,6 @@ class Scanner(object):
         except KeyboardInterrupt:
             if not Configuration.infinite_mode:
                 return True
-
-            from ..util.input import raw_input
 
             options = '({G}s{W}{D}, {W}{R}e{W})'
             prompt = '{+} Do you want to {G}start attacking{W} or {R}exit{W}%s?' % options

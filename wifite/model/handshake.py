@@ -22,6 +22,7 @@ class Handshake(object):
             Tries to find BSSID and ESSID from cap file.
             Sets this instances 'bssid' and 'essid' instance fields.
         """
+
         # We can get BSSID from the .cap filename if Wifite captured it.
         # ESSID is stripped of non-printable characters, so we can't rely on that.
         if self.bssid is None:
@@ -46,7 +47,8 @@ class Handshake(object):
             # HACK: Just use the first one we see
             self.bssid = pairs[0][0]
             self.essid = pairs[0][1]
-            Color.pl('{!} {O}Warning{W}: {O}Arbitrarily selected {R}bssid{O} {C}%s{O} and {R}essid{O} "{C}%s{O}"{W}' % (self.bssid, self.essid))
+            Color.pl('{!} {O}Warning{W}: {O}Arbitrarily selected ' +
+                     '{R}bssid{O} {C}%s{O} and {R}essid{O} "{C}%s{O}"{W}' % (self.bssid, self.essid))
 
         if not self.bssid:
             # We already know essid

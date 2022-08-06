@@ -34,8 +34,8 @@ class AttackAll(object):
             bssid = target.bssid
             essid = target.essid if target.essid_known else '{O}ESSID unknown{W}'
 
-            Color.pl('\n{+} ({G}%d{W}/{G}%d{W})' % (index, len(targets)) +
-                     ' Starting attacks against {C}%s{W} ({C}%s{W})' % (bssid, essid))
+            Color.pl('\n{+} ({G}%d{W}/{G}%d{W})'
+                     % (index, len(targets)) + ' Starting attacks against {C}%s{W} ({C}%s{W})' % (bssid, essid))
 
             should_continue = cls.attack_single(target, targets_remaining)
             if not should_continue:

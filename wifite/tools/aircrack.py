@@ -1,13 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from .dependency import Dependency
-from ..util.process import Process
-from ..util.input import xrange
-from ..config import Configuration
-
 import os
 import re
+
+from .dependency import Dependency
+from ..config import Configuration
+from ..util.process import Process
 
 
 class Aircrack(Dependency):

@@ -66,7 +66,8 @@ class Tshark(Dependency):
             if index == 1:
                 target_client_msg_nums[target_client_key] = 1  # First message
 
-            elif target_client_key not in target_client_msg_nums or index - 1 != target_client_msg_nums[target_client_key]:
+            elif target_client_key not in target_client_msg_nums \
+                    or index - 1 != target_client_msg_nums[target_client_key]:
                 continue  # Not first message. We haven't gotten the first message yet. Skip.
 
             else:

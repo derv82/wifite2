@@ -25,8 +25,7 @@ class Hashcat(Dependency):
     @staticmethod
     def crack_handshake(handshake, show_command=False):
         # Generate hccapx
-        hccapx_file = HcxPcapngTool.generate_hccapx_file(
-                handshake, show_command=show_command)
+        hccapx_file = HcxPcapngTool.generate_hccapx_file(handshake, show_command=show_command)
 
         key = None
         # Crack hccapx

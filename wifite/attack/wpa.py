@@ -29,8 +29,8 @@ class AttackWPA(Attack):
 
         # Skip if target is not WPS
         if Configuration.wps_only and self.target.wps is False:
-            Color.pl(
-                '\r{!} {O}Skipping WPA-Handshake attack on {R}%s{O} because {R}--wps-only{O} is set{W}' % self.target.essid)
+            Color.pl('\r{!} {O}Skipping WPA-Handshake attack on {R}%s{O} because {R}--wps-only{O} is set{W}'
+                     % self.target.essid)
             self.success = False
             return self.success
 
@@ -68,8 +68,8 @@ class AttackWPA(Attack):
             self.success = False
             return False
 
-        Color.pl('\n{+} {C}Cracking WPA Handshake:{W} Running {C}aircrack-ng{W} with' +
-                 ' {C}%s{W} wordlist' % os.path.split(Configuration.wordlist)[-1])
+        Color.pl('\n{+} {C}Cracking WPA Handshake:{W} Running {C}aircrack-ng{W} with '
+                 '{C}%s{W} wordlist' % os.path.split(Configuration.wordlist)[-1])
 
         # Crack it
         key = Aircrack.crack_handshake(handshake, show_command=False)
@@ -258,8 +258,8 @@ if __name__ == '__main__':
     Configuration.initialize(True)
     from ..model.target import Target
 
-    fields = 'A4:2B:8C:16:6B:3A, 2015-05-27 19:28:44, 2015-05-27 19:28:46,  11,  54e,WPA, WPA, , -58,        2,        0,   0.  0.  0.  0,   9, Test Router Please Ignore, '.split(
-        ',')
+    fields = 'A4:2B:8C:16:6B:3A, 2015-05-27 19:28:44, 2015-05-27 19:28:46,  11,  54e,WPA, WPA, , -58,        2' \
+             ',        0,   0.  0.  0.  0,   9, Test Router Please Ignore, '.split(',')
     target = Target(fields)
     wpa = AttackWPA(target)
     try:

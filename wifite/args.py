@@ -250,8 +250,8 @@ class Arguments(object):
                          dest='wep_crack_at_ivs',
                          metavar='[ivs]',
                          type=int,
-                         help=self._verbose(
-                             'Start cracking at this many IVs (default: {G}%d ivs{W})' % self.config.wep_crack_at_ivs))
+                         help=self._verbose('Start cracking at this many IVs (default: {G}%d ivs{W})'
+                                            % self.config.wep_crack_at_ivs))
         wep.add_argument('-wepca', help=argparse.SUPPRESS, action='store', dest='wep_crack_at_ivs', type=int)
 
         wep.add_argument('--weprs',
@@ -259,8 +259,8 @@ class Arguments(object):
                          dest='wep_restart_stale_ivs',
                          metavar='[seconds]',
                          type=int,
-                         help=self._verbose('Restart aireplay if no new IVs appear (default: ' +
-                                            '{G}%d sec{W})' % self.config.wep_restart_stale_ivs))
+                         help=self._verbose('Restart aireplay if no new IVs appear (default: {G}%d sec{W})'
+                                            % self.config.wep_restart_stale_ivs))
         wep.add_argument('-weprs', help=argparse.SUPPRESS, action='store', dest='wep_restart_stale_ivs', type=int)
 
         wep.add_argument('--weprc',
@@ -268,8 +268,8 @@ class Arguments(object):
                          dest='wep_restart_aircrack',
                          metavar='[seconds]',
                          type=int,
-                         help=self._verbose('Restart aircrack after this delay (default: ' +
-                                            '{G}%d sec{W})' % self.config.wep_restart_aircrack))
+                         help=self._verbose('Restart aircrack after this delay (default: {G}%d sec{W})'
+                                            % self.config.wep_restart_aircrack))
         wep.add_argument('-weprc', help=argparse.SUPPRESS, action='store', dest='wep_restart_aircrack', type=int)
 
         wep.add_argument('--arpreplay',
@@ -327,8 +327,8 @@ class Arguments(object):
         wpa.add_argument('--new-hs',
                          action='store_true',
                          dest='ignore_old_handshakes',
-                         help=Color.s('Captures new handshakes, ignores existing handshakes ' +
-                                      'in {C}%s{W} (default: {G}off{W})' % self.config.wpa_handshake_dir))
+                         help=Color.s('Captures new handshakes, ignores existing handshakes in {C}%s{W} '
+                                      '(default: {G}off{W})' % self.config.wpa_handshake_dir))
 
         wpa.add_argument('--dict',
                          action='store',
@@ -343,8 +343,8 @@ class Arguments(object):
                          dest='wpa_deauth_timeout',
                          metavar='[seconds]',
                          type=int,
-                         help=self._verbose('Time to wait between sending Deauths ' +
-                                            '(default: {G}%d sec{W})' % self.config.wpa_deauth_timeout))
+                         help=self._verbose('Time to wait between sending Deauths (default: {G}%d sec{W})'
+                                            % self.config.wpa_deauth_timeout))
         wpa.add_argument('-wpadt', help=argparse.SUPPRESS, action='store', dest='wpa_deauth_timeout', type=int)
 
         wpa.add_argument('--wpat',
@@ -352,8 +352,8 @@ class Arguments(object):
                          dest='wpa_attack_timeout',
                          metavar='[seconds]',
                          type=int,
-                         help=self._verbose('Time to wait before failing WPA attack ' +
-                                            '(default: {G}%d sec{W})' % self.config.wpa_attack_timeout))
+                         help=self._verbose('Time to wait before failing WPA attack (default: {G}%d sec{W})'
+                                            % self.config.wpa_attack_timeout))
         wpa.add_argument('-wpat', help=argparse.SUPPRESS, action='store', dest='wpa_attack_timeout', type=int)
 
         # TODO: Uncomment the --strip option once it works
@@ -376,7 +376,7 @@ class Arguments(object):
         wps.add_argument('--no-wps',
                          action='store_true',
                          dest='no_wps',
-                         help=self._verbose('{O}Never{W} use {O}WPS PIN{W} & {O}Pixie-Dust{W}' +
+                         help=self._verbose('{O}Never{W} use {O}WPS PIN{W} & {O}Pixie-Dust{W} '
                                             'attacks on targets (default: {G}off{W})'))
 
         wps.add_argument('--wps-only',
@@ -396,7 +396,7 @@ class Arguments(object):
         wps.add_argument('--bully',
                          action='store_true',
                          dest='use_bully',
-                         help=Color.s('Use {G}bully{W} program for WPS PIN & Pixie-Dust attacks ' +
+                         help=Color.s('Use {G}bully{W} program for WPS PIN & Pixie-Dust attacks '
                                       '(default: {G}reaver{W})'))
         # Alias
         wps.add_argument('-bully', help=argparse.SUPPRESS, action='store_true', dest='use_bully')
@@ -404,13 +404,15 @@ class Arguments(object):
         wps.add_argument('--reaver',
                          action='store_true',
                          dest='use_reaver',
-                         help=Color.s('Use {G}reaver{W} program for WPS PIN & Pixie-Dust attacks (default: {G}reaver{W})'))
+                         help=Color.s('Use {G}reaver{W} program for WPS PIN & Pixie-Dust attacks'
+                                      ' (default: {G}reaver{W})'))
         # Alias
         wps.add_argument('-reaver', help=argparse.SUPPRESS, action='store_true', dest='use_reaver')
 
         # Ignore lock-outs
         wps.add_argument('--ignore-locks', action='store_true', dest='wps_ignore_lock',
-                         help=Color.s('Do {O}not{W} stop WPS PIN attack if AP becomes {O}locked{W} (default: {G}stop{W})'))
+                         help=Color.s('Do {O}not{W} stop WPS PIN attack if AP becomes {O}locked{W} '
+                                      '(default: {G}stop{W})'))
 
         # Time limit on entire attack.
         wps.add_argument('--wps-time',
@@ -418,8 +420,8 @@ class Arguments(object):
                          dest='wps_pixie_timeout',
                          metavar='[sec]',
                          type=int,
-                         help=self._verbose('Total time to wait before failing PixieDust attack ' +
-                                            '(default: {G}%d sec{W})' % self.config.wps_pixie_timeout))
+                         help=self._verbose('Total time to wait before failing PixieDust attack (default: {G}%d sec{W})'
+                                            % self.config.wps_pixie_timeout))
         # Alias
         wps.add_argument('-wpst', help=argparse.SUPPRESS, action='store', dest='wps_pixie_timeout', type=int)
 
@@ -429,8 +431,8 @@ class Arguments(object):
                          dest='wps_fail_threshold',
                          metavar='[num]',
                          type=int,
-                         help=self._verbose('Maximum number of WPSFail/NoAssoc errors before ' +
-                                            'failing (default: {G}%d{W})' % self.config.wps_fail_threshold))
+                         help=self._verbose('Maximum number of WPSFail/NoAssoc errors before failing '
+                                            '(default: {G}%d{W})' % self.config.wps_fail_threshold))
         # Alias
         wps.add_argument('-wpsf', help=argparse.SUPPRESS, action='store', dest='wps_fail_threshold', type=int)
 
@@ -440,8 +442,8 @@ class Arguments(object):
                          dest='wps_timeout_threshold',
                          metavar='[num]',
                          type=int,
-                         help=self._verbose('Maximum number of Timeouts before failing ' +
-                                            '(default: {G}%d{W})' % self.config.wps_timeout_threshold))
+                         help=self._verbose('Maximum number of Timeouts before failing (default: {G}%d{W})'
+                                            % self.config.wps_timeout_threshold))
         # Alias
         wps.add_argument('-wpsto', help=argparse.SUPPRESS, action='store', dest='wps_timeout_threshold', type=int)
 
@@ -449,7 +451,7 @@ class Arguments(object):
         pmkid.add_argument('--pmkid',
                            action='store_true',
                            dest='use_pmkid_only',
-                           help=Color.s('{O}Only{W} use {C}PMKID capture{W}, avoids other WPS & ' +
+                           help=Color.s('{O}Only{W} use {C}PMKID capture{W}, avoids other WPS & '
                                         'WPA attacks (default: {G}off{W})'))
         pmkid.add_argument('--no-pmkid',
                            action='store_true',
@@ -464,15 +466,19 @@ class Arguments(object):
                            dest='pmkid_timeout',
                            metavar='[sec]',
                            type=int,
-                           help=Color.s('Time to wait for PMKID capture ' +
-                                        '(default: {G}%d{W} seconds)' % self.config.pmkid_timeout))
+                           help=Color.s('Time to wait for PMKID capture (default: {G}%d{W} seconds)'
+                                        % self.config.pmkid_timeout))
 
     def _add_command_args(self, commands):
         commands.add_argument('--cracked',
                               action='store_true',
                               dest='cracked',
                               help=Color.s('Print previously-cracked access points'))
-        commands.add_argument('-cracked', help=argparse.SUPPRESS, action='store_true', dest='cracked')
+
+        commands.add_argument('-cracked',
+                              help=argparse.SUPPRESS,
+                              action='store_true',
+                              dest='cracked')
 
         commands.add_argument('--check',
                               action='store',
@@ -481,7 +487,13 @@ class Arguments(object):
                               const='<all>',
                               dest='check_handshake',
                               help=Color.s('Check a {C}.cap file{W} (or all {C}hs/*.cap{W} files) for WPA handshakes'))
-        commands.add_argument('-check', help=argparse.SUPPRESS, action='store', nargs='?', const='<all>', dest='check_handshake')
+
+        commands.add_argument('-check',
+                              help=argparse.SUPPRESS,
+                              action='store',
+                              nargs='?',
+                              const='<all>',
+                              dest='check_handshake')
 
         commands.add_argument('--crack',
                               action='store_true',
