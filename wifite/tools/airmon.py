@@ -1,17 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import os
+import re
+import signal
+
 from .dependency import Dependency
 from .ip import Ip
 from .iw import Iw
-from ..util.process import Process
-from ..util.color import Color
-from ..util.input import raw_input
 from ..config import Configuration
-
-import re
-import os
-import signal
+from ..util.color import Color
+from ..util.process import Process
 
 
 class AirmonIface(object):
@@ -45,7 +44,8 @@ class AirmonIface(object):
         s += 'Driver'.ljust(AirmonIface.DRIVER_LEN)
         s += 'Chipset'.ljust(AirmonIface.CHIPSET_LEN)
         s += '\n'
-        s += '-' * (AirmonIface.INTERFACE_LEN + AirmonIface.PHY_LEN + AirmonIface.DRIVER_LEN + AirmonIface.CHIPSET_LEN + 3)
+        s += '-' * \
+             (AirmonIface.INTERFACE_LEN + AirmonIface.PHY_LEN + AirmonIface.DRIVER_LEN + AirmonIface.CHIPSET_LEN + 3)
         return s
 
 

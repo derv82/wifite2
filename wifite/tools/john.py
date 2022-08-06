@@ -31,7 +31,6 @@ class John(Dependency):
 
         # Crack john file
         command = ['john', f'--format={john_format}', '--wordlist', Configuration.wordlist, john_file]
-
         if show_command:
             Color.pl('{+} {D}Running: {W}{P}%s{W}' % ' '.join(command))
         process = Process(command)
@@ -56,4 +55,4 @@ class John(Dependency):
         if os.path.exists(john_file):
             os.remove(john_file)
 
-        # return key
+        return key

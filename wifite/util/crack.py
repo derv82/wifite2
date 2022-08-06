@@ -1,21 +1,19 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import os
+from json import loads
+
 from ..config import Configuration
 from ..model.handshake import Handshake
-from ..model.wpa_result import CrackResultWPA
 from ..model.pmkid_result import CrackResultPMKID
-from ..util.process import Process
-from ..util.color import Color
-from ..util.input import raw_input
+from ..model.wpa_result import CrackResultWPA
 from ..tools.aircrack import Aircrack
 from ..tools.cowpatty import Cowpatty
 from ..tools.hashcat import Hashcat, HcxPcapngTool
 from ..tools.john import John
-
-from json import loads
-
-import os
+from ..util.color import Color
+from ..util.process import Process
 
 
 # TODO: Bring back the 'print' option, for easy copy/pasting. Just one-liners people can paste into terminal.
@@ -214,8 +212,8 @@ class CrackHelper:
         cls.print_handshakes(handshakes)
 
         Color.p(
-            '{+} Select handshake(s) to crack ({G}%d{W}-{G}%d{W}, select multiple with {C},{W} or {C}-{W} or {C}all{W}): {G}' % (
-                1, len(handshakes)))
+            '{+} Select handshake(s) to crack ({G}%d{W}-{G}%d{W}, select multiple with '
+            '{C},{W} or {C}-{W} or {C}all{W}): {G}' % (1, len(handshakes)))
         choices = input()
         Color.p('{W}')
 

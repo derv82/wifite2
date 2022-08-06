@@ -17,7 +17,8 @@ class Wifite(object):
 
     def __init__(self):
         """
-        Initializes Wifite. Checks that its running under *nix, with root permissions and ensures dependencies are installed.
+        Initializes Wifite.
+        Checks that its running under *nix, with root permissions and ensures dependencies are installed.
         """
 
         self.print_banner()

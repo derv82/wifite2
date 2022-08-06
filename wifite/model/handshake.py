@@ -46,8 +46,8 @@ class Handshake(object):
             # HACK: Just use the first one we see
             self.bssid = pairs[0][0]
             self.essid = pairs[0][1]
-            Color.pl('{!} {O}Warning{W}: {O}Arbitrarily selected ' +
-                     '{R}bssid{O} {C}%s{O} and {R}essid{O} "{C}%s{O}"{W}' % (self.bssid, self.essid))
+            Color.pl('{!} {O}Warning{W}: {O}Arbitrarily selected {R}bssid{O} {C}%s{O} and {R}essid{O} "{C}%s{O}"{W}'
+                     % (self.bssid, self.essid))
 
         elif not self.bssid:
             # We already know essid
@@ -69,8 +69,10 @@ class Handshake(object):
         if not self.bssid or not self.essid:
             self.divine_bssid_and_essid()
 
-        if len(self.tshark_handshakes()) > 0: return True
-        if len(self.pyrit_handshakes()) > 0: return True
+        if len(self.tshark_handshakes()) > 0:
+            return True
+        if len(self.pyrit_handshakes()) > 0:
+            return True
 
         # TODO: Can we trust cowpatty & aircrack?
         # if len(self.cowpatty_handshakes()) > 0: return True
@@ -189,7 +191,7 @@ class Handshake(object):
             Color.pl('{+} checking all handshakes in {G}"./hs"{W} directory\n')
             try:
                 capfiles = [os.path.join('hs', x) for x in os.listdir('hs') if x.endswith('.cap')]
-            except OSError as e:
+            except OSError:
                 capfiles = []
             if not capfiles:
                 Color.pl('{!} {R}no .cap files found in {O}"./hs"{W}\n')

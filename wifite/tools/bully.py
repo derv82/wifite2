@@ -242,7 +242,7 @@ class Bully(Attack, Dependency):
     def parse_state(self, line):  # sourcery no-metrics
         state = self.state
 
-        if got_beacon := re.search(r".*Got beacon for '(.*)' \((.*)\)", line):
+        if re.search(r".*Got beacon for '(.*)' \((.*)\)", line):
             # group(1)=ESSID, group(2)=BSSID
             state = 'Got beacon'
 
@@ -300,10 +300,10 @@ class Bully(Attack, Dependency):
             sleeping = re_lockout[1]
             state = '{R}WPS Lock-out: {O}Waiting %s seconds...{W}' % sleeping
 
-        if re_pin_not_found := re.search(r".*\[Pixie-Dust] WPS pin not found", line):
+        if re.search(r".*\[Pixie-Dust] WPS pin not found", line):
             state = '{R}Failed: {O}Bully says "WPS pin not found"{W}'
 
-        if re_running_pixiewps := re.search(r".*Running pixiewps with the information", line):
+        if re.search(r".*Running pixiewps with the information", line):
             state = '{G}Running pixiewps...{W}'
         return state
 
@@ -349,18 +349,17 @@ if __name__ == '__main__':
     Configuration.interface = 'wlan0mon'
     from ..model.target import Target
 
-    fields = '34:21:09:01:92:7C,2015-05-27 19:28:44,2015-05-27 19:28:46,1,54,WPA2,CCMP TKIP,PSK,-58,2,0,0.0.0.0,9,AirLink89300,'.split(
-        ',')
+    fields = '34:21:09:01:92:7C,2015-05-27 19:28:44,2015-05-27 ' \
+             '19:28:46,1,54,WPA2,CCMP TKIP,PSK,-58,2,0,0.0.0.0,9,AirLink89300,'.split(',')
     target = Target(fields)
     psk = Bully.get_psk_from_pin(target, '01030365')
     print(('psk', psk))
 
-    '''
-    stdout = " [*] Pin is '11867722', key is '9a6f7997'"
-    Configuration.initialize(False)
-    from ..model.target import Target
-    fields = 'AA:BB:CC:DD:EE:FF,2015-05-27 19:28:44,2015-05-27 19:28:46,1,54,WPA2,CCMP TKIP,PSK,-58,2,0,0.0.0.0,9,HOME-ABCD,'.split(',')
-    target = Target(fields)
-    b = Bully(target)
-    b.parse_line(stdout)
-    '''
+    # stdout = " [*] Pin is '11867722', key is '9a6f7997'"
+    # Configuration.initialize(False)
+    # from ..model.target import Target
+    # fields = 'AA:BB:CC:DD:EE:FF,2015-05-27 19:28:44,2015-05-27 19:28:46,1,54,WPA2,' \
+    #          'CCMP TKIP,PSK,-58,2,0,0.0.0.0,9,HOME-ABCD,'.split(',')
+    # target = Target(fields)
+    # b = Bully(target)
+    # b.parse_line(stdout)

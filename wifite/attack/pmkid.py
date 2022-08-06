@@ -140,7 +140,8 @@ class AttackPMKID(Attack):
             #     essid = airodump_target.essid if airodump_target.essid_known else None
             #     handshake = self.load_handshake(bssid=bssid, essid=essid)
             #     if handshake:
-            #         Color.pattack('WPA', self.target, 'Handshake capture', 'found {G}existing handshake{W} for {C}%s{W}' % handshake.essid)
+            #         Color.pattack('WPA', self.target, 'Handshake capture',
+            #                       'found {G}existing handshake{W} for {C}%s{W}' % handshake.essid)
             #         Color.pl('\n{+} Using handshake from {C}%s{W}' % handshake.capfile)
             #         return handshake
 
@@ -167,17 +168,14 @@ class AttackPMKID(Attack):
                 copy(cap_file, temp_file)
 
                 # Check cap file in temp for Handshake
-                bssid = airodump_target.bssid
-                essid = airodump_target.essid if airodump_target.essid_known else None
+                # bssid = airodump_target.bssid
+                # essid = airodump_target.essid if airodump_target.essid_known else None
 
                 # AttackPMKID.check_pmkid(temp_file, self.target.bssid)
                 if self.check_pmkid(temp_file):
                     # We got a handshake
                     Color.clear_entire_line()
-                    Color.pattack('WPA',
-                                  airodump_target,
-                                  'PMKID capture',
-                                  '{G}Captured PMKID{W}')
+                    Color.pattack('WPA', airodump_target, 'PMKID capture', '{G}Captured PMKID{W}')
                     Color.pl('')
                     capture = temp_file
                     break
