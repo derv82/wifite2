@@ -25,23 +25,25 @@ class Pyrit(Dependency):
             '-r', capfile,
             'analyze'
         ]
+
         pyrit = Process(command, devnull=False)
 
+        # initialize
         current_bssid = current_essid = None
         bssid_essid_pairs = set()
 
-        '''
+        ''' Example:
         #1: AccessPoint 18:a6:f7:31:d2:06 ('TP-LINK_D206'):
           #1: Station 08:66:98:b2:ab:28, 1 handshake(s):
               #1: HMAC_SHA1_AES, good, spread 1
                 #2: Station ac:63:be:3a:a2:f4
         '''
-
         mac_regex = ('[a-zA-Z0-9]{2}:' * 6)[:-1]
         for line in pyrit.stdout().split('\n'):
-            if match := re.search(r"^#\d+: AccessPoint (%s) \('(.*)'\):$" % mac_regex, line):
+            result = re.search(r"^#\d+: AccessPoint (%s) \('(.*)'\):$" % mac_regex, line)
+            if result is not None:
                 # We found a new BSSID and ESSID
-                (current_bssid, current_essid) = match.groups()
+                (current_bssid, current_essid) = result.groups()
 
                 if bssid is not None and bssid.lower() != current_bssid:
                     current_bssid = None
@@ -50,10 +52,10 @@ class Pyrit(Dependency):
                     current_bssid = None
                     current_essid = None
 
-            elif current_bssid is not None and current_essid is not None:
+            if current_bssid is not None and current_essid is not None:
                 # We hit an AP that we care about.
                 # Line does not contain AccessPoint, see if it's 'good'
                 if ', good' in line:
                     bssid_essid_pairs.add((current_bssid, current_essid))
 
-        return list(bssid_essid_pairs)
+        return bssid_essid_pairs
