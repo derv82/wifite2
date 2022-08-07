@@ -81,7 +81,7 @@ RUN ln -s /hashcat/hashcat-utils-${HASHCAT_UTILS_VERSION}/bin/cap2hccapx.bin /us
 WORKDIR /
 
 # Install reaver
-RUN git clone https://github.com/t6x/reaver-wps-fork-t6x
+RUN git clone https://github.com/kimocoder/reaver-wps-fork-t6x
 WORKDIR /reaver-wps-fork-t6x/src/
 RUN ./configure
 RUN make
