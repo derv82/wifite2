@@ -1,4 +1,4 @@
 chardet
 pytest-flake8
 scapy
-argparse~=1.2.1
+argparse~=1.4.0
