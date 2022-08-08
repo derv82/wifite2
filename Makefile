@@ -45,9 +45,6 @@ hcxtools:
 	git clone https://github.com/ZerBea/hcxtools tools/hcxtools/
 	cd tools/hcxtools/ && make && make install
 
-pyrit:
-	cd tools/pyrit/;python2 setup.py clean;sudo python2 setup.py build;sudo python2 setup.py install
-
 iw:
 	git clone https://git.kernel.org/pub/scm/linux/kernel/git/jberg/iw.git tools/iw/
 	cd tools/iw/ && make && make install

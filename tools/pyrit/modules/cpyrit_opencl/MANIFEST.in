@@ -1,5 +1,0 @@
-include COPYING
-include README
-include MANIFEST.in
-include _cpyrit_opencl.h
-include _cpyrit_oclkernel.cl
