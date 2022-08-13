@@ -155,8 +155,7 @@ Not "/py":
 * **handshake/**
   * `tshark.py` <- process
   * `cowpatty.py` <- process
-  * `pyrit.py` <- process
-  * `handshake.py` <- tshark, cowpatty, pyrit, aircrack
+  * `handshake.py` <- tshark, cowpatty, aircrack
 * `output.py` (color/printing) <- config
 * `process.py` <- config
 * `scan.py` (airodump output to target) <- config, target, airodump
@@ -324,7 +323,7 @@ Returns cracked target information or throws exception
 
 **CRACK WPA**
 0. Expects: String pcap file containing Handshake (optional: BSSID/ESSID)
-1. Select Cracking option (Aircrack, Cowpatty, Pyrit)
+1. Select Cracking option (Aircrack, Cowpatty)
 2. (Daemon) Start attack
 3. LOOP
    1. Print attack status if possible

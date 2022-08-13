@@ -64,7 +64,6 @@ Second, only the latest versions of these programs are supported and must be ins
    * Alternative to Reaver. Specify `--bully` to use Bully instead of Reaver.
    * Bully is also used to fetch PSK if `reaver` cannot after cracking WPS PIN.
 * [`coWPAtty`](https://tools.kali.org/wireless-attacks/cowpatty): For detecting handshake captures.
-* [`pyrit`](https://github.com/JPaulMora/Pyrit): For detecting handshake captures.
 * [`hashcat`](https://hashcat.net/): For cracking PMKID hashes.
    * [`hcxdumptool`](https://github.com/ZerBea/hcxdumptool): For capturing PMKID hashes.
    * [`hcxpcapngtool`](https://github.com/ZerBea/hcxtools): For converting PMKID packet captures into `hashcat`'s format.
@@ -123,7 +122,7 @@ Brief Feature List
 * WPS Offline Brute-Force Attack aka "Pixie-Dust". (enabled by-default, force with: `--wps-only --pixie`)
 * WPS Online Brute-Force Attack aka "PIN attack". (enabled by-default, force with: `--wps-only --no-pixie`)
 * WPA/2 Offline Brute-Force Attack via 4-Way Handshake capture (enabled by-default, force with: `--no-wps`)
-* Validates handshakes against `pyrit`, `tshark`, `cowpatty`, and `aircrack-ng` (when available)
+* Validates handshakes against `tshark`, `cowpatty`, and `aircrack-ng` (when available)
 * Various WEP attacks (replay, chopchop, fragment, hirte, p0841, caffe-latte)
 * Automatically decloaks hidden access points while scanning or attacking.
    * Note: Only works when channel is fixed. Use `-c <channel>`
