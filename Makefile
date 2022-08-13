@@ -50,11 +50,16 @@ iw:
 	cd tools/iw/ && make && make install
 
 deps:
-	/usr/bin/env pip3 install -r requirements.txt
 	apt update && apt install -yq cmake libssl-dev libpcap-dev libcap-dev libnl-genl-3-dev libnl-genl-3-200 python-setuptools pkg-config libcurl4-openssl-dev python2 build-essential python2-dev
+	/usr/bin/env pip3 install -r requirements.txt
 
 update:
+ifneq ($(wildcard tools/ath_masker/.*),)
 	cd tools/ath_masker/ && git pull
+else
+	@echo "ATH_MASKER is not installed."
+endif
+
 	@rm -rf tools/ath_masker/.ath_masker.o.d
 	cd tools/reaver/ && git pull
 	cd tools/bully/ && git pull
@@ -79,7 +84,6 @@ clean:
 	rm -rf tools/iw/
 	rm -rf tools/hcxdumptool/
 	rm -rf tools/hcxtools/
-	rm -rf tools/pyrit/build
 
 help:
 	@clear
@@ -94,7 +98,6 @@ help:
 	@echo " make bully       : pull latest bully from git and install"
 	@echo " make hcxdumptool : pull latest hcxdumptool from git and install"
 	@echo " make hcxtools    : pull latest hcxtools from git and install"
-	@echo " make pyrit       : download and build/install pyrit"
 	@echo " make ath_masker  : download and build/install ath_masker"
 	@echo " make modwifi     : download and build/install modwifi"
 	@echo " "
@@ -119,4 +122,3 @@ test:
 uninstall:
 	rm -rf /usr/sbin/wifite
 	cd ../ && rm -rf wifite2
-

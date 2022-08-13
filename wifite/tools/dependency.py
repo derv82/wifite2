@@ -28,7 +28,6 @@ class Dependency(object):
         from .iw import Iw
         from .bully import Bully
         from .reaver import Reaver
-        from .pyrit import Pyrit
         from .tshark import Tshark
         from .macchanger import Macchanger
         from .hashcat import Hashcat, HcxDumpTool, HcxPcapngTool
@@ -41,7 +40,7 @@ class Dependency(object):
             # WPS
             Reaver, Bully,
             # Cracking/handshakes
-            Pyrit, Tshark,
+            Tshark,
             # Hashcat
             Hashcat, HcxDumpTool, HcxPcapngTool,
             # Misc
