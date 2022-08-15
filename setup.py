@@ -1,4 +1,9 @@
-from setuptools import setup
+#! /usr/bin/env python
+
+try:
+    from setuptools import setup
+except:
+    raise ImportError("setuptools is required to install wifite2")
 
 from wifite.config import Configuration
 
@@ -31,5 +36,12 @@ setup(
 
     classifiers=[
         "Programming Language :: Python :: 3"
+        "Programming Language :: Python :: 3.4",
+        "Programming Language :: Python :: 3.5",
+        "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
     ]
 )
