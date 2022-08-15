@@ -13,14 +13,10 @@ class Iw(Dependency):
     def mode(cls, iface, mode_name):
         from ..util.process import Process
 
-        pid = None
         if mode_name == "monitor":
-            pid = Process(['iw', iface, 'set monitor control'])
+            return Process.call(f'iw {iface} set monitor control')
         else:
-            pid = Process(['iw', iface, 'type', mode_name])
-        pid.wait()
-
-        return pid.poll()
+            return Process.call(f'iw {iface} type {mode_name}')
 
     @classmethod
     def get_interfaces(cls, mode=None):
@@ -30,7 +26,6 @@ class Iw(Dependency):
         ireg = re.compile(r"\s+Interface\s[a-zA-Z\d]+")
         mreg = re.compile(r"\s+type\s[a-zA-z]+")
         ires = None
-        mres = None
 
         interfaces = set()
         iface = ''
@@ -41,6 +36,7 @@ class Iw(Dependency):
                 if ires := ireg.search(line):
                     interfaces.add(ires.group().split("Interface")[-1])
         else:
+            mres = None
             for line in out.split('\n'):
                 ires = ireg.search(line)
                 if mres := mreg.search(line):

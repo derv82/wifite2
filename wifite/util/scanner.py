@@ -245,7 +245,7 @@ class Scanner(object):
         if self.err_msg is not None:
             Color.pl(self.err_msg)
 
-        input_str = '{+} select target(s)'
+        input_str = '{+} Select target(s)'
         input_str += ' ({G}1-%d{W})' % len(self.targets)
         input_str += ' separated by commas, dashes'
         input_str += ' or {G}all{W}: '
