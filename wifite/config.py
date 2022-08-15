@@ -649,7 +649,7 @@ class Configuration(object):
                 Airmon.put_interface_up(Airmon.base_interface)
 
         if Airmon.killed_network_manager:
-            Color.pl('{!} You can restart NetworkManager when finished ({C}service network-manager start{W})')
+            Color.pl('{!} You can restart NetworkManager when finished ({C}service NetworkManager start{W})')
             # Airmon.start_network_manager()
 
         exit(code)
