@@ -1,5 +1,5 @@
 *.swp
-*.pyc
+
 py/hs/
 hs/
 *.bak
@@ -17,6 +17,8 @@ tools/reaver/
 tools/bully/
 tools/pixiewps/
 tools/hashcat/
+**/__pycache__
+**/*.pyc
 *.cmd
 *.ko
 *.mod
