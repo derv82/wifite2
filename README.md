@@ -30,7 +30,7 @@ Supported Operating Systems
 Wifite is designed specifically for the latest version of [**Kali** Linux](https://www.kali.org/). [ParrotSec](https://www.parrotsec.org/) is also supported.
 
 NetHunter (Android) is also widely supported by wifite, but it will require a custom kernel with modules support and various
-patches for injection in order to work. Tested working like a charm on Android 10 (Q).
+patches for injection in order to work. Tested working like a charm on Android 10 (Q), Android 11 (R) and Android 12 (S).
 
 More information regarding [ Android: **NetHunter** ](https://gitlab.com/kalilinux/nethunter) is found there and
 you should also take a look at the [ **NetHunter WIKI** ](https://www.kali.org/docs/nethunter/) which is more up to date then [ Nethunter.com ](https://nethunter.com).
@@ -92,7 +92,7 @@ Run Wifite
 ```sh
 $ git clone https://github.com/kimocoder/wifite2.git
 $ cd wifite2
-$ sudo ./Wifite.py
+$ sudo ./wifite.py
 ```
 
 Install Wifite
