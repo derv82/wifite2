@@ -50,6 +50,8 @@ static int handler_pre(struct kprobe *p, struct pt_regs *regs)
 	struct ath_common *common = (struct ath_common *)regs->ax;
 #elif defined(CONFIG_ARM)
 	struct ath_common *common = (struct ath_common *)regs->ARM_r0;
+#elif defined(CONFIG_ARM64)
+  struct ath_common *common = (struct ath_common *)regs->regs[0];
 #endif
 
 	printk("pre_handler: MAC address of device is %pM\n", common->macaddr);
@@ -68,31 +70,17 @@ static void handler_post(struct kprobe *p, struct pt_regs *regs,
 	// Nothing
 }
 
-/*
- * fault_handler: this is called if an exception is generated for any
- * instruction within the pre- or post-handler, or when Kprobes
- * single-steps the probed instruction.
- */
-static int handler_fault(struct kprobe *p, struct pt_regs *regs, int trapnr)
-{
-	printk(KERN_INFO "fault_handler: p->addr = 0x%p, trap #%dn",
-		p->addr, trapnr);
-	/* Return 0 because we don't handle the fault. */
-	return 0;
-}
-
 static int __init kprobe_init(void)
 {
 	int ret;
 
-#if !defined(CONFIG_X86_64) && !defined(CONFIG_X86) && !defined(CONFIG_ARM)
-	printk(KERN_ALERT "Error: this module only supports x86(_64) or ARM\n");
+#if !defined(CONFIG_X86_64) && !defined(CONFIG_X86) && !defined(CONFIG_ARM) && !defined(CONFIG_ARM64)
+	printk(KERN_ALERT "Error: this module only supports x86(_64) or ARM(64)\n");
 	return -EINVAL;
 #endif
 
 	kp.pre_handler = handler_pre;
 	kp.post_handler = handler_post;
-	kp.fault_handler = handler_fault;
 
 	ret = register_kprobe(&kp);
 	if (ret < 0) {
