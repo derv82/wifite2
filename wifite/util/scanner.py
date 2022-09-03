@@ -12,7 +12,7 @@ class Scanner(object):
     """ Scans wifi networks & provides menu for selecting targets """
 
     # Console code for moving up one line
-    UP_CHAR = '\x1B[1F'
+    UP_CHAR = '\033[1A'
 
     def __init__(self):
         self.previous_target_count = 0
