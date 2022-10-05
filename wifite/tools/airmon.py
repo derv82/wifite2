@@ -177,14 +177,14 @@ class Airmon(Dependency):
         # Remember this as the 'base' interface.
         Airmon.base_interface = iface_name
 
-        # Try to enable using ip/iw first (for better compatibility)
+        # Try to enable using Airmon-ng first (for better compatibility)
         Color.p('{+} Enabling {G}monitor mode{W} on {C}%s{W}... ' % iface_name)
-        enabled_interface = Airmon.start_bad_driver(iface_name)
+        airmon_output = Process(['airmon-ng', 'start', iface_name]).stdout()
+        enabled_interface = Airmon._parse_airmon_start(airmon_output)
 
-        # if it fails, try to use Airmon-ng
+        # if it fails, try to use ip/iw
         if enabled_interface is None:
-            airmon_output = Process(['airmon-ng', 'start', iface_name]).stdout()
-            enabled_interface = Airmon._parse_airmon_start(airmon_output)
+            enabled_interface = Airmon.start_bad_driver(iface_name)
         else:
             # If not, just set for us know how it went in monitor mode
             cls.use_ipiw = True
