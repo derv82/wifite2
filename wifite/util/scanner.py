@@ -174,7 +174,7 @@ class Scanner(object):
         if Configuration.show_manufacturers:
             Color.p('           MANUFACTURER')
 
-        Color.pl('   CH  ENCR   POWER  WPS?  CLIENT')
+        Color.pl('   CH  ENCR    PWR    WPS  CLIENT')
 
         # Second row: separator
         Color.p('   ---')
@@ -185,7 +185,7 @@ class Scanner(object):
         if Configuration.show_manufacturers:
             Color.p('  ---------------------')
 
-        Color.pl('  ---  -----  -----  ----  ------{W}')
+        Color.pl('  ---  -----   ----   ---  ------{W}')
 
         # Remaining rows: targets
         for idx, target in enumerate(self.targets, start=1):
