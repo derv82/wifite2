@@ -363,8 +363,8 @@ class Arguments(object):
             dest='wpa_strip_handshake',
             default=False,
             help=Color.s('Strip unnecessary packets from handshake capture using tshark'))
-        wpa.add_argument('-strip', help=argparse.SUPPRESS, action='store_true', dest='wpa_strip_handshake')
         '''
+        wpa.add_argument('-strip', help=argparse.SUPPRESS, action='store_true', dest='wpa_strip_handshake')
 
     def _add_wps_args(self, wps):
         wps.add_argument('--wps',
