@@ -66,6 +66,7 @@ class Airmon(Dependency):
     ARPHRD_IEEE80211_RADIOTAP = 803  # monitor
 
     def __init__(self):
+        self.interfaces = None
         self.refresh()
 
     def refresh(self):

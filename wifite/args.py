@@ -197,14 +197,14 @@ class Arguments(object):
                           help=Color.s('Puts device back in managed mode after quitting (default: {G}off{W})'))
 
     def _add_eviltwin_args(self, group):
-        '''
+        """
         group.add_argument('--eviltwin',
             action='store_true',
             dest='use_eviltwin',
             help=Color.s('Use the "Evil Twin" attack against all targets ' +
                 '(default: {G}off{W})'))
         # TODO: Args to specify deauth interface, server port, etc.
-        '''
+        """
 
     def _add_wep_args(self, wep):
         # WEP
@@ -363,8 +363,8 @@ class Arguments(object):
             dest='wpa_strip_handshake',
             default=False,
             help=Color.s('Strip unnecessary packets from handshake capture using tshark'))
-        '''
         wpa.add_argument('-strip', help=argparse.SUPPRESS, action='store_true', dest='wpa_strip_handshake')
+        '''
 
     def _add_wps_args(self, wps):
         wps.add_argument('--wps',
@@ -469,7 +469,8 @@ class Arguments(object):
                            help=Color.s('Time to wait for PMKID capture (default: {G}%d{W} seconds)'
                                         % self.config.pmkid_timeout))
 
-    def _add_command_args(self, commands):
+    @staticmethod
+    def _add_command_args(commands):
         commands.add_argument('--cracked',
                               action='store_true',
                               dest='cracked',

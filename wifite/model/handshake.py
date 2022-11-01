@@ -91,13 +91,15 @@ class Handshake(object):
 
         command = [
             'cowpatty',
-            '-2' if 'frames 1 and 2 or 2 and 3 for key attack' in cowpattycheck.stdout() else '',   # Don't ignore incomplete handshakes
+            '-2' if 'frames 1 and 2 or 2 and 3 for key attack' in cowpattycheck.stdout() else '',
             '-r',   self.capfile,
             '-c'    # Check for handshake
         ]
 
         proc = Process(command, devnull=False)
-        result = next(([(None, self.essid)] for line in proc.stdout().split('\n') if 'Collected all necessary data to mount crack against WPA' in line), [])
+        result = next(([(None, self.essid)] for line in proc.stdout().split('\n') if 'Collected all necessary data to '
+                                                                                     'mount crack against WPA' in
+                       line), [])
 
         return result
 

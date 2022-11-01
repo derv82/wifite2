@@ -16,6 +16,8 @@ class CrackResult(object):
     cracked_file = Configuration.cracked_file
 
     def __init__(self):
+        self.bssid = None
+        self.essid = None
         self.date = int(time.time())
         self.loc = 'ND'
         self.readable_date = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(self.date))
@@ -124,6 +126,7 @@ class CrackResult(object):
     @staticmethod
     def load(json):
         """ Returns an instance of the appropriate object given a json instance """
+        global result
         if json['type'] == 'WPA':
             from .wpa_result import CrackResultWPA
             result = CrackResultWPA(json['bssid'],

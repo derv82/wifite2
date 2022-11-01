@@ -18,6 +18,7 @@ class John(Dependency):
 
     @staticmethod
     def crack_handshake(handshake, show_command=False):
+        global key
         john_file = HcxPcapngTool.generate_john_file(handshake, show_command=show_command)
 
         # Use `john --list=formats` to find if OpenCL or CUDA is supported.
