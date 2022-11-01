@@ -27,7 +27,8 @@ class AttackPMKID(Attack):
         self.success = False
         self.timer = None
 
-    def get_existing_pmkid_file(self, bssid):
+    @staticmethod
+    def get_existing_pmkid_file(bssid):
         """
         Load PMKID Hash from a previously-captured hash in ./hs/
         Returns:
@@ -153,7 +154,7 @@ class AttackPMKID(Attack):
                 Color.pattack('WPA',
                               airodump_target,
                               'Handshake capture',
-                              'Listening. (clients:{G}{W}, deauth:{O}{W}, timeout:{R}%s{W})' % (timeout_timer))
+                              'Listening. (clients:{G}{W}, deauth:{O}{W}, timeout:{R}%s{W})' % timeout_timer)
 
                 # Find .cap file
                 cap_files = airodump.find_files(endswith='.cap')

@@ -259,7 +259,8 @@ class AttackWEP(Attack):
         self.success = False
         return self.success
 
-    def user_wants_to_stop(self, current_attack, attacks_remaining, target):
+    @staticmethod
+    def user_wants_to_stop(current_attack, attacks_remaining, target):
         """
         Ask user what attack to perform next (re-orders attacks_remaining, returns False),
         or if we should stop attacking this target (returns True).

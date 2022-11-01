@@ -186,7 +186,8 @@ class AttackWPA(Attack):
 
         return handshake
 
-    def load_handshake(self, bssid, essid):
+    @staticmethod
+    def load_handshake(bssid, essid):
         if not os.path.exists(Configuration.wpa_handshake_dir):
             return None
 
@@ -205,7 +206,8 @@ class AttackWPA(Attack):
 
         return None
 
-    def save_handshake(self, handshake):
+    @staticmethod
+    def save_handshake(handshake):
         """
             Saves a copy of the handshake file to hs/
             Args:
