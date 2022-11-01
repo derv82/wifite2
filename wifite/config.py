@@ -429,7 +429,7 @@ class Configuration(object):
                          'handshakes' % args.wordlist)
             elif os.path.isfile(args.wordlist):
                 cls.wordlist = args.wordlist
-                Color.pl('{+} {C}option:{W} using wordlist {G}%s{W} to crack WPA handshakes' % args.wordlist)
+                Color.pl('{+} {C}option:{W} using wordlist {G}%s{W} for cracking' % args.wordlist)
             elif os.path.isdir(args.wordlist):
                 cls.wordlist = None
                 Color.pl('{+} {C}option:{O} wordlist {R}%s{O} is a directory, not a file. Wifite will NOT attempt to '
