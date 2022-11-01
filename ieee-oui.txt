@@ -6596,6 +6596,11 @@ BC64D9	GUANGDONG OPPO MOBILE TELECOMMUNICATIONS CORP.,LTD
 3CF692	Huawei Device Co., Ltd.
 28B5E8	Texas Instruments
 4829E4	AO
+48BCE1	Samsung Electronics Co.,Ltd
+F83C80	MITSUMI ELECTRIC CO.,LTD.
+D83ADD	Raspberry Pi Trading Ltd
+70F8AE	Microsoft Corporation
+F4A17F	Marquardt Electronics Technology (Shanghai) Co.Ltd
 9CFFC2	AVI Systems GmbH
 44D878	Hui Zhou Gaoshengda Technology Co.,LTD
 A0D807	Huawei Device Co., Ltd.
@@ -13120,6 +13125,8 @@ B894D9	Texas Instruments
 60DEF4	Shenzhen iComm Semiconductor CO.,LTD
 84D352	Tonly Technology Co. Ltd
 E42150	Shanghai Chint low voltage electrical technology Co.,Ltd.
+BC32B2	Samsung Electronics Co.,Ltd
+80D266	ScaleFlux
 848094	Meter, Inc.
 10B3D5	Cisco Systems, Inc
 30A2C2	Huawei Device Co., Ltd.
@@ -19678,7 +19685,11 @@ DCA313	Shenzhen Changjin Communication Technology Co.,Ltd
 7C1779	EM Microelectronic
 90CEB8	Texas Instruments
 ACFC82	Shenzhen Sundray Technologies Company Limited
+CCF826	Samsung Electronics Co.,Ltd
+5C22DA	Technicolor CH USA Inc.
+182654	Samsung Electronics Co.,Ltd
 705A6F	IEEE Registration Authority
+1C6760	Phonesuite
 F8D027	Seiko Epson Corporation
 5C666C	GUANGDONG OPPO MOBILE TELECOMMUNICATIONS CORP.,LTD
 4C4BF9	IEEE Registration Authority
@@ -19720,7 +19731,6 @@ C82B96	Espressif Inc.
 98523D	Sunitec Enterprise Co.,Ltd
 D015A6	Aruba, a Hewlett Packard Enterprise Company
 000163	Cisco Systems, Inc
-205F3D	Cambridge Communication Systems Ltd
 E00084	HUAWEI TECHNOLOGIES CO.,LTD
 2CA89C	Creatz inc.
 4CDC0D	Coral Telecom Limited
@@ -26268,13 +26278,17 @@ E02DF0	ALPSALPINE CO,.LTD
 58707F	Ericsson AB
 887477	HUAWEI TECHNOLOGIES CO.,LTD
 28B829	Juniper Networks
-3C3B4D	Toyo Seisakusho Kaisha, Limited
-64B2B4	Fiberhome Telecommunication Technologies Co.,LTD
-4831DB	Huawei Device Co., Ltd.
-147F0F	Texas Instruments
 D0A9D3	EM Microelectronic
 14DD02	Liangang Optoelectronic Technology CO., Ltd.
+D039FA	Samsung Electronics Co.,Ltd
+B40B1D	Samsung Electronics Co.,Ltd
+AC80FB	Samsung Electronics Co.,Ltd
+64B2B4	Fiberhome Telecommunication Technologies Co.,LTD
 60C727	Digiboard Eletronica da Amazonia Ltda
+4831DB	Huawei Device Co., Ltd.
+3C3B4D	Toyo Seisakusho Kaisha, Limited
+147F0F	Texas Instruments
+205F3D	Adtran, Inc
 7C8AE1	COMPAL INFORMATION (KUNSHAN) CO., LTD.
 54E4A9	BHR Tech GmbH
 208058	Ciena Corporation
@@ -26659,7 +26673,6 @@ DC9088	HUAWEI TECHNOLOGIES CO.,LTD
 8835C1	OI ELECTRIC CO.,LTD
 3042A1	ilumisys Inc. DBA Toggled
 0026B7	Kingston Technology Company, Inc.
-28D0CB	Cambridge Communication Systems Ltd
 4062EA	China Mobile Group Device Co.,Ltd.
 4C0FC7	Earda Technologies co Ltd
 CC2119	Samsung Electronics Co.,Ltd
@@ -28846,7 +28859,6 @@ B058C4	Broadcast Microwave Services, Inc
 B0BD6D	Echostreams Innovative Solutions
 6044F5	Easy Digital Ltd.
 90AC3F	BrightSign LLC
-AC51EE	Cambridge Communication Systems Ltd
 78A183	Advidia
 A8D0E5	Juniper Networks
 F89955	Fortress Technology Inc
@@ -29712,7 +29724,6 @@ EC6C9F	Chengdu Volans Technology CO.,LTD
 001B75	Hypermedia Systems
 001B27	Merlin CSI
 001B1B	Siemens AG,
-001B1F	DELTA - Danish Electronics, Light & Acoustics
 001B57	SEMINDIA SYSTEMS PRIVATE LIMITED
 001B55	Hurco Automation Ltd.
 001B53	Cisco Systems, Inc
