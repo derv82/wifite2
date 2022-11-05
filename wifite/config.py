@@ -479,7 +479,7 @@ class Configuration(object):
         elif args.wps_pixie:
             # WPS Pixie-Dust only
             cls.wps_pixie = True
-            cls.wps_nullping = False
+            cls.wps_nullpin = False
             cls.wps_pin = False
             Color.pl('{+} {C}option:{W} will {G}only{W} use {C}WPS Pixie-Dust attack{W} (no {O}PIN{W}) on targets')
 
