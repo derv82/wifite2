@@ -25,7 +25,6 @@ class Iw(Dependency):
 
         ireg = re.compile(r"\s+Interface\s[a-zA-Z\d]+")
         mreg = re.compile(r"\s+type\s[a-zA-Z]+")
-        ires = None
 
         interfaces = set()
         iface = ''
@@ -36,7 +35,6 @@ class Iw(Dependency):
                 if ires := ireg.search(line):
                     interfaces.add(ires.group().split("Interface")[-1])
         else:
-            mres = None
             for line in out.split('\n'):
                 ires = ireg.search(line)
                 if mres := mreg.search(line):
