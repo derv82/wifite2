@@ -24,7 +24,7 @@ class Iw(Dependency):
         import re
 
         ireg = re.compile(r"\s+Interface\s[a-zA-Z\d]+")
-        mreg = re.compile(r"\s+type\s[a-zA-z\d]+")
+        mreg = re.compile(r"\s+type\s[a-zA-Z]+")
         ires = None
 
         interfaces = set()
