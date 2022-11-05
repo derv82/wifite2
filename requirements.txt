@@ -1,4 +1,4 @@
 chardet==5.0.0
 pytest-flake8
 scapy==2.5.0rc2
-argparse~=1.4.0
+argparse==1.4.0
