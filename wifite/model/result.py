@@ -16,8 +16,6 @@ class CrackResult(object):
     cracked_file = Configuration.cracked_file
 
     def __init__(self):
-        self.bssid = None
-        self.essid = None
         self.date = int(time.time())
         self.loc = 'ND'
         self.readable_date = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(self.date))
