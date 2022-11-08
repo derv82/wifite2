@@ -56,4 +56,4 @@ class John(Dependency):
         if os.path.exists(john_file):
             os.remove(john_file)
 
-        return key
+        #return key
