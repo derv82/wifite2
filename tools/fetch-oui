@@ -1,0 +1,69 @@
+#!/usr/bin/env perl
+
+use warnings;
+use strict;
+use Getopt::Std;
+use LWP::UserAgent;
+#
+my $default_url = 'http://standards-oui.ieee.org/oui/oui.txt';
+my $default_filename='ieee-oui.txt';
+#
+my $usage =
+qq/Usage: fetch-oui [options]
+Fetch the OUI (manufacturers) file from the IEEE website, so we
+may parse it through wifite and show manufacturers on targets..
+
+'options' is one or more of:
+        -h Display this usage message.
+        -f FILE Specify the output OUI file. Default=$default_filename
+        -u URL Specify the URL to fetch the OUI data from.
+           Default=$default_url
+        -v Give verbose progress messages.
+/;
+my %opts;
+my $verbose;
+my $filename;
+my $url;
+my $lineno = 0;
+
+die "$usage\n" unless getopts('hf:u:v',\%opts);
+if ($opts{h}) {
+   print "$usage\n";
+   exit(0);
+}
+if (defined $opts{f}) {
+   $filename=$opts{f};
+} else {
+   $filename=$default_filename;
+}
+if (defined $opts{u}) {
+   $url=$opts{u};
+} else {
+   $url=$default_url;
+}
+$verbose=$opts{v} ? 1 : 0;
+
+if (-f $filename) {
+   print "Renaming $filename to $filename.bak\n" if $verbose;
+   rename $filename, "$filename.bak" || die "Could not rename $filename to $filename.bak\n";
+}
+
+print "Fetching OUI data from $url\n" if $verbose;
+my $ua = LWP::UserAgent->new;
+my $res = $ua->get($url);
+die "Could not get OUI data from $url\n" unless $res->is_success;
+my $content = $res->content;
+my $content_length = length($content);
+die "Zero-sized response from from $url\n" unless ($content_length > 0);
+print "Fetched $content_length bytes\n" if $verbose;
+
+print "Opening output file $filename\n" if $verbose;
+open OUTPUT, '>:encoding(UTF-8)', $filename || die "Could not open $filename for writing";
+
+while ($content =~ m/^\s*(\w{2})-(\w{2})-(\w{2})\s+\(hex\)\s+(.*?)\s*$/gm) {
+   print OUTPUT "$1$2$3\t$4\n";
+   $lineno++;
+}
+
+close OUTPUT || die "Error closing output file\n";
+print "$lineno OUI entries written to file $filename\n" if $verbose;
