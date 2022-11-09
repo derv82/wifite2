@@ -18,9 +18,9 @@ class John(Dependency):
 
     @staticmethod
     def crack_handshake(handshake, show_command=False):
-        global key
         john_file = HcxPcapngTool.generate_john_file(handshake, show_command=show_command)
 
+        key = None
         # Use `john --list=formats` to find if OpenCL or CUDA is supported.
         formats_stdout = Process(['john', '--list=formats']).stdout()
         if 'wpapsk-opencl' in formats_stdout:
@@ -45,7 +45,6 @@ class John(Dependency):
         stdout, stderr = process.get_output()
 
         # Parse password (regex doesn't work for some reason)
-        key = None
         if '0 password hashes cracked' in stdout:
             key = None
         else:
