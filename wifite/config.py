@@ -37,6 +37,7 @@ class Configuration(object):
     min_power = None
     no_deauth = None
     no_wps = None
+    no_nullpin = None
     num_deauths = None
     pmkid_timeout = None
     print_stack_traces = None
@@ -199,7 +200,7 @@ class Configuration(object):
         cls.use_bully = False  # Use bully instead of reaver
         cls.use_reaver = False  # Use reaver instead of bully
         cls.wps_pixie = True
-        cls.wps_nullpin = True
+        cls.wps_no_nullpin = True
         cls.wps_pin = True
         cls.wps_ignore_lock = False  # Skip WPS PIN attack if AP is locked.
         cls.wps_pixie_timeout = 300  # Seconds to wait for PIN before WPS Pixie attack fails
@@ -472,28 +473,28 @@ class Configuration(object):
             # No WPS attacks at all
             cls.no_wps = args.no_wps
             cls.wps_pixie = False
-            cls.wps_nullpin = False
+            cls.wps_no_nullpin = True
             cls.wps_pin = False
             Color.pl('{+} {C}option:{W} will {O}never{W} use {C}WPS attacks{W} (Pixie-Dust/PIN) on targets')
 
         elif args.wps_pixie:
             # WPS Pixie-Dust only
             cls.wps_pixie = True
-            cls.wps_nullpin = False
+            cls.wps_no_nullpin = True
             cls.wps_pin = False
             Color.pl('{+} {C}option:{W} will {G}only{W} use {C}WPS Pixie-Dust attack{W} (no {O}PIN{W}) on targets')
 
         elif args.wps_no_nullpin:
             # WPS NULL PIN only
-            cls.wps_pixie = False
-            cls.wps_nullpin = True
-            cls.wps_pin = False
-            Color.pl('{+} {C}option:{W} will {G}only{W} use {C}WPS NULL PIN attack{W} (no {O}PIN{W}) on targets')
+            cls.wps_pixie = True
+            cls.wps_no_nullpin = True
+            cls.wps_pin = True
+            Color.pl('{+} {C}option:{W} will {G}not{W} use {C}WPS NULL PIN attack{W} (no {O}PIN{W}) on targets')
 
         elif args.wps_no_pixie:
             # WPS PIN only
             cls.wps_pixie = False
-            cls.wps_nullpin = False
+            cls.wps_no_nullpin = False
             cls.wps_pin = True
             Color.pl('{+} {C}option:{W} will {G}only{W} use {C}WPS PIN attack{W} (no {O}Pixie-Dust{W}) on targets')
 
