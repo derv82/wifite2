@@ -45,7 +45,8 @@ Second, only the latest versions of these programs are supported and must be ins
 
 **Required:**
 
-* It's recommended to use `python3` as `python2` was marked deprecated as of january 2020.
+* Suggest using `python3` as `python2` was marked deprecated as of january 2020.
+* As we moved from older python and changed to fully support and run on `python3.11`
 * [`Iw`](https://wireless.wiki.kernel.org/en/users/documentation/iw): For identifying wireless devices already in Monitor Mode.
 * [`Ip`](https://packages.debian.org/buster/net-tools): For starting/stopping wireless devices.
 * [`Aircrack-ng`](https://aircrack-ng.org/) suite, includes:
@@ -63,12 +64,12 @@ Second, only the latest versions of these programs are supported and must be ins
 * [`bully`](https://github.com/aanarchyy/bully): For WPS Pixie-Dust & brute-force attacks.
    * Alternative to Reaver. Specify `--bully` to use Bully instead of Reaver.
    * Bully is also used to fetch PSK if `reaver` cannot after cracking WPS PIN.
+* [`john`](https://www.openwall.com/john): For CPU (OpenCL)/GPU cracking passwords fast.
 * [`coWPAtty`](https://tools.kali.org/wireless-attacks/cowpatty): For detecting handshake captures.
 * [`hashcat`](https://hashcat.net/): For cracking PMKID hashes.
    * [`hcxdumptool`](https://github.com/ZerBea/hcxdumptool): For capturing PMKID hashes.
    * [`hcxpcapngtool`](https://github.com/ZerBea/hcxtools): For converting PMKID packet captures into `hashcat`'s format.
 * [`ath_masker`](https://github.com/vanhoefm/ath_masker): Inject packets using the MAC address of the device, where the last byte of the MAC address can be anything. When other devices sent frames to these spoofed MAC addresses, the Atheros device will send ACKs.
-* [`modwifi`](https://github.com/vanhoefm/modwifi): tools to perform low-layer attacks such as reactive and constant jamming using commodity devices. Reactive jamming allows you to block specific Wi-Fi packets.
 
 
 Install dependencies
@@ -78,14 +79,6 @@ Either, do it the proper python way with
 ```sh
 $ pip3 install -r requirements.txt
 ```
-
-Or with our experimental Makefile setup
-see all commands available with
-
-```sh
-$ sudo make help
-```
-
 
 Run Wifite
 ----------
@@ -110,11 +103,7 @@ $ make help
 
 This will install `wifite` to `/usr/sbin/wifite` which should be in your terminal path.
 
-**Note:** To uninstall, simply do
 
-```sh
-sudo make uninstall
-```
 
 Brief Feature List
 ------------------
