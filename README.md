@@ -1,4 +1,4 @@
-[![GitHub version](https://img.shields.io/badge/version-2.6.6-informational.svg)](#)
+[![GitHub version](https://img.shields.io/badge/version-2.6.8-informational.svg)](#)
 [![GitHub issues](https://img.shields.io/github/issues/kimocoder/wifite2.svg)](https://github.com/kimocoder/wifite2/issues)
 [![GitHub forks](https://img.shields.io/github/forks/kimocoder/wifite2.svg)](https://github.com/kimocoder/wifite2/network)
 [![GitHub stars](https://img.shields.io/github/stars/kimocoder/wifite2.svg)](https://github.com/kimocoder/wifite2/stargazers)
@@ -30,10 +30,10 @@ Supported Operating Systems
 Wifite is designed specifically for the latest version of [**Kali** Linux](https://www.kali.org/). [ParrotSec](https://www.parrotsec.org/) is also supported.
 
 NetHunter (Android) is also widely supported by wifite, but it will require a custom kernel with modules support and various
-patches for injection in order to work. Tested working like a charm on Android 10 (Q), Android 11 (R) and Android 12 (S).
+patches for injection in order to work. Tested on Android 10 (Q), Android 11 (R),  Android 12 (S) and Android 13 (T)
 
 More information regarding [ Android: **NetHunter** ](https://gitlab.com/kalilinux/nethunter) is found there and
-you should also take a look at the [ **NetHunter WIKI** ](https://www.kali.org/docs/nethunter/) which is more up to date then [ Nethunter.com ](https://nethunter.com).
+you should also take a look at the [ **NetHunter WIKI** ](https://www.kali.org/docs/nethunter/) which is more up to date then [ NetHunter.com ](https://nethunter.com).
 
 Other pen-testing distributions (such as BackBox or Ubuntu) have outdated versions of the tools used by Wifite. Do not expect support unless you are using the latest versions of the *Required Tools*, and also [patched wireless drivers that support injection]().
 
@@ -95,10 +95,6 @@ again, the choice is the old fashioned way of python ..
 
 ```sh
 $ sudo python3 setup.py install
-```
-
-```sh
-$ make help
 ```
 
 This will install `wifite` to `/usr/sbin/wifite` which should be in your terminal path.
