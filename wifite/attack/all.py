@@ -101,7 +101,11 @@ class AttackAll(object):
                 if result:
                     break  # Attack was successful, stop other attacks.
             except Exception as e:
-                Color.pexception(e)
+                # TODO:kimocoder: below is a great way to handle Exception
+                # rather then running full traceback in run of parsing to console.
+                Color.pl('\r {!} {R}Error{W}: %s' % str(e))
+                #Color.pexception(e)         # This was the original one which parses full traceback
+                #Color.pl('\n{!} {R}Exiting{W}\n')      # Another great one for other uasages.
                 continue
             except KeyboardInterrupt:
                 Color.pl('\n{!} {O}Interrupted{W}\n')
