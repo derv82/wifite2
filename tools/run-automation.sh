@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env bash
 
 #
 #  Added my personal automation settinngs to showcase what options may be feeded by parameters.
@@ -17,4 +17,4 @@
 #  So, enjoy!
 #
 
-../wifite.py --skip-crack --reaver -2 --showm --showb --kill --wpat 160 --pmkid-timeout 100 --wps-time 120 --no-nullpin --wps --power 28 -p 100 -inf --wps-timeout 50 --wps-fails 10 -ic
+python3 wifite.py --skip-crack --reaver -2 --showm --showb --kill --wpat 160 --pmkid-timeout 100 --wps-time 120 --no-nullpin --wps --power 28 -p 100 -inf --wps-timeout 50 --wps-fails 10 -ic
