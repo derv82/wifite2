@@ -45,6 +45,7 @@ class John(Dependency):
         stdout, stderr = process.get_output()
 
         # Parse password (regex doesn't work for some reason)
+        key = None
         if '0 password hashes cracked' in stdout:
             key = None
         else:
@@ -56,4 +57,4 @@ class John(Dependency):
         if os.path.exists(john_file):
             os.remove(john_file)
 
-        #return key
+        return key
