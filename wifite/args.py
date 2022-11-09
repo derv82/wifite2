@@ -391,7 +391,7 @@ class Arguments(object):
                          help=self._verbose('{O}Never{W} use {O}WPS Pixie-Dust{W} attack (use {G}PIN attack{W})'))
 
         wps.add_argument('--no-nullpin', action='store_true', dest='wps_no_nullpin',
-                         help=self._verbose('{O}Never{W} use  {O}NULL PIN{W} attack (use {G}NULL PIN attack{W})'))
+                         help=self._verbose('{O}Never{W} use {O}NULL PIN{W} attack (use {G}NULL PIN attack{W})'))
 
         wps.add_argument('--bully',
                          action='store_true',

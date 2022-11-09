@@ -34,13 +34,12 @@ class AttackWPS(Attack):
             return False
 
 
-
         if not Configuration.wps_pixie and self.pixie_dust:
             Color.pl('\r{!} {O}--no-pixie{R} was given, ignoring WPS Pixie-Dust Attack on {O}%s{W}' % self.target.essid)
             self.success = False
             return False
 
-        if Configuration.wps_no_nullpin and not self.pixie_dust:
+        if not Configuration.wps_no_nullpin and self.null_pin:
             #Color.pl('\r{!} {O}--no-nullpin{R} was given, ignoring WPS NULLPIN Attack on {O}%s{W}' % self.target.essid)
             self.success = False
             return False
