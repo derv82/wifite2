@@ -23,22 +23,22 @@ Clients enter the password to the target AP. The Evil Twin then:
 
 Below are all of the requirements/components that Wifite would need for this feature.
 
-
 DHCP
 ====
-We need to auto-assign IP addresses to clients as they connect (via DHCP?).
 
+We need to auto-assign IP addresses to clients as they connect (via DHCP?).
 
 DNS Redirects
 =============
+
 All DNS requests need to redirect to the webserver:
 
 1. So we clients are encouraged to login.
 2. So we can intercept health-checks by Apple/Google
 
-
 Rogue AP, Server IP Address, etc
 ================================
+
 Probably a few ways to do this in Linux; should use the most reliable & supported method.
 
 Mainly we need to:
@@ -53,24 +53,24 @@ Mainly we need to:
 I think steps 3-5 can be applied to a specific wireless card (interface).
 
 * TODO: More details on how to start the fake AP, assign IPs, DHCP, DNS, etc.
-   * Fluxion using `hostapd`: [code](https://github.com/FluxionNetwork/fluxion/blob/16965ec192eb87ae40c211d18bf11bb37951b155/lib/ap/hostapd.sh#L59-L64)
-   * Kali "Evil Wireless AP" (uses `hostapd`): [article](https://www.offensive-security.com/kali-linux/kali-linux-evil-wireless-access-point/)
-   * Fluxion using `airbase-ng`: [code](https://github.com/FluxionNetwork/fluxion/blob/16965ec192eb87ae40c211d18bf11bb37951b155/lib/ap/airbase-ng.sh#L76-L77)
+  * Fluxion using `hostapd`: [code](https://github.com/FluxionNetwork/fluxion/blob/16965ec192eb87ae40c211d18bf11bb37951b155/lib/ap/hostapd.sh#L59-L64)
+  * Kali "Evil Wireless AP" (uses `hostapd`): [article](https://www.offensive-security.com/kali-linux/kali-linux-evil-wireless-access-point/)
+  * Fluxion using `airbase-ng`: [code](https://github.com/FluxionNetwork/fluxion/blob/16965ec192eb87ae40c211d18bf11bb37951b155/lib/ap/airbase-ng.sh#L76-L77)
 * TODO: Should the Evil Twin spoof the real AP's hardware MAC address?
-   * Yes, looks like that's what Fluxion does ([code](https://github.com/FluxionNetwork/fluxion/blob/16965ec192eb87ae40c211d18bf11bb37951b155/lib/ap/hostapd.sh#L66-L74)).
-
+  * Yes, looks like that's what Fluxion does ([code](https://github.com/FluxionNetwork/fluxion/blob/16965ec192eb87ae40c211d18bf11bb37951b155/lib/ap/hostapd.sh#L66-L74)).
 
 ROGUE AP
 ========
+
 Gleaned this info from:
 
 * ["Setting up wireless access point in Kali"](https://www.psattack.com/articles/20160410/setting-up-a-wireless-access-point-in-kali/) by PSAttack
 * ["Kali Linux Evil Wireless Access Point"](https://www.offensive-security.com/kali-linux/kali-linux-evil-wireless-access-point/) by OffensiveSecurity
 * ["SniffAir" hostapd script](https://github.com/Tylous/SniffAir/blob/master/module/hostapd.py)
 
-
 HOSTAPD
 -------
+
 * Starts access point.
 * Not included in Kali by-default.
 * Installable via `apt-get install hostapd`.
@@ -90,7 +90,6 @@ Run:
 ```
 hostapd ~/hostapd.conf -i wlan0
 ```
-
 
 DNSMASQ
 -------
@@ -133,6 +132,7 @@ dnsmasq -C ~/dnsmasq.conf -H ~/dns_entries
 
 IPTABLES
 --------
+
 From [this thread on raspberrypi.org](https://www.raspberrypi.org/forums/viewtopic.php?p=288263&sid=b6dd830c0c241a15ac0fe6930a4726c9#p288263)
 
 > *Use iptables to redirect all traffic directed at port 80 to the http server on the Pi*
@@ -147,23 +147,25 @@ And from Andreas Wiese on [UnixExchange](https://unix.stackexchange.com/a/125300
 TODO:
 
 * What about HTTPS traffic (port 443)?
-   * We want to avoid browser warnings (scary in Chrome & Firefox).
-   * Don't think we can send a 302 redirect to port 80 without triggering the invalid certificate issue.
-   * sslstrip may get around this...
-
+  * We want to avoid browser warnings (scary in Chrome & Firefox).
+  * Don't think we can send a 302 redirect to port 80 without triggering the invalid certificate issue.
+  * sslstrip may get around this...
 
 DEAUTHING
 =========
+
 While hosting the Evil Twin + Web Server, we need to deauthenticate clients from the target AP so they join the Evil Twin.
 
 Listening
 ---------
+
 We need to listen for more clients and automatically start deauthing new clients as they appear.
 
 This might be supported by existing tools...
 
 MDK
 ---
+
 Deauthing & DoS is easy to do using [MDK](https://tools.kali.org/wireless-attacks/mdk3) or `aireplay-ng`.
 
 I think MDK is a better tool for this job, but Wifite already requires the `aircrack` suite, so we should support both.
@@ -171,12 +173,12 @@ I think MDK is a better tool for this job, but Wifite already requires the `airc
 TODO: Require MDK if it is miles-ahead of `aireplay-ng`
 TODO: Figure out MDK commands for persistent deauths; if we can provide a list of client MAC addresses & BSSIDs.
 
-
 Website
 =======
 
 Router Login Pages
 ------------------
+
 These are different for every vendor.
 
 Fluxion has a repo with fake login pages for a lot of popular router vendors ([FluxionNetwork/sites](https://github.com/FluxionNetwork/sites)). That repo includes sites in various languages.
@@ -188,13 +190,14 @@ We also need a "generic" login page in case we don't have the page for a vendor.
 1. Web server to host HTML, images, fonts, and CSS that the vendor uses.
 3. Javascript to send the password to the webserver
 
-
 Language Support
 ----------------
+
 Note: Users should choose the language to host; they know better than any script detection.
 
 Each router page will have a warning message telling the client they need to enter the Wifi password:
-   * "Password is required after a router firmware update"
+
+* "Password is required after a router firmware update"
 
 The Login page content (HTML/images/css) could be reduced to just the logo and warning message. No navbars/sidebars/links to anything else.
 
@@ -220,9 +223,9 @@ document.querySelector('#pass').textContent('Password:');
 // ...
 ```
 
-
 One HTML File
 -------------
+
 We can compact everything into a single HTML file:
 
 1. Inline CSS
@@ -233,23 +236,23 @@ This would avoid the "lots of folders" problem; one folder for all .html files.
 
 E.g. `ASUS.html` can be chosen when the target MAC vendor contains `ASUS`.
 
-
 AJAX Password Submission
 ------------------------
+
 The website needs to send the password to the webserver, likely through some endpoint (e.g. `./login.cgi?password1=...&password2=...`).
 
 Easy to do in Javascript (via a simple `<form>` or even `XMLHttpRequest`).
 
-
 Webserver
 =========
+
 The websites served by the webserver is dynamic and depends on numerous variables.
 
 We want to utilize the CGIHTTPServer in Python which would make some the logic easier to track.
 
-
 Spoofing Health Checks
 ----------------------
+
 Some devices (Android, iOS, Windows?) verify the AP has an internet connection by requesting some externally-hosted webpage.
 
 We want to spoof those webpages *exactly* so the client's device shows the Evil Twin as "online".
@@ -264,14 +267,14 @@ Requirements:
 
 TODO: Go through Fluxion to know hostnames/paths and expected responses for Apple & Google devices.
 
-
 HTTPS
 -----
-What if Google, Apple requires HTTPS? Can we spoof the certs somehow? Or redirect to HTTP?
 
+What if Google, Apple requires HTTPS? Can we spoof the certs somehow? Or redirect to HTTP?
 
 Spoofing Router Login Pages
 ---------------------------
+
 We can detect the router vendor based on the MAC address.
 
 If we have a fake login page for that vendor, we serve that.
@@ -280,18 +283,18 @@ Otherwise we serve a generic login page.
 
 TODO: Can we use macchanger to detect vendor, or have some mapping of `BSSID_REGEX -> HTML_FILE`?
 
-
 Password Capture
 ----------------
+
 Webserver needs to know when a client enters a password.
 
 This can be accomplished via a simple CGI endpoint or Python script.
 
 E.g. `login.cgi` which reads `password1` and `password2` from the query string.
 
-
 Password Validation
 -------------------
+
 The Webserver needs to know when the password is valid.
 
 This requires connecting to the target AP on an unused wireless card:
@@ -303,9 +306,9 @@ This requires connecting to the target AP on an unused wireless card:
 TODO: The exact commands to verify Wifi passwords in Linux; I'm guessing we have to use `wpa_supplicant` and the like.
 TODO: Choose the fastest & most-relaiable method for verifying wifi paswords
 
-
 Evil Webserver & Deauth Communication
 -------------------------------------
+
 The access point hosting the Evil Twin needs to communicate with the Deauth mechanism:
 
 1. Which BSSIDs to point to the Evil Twin,
@@ -324,9 +327,9 @@ I am not sure how feasible this is in Python; we could also resort to using stat
 TODO: See if the CGIHTTPServer has some way we can maintain/alter background threads.
 TODO: See how hard it would be to maintain state in the CGIHTTPServer (do we have to use the filesystem?)
 
-
 Success & Cleanup
 -----------------
+
 When the password is found, we want to send a "success" message to the AJAX request, so the user gets instant feedback (and maybe a "Reconnecting..." message).
 
 During shutdown, we need to deauth all clients from the Evil Twin so they re-join the real AP.
@@ -334,7 +337,6 @@ During shutdown, we need to deauth all clients from the Evil Twin so they re-joi
 This deauthing should continue until all clients are deauthenticated from the Evil Twin.
 
 Then the script can be stopped.
-
 
 Proof of Concept
 ================
@@ -383,4 +385,3 @@ iptables -t nat -X
 iptables -t mangle -F
 iptables -t mangle -X
 ```
-
