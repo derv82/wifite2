@@ -2625,7 +2625,6 @@ DCC101	SOLiD Technologies, Inc.
 3CE624	LG Display
 D8F0F2	Zeebo Inc
 806007	RIM
-38A851	Moog, Ing
 94E0D0	HealthStream Taiwan Inc.
 D8052E	Skyviia Corporation
 80946C	TOKYO RADAR CORPORATION
@@ -6125,7 +6124,6 @@ D42C46	BUFFALO.INC
 D46C6D	ARRIS Group, Inc.
 A0E7AE	ARRIS Group, Inc.
 EC50AA	Aruba, a Hewlett Packard Enterprise Company
-B44506	Dell Inc.
 CCA3BD	ITEL MOBILE LIMITED
 D4354A	ALAXALA Networks Corporation
 40E99B	SAMSUNG ELECTRO-MECHANICS(THAILAND)
@@ -6377,7 +6375,6 @@ ECA138	Amazon Technologies Inc.
 B067B5	Apple, Inc.
 900A62	Inventus Power Eletronica do Brasil LTDA
 7054B4	Vestel Elektronik San ve Tic. A.S.
-04BF1B	Dell Inc.
 081A1E	Shenzhen iComm Semiconductor CO.,LTD
 505FB5	ASKEY COMPUTER CORP
 88DE7C	ASKEY COMPUTER CORP
@@ -6664,6 +6661,25 @@ A87116	Earda Technologies co Ltd
 FCD749	Amazon Technologies Inc.
 486F33	KYUNGWOO.SYSTEM, INC.
 2C9682	MitraStar Technology Corp.
+EC41CA	Shenzhen TecAnswer Technology co.,ltd
+24BBC9	Shenzhen SuperElectron Technology Co.,Ltd.
+148477	New H3C Technologies Co., Ltd
+14962D	New H3C Technologies Co., Ltd
+C4A64E	Quectel Wireless Solutions Co.,Ltd.
+E03C1C	IEEE Registration Authority
+AC919B	Wistron Neweb Corporation
+CCF3C8	Technicolor CH USA Inc.
+581031	Hon Hai Precision IND.CO.,LTD
+F80DA9	Zyxel Communications Corporation
+442063	Continental Automotive Technologies GmbH
+485A0D	Juniper Networks
+B44506	Dell Inc.
+04BF1B	Dell Inc.
+F0A0B1	HUAWEI TECHNOLOGIES CO.,LTD
+404F42	HUAWEI TECHNOLOGIES CO.,LTD
+3086F1	Fiberhome Telecommunication Technologies Co.,LTD
+0436B8	I&C Technology
+38A851	Quickset Defense Technologies, LLC
 9CFFC2	AVI Systems GmbH
 44D878	Hui Zhou Gaoshengda Technology Co.,LTD
 A0D807	Huawei Device Co., Ltd.
@@ -8707,7 +8723,6 @@ A8A668	zte corporation
 00EEBD	HTC Corporation
 38F708	National Resource Management, Inc.
 E0DB88	Open Standard Digital-IF Interface for SATCOM Systems
-A8BD3A	UNIONMAN TECHNOLOGY CO.,LTD
 A824EB	ZAO NPO Introtest
 C40E45	ACK Networks,Inc.
 3C89A6	KAPELSE
@@ -9994,7 +10009,6 @@ D4AAFF	MICRO WORLD
 001AE3	Cisco Systems, Inc
 001ADF	Interactivetv Pty Limited
 001AE1	EDGE ACCESS INC
-001AE8	Unify Software and Solutions GmbH & Co. KG
 001AE9	Nintendo Co., Ltd.
 001AE5	Mvox Technologies Inc.
 001AE4	Medicis Technologies Corporation
@@ -12760,7 +12774,6 @@ B43161	Realme Chongqing Mobile Telecommunications Corp.,Ltd.
 F8C116	Juniper Networks
 EC9B2D	China Mobile Group Device Co.,Ltd.
 AC93C4	GD Midea Air-Conditioning Equipment Co.,Ltd.
-48CAC6	UNIONMAN TECHNOLOGY CO.,LTD
 4C63EB	Application Solutions (Electronics and Vision) Ltd
 608CDF	Beamtrail-Sole Proprietorship
 D01B1F	OHSUNG
@@ -13052,7 +13065,6 @@ ECA81F	Technicolor CH USA Inc.
 D4E98A	Intel Corporate
 8CFADD	HUAWEI TECHNOLOGIES CO.,LTD
 F89A25	HUAWEI TECHNOLOGIES CO.,LTD
-6C3C8C	Dell Inc.
 F8710C	Xiaomi Communications Co Ltd
 3C135A	Xiaomi Communications Co Ltd
 6C5CB1	Silicon Laboratories
@@ -13070,7 +13082,6 @@ B8B2F7	DRIMAES INC.
 585B69	TVT CO., LTD
 A8F1B2	Allwinner Technology Co., Ltd
 90F82E	Amazon Technologies Inc.
-C45AB1	Dell Inc.
 949869	zte corporation
 F856C3	zte corporation
 541F8D	zte corporation
@@ -13234,12 +13245,35 @@ D80AE6	zte corporation
 9C65EE	DZS Inc.
 9C5416	Cisco Systems, Inc
 20BA36	u-blox AG
+A46DD4	Silicon Laboratories
 8CC58C	ShenZhen Elsky Technology Co.,LTD
-E01F6A	Huawei Device Co., Ltd.
 00566D	Huawei Device Co., Ltd.
 90CC7A	Huawei Device Co., Ltd.
+645234	Sichuan Tianyi Comheart Telecom Co.,LTD
+E01F6A	Huawei Device Co., Ltd.
 2C704F	zte corporation
-A46DD4	Silicon Laboratories
+381672	Shenzhen SuperElectron Technology Co.,Ltd.
+D07B6F	Zhuhai Yunmai Technology Co.,Ltd
+08CC81	Hangzhou Hikvision Digital Technology Co.,Ltd.
+6C29D2	Cisco Systems, Inc
+48CAC6	UNION MAN TECHNOLOGY CO.,LTD
+D43844	UNION MAN TECHNOLOGY CO.,LTD
+2CFE4F	Xiaomi Communications Co Ltd
+907E43	zte corporation
+D45347	Merytronic 2012, S.L.
+943EE4	WiSA Technologies Inc
+A8BD3A	UNION MAN TECHNOLOGY CO.,LTD
+54EF43	HUAWEI TECHNOLOGIES CO.,LTD
+D81BB5	HUAWEI TECHNOLOGIES CO.,LTD
+8464DD	HUAWEI TECHNOLOGIES CO.,LTD
+68A46A	HUAWEI TECHNOLOGIES CO.,LTD
+6C3C8C	Dell Inc.
+C45AB1	Dell Inc.
+A8B028	CubePilot Pty Ltd
+407F5F	Juniper Networks
+209727	TELTONIKA NETWORKS UAB
+54083B	IEEE Registration Authority
+001AE8	Unify Software and Solutions GmbH & Co. KG
 848094	Meter, Inc.
 10B3D5	Cisco Systems, Inc
 30A2C2	Huawei Device Co., Ltd.
@@ -14023,7 +14057,6 @@ B4E62A	LG Innotek
 A0C5F2	IEEE Registration Authority
 A86B7C	SHENZHEN FENGLIAN TECHNOLOGY CO., LTD.
 B03956	NETGEAR
-3C0CDB	UNIONMAN TECHNOLOGY CO.,LTD
 EC42B4	ADC Corporation
 60DA83	Hangzhou H3C Technologies Co., Limited
 2C5731	Wingtech Group (HongKongï¼Limited
@@ -18482,7 +18515,6 @@ E0859A	SHENZHEN RF-LINK TECHNOLOGY CO.,LTD.
 0C42A1	Mellanox Technologies, Inc.
 B47AF1	Hewlett Packard Enterprise
 349F7B	CANON INC.
-F4D9C6	UNIONMAN TECHNOLOGY CO.,LTD
 34F150	Hui Zhou Gaoshengda Technology Co.,LTD
 CC5289	SHENZHEN OPTFOCUS TECHNOLOGY.,LTD
 CC5D78	JTD Consulting
@@ -19304,7 +19336,6 @@ BCDB09	Cisco Meraki
 F89522	HUAWEI TECHNOLOGIES CO.,LTD
 F8B132	HUAWEI TECHNOLOGIES CO.,LTD
 546925	PS INODIC CO., LTD.
-E8B5D0	Dell Inc.
 E8CBED	Chipsea Technologies(Shenzhen) Corp.
 7813E0	FUJIAN STAR-NET COMMUNICATION CO.,LTD
 4861EE	Samsung Electronics Co.,Ltd
@@ -19382,7 +19413,6 @@ A8587C	Shoogee GmbH & Co. KG
 0CAEBD	Edifier International
 6CD869	Guangzhou Sat Infrared Co.,LTD
 381EC7	Chipsea Technologies(Shenzhen) Corp.
-089204	Dell Inc.
 40679B	Shenzhen Skyworth  Digital  Technology  CO., Ltd
 F0A654	CLOUD NETWORK TECHNOLOGY SINGAPORE PTE. LTD.
 3CCFB4	Telink Semiconductor (Shanghai) Co., Ltd.
@@ -19862,14 +19892,49 @@ E01FFC	Motorola (Wuhan) Mobility Technologies Communication Co., Ltd.
 882508	Meta Platforms Technologies, LLC
 6C0370	Extreme Networks, Inc.
 9C65FA	AcSiP
-DC9EAB	Chongqing Yipingfang Technology Co., Ltd.
-74D6E5	Huawei Device Co., Ltd.
-34AFA3	Recogni Inc
-0C014B	zte corporation
-D87A3B	Silicon Laboratories
 A8C56F	GUANGDONG OPPO MOBILE TELECOMMUNICATIONS CORP.,LTD
 AC7A94	GUANGDONG OPPO MOBILE TELECOMMUNICATIONS CORP.,LTD
 04DA28	Chongqing Zhouhai Intelligent Technology Co., Ltd
+0C014B	zte corporation
+34AFA3	Recogni Inc
+D87A3B	Silicon Laboratories
+988CB3	Sichuan Tianyi Comheart Telecom Co.,LTD
+DC9EAB	Chongqing Yipingfang Technology Co., Ltd.
+74D6E5	Huawei Device Co., Ltd.
+14A417	Shenzhen Belon Technology CO.,LTD
+4891D5	Cisco Systems, Inc
+20F597	Maasiv, LLC
+489ECB	Hewlett Packard Enterprise
+902AEE	Xiaomi Communications Co Ltd
+D8E35E	LG Innotek
+786829	eero inc.
+F4D9C6	UNION MAN TECHNOLOGY CO.,LTD
+3C0CDB	UNION MAN TECHNOLOGY CO.,LTD
+60489C	YIPPEE ELECTRONICS CO.,LIMITED
+D8478F	Microchip Technology Inc.
+249038	Universal Biosensors Pty Ltd
+F8EDAE	MOBIWIRE MOBILES(NINGBO) CO.,LTD
+14C35E	FibRSol Global Network Limited
+40FAFE	Motorola Mobility LLC, a Lenovo Company
+201C3A	Nintendo Co.,Ltd
+00E60E	Extreme Networks, Inc.
+880894	Skullcandy
+28BEF3	FUJIAN STAR-NET COMMUNICATION CO.,LTD
+E0CB19	Nokia
+94988F	Sagemcom Broadband SAS
+F07B65	Sagemcom Broadband SAS
+94DF34	HUAWEI TECHNOLOGIES CO.,LTD
+7430AF	Fiberhome Telecommunication Technologies Co.,LTD
+24E4CE	Kaonmedia CO., LTD.
+04AB08	Shenzhen Skyworth  Digital  Technology  CO., Ltd
+B0216F	HUAWEI TECHNOLOGIES CO.,LTD
+845A3E	Cisco Systems, Inc
+E8B5D0	Dell Inc.
+089204	Dell Inc.
+6885A4	GUANGDONG OPPO MOBILE TELECOMMUNICATIONS CORP.,LTD
+68F63B	Amazon Technologies Inc.
+80C45D	IPG Laser GmbH
+B456FA	IOPSYS Software Solutions
 F8D027	Seiko Epson Corporation
 5C666C	GUANGDONG OPPO MOBILE TELECOMMUNICATIONS CORP.,LTD
 4C4BF9	IEEE Registration Authority
@@ -22037,7 +22102,6 @@ A09BBD	Total Aviation Solutions Pty Ltd
 D40BB9	Solid Semecs bv.
 F415FD	Shanghai Pateo Electronic Equipment Manufacturing Co., Ltd.
 70E027	HONGYU COMMUNICATION TECHNOLOGY LIMITED
-FC35E6	Visteon corp
 E8481F	Advanced Automotive Antennas
 3495DB	Logitec Corporation
 9CB793	Creatcomm Technology Inc.
@@ -25059,7 +25123,6 @@ B4E9A3	port industrial automation GmbH
 6802B8	Compal Broadband Networks, Inc.
 3463D4	BIONIX SUPPLYCHAIN TECHNOLOGIES SLU
 08F7E9	HRCP Research and Development Partnership
-8CBA25	UNIONMAN TECHNOLOGY CO.,LTD
 D49E3B	GuangzhouÂ ShiyuanÂ ElectronicÂ TechnologyÂ CompanyÂ Limited
 DCDCE2	Samsung Electronics Co.,Ltd
 A0AC69	Samsung Electronics Co.,Ltd
@@ -25608,7 +25671,6 @@ E44164	Nokia
 AC139C	Adtran Inc
 A4CEDA	Arcadyan Corporation
 8C4361	Hailo Digital Hub GmbH & Co. KG
-54725E	UNIONMAN TECHNOLOGY CO.,LTD
 98C3D2	Ningbo Sanxing Medical Electric Co.,Ltd
 245DFC	IEEE Registration Authority
 487E48	Earda Technologies co Ltd
@@ -25830,7 +25892,6 @@ C89665	Microsoft Corporation
 409151	Espressif Inc.
 CC3F8A	KOMATSU LTD.
 34317F	Panasonic Appliances Company
-F4EE08	Dell Inc.
 100020	Apple, Inc.
 946424	Aruba, a Hewlett Packard Enterprise Company
 BC1E85	HUAWEI TECHNOLOGIES CO.,LTD
@@ -25870,7 +25931,6 @@ C436C0	BUFFALO.INC
 D48FA2	Huawei Device Co., Ltd.
 8881B9	Huawei Device Co., Ltd.
 7463C2	Huawei Device Co., Ltd.
-908D6E	Dell Inc.
 3C38F4	Sony Corporation
 DCA782	HUAWEI TECHNOLOGIES CO.,LTD
 045170	Zhongshan K-mate General Electronics Co.,Ltd
@@ -25951,7 +26011,6 @@ C839AC	Huawei Device Co., Ltd.
 08C06C	Huawei Device Co., Ltd.
 FC0296	Xiaomi Communications Co Ltd
 60E85B	Texas Instruments
-EC2A72	Dell Inc.
 B4BA02	Agatel Ltd
 14EBB6	TP-Link Corporation Limited
 54AF97	TP-Link Corporation Limited
@@ -25974,7 +26033,6 @@ F0B040	HUNAN FN-LINK TECHNOLOGY LIMITED
 482F6B	Aruba, a Hewlett Packard Enterprise Company
 7486E2	Dell Inc.
 A88C3E	Microsoft Corporation
-F814FE	UNIONMAN TECHNOLOGY CO.,LTD
 34CE69	Nokia Solutions and Networks GmbH & Co. KG
 70B8F6	Espressif Inc.
 149E5D	JSC IB Reform
@@ -26063,7 +26121,6 @@ DCFE23	Murata Manufacturing Co., Ltd.
 AC80AE	Fiberhome Telecommunication Technologies Co.,LTD
 D83DCC	shenzhen UDD Technologies,co.,Ltd
 0417B6	Smart Innovation LLC
-00BE43	Dell Inc.
 CC60C8	Microsoft Corporation
 00EBD8	MERCUSYS TECHNOLOGIES CO., LTD.
 6C8D77	Cisco Systems, Inc
@@ -26169,7 +26226,6 @@ F46C68	Wistron Neweb Corporation
 408EDF	Huawei Device Co., Ltd.
 BC4434	Shenzhen TINNO Mobile Technology Corp.
 70662A	Sony Interactive Entertainment Inc.
-605B30	Dell Inc.
 34AC11	China Mobile Group Device Co.,Ltd.
 4432C2	GOAL Co., Ltd.
 18B185	Qiao Information Technology (Zhengzhou) Co., Ltd.
@@ -26220,7 +26276,6 @@ F43BD8	Intel Corporate
 E08614	Novatel Wireless Solutions, Inc.
 A8DE68	Beijing Wide Technology Co.,Ltd
 3C4E56	SHENZHEN CHUANGWEI-RGB ELECTRONICS CO.,LTD
-C84BD6	Dell Inc.
 6C302A	Texas Instruments
 7446B3	Texas Instruments
 08B61F	Espressif Inc.
@@ -26388,7 +26443,6 @@ E0A1CE	zte corporation
 3838A6	Arista Networks
 50236D	Nintendo Co.,Ltd
 A03975	Leo Bodnar Electronics Ltd
-E8655F	Dell Inc.
 EC83B7	PUWELL CLOUD TECH LIMITED
 7493DA	ASKEY COMPUTER CORP
 C84AA0	Sony Interactive Entertainment Inc.
@@ -26419,7 +26473,6 @@ C829C8	Palo Alto Networks
 78605B	TP-LINK TECHNOLOGIES CO.,LTD.
 04F9F8	TP-LINK TECHNOLOGIES CO.,LTD.
 C45379	Micronview Limited Liability Company
-E8B265	Dell Inc.
 804AF2	Sonos, Inc.
 044BA5	SHENZHEN MERCURY COMMUNICATION TECHNOLOGIES CO.,LTD.
 F42D06	zte corporation
@@ -26439,7 +26492,6 @@ FC315D	Apple, Inc.
 3CBCD0	zte corporation
 646E60	zte corporation
 4C421E	Cisco Systems, Inc
-C4CBE1	Dell Inc.
 408EF6	Infinix mobility limited
 E02DF0	ALPSALPINE CO,.LTD
 5C345B	Hangzhou Hikvision Digital Technology Co.,Ltd.
@@ -26521,6 +26573,34 @@ C04884	Sigma Bilisim Sist. Tekn. Elk. Enj. ve San. D??. Tic. Ltd. ?ti.
 B417A8	Meta Platforms Technologies, LLC
 7CEDC6	Amazon Technologies Inc.
 5030F4	Exascend, Inc.
+DCECE3	LYOTECH LABS LLC
+FC35E6	Visteon Corporation
+C09573	AIxLink
+94CBCD	zte corporation
+805F8E	Huizhou BYD Electronic Co., Ltd.
+8CBA25	UNION MAN TECHNOLOGY CO.,LTD
+54725E	UNION MAN TECHNOLOGY CO.,LTD
+F814FE	UNION MAN TECHNOLOGY CO.,LTD
+CC62FE	UNION MAN TECHNOLOGY CO.,LTD
+A83A79	Mist Systems, Inc.
+EC2A72	Dell Inc.
+00BE43	Dell Inc.
+605B30	Dell Inc.
+C84BD6	Dell Inc.
+E8655F	Dell Inc.
+E8B265	Dell Inc.
+AC91A1	Dell Inc.
+A852D4	Aruba, a Hewlett Packard Enterprise Company
+5488FE	Xiaoniu network technology (Shanghai) Co., Ltd.
+F4EE08	Dell Inc.
+908D6E	Dell Inc.
+F4D580	YAMAHA CORPORATION
+C4CBE1	Dell Inc.
+984B06	HUAWEI TECHNOLOGIES CO.,LTD
+ACFF6B	HUAWEI TECHNOLOGIES CO.,LTD
+844DBE	Fiberhome Telecommunication Technologies Co.,LTD
+80B946	Nokia
+38B5C9	INGRAM MICRO SERVICES
 7C8AE1	COMPAL INFORMATION (KUNSHAN) CO., LTD.
 54E4A9	BHR Tech GmbH
 208058	Ciena Corporation
@@ -27276,7 +27356,6 @@ CC4B73	AMPAK Technology, Inc.
 0015DC	KT&C Co., Ltd.
 00187D	Armorlink Co .Ltd
 F430B9	Hewlett Packard
-0019F0	UNIONMAN TECHNOLOGY CO.,LTD
 C8DB26	Logitech
 A40E2B	Facebook Inc
 AC4E2E	Shenzhen JingHanDa Electronics Co.Ltd
@@ -28703,7 +28782,6 @@ B0DA00	CERA ELECTRONIQUE
 D8B6D6	Blu Tether Limited
 6C2C06	OOO NPP Systemotechnika-NN
 C4913A	Shenzhen Sanland Electronic Co., ltd.
-68856A	OuterLink Corporation
 9451BF	Hyundai ESG
 F015A0	KyungDong One Co., Ltd.
 C44E1F	BlueN
@@ -28901,7 +28979,6 @@ F8FEA8	Technico Japan Corporation
 6C6126	Rinicom Holdings
 88685C	Shenzhen ChuangDao & Perpetual Eternal Technology Co.,Ltd
 102831	Morion Inc.
-EC2C49	University of Tokyo
 D82916	Ascent Communication Technology
 2CF203	EMKO ELEKTRONIK SAN VE TIC AS
 B4FE8C	Centro Sicurezza Italia SpA
@@ -29259,7 +29336,6 @@ D0AFB6	Linktop Technology Co., LTD
 ACC935	Ness Corporation
 008D4E	CJSC NII STT
 98F8DB	Marini Impianti Industriali s.r.l.
-E41289	topsystem Systemhaus GmbH
 58E808	AUTONICS CORPORATION
 DC05ED	Nabtesco  Corporation
 4C98EF	Zeo
@@ -31489,7 +31565,6 @@ EC6C9F	Chengdu Volans Technology CO.,LTD
 00C0A4	UNIGRAF OY
 00C029	Nexans Deutschland GmbH - ANS
 00C0FA	CANARY COMMUNICATIONS, INC.
-00C03A	MEN-MIKRO ELEKTRONIK GMBH
 00C040	ECCI
 00C01C	INTERLINK COMMUNICATIONS LTD.
 00C042	DATALUX CORP.
@@ -32169,7 +32244,6 @@ C0E3FB	HUAWEI TECHNOLOGIES CO.,LTD
 804B50	Silicon Laboratories
 4089A8	WiredIQ, LLC
 683F7D	INGRAM MICRO SERVICES
-748F4D	duagon Germany GmbH
 08798C	HUAWEI TECHNOLOGIES CO.,LTD
 50C3A2	nFore Technology Co.,Ltd.
 54DBA2	Fibrain
@@ -32229,7 +32303,6 @@ AC17C8	Cisco Meraki
 4CC8A1	Cisco Meraki
 58FB96	Ruckus Wireless
 F0625A	Realme Chongqing Mobile Telecommunications Corp.,Ltd.
-64E0AB	UNIONMAN TECHNOLOGY CO.,LTD
 AC2316	Mist Systems, Inc.
 2C00AB	ARRIS Group, Inc.
 3CE36B	Zhejiang Dahua Technology Co., Ltd.
@@ -32550,7 +32623,6 @@ C48BA3	Cisco Meraki
 140A29	Tiinlab Corporation
 C0F9D2	arkona technologies GmbH
 146102	Alps Alpine
-A02919	Dell Inc.
 241281	China Mobile Group Device Co.,Ltd.
 D4EEDE	Sichuan Tianyi Comheart Telecom Co.,LTD
 C08B05	HUAWEI TECHNOLOGIES CO.,LTD
@@ -32592,7 +32664,6 @@ B89EA6	SPBEC-MINING CO.LTD
 AC50DE	CLOUD NETWORK TECHNOLOGY SINGAPORE PTE. LTD.
 08C8C2	GN Audio A/S
 185880	Arcadyan Corporation
-A01C87	UNIONMAN TECHNOLOGY CO.,LTD
 3083D2	Motorola Mobility LLC, a Lenovo Company
 00DDB6	New H3C Technologies Co., Ltd
 782184	Espressif Inc.
@@ -32632,7 +32703,6 @@ ECDA59	New H3C Technologies Co., Ltd
 10B1DF	CLOUD NETWORK TECHNOLOGY SINGAPORE PTE. LTD.
 F4F647	zte corporation
 E88175	zte corporation
-40F4FD	UNIONMAN TECHNOLOGY CO.,LTD
 9C0B05	eero inc.
 78F238	Samsung Electronics Co.,Ltd
 64D0D6	Samsung Electronics Co.,Ltd
@@ -32866,7 +32936,6 @@ DCDB27	Huawei Device Co., Ltd.
 7042D3	Ruijie Networks Co.,LTD
 441244	Aruba, a Hewlett Packard Enterprise Company
 B43A31	Silicon Laboratories
-CC96E5	Dell Inc.
 74249F	TIBRO Corp.
 34DF20	Shenzhen Comstar .Technology Co.,Ltd
 F41AB0	Shenzhen Xingguodu Technology Co., Ltd.
@@ -33148,4 +33217,33 @@ F40046	ON Semiconductor
 D8B249	Huawei Device Co., Ltd.
 C49D08	Huawei Device Co., Ltd.
 1012D0	zte corporation
+B0449C	Assa Abloy AB - Yale
+602A1B	JANCUS
+1884C1	Guangzhou Shiyuan Electronic Technology Company Limited
+68856A	OuterLink Corporation
+E41289	topsystem GmbH
+ECC018	Cisco Systems, Inc
+748FC2	Cisco Systems, Inc
 D824EC	Plenom A/S
+D016F0	IEEE Registration Authority
+0019F0	UNION MAN TECHNOLOGY CO.,LTD
+A01C87	UNION MAN TECHNOLOGY CO.,LTD
+40F4FD	UNION MAN TECHNOLOGY CO.,LTD
+AC128E	Shanghai Baud Data Communication Co.,Ltd.
+64E0AB	UNION MAN TECHNOLOGY CO.,LTD
+44A3C7	zte corporation
+AC3D94	Arista Networks
+30E1F1	Intelbras
+3C46A1	Ruckus Wireless
+648F3E	Cisco Systems, Inc
+CCB6C8	Cisco Systems, Inc
+6CD6E3	Cisco Systems, Inc
+ECED73	Motorola Mobility LLC, a Lenovo Company
+EC2C49	NakaoLab, The University of Tokyo
+A02919	Dell Inc.
+CC96E5	Dell Inc.
+2C64F6	Wu Qi Technologies,Inc.
+88684B	GUANGDONG OPPO MOBILE TELECOMMUNICATIONS CORP.,LTD
+748F4D	duagon Germany GmbH
+00C03A	duagon Germany GmbH
+E84C4A	Amazon Technologies Inc.
