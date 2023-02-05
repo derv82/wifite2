@@ -2928,7 +2928,6 @@ E86CDA	Supercomputers and Neurocomputers Research Center
 00B5D6	Omnibit Inc.
 548922	Zelfy Inc
 50C58D	Juniper Networks
-24A42C	KOUKAAM a.s.
 4C3089	Thales Transportation Systems GmbH
 481249	Luxcom Technologies Inc.
 24A937	PURE Storage
@@ -6673,13 +6672,17 @@ CCF3C8	Technicolor CH USA Inc.
 F80DA9	Zyxel Communications Corporation
 442063	Continental Automotive Technologies GmbH
 485A0D	Juniper Networks
-B44506	Dell Inc.
-04BF1B	Dell Inc.
-F0A0B1	HUAWEI TECHNOLOGIES CO.,LTD
-404F42	HUAWEI TECHNOLOGIES CO.,LTD
 3086F1	Fiberhome Telecommunication Technologies Co.,LTD
 0436B8	I&C Technology
+F0A0B1	HUAWEI TECHNOLOGIES CO.,LTD
+404F42	HUAWEI TECHNOLOGIES CO.,LTD
+B44506	Dell Inc.
+04BF1B	Dell Inc.
 38A851	Quickset Defense Technologies, LLC
+24A42C	NETIO products a.s.
+A8881F	SERVERCOM (INDIA) PRIVATE LIMITED
+A8C647	Extreme Networks, Inc.
+601B52	Vodafone Italia S.p.A.
 9CFFC2	AVI Systems GmbH
 44D878	Hui Zhou Gaoshengda Technology Co.,LTD
 A0D807	Huawei Device Co., Ltd.
@@ -13274,6 +13277,9 @@ A8B028	CubePilot Pty Ltd
 209727	TELTONIKA NETWORKS UAB
 54083B	IEEE Registration Authority
 001AE8	Unify Software and Solutions GmbH & Co. KG
+E073E7	HP Inc.
+E86E3A	Sony Interactive Entertainment Inc.
+BCB1D3	Cisco Meraki
 848094	Meter, Inc.
 10B3D5	Cisco Systems, Inc
 30A2C2	Huawei Device Co., Ltd.
@@ -19932,9 +19938,11 @@ B0216F	HUAWEI TECHNOLOGIES CO.,LTD
 E8B5D0	Dell Inc.
 089204	Dell Inc.
 6885A4	GUANGDONG OPPO MOBILE TELECOMMUNICATIONS CORP.,LTD
+B456FA	IOPSYS Software Solutions
 68F63B	Amazon Technologies Inc.
 80C45D	IPG Laser GmbH
-B456FA	IOPSYS Software Solutions
+E8F8D0	Nokia Shanghai Bell Co., Ltd.
+408E2C	Microsoft Corporation
 F8D027	Seiko Epson Corporation
 5C666C	GUANGDONG OPPO MOBILE TELECOMMUNICATIONS CORP.,LTD
 4C4BF9	IEEE Registration Authority
@@ -26595,12 +26603,15 @@ A852D4	Aruba, a Hewlett Packard Enterprise Company
 F4EE08	Dell Inc.
 908D6E	Dell Inc.
 F4D580	YAMAHA CORPORATION
-C4CBE1	Dell Inc.
-984B06	HUAWEI TECHNOLOGIES CO.,LTD
-ACFF6B	HUAWEI TECHNOLOGIES CO.,LTD
+38B5C9	INGRAM MICRO SERVICES
 844DBE	Fiberhome Telecommunication Technologies Co.,LTD
 80B946	Nokia
-38B5C9	INGRAM MICRO SERVICES
+984B06	HUAWEI TECHNOLOGIES CO.,LTD
+ACFF6B	HUAWEI TECHNOLOGIES CO.,LTD
+38AB16	NPO RTT LLC
+C4CBE1	Dell Inc.
+2CD7FF	LANCOM Systems GmbH
+2C67AB	EZELINK TELECOM
 7C8AE1	COMPAL INFORMATION (KUNSHAN) CO., LTD.
 54E4A9	BHR Tech GmbH
 208058	Ciena Corporation
@@ -30411,7 +30422,6 @@ EC6C9F	Chengdu Volans Technology CO.,LTD
 00122C	Soenen Controls N.V.
 00122B	Virbiage Pty Ltd
 001232	LeWiz Communications Inc.
-001227	Franklin Electric Co., Inc.
 00121A	Techno Soft Systemnics Inc.
 00121B	Sound Devices, LLC
 0011DF	Current Energy
@@ -33244,6 +33254,13 @@ A02919	Dell Inc.
 CC96E5	Dell Inc.
 2C64F6	Wu Qi Technologies,Inc.
 88684B	GUANGDONG OPPO MOBILE TELECOMMUNICATIONS CORP.,LTD
+E88FC4	MOBIWIRE MOBILES(NINGBO) CO.,LTD
+AC1A3D	Dell Inc.
+F49DA7	Private
 748F4D	duagon Germany GmbH
 00C03A	duagon Germany GmbH
 E84C4A	Amazon Technologies Inc.
+001227	Franklin Electric Co., Inc.
+BC3340	Cisco Meraki
+4C9B63	LG Innotek
+FC2CFD	dormakaba Canada Inc. - Keyscan
