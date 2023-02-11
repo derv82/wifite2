@@ -1,0 +1,102 @@
+2022-10
+Contributor(s): 
+kimocoder
+    add python3.11 to setup classifiers
+- - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+
+2022-08
+Contributor(s): 
+kimocoder
+Christian Bremvåg
+tiagogalvao
+    setup.py: Enhance the installation/setup
+    setup.py: Remove code leftovers
+    Fix python-3.12 deprecated library
+    Merge branch 'master' into tests# Conflicts:#	wifite/model/handshake.py
+    Merge pull request #102 from tiagogalvao/v2.7-flake8v2.7 preparation: code cleanup based on flake8 suggestions
+- - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+
+2022-07
+Contributor(s): 
+tiagogalvao
+    v2.7 preparation: code cleanup based on flake8 suggestions
+- - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+
+2022-04
+Contributor(s): 
+kimocoder
+Tiago Pires
+    Merge branch 'kimocoder:master' into issue85
+    Cleanup and general code enhancement
+- - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+
+2022-03
+Contributor(s): 
+Christian Bremvåg
+tiagogalvao
+    Merge pull request #84 from tiagogalvao/theBoringBranchBunch of boring stuff and minor fixes
+    Bunch of boring stuff and minor fixes
+- - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+
+2021-01
+Contributor(s): 
+Christian Bremvåg
+    Merge pull request #51 from sbrun/setupRemove the broken and redundant entry_points in setup.py
+- - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+
+2020-11
+Contributor(s): 
+Sophie Brun
+    Remove the broken and redundant entry_points in setup.py
+- - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+
+2020-10
+Contributor(s): 
+kimocoder
+    Various fixes and additions
+    Fixed 'john' tool cracking + python3 enhancements
+    New install method (Makefile) + ath_masker added* Changed install/uninstall/clean to a simplier method (using Makefile)* Added 'ath_masker' to wifite  ath_masker explained:  --------------------------------------  Install wifite then reboot/plug in your Wi-Fi card,  and it will send acknowledgements to any Wi-Fi frame if the first 5 bytes of the destination MAC address equal its own address.  In other words, you can now inject packets using the MAC address of the device,  where the last byte of the MAC address can be anything.  When other devices sent frames to these spoofed MAC addresses,  the Atheros device will send ACKs.Signed off: kimocoder
+- - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+
+2020-09
+Contributor(s): 
+kimocoder
+    Python code improvements
+- - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+
+2020-05
+Contributor(s): 
+kimocoder
+    Some python3 improvements
+- - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+
+2020-01
+Contributor(s): 
+kimocoder
+Christian Bremvåg
+    python3 cleanup patch
+    Added a bunch of more python3 fixes
+    Merge branch 'master' of https://github.com/kimocoder/wifite2
+    Update setup.py
+    Cleanup setup.py - remove rest of python2.7
+- - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+
+2019-12
+Contributor(s): 
+Christian Bremvåg
+Sophie Brun
+    Merge pull request #6 from sbrun/masterFix wordlist name
+    Fix wordlist name
+- - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
