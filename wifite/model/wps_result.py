@@ -3,15 +3,16 @@
 
 from ..util.color import Color
 from ..model.result import CrackResult
-from contextlib import contextmanager,redirect_stderr,redirect_stdout
+from contextlib import contextmanager, redirect_stderr, redirect_stdout
 from os import devnull
+
 
 @contextmanager
 def suppress_stdout_stderr():
     """A context manager that redirects stdout and stderr to devnull"""
     with open(devnull, 'w') as fnull:
         with redirect_stderr(fnull) as err, redirect_stdout(fnull) as out:
-            yield (err, out)
+            yield err, out
 
 
 class CrackResultWPS(CrackResult):
@@ -43,20 +44,19 @@ class CrackResultWPS(CrackResult):
         Color.p('PIN: {G}%s{W}' % self.pin)
         Color.pl('')
 
-
     def to_dict(self):
-     with suppress_stdout_stderr():
-        print('@@@ to dict', self.__dict__)
-        return {
-            'type': self.result_type,
-            'date': self.date,
-            'essid': self.essid,
-            'bssid': self.bssid,
-            'channel': self.channel,
-            'pin': self.pin,
-            'psk': self.psk,
-            'loc': self.loc
-        }
+        with suppress_stdout_stderr():
+            print('@@@ to dict', self.__dict__)
+            return {
+                'type': self.result_type,
+                'date': self.date,
+                'essid': self.essid,
+                'bssid': self.bssid,
+                'channel': self.channel,
+                'pin': self.pin,
+                'psk': self.psk,
+                'loc': self.loc
+            }
 
 
 if __name__ == '__main__':

@@ -17,7 +17,6 @@ from ..util.process import Process
 
 
 # TODO: Bring back the 'print' option, for easy copy/pasting. Just one-liners people can paste into terminal.
-# TODO: --no-crack option while attacking targets (implies user will run --crack later)
 
 
 class CrackHelper:
