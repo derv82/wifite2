@@ -635,14 +635,8 @@ class Configuration(object):
         from .tools.airmon import Airmon
         if cls.interface is not None and Airmon.base_interface is not None:
             if not cls.daemon:
-                Color.pl('{!} {O}Note:{W} Leaving interface in {G}Monitor Mode{W}!')
-                if Airmon.use_ipiw:
-                    Color.pl('{!} To disable {G}Monitor Mode{W} when finished: ')
-                    Color.pl('{+}   {C}ip link set %s down{W}' % cls.interface)
-                    Color.pl('{+}   {C}iw %s set type managed{W}' % cls.interface)
-                    Color.pl('{+}   {C}ip link set %s up{W}\n' % cls.interface)
-                else:
-                    Color.pl('{!} To disable Monitor Mode when finished: {C}airmon-ng stop %s{W}\n' % cls.interface)
+                Color.pl('{!} {O}Note:{W} Leaving interface in Monitor Mode!')
+                Color.pl('{!} To disable Monitor Mode when finished: {C}airmon-ng stop %s{W}' % cls.interface)
             else:
                 # Stop monitor mode
                 Airmon.stop(cls.interface)
