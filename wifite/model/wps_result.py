@@ -16,10 +16,9 @@ def suppress_stdout_stderr():
 
 
 class CrackResultWPS(CrackResult):
-    def __init__(self, bssid, channel, essid, pin, psk):
+    def __init__(self, bssid, essid, pin, psk):
         self.result_type = 'WPS'
         self.bssid = bssid
-        self.channel = channel
         self.essid = essid
         self.pin = pin
         self.psk = psk
@@ -29,7 +28,6 @@ class CrackResultWPS(CrackResult):
         if self.essid is not None:
             Color.pl(f'{{+}} {"ESSID".rjust(12)}: {{C}}{self.essid}{{W}}')
         psk = '{O}N/A{W}' if self.psk is None else '{G}%s{W}' % self.psk
-        Color.pl('{+} %s: {C}%s{W}' % ('Channel'.rjust(12), self.channel))
         Color.pl('{+} %s: {C}%s{W}' % ('BSSID'.rjust(12), self.bssid))
         Color.pl('{+} %s: {C}WPA{W} ({C}WPS{W})' % 'Encryption'.rjust(12))
         Color.pl('{+} %s: {G}%s{W}' % ('WPS PIN'.rjust(12), self.pin))
@@ -52,14 +50,12 @@ class CrackResultWPS(CrackResult):
                 'date': self.date,
                 'essid': self.essid,
                 'bssid': self.bssid,
-                'channel': self.channel,
                 'pin': self.pin,
-                'psk': self.psk,
-                'loc': self.loc
+                'psk': self.psk
             }
 
 
 if __name__ == '__main__':
-    crw = CrackResultWPS('AA:BB:CC:DD:EE:FF', '1', 'Test Router', '01234567', 'the psk')
+    crw = CrackResultWPS('AA:BB:CC:DD:EE:FF', 'Test Router', '01234567', 'the psk')
     crw.dump()
     crw.save()
