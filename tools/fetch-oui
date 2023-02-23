@@ -4,8 +4,23 @@ use warnings;
 use strict;
 use Getopt::Std;
 use LWP::UserAgent;
+use Text::CSV;
 #
-my $default_url = 'http://standards-oui.ieee.org/oui/oui.txt';
+# Use the file:// URLs to use the data from the debian ieee-data package.
+# Use the http:// URLs to use the data from the IEEE website.
+#
+# The entries will be written to the output in alphabetical key order, not
+# the order they are listed in the hash.
+my %ieee_reg_urls = (
+#   OUI   => 'file:///usr/share/ieee-data/oui.csv',
+#   MAM   => 'file:///usr/share/ieee-data/mam.csv',
+#   OUI36 => 'file:///usr/share/ieee-data/oui36.csv',
+#   IAB   => 'file:///usr/share/ieee-data/iab.csv',
+   OUI   => 'https://standards-oui.ieee.org/oui/oui.csv',
+   MAM   => 'https://standards-oui.ieee.org/oui28/mam.csv',
+   OUI36 => 'https://standards-oui.ieee.org/oui36/oui36.csv',
+   IAB   => 'https://standards-oui.ieee.org/iab/iab.csv'
+);
 my $default_filename='ieee-oui.txt';
 #
 my $usage =
@@ -15,17 +30,22 @@ may parse it through wifite and show manufacturers on targets..
 
 'options' is one or more of:
         -h Display this usage message.
-        -f FILE Specify the output OUI file. Default=$default_filename
-        -u URL Specify the URL to fetch the OUI data from.
-           Default=$default_url
+        -f FILE Specify the output file. Default=$default_filename
         -v Give verbose progress messages.
 /;
 my %opts;
 my $verbose;
 my $filename;
 my $url;
-my $lineno = 0;
-
+my $key;
+my $status;
+my $line;
+my @columns;
+my $lineno;
+my $total_entries=0;
+#
+# Process options
+#
 die "$usage\n" unless getopts('hf:u:v',\%opts);
 if ($opts{h}) {
    print "$usage\n";
@@ -36,34 +56,66 @@ if (defined $opts{f}) {
 } else {
    $filename=$default_filename;
 }
-if (defined $opts{u}) {
-   $url=$opts{u};
-} else {
-   $url=$default_url;
-}
 $verbose=$opts{v} ? 1 : 0;
-
+#
+# If the output filename already exists, rename it to filename.bak before
+# we create the new output file.
+#
 if (-f $filename) {
    print "Renaming $filename to $filename.bak\n" if $verbose;
    rename $filename, "$filename.bak" || die "Could not rename $filename to $filename.bak\n";
 }
-
-print "Fetching OUI data from $url\n" if $verbose;
-my $ua = LWP::UserAgent->new;
-my $res = $ua->get($url);
-die "Could not get OUI data from $url\n" unless $res->is_success;
-my $content = $res->content;
-my $content_length = length($content);
-die "Zero-sized response from from $url\n" unless ($content_length > 0);
-print "Fetched $content_length bytes\n" if $verbose;
-
-print "Opening output file $filename\n" if $verbose;
+#
+# Open the output file for writing.
+#
+print "Opening $filename for output\n" if $verbose;
 open OUTPUT, '>:encoding(UTF-8)', $filename || die "Could not open $filename for writing";
-
-while ($content =~ m/^\s*(\w{2})-(\w{2})-(\w{2})\s+\(hex\)\s+(.*?)\s*$/gm) {
-   print OUTPUT "$1$2$3\t$4\n";
-   $lineno++;
+#
+# Write the header comments to the output file.
+#
+my ($sec,$min,$hour,$mday,$mon,$year,undef,undef,undef) = localtime();
+$year += 1900;
+$mon++;
+my $date_string = sprintf("%04d-%02d-%02d %02d:%02d:%02d", $year, $mon, $mday,
+                          $hour, $min, $sec);
+#
+# Initialise Text::CSV object interface
+#
+my $csv = Text::CSV->new ({ binary => 1, auto_diag => 1 });
+#
+# For each IEEE registry URL...
+#
+foreach $key (sort keys %ieee_reg_urls) {
+   $url = $ieee_reg_urls{$key};
+#
+# Fetch the content from the URL
+#
+   print "Processing IEEE $key registry data from $url\n" if $verbose;
+   my $ua = LWP::UserAgent->new;
+   my $res = $ua->get($url);
+   die $res->status_line unless $res->is_success;
+   my $content = $res->content;
+   my $content_length = length($content);
+   die "Zero-sized response from from $url\n" unless ($content_length > 0);
+   print "\tDownloaded $content_length bytes\n" if $verbose;
+#
+# Parse content and write MAC and Vendor fields to output file.
+#
+   open(my $fh, '<:encoding(UTF-8)', \$content) || die "Could not open handle to content";
+   $csv->header($fh);
+   $lineno=0;
+   while (my $row = $csv->getline ($fh)) {
+      my $mac = ${$row}[1];
+      my $vendor = ${$row}[2];
+      $vendor =~ s/^\s+|\s+$//g;	# Remove leading and trailing whitespace
+      print OUTPUT "$mac\t$vendor\n";
+      $lineno++;
+   }
+   print "\t$lineno $key entries written to $filename\n" if $verbose;
+   $total_entries += $lineno;
 }
-
+#
+# All done.  Close the output file and print OUI entry count
+#
 close OUTPUT || die "Error closing output file\n";
-print "$lineno OUI entries written to file $filename\n" if $verbose;
+print "\nTotal of $total_entries MAC/Vendor mappings written to $filename\n";
