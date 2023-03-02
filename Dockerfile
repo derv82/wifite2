@@ -1,11 +1,11 @@
 FROM python:3.12-rc-slim
 
 ENV DEBIAN_FRONTEND noninteractive
-ENV HASHCAT_VERSION hashcat-6.2.5
+ENV HASHCAT_VERSION hashcat-6.2.6
 ENV HASHCAT_UTILS_VERSION 1.9
 
 # Install requirements
-RUN echo "deb-src http://deb.debian.org/debian jessie main" >> /etc/apt/sources.list
+RUN echo "deb-src http://deb.debian.org/debian bullseye main" >> /etc/apt/sources.list
 RUN apt update && apt upgrade -y
 RUN apt install clang ca-certificates gcc openssl make kmod nano wget p7zip build-essential libsqlite3-dev libpcap0.8-dev libpcap-dev sqlite3 pkg-config libnl-genl-3-dev libssl-dev net-tools iw ethtool usbutils pciutils wireless-tools git curl wget unzip macchanger tshark -y
 RUN apt build-dep aircrack-ng -y
@@ -81,7 +81,7 @@ RUN ln -s /hashcat/hashcat-utils-${HASHCAT_UTILS_VERSION}/bin/cap2hccapx.bin /us
 WORKDIR /
 
 # Install reaver
-RUN git clone https://github.com/kimocoder/reaver-wps-fork-t6x
+RUN git clone https://github.com/t6x/reaver-wps-fork-t6x
 WORKDIR /reaver-wps-fork-t6x/src/
 RUN ./configure
 RUN make
