@@ -68,7 +68,8 @@ class Hashcat(Dependency):
                 '-m', '22000',  # WPA-PMKID-PBKDF2
                 '-a', '0',      # Wordlist attack-mode
                 pmkid_file,
-                Configuration.wordlist
+                Configuration.wordlist,
+                '-w', '3'
             ]
             if Hashcat.should_use_force():
                 command.append('--force')
