@@ -1,5 +1,4 @@
 *.swp
-
 py/hs/
 hs/
 *.bak
@@ -10,6 +9,7 @@ dist/
 build/
 files.txt
 *.wpc
+wifite.egg-info/
 tools/hcxdumptool/
 tools/hcxtools/
 tools/iw/
