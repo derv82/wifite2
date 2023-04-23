@@ -16,4 +16,4 @@ jobs:
 
       - uses: sourcery-ai/action@v1
         with:
-          token: ${{ secrets.user_vumxNMGnMP47xjq7Uwwi3_TeAjhXp_PT3YeArcr5p17JLyvtfmJ1Lx46G9U }}
+          token: ${{ secrets.WIFITE }}
