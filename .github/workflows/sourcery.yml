@@ -1,0 +1,19 @@
+name: Check codebase using Sourcery
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  review-with-sourcery:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - uses: sourcery-ai/action@v1
+        with:
+          token: ${{ user_vumxNMGnMP47xjq7Uwwi3_TeAjhXp_PT3YeArcr5p17JLyvtfmJ1Lx46G9U }}
