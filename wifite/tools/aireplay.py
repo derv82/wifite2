@@ -34,20 +34,18 @@ class WEPAttackType(object):
         self.name = None
         if type(var) is int:
             for (name, value) in list(WEPAttackType.__dict__.items()):
-                if type(value) is int:
-                    if value == var:
-                        self.name = name
-                        self.value = value
-                        return
+                if type(value) is int and value == var:
+                    self.name = name
+                    self.value = value
+                    return
             raise Exception('Attack number %d not found' % var)
         elif type(var) is str:
             for (name, value) in list(WEPAttackType.__dict__.items()):
-                if type(value) is int:
-                    if name == var:
-                        self.name = name
-                        self.value = value
-                        return
-            raise Exception('Attack name %s not found' % var)
+                if type(value) is int and name == var:
+                    self.name = name
+                    self.value = value
+                    return
+            raise Exception(f'Attack name {var} not found')
         elif type(var) == WEPAttackType:
             self.name = var.name
             self.value = var.value

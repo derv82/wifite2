@@ -31,17 +31,15 @@ class ArchivedTarget(object):
         """
         other.attacked = self.attacked
 
-        # If both targets know the essid, keep decloacked value
-        if self.essid_known and other.essid_known:
-            other.decloaked = self.decloaked
+        if self.essid_known:
+            if other.essid_known:
+                other.decloaked = self.decloaked
 
-        # The destination target does not know the essid but the source
-        # does, copy that information
-        if self.essid_known and not other.essid_known:
-            other.decloaked = self.decloaked
-            other.essid = self.essid
-            other.essid_known = self.essid_known
-            other.essid_len = self.essid_len
+        if not other.essid_known:
+                other.decloaked = self.decloaked
+                other.essid = self.essid
+                other.essid_known = self.essid_known
+                other.essid_len = self.essid_len
 
     def __eq__(self, other):
         # Check if the other class type is either ArchivedTarget or Target

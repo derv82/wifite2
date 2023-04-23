@@ -194,10 +194,7 @@ class Airmon(Dependency):
 
         # if it fails, try to use ip/iw
         if enabled_interface is None:
-            if driver in Airmon.DEPRECATED_DRIVERS:
-                Airmon.isdeprecated = True
-            else:
-                Airmon.isdeprecated = False
+            Airmon.isdeprecated = driver in Airmon.DEPRECATED_DRIVERS
             enabled_interface = Airmon.start_bad_driver(iface_name, Airmon.isdeprecated)
         else:
             # If not, just set for us know how it went in monitor mode
