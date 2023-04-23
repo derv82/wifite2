@@ -2,7 +2,7 @@ name: Check codebase using Sourcery
 
 on:
   push:
-    branches: [main]
+    branches: [master]
 
 jobs:
   review-with-sourcery:
