@@ -1,14 +1,14 @@
-name: Check codebase using Sourcery
+name: Check PR using Sourcery
 
-on:
-  push:
-    branches: [master]
+on: pull_request
 
 jobs:
   review-with-sourcery:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
       - uses: actions/setup-python@v4
         with:
@@ -17,3 +17,4 @@ jobs:
       - uses: sourcery-ai/action@v1
         with:
           token: ${{ secrets.WIFITE }}
+          diff_ref: ${{ github.event.pull_request.base.sha }}
