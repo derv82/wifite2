@@ -225,7 +225,7 @@ class AttackPMKID(Attack):
 
         from ..util.process import Process
 
-        command = 'aircrack-ng  "%s"' % filename
+        command = f'aircrack-ng  "{filename}"'
         (stdout, stderr) = Process.call(command)
 
         return any('with PMKID' in line and self.target.bssid in line for line in stdout.split("\n"))

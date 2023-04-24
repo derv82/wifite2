@@ -81,10 +81,7 @@ class Scanner(object):
             Color.p(prompt)
             answer = input().lower()
 
-            if answer.startswith('e'):
-                return False
-
-            return True
+            return not answer.startswith('e')
 
     def update_targets(self):
         """

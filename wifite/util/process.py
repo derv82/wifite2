@@ -211,7 +211,7 @@ if __name__ == '__main__':
     print(out)
     print(err)
 
-    print(('"reaver" exists: %s' % Process.exists('reaver')))
+    print(f""""reaver" exists: {Process.exists('reaver')}""")
 
     # Test on never-ending process
     p = Process('yes')
