@@ -31,9 +31,8 @@ class ArchivedTarget(object):
         """
         other.attacked = self.attacked
 
-        if self.essid_known:
-            if other.essid_known:
-                other.decloaked = self.decloaked
+        if self.essid_known and other.essid_known:
+            other.decloaked = self.decloaked
 
         if not other.essid_known:
                 other.decloaked = self.decloaked
@@ -133,17 +132,15 @@ class Target(object):
         other.wps = self.wps
         other.attacked = self.attacked
 
-        # If both targets know the essid, keep decloacked value
-        if self.essid_known and other.essid_known:
-            other.decloaked = self.decloaked
+        if self.essid_known:
+            if other.essid_known:
+                other.decloaked = self.decloaked
 
-        # The destination target does not know the essid but the source
-        # does, copy that information
-        if self.essid_known and not other.essid_known:
-            other.decloaked = self.decloaked
-            other.essid = self.essid
-            other.essid_known = self.essid_known
-            other.essid_len = self.essid_len
+            if not other.essid_known:
+                other.decloaked = self.decloaked
+                other.essid = self.essid
+                other.essid_known = self.essid_known
+                other.essid_len = self.essid_len
 
     def validate(self):
         """ Checks that the target is valid. """
@@ -153,11 +150,11 @@ class Target(object):
         # Filter broadcast/multicast BSSIDs, see https://github.com/derv82/wifite2/issues/32
         bssid_broadcast = re.compile(r'^(ff:ff:ff:ff:ff:ff|00:00:00:00:00:00)$', re.IGNORECASE)
         if bssid_broadcast.match(self.bssid):
-            raise Exception('Ignoring target with Broadcast BSSID (%s)' % self.bssid)
+            raise Exception(f'Ignoring target with Broadcast BSSID ({self.bssid})')
 
         bssid_multicast = re.compile(r'^(01:00:5e|01:80:c2|33:33)', re.IGNORECASE)
         if bssid_multicast.match(self.bssid):
-            raise Exception('Ignoring target with Multicast BSSID (%s)' % self.bssid)
+            raise Exception(f'Ignoring target with Multicast BSSID ({self.bssid})')
 
     def to_str(self, show_bssid=False, show_manufacturer=False):
         # sourcery no-metrics
@@ -167,10 +164,10 @@ class Target(object):
         """
 
         max_essid_len = 24
-        essid = self.essid if self.essid_known else '(%s)' % self.bssid
+        essid = self.essid if self.essid_known else f'({self.bssid})'
         # Trim ESSID (router name) if needed
         if len(essid) > max_essid_len:
-            essid = essid[:max_essid_len - 3] + '...'
+            essid = f'{essid[:max_essid_len - 3]}...'
         else:
             essid = essid.rjust(max_essid_len)
 
@@ -197,7 +194,7 @@ class Target(object):
             manufacturer = Color.s('{W}%s  ' % self.manufacturer)
             # Trim manufacturer name if needed
             if len(manufacturer) > max_oui_len:
-                manufacturer = manufacturer[:max_oui_len - 3] + '...'
+                manufacturer = f'{manufacturer[:max_oui_len - 3]}...'
             else:
                 manufacturer = manufacturer.rjust(max_oui_len)
         else:

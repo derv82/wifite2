@@ -54,27 +54,18 @@ class Handshake(object):
                     self.bssid = bssid
                     break
 
-        if not self.essid:
-            # We already know bssid
-            if len(pairs) > 0:
-                for (bssid, essid) in pairs:
-                    if self.bssid.lower() == bssid.lower():
-                        Color.pl('\n{+} Discovered essid "{C}%s{W}"' % essid)
-                        self.essid = essid
-                        break
+        if not self.essid and len(pairs) > 0:
+            for (bssid, essid) in pairs:
+                if self.bssid.lower() == bssid.lower():
+                    Color.pl('\n{+} Discovered essid "{C}%s{W}"' % essid)
+                    self.essid = essid
+                    break
 
     def has_handshake(self):
         if not self.bssid or not self.essid:
             self.divine_bssid_and_essid()
 
-        if len(self.tshark_handshakes()) > 0:
-            return True
-
-        # TODO: Can we trust cowpatty & aircrack?
-        # if len(self.cowpatty_handshakes()) > 0: return True
-        # if len(self.aircrack_handshakes()) > 0: return True
-
-        return False
+        return len(self.tshark_handshakes()) > 0
 
     def tshark_handshakes(self):
         """Returns list[tuple] of BSSID & ESSID pairs (ESSIDs are always `None`)."""
@@ -97,11 +88,15 @@ class Handshake(object):
         ]
 
         proc = Process(command, devnull=False)
-        result = next(([(None, self.essid)] for line in proc.stdout().split('\n') if 'Collected all necessary data to '
-                                                                                     'mount crack against WPA' in
-                       line), [])
-
-        return result
+        return next(
+            (
+                [(None, self.essid)]
+                for line in proc.stdout().split('\n')
+                if 'Collected all necessary data to '
+                'mount crack against WPA' in line
+            ),
+            [],
+        )
 
     def aircrack_handshakes(self):
         """Returns tuple (BSSID,None) if aircrack thinks self.capfile contains a handshake / can be cracked"""
