@@ -334,7 +334,7 @@ class Aireplay(Thread, Dependency):
                 '-x', str(Configuration.wep_pps)
             ])
         else:
-            raise Exception('Unexpected attack type: %s' % attack_type)
+            raise Exception(f'Unexpected attack type: {attack_type}')
 
         cmd.append(Configuration.interface)
         return cmd
@@ -365,7 +365,7 @@ class Aireplay(Thread, Dependency):
             Configuration.interface
         ]
 
-        cmd = '"%s"' % '" "'.join(cmd)
+        cmd = f""""{'" "'.join(cmd)}\""""
         (out, err) = Process.call(cmd, cwd=Configuration.temp(), shell=True)
         if out.strip() == f'Wrote packet to: {forged_file}':
             return forged_file

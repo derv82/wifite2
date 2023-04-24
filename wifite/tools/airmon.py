@@ -214,7 +214,7 @@ class Airmon(Dependency):
             # Assert that the interface enabled by airmon-ng is in monitor mode
             if enabled_interface not in interfaces:
                 Color.pl('{R}failed{W}')
-                raise Exception('Cannot find %s with type:monitor' % enabled_interface)
+                raise Exception(f'Cannot find {enabled_interface} with type:monitor')
 
         # No errors found; the device 'enabled_iface' was put into Mode:Monitor.
         Color.pl('{G}enabled{W}!')
@@ -269,13 +269,13 @@ class Airmon(Dependency):
         enabled_interface = None
         for line in airmon_output.split('\n'):
             if matches := disabled_re.match(line):
-                disabled_interface = matches.group(1)
+                disabled_interface = matches[1]
 
             if matches := removed_re.match(line):
-                disabled_interface = matches.group(1)
+                disabled_interface = matches[1]
 
             if matches := enabled_re.match(line):
-                enabled_interface = matches.group(1)
+                enabled_interface = matches[1]
 
         return disabled_interface, enabled_interface
 
