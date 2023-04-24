@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import contextlib
 import os
 import re
 import signal
@@ -381,10 +382,8 @@ class Airmon(Dependency):
                 Process(['service', 'avahi-daemon', 'stop']).wait()
             else:
                 Color.pl('{!} {R}Terminating {O}conflicting process {R}%s{O} (PID {R}%s{O})' % (pname, pid))
-                try:
+                with contextlib.suppress(Exception):
                     os.kill(int(pid), signal.SIGTERM)
-                except Exception:
-                    pass
 
     @staticmethod
     def put_interface_up(interface):

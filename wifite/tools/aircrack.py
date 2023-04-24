@@ -138,12 +138,16 @@ class Aircrack(Dependency):
 
 if __name__ == '__main__':
     (hexkey, asciikey) = Aircrack._hex_and_ascii_key('A1B1C1D1E1')
-    assert hexkey == 'A1:B1:C1:D1:E1', 'hexkey was "%s", expected "A1:B1:C1:D1:E1"' % hexkey
-    assert asciikey is None, 'asciikey was "%s", expected None' % asciikey
+    assert (
+        hexkey == 'A1:B1:C1:D1:E1'
+    ), f'hexkey was "{hexkey}", expected "A1:B1:C1:D1:E1"'
+    assert asciikey is None, f'asciikey was "{asciikey}", expected None'
 
     (hexkey, asciikey) = Aircrack._hex_and_ascii_key('6162636465')
-    assert hexkey == '61:62:63:64:65', 'hexkey was "%s", expected "61:62:63:64:65"' % hexkey
-    assert asciikey == 'abcde', 'asciikey was "%s", expected "abcde"' % asciikey
+    assert (
+        hexkey == '61:62:63:64:65'
+    ), f'hexkey was "{hexkey}", expected "61:62:63:64:65"'
+    assert asciikey == 'abcde', f'asciikey was "{asciikey}", expected "abcde"'
 
     from time import sleep
 
@@ -161,7 +165,9 @@ if __name__ == '__main__':
 
     (hexkey, asciikey) = aircrack.get_key_hex_ascii()
     print(f'aircrack found HEX key: ({hexkey}) and ASCII key: ({asciikey})')
-    assert hexkey == '75:6E:63:6C:65', 'hexkey was "%s", expected "75:6E:63:6C:65"' % hexkey
-    assert asciikey == 'uncle', 'asciikey was "%s", expected "uncle"' % asciikey
+    assert (
+        hexkey == '75:6E:63:6C:65'
+    ), f'hexkey was "{hexkey}", expected "75:6E:63:6C:65"'
+    assert asciikey == 'uncle', f'asciikey was "{asciikey}", expected "uncle"'
 
     Configuration.exit_gracefully(0)

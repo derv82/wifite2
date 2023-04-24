@@ -342,10 +342,9 @@ class AttackWEP(Attack):
             if Configuration.require_fakeauth:
                 # Fakeauth is required, fail
                 raise Exception('Fake-authenticate did not complete within %d seconds' % AttackWEP.fakeauth_wait)
-            else:
-                # Warn that fakeauth failed
-                Color.pl('{!} {O} unable to fake-authenticate with target (%s){W}' % self.target.bssid)
-                Color.pl('{!} continuing attacks because {G}--require-fakeauth{W} was not set')
+            # Warn that fakeauth failed
+            Color.pl('{!} {O} unable to fake-authenticate with target (%s){W}' % self.target.bssid)
+            Color.pl('{!} continuing attacks because {G}--require-fakeauth{W} was not set')
         return fakeauth
 
 

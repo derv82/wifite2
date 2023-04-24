@@ -53,16 +53,14 @@ class AttackWPA(Attack):
 
         # Check for the --skip-crack flag
         if Configuration.skip_crack:
-            Color.pl('{+} Not cracking handshake because {C}skip-crack{W} was used{W}')
-            self.success = False
-            return False
-
+            return self._extracted_from_run_30(
+                '{+} Not cracking handshake because {C}skip-crack{W} was used{W}'
+            )
         # Check wordlist
         if Configuration.wordlist is None:
-            Color.pl('{!} {O}Not cracking handshake because wordlist ({R}--dict{O}) is not set')
-            self.success = False
-            return False
-
+            return self._extracted_from_run_30(
+                '{!} {O}Not cracking handshake because wordlist ({R}--dict{O}) is not set'
+            )
         elif not os.path.exists(Configuration.wordlist):
             Color.pl('{!} {O}Not cracking handshake because wordlist {R}%s{O} was not found' % Configuration.wordlist)
             self.success = False
@@ -83,6 +81,12 @@ class AttackWPA(Attack):
             self.crack_result.dump()
             self.success = True
         return self.success
+
+    # TODO Rename this here and in `run`
+    def _extracted_from_run_30(self, arg0):
+        Color.pl(arg0)
+        self.success = False
+        return False
 
     def capture_handshake(self):
         """Returns captured or stored handshake, otherwise None."""

@@ -250,40 +250,11 @@ class Bully(Attack, Dependency):
             # group(1)=NoAssoc, group(2)=PIN
             pin = last_state[2]
             if pin != self.last_pin:
-                self.last_pin = pin
-                self.total_attempts += 1
-                if self.pins_remaining > 0:
-                    self.pins_remaining -= 1
+                self._extracted_from_parse_state_12(pin)
             state = 'Trying PIN'
 
         if mx_result_pin := re.search(r".*[RT]x\(\s*(.*)\s*\) = '(.*)'\s*Next pin '(.*)'", line):
-            # group(1)=M1,M2,..,M7, group(2)=result, group(3)=Next PIN
-            self.locked = False
-            m_state = mx_result_pin[1]
-            result = mx_result_pin[2]
-            pin = mx_result_pin[3]
-            if pin != self.last_pin:
-                self.last_pin = pin
-                self.total_attempts += 1
-                if self.pins_remaining > 0:
-                    self.pins_remaining -= 1
-
-            if result in ['Pin1Bad', 'Pin2Bad']:
-                result = '{G}%s{W}' % result
-            elif result == 'Timeout':
-                self.total_timeouts += 1
-                result = '{O}%s{W}' % result
-            elif result == 'WPSFail':
-                self.total_failures += 1
-                result = '{O}%s{W}' % result
-            elif result == 'NoAssoc':
-                result = '{O}%s{W}' % result
-            else:
-                result = '{R}%s{W}' % result
-
-            result = '{P}%s{W}:%s' % (m_state.strip(), result.strip())
-            state = f'Trying PIN ({result})'
-
+            state = self._extracted_from_parse_state_20(mx_result_pin)
         if re_tested := re.search(r'Run time ([\d:]+), pins tested (\d)+', line):
             # group(1)=01:23:45, group(2)=1234
             self.total_attempts = int(re_tested[2])
@@ -306,6 +277,40 @@ class Bully(Attack, Dependency):
         if re.search(r".*Running pixiewps with the information", line):
             state = '{G}Running pixiewps...{W}'
         return state
+
+    # TODO Rename this here and in `parse_state`
+    def _extracted_from_parse_state_20(self, mx_result_pin):
+        # group(1)=M1,M2,..,M7, group(2)=result, group(3)=Next PIN
+        self.locked = False
+        m_state = mx_result_pin[1]
+        result = mx_result_pin[2]
+        pin = mx_result_pin[3]
+        if pin != self.last_pin:
+            self._extracted_from_parse_state_12(pin)
+        if result in ['Pin1Bad', 'Pin2Bad']:
+            result = '{G}%s{W}' % result
+        elif result == 'Timeout':
+            self.total_timeouts += 1
+            result = '{O}%s{W}' % result
+        elif result == 'WPSFail':
+            self.total_failures += 1
+            result = '{O}%s{W}' % result
+        elif result == 'NoAssoc':
+            result = '{O}%s{W}' % result
+        else:
+            result = '{R}%s{W}' % result
+
+        result = '{P}%s{W}:%s' % (m_state.strip(), result.strip())
+        result = f'Trying PIN ({result})'
+
+        return result
+
+    # TODO Rename this here and in `parse_state`
+    def _extracted_from_parse_state_12(self, pin):
+        self.last_pin = pin
+        self.total_attempts += 1
+        if self.pins_remaining > 0:
+            self.pins_remaining -= 1
 
     def stop(self):
         if hasattr(self, 'pid') and self.pid and self.pid.poll() is None:

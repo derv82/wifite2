@@ -34,20 +34,18 @@ class AttackWPS(Attack):
             return False
 
         if not Configuration.wps_pixie and self.pixie_dust:
-            Color.pl('\r{!} {O}--no-pixie{R} was given, ignoring WPS Pixie-Dust Attack on {O}%s{W}' % self.target.essid)
-            self.success = False
-            return False
-
+            return self._extracted_from_run_14(
+                '\r{!} {O}--no-pixie{R} was given, ignoring WPS Pixie-Dust Attack on {O}%s{W}'
+            )
         if not Configuration.wps_no_nullpin and self.null_pin:
             #Color.pl('\r{!} {O}--no-nullpin{R} was given, ignoring WPS NULLPIN Attack on {O}%s{W}' % self.target.essid)
             self.success = False
             return False
 
         if not Configuration.wps_pin and not self.pixie_dust:
-            Color.pl('\r{!} {O}--pixie{R} was given, ignoring WPS PIN Attack on {O}%s{W}' % self.target.essid)
-            self.success = False
-            return False
-
+            return self._extracted_from_run_14(
+                '\r{!} {O}--pixie{R} was given, ignoring WPS PIN Attack on {O}%s{W}'
+            )
         if not Reaver.exists() and Bully.exists():
             # Use bully if reaver isn't available
             return self.run_bully()
@@ -70,6 +68,12 @@ class AttackWPS(Attack):
             return False
         else:
             return self.run_reaver()
+
+    # TODO Rename this here and in `run`
+    def _extracted_from_run_14(self, arg0):
+        Color.pl(arg0 % self.target.essid)
+        self.success = False
+        return False
 
     def run_bully(self):
         bully = Bully(self.target, pixie_dust=self.pixie_dust)

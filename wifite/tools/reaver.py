@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import contextlib
 from .dependency import Dependency
 from .airodump import Airodump
 from .bully import Bully  # for PSK retrieval
@@ -188,10 +189,8 @@ class Reaver(Attack, Dependency):
                 # Try to derive PSK from PIN using Bully
                 self.pattack('{W}Retrieving PSK using {C}bully{W}...')
                 psk = None
-                try:
+                with contextlib.suppress(KeyboardInterrupt):
                     psk = Bully.get_psk_from_pin(self.target, pin)
-                except KeyboardInterrupt:
-                    pass
                 if psk is None:
                     Color.pl('')
                     self.pattack('{R}Failed {O}to get PSK using bully', newline=True)
