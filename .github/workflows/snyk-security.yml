@@ -77,3 +77,20 @@ jobs:
         uses: github/codeql-action/upload-sarif@v2
         with:
           sarif_file: snyk-code.sarif
+          
+         
+      - name: python-flake8
+        # You may pin to the exact commit or the version.
+        # uses: julianwachholz/flake8-action@75749239077651dfd0ecbe405899cdcb0673ee8f
+        uses: julianwachholz/flake8-action@v2.0.2
+        with:
+          # The name of the check to add annotations to. Generally the same as the job that uses this action
+          #checkName: 
+          # Path to use for flake8
+          path: .
+          # Package names of flake8 plugins passed on to the `pip install` command.
+          plugins: # optional, default is 
+          # Specify a config file for flake8
+          config: # optional
+          # Used for internal tests
+          isTest: # optional, default is false
