@@ -11,7 +11,7 @@ RUN apt install clang ca-certificates gcc openssl make kmod nano wget p7zip buil
 RUN apt build-dep aircrack-ng -y
 
 # Install Aircrack from Source
-RUN wget https://download.aircrack-ng.org/aircrack-ng-1.6.tar.gz
+RUN wget https://download.aircrack-ng.org/aircrack-ng-1.7.tar.gz
 RUN tar xzvf aircrack-ng-1.7.tar.gz
 WORKDIR /aircrack-ng-1.7/
 RUN autoreconf -i
@@ -51,7 +51,7 @@ RUN make install
 WORKDIR /
 
 # Install bully
-RUN git clone https://github.com/aanarchyy/bully
+RUN git clone https://github.com/kimocoder/bully
 WORKDIR /bully/src/
 RUN make
 RUN make install
