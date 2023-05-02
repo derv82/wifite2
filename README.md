@@ -1,7 +1,9 @@
 ## Wifite
 ======
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/1b892897778e4faa85018c9f72e484be)](https://app.codacy.com/gh/4k4xs4pH1r3/wifite3/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
+======
 
-Tested on last Kali + Ubuntu + Arch on [13th November of 2022]
+Tested on last Kali + Ubuntu + Arch on [2nd May of 2023]
 
 #
 This repo is a complete re-write of [`wifite`](https://github.com/derv82/wifite), a Python script for auditing wireless networks.
