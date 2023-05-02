@@ -13,6 +13,7 @@ setup(
     author='kimocoder',
     author_email='christian@aircrack-ng.org',
     url='https://github.com/kimocoder/wifite2',
+    tests_require=['pytest'],
     packages=[
         'wifite',
         'wifite/attack',
@@ -23,9 +24,11 @@ setup(
     data_files=[
         ('share/dict', ['wordlist-probable.txt'])
     ],
+    install_requires=['setuptools', 'scapy', 'chardet', 'argparse'],
     license='GNU GPLv2',
     scripts=['bin/wifite'],
     description='Wireless Network Auditor for Linux & Android',
+    keywords="wifite capture packets monitor inject aircrack",
     # long_description=open('README.md').read(),
     long_description='''Wireless Network Auditor for Linux & Android.
 
