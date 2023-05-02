@@ -5,7 +5,7 @@ ENV HASHCAT_VERSION hashcat-6.2.6
 ENV HASHCAT_UTILS_VERSION 1.9
 
 # Install requirements
-FROM debian:buster
+FROM debian:bullseye-20230320
 RUN apt update && apt upgrade -y
 RUN apt install clang ca-certificates gcc openssl make kmod nano wget p7zip build-essential libsqlite3-dev libpcap0.8-dev libpcap-dev sqlite3 pkg-config libnl-genl-3-dev libssl-dev net-tools iw ethtool usbutils pciutils wireless-tools git curl wget unzip macchanger tshark -y
 RUN apt build-dep aircrack-ng -y
