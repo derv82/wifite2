@@ -18,7 +18,7 @@ from threading import Thread
 class Bully(Attack, Dependency):
     dependency_required = False
     dependency_name = 'bully'
-    dependency_url = 'https://github.com/aanarchyy/bully'
+    dependency_url = 'https://github.com/kimocoder/bully'
 
     def __init__(self, target, pixie_dust=True):
         super(Bully, self).__init__(target)
