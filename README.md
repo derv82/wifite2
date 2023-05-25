@@ -154,7 +154,7 @@ Screenshots
 -----------
 
 NetHunter Android 13 (S) scanning for targets / target information
-![Scanning for targets](https://imgur.io/gallery/IzXweSH.jpg)
+![Scanning for targets](https://i.imgur.com/IzXweSH.jpg)
 
 -------------
 
