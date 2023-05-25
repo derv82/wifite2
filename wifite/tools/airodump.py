@@ -69,6 +69,7 @@ class Airodump(Dependency):
         command = [
             'airodump-ng',
             self.interface,
+            '--background', '1', # Force "background mode" since we rely on csv instead of stdout
             '-a', # Only show associated clients
             '-w', self.csv_file_prefix, # Output file prefix
             '--write-interval', '1' # Write every second
