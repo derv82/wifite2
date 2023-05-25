@@ -69,7 +69,7 @@ Second, only the latest versions of these programs are supported and must be ins
 * [`hashcat`](https://hashcat.net/): For cracking PMKID hashes.
    * [`hcxdumptool`](https://github.com/ZerBea/hcxdumptool): For capturing PMKID hashes.
    * [`hcxpcapngtool`](https://github.com/ZerBea/hcxtools): For converting PMKID packet captures into `hashcat`'s format.
-* [`ath_masker`](https://github.com/vanhoefm/ath_masker): Inject packets using the MAC address of the device, where the last byte of the MAC address can be anything. When other devices sent frames to these spoofed MAC addresses, the Atheros device will send ACKs.
+
 
 
 Install dependencies
