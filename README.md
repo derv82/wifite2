@@ -153,8 +153,8 @@ What's not new?
 Screenshots
 -----------
 
-NetHunter Android 10 (Q) scanning for targets / target information
-![Scanning for targets](https://i.imgur.com/8QQMfME.jpg)
+NetHunter Android 13 (S) scanning for targets / target information
+![Scanning for targets](https://imgur.io/gallery/IzXweSH.jpg)
 
 -------------
 
