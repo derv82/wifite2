@@ -107,10 +107,8 @@ class HcxDumpTool(Dependency):
         command = [
             'hcxdumptool',
             '-i', Configuration.interface,
-            '--filterlist_ap', filterlist,
-            '--filtermode', '2',
-            '-c', str(target.channel),
-            '-o', pcapng_file
+            '-c', str(target.channel) + 'a',
+            '-w', pcapng_file
         ]
 
         self.proc = Process(command)
