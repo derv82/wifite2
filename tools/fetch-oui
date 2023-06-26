@@ -93,7 +93,7 @@ foreach $key (sort keys %ieee_reg_urls) {
    print "Processing IEEE $key registry data from $url\n" if $verbose;
    my $ua = LWP::UserAgent->new;
    my $res = $ua->get($url);
-   die $res->status_line unless $res->is_success;
+   die "Could not get $key data from $url\n" unless $res->is_success;
    my $content = $res->content;
    my $content_length = length($content);
    die "Zero-sized response from from $url\n" unless ($content_length > 0);
@@ -103,6 +103,7 @@ foreach $key (sort keys %ieee_reg_urls) {
 #
    open(my $fh, '<:encoding(UTF-8)', \$content) || die "Could not open handle to content";
    $csv->header($fh);
+   print OUTPUT "\n#\n# Start of IEEE $key registry data\n#\n";
    $lineno=0;
    while (my $row = $csv->getline ($fh)) {
       my $mac = ${$row}[1];
@@ -111,6 +112,7 @@ foreach $key (sort keys %ieee_reg_urls) {
       print OUTPUT "$mac\t$vendor\n";
       $lineno++;
    }
+   print OUTPUT "#\n# End of IEEE $key registry data. $lineno entries.\n#\n";
    print "\t$lineno $key entries written to $filename\n" if $verbose;
    $total_entries += $lineno;
 }
