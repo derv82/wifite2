@@ -144,11 +144,11 @@ class Arguments(object):
                           help=self._verbose('ESSID (e.g. {GR}NETGEAR07{W}) of access point to attack'))
         glob.add_argument('--essid', help=argparse.SUPPRESS, action='store', dest='target_essid', type=str)
 
-    def file_to_list(file_path):
-        with open(file_path, 'r') as f:
+        def file_to_list(file_path):
+            with open(file_path, 'r') as f:
             return [line.strip() for line in f]
-
-    ...
+        
+        ...
         glob.add_argument('-E',
                           action='store',
                           dest='ignore_essids_file',
