@@ -144,14 +144,18 @@ class Arguments(object):
                           help=self._verbose('ESSID (e.g. {GR}NETGEAR07{W}) of access point to attack'))
         glob.add_argument('--essid', help=argparse.SUPPRESS, action='store', dest='target_essid', type=str)
 
-glob.add_argument('-E',
-                  action='store',
-                  dest='ignore_essids_file',
-                  metavar='[file]',
-                  type=argparse.FileType('r'),
-                  default=None,
-                  help=self._verbose(
-                      'Hides targets with ESSIDs that match the given text in the file.'))
+    def file_to_list(file_path):
+        with open(file_path, 'r') as f:
+            return [line.strip() for line in f]
+
+    ...
+        glob.add_argument('-E',
+                          action='store',
+                          dest='ignore_essids_file',
+                          metavar='[file]',
+                          type=argparse.FileType('r'),
+                          default=None,
+                          help=self._verbose('Hides targets with ESSIDs that match the given text in the file.'))
         glob.add_argument('--ignore-essid', help=argparse.SUPPRESS, action='append', dest='ignore_essids', type=str)
 
         glob.add_argument('-ic',
