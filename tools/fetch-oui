@@ -93,7 +93,7 @@ foreach $key (sort keys %ieee_reg_urls) {
    print "Processing IEEE $key registry data from $url\n" if $verbose;
    my $ua = LWP::UserAgent->new;
    my $res = $ua->get($url);
-   die "Could not get $key data from $url\n" unless $res->is_success;
+   die $res->status_line unless $res->is_success;
    my $content = $res->content;
    my $content_length = length($content);
    die "Zero-sized response from from $url\n" unless ($content_length > 0);
