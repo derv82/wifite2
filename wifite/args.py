@@ -147,8 +147,7 @@ class Arguments(object):
     def file_to_list(file_path):
         with open(file_path, 'r') as f:
             return [line.strip() for line in f]
-            
-            ...
+
         glob.add_argument('-E',
                           action='store',
                           dest='ignore_essids_file',
