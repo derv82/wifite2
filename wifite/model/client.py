@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 
-class Client(object):
+class Client:
     """
         Holds details for a 'Client' - a wireless device (e.g. computer)
         that is associated with an Access Point (e.g. router)

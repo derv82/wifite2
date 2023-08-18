@@ -1,14 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+
+import os
 from .dependency import Dependency
 from ..config import Configuration
 from ..util.process import Process
 from ..util.color import Color
 
-import os
 
-hccapx_autoremove = False  # change this to True if you want the hccapx files to be automatically removed
+
+hccapx_autoremove = False  # change this to True if you want the hccapx to be automatically removed
 
 
 class Hashcat(Dependency):
@@ -43,7 +45,7 @@ class Hashcat(Dependency):
             if show_command:
                 Color.pl(f'{{+}} {{D}}Running: {{W}}{{P}}{" ".join(command)}{{W}}')
             process = Process(command)
-            stdout, stderr = process.get_output()
+            stdout, _ = process.get_output()
             if ':' not in stdout:
                 continue
             key = stdout.split(':', 5)[-1].strip()
@@ -74,7 +76,7 @@ class Hashcat(Dependency):
             if Hashcat.should_use_force():
                 command.append('--force')
             command.extend(additional_arg)
-            if verbose and additional_arg == []:
+            if verbose and additional_arg != []:
                 Color.pl(f'{{+}} {{D}}Running: {{W}}{{P}}{" ".join(command)}{{W}}')
 
             # TODO: Check status of hashcat (%); it's impossible with --quiet
@@ -83,10 +85,7 @@ class Hashcat(Dependency):
             hashcat_proc.wait()
             stdout = hashcat_proc.stdout()
 
-            if ':' not in stdout:
-                # Failed
-                continue
-            else:
+            if ':' in stdout:
                 return stdout.strip().split(':', 1)[1]
 
 
@@ -106,9 +105,12 @@ class HcxDumpTool(Dependency):
 
         command = [
             'hcxdumptool',
-            '-i', Configuration.interface,
-            '-c', str(target.channel) + 'a',
-            '-w', pcapng_file
+            '-i',
+            Configuration.interface,
+            '-c',
+            f'{str(target.channel)}a',
+            '-w',
+            pcapng_file,
         ]
 
         self.proc = Process(command)
@@ -143,13 +145,12 @@ class HcxPcapngTool(Dependency):
         ]
 
         if show_command:
-            Color.pl('{+} {D}Running: {W}{P}%s{W}' % ' '.join(command))
+            Color.pl(f'{{+}} {{D}}Running: {{W}}{{P}}{" ".join(command)}{{W}}')
 
         process = Process(command)
         stdout, stderr = process.get_output()
         if not os.path.exists(hccapx_file):
-            raise ValueError('Failed to generate .hccapx file, output: \n%s\n%s' % (
-                stdout, stderr))
+            raise ValueError(f'Failed to generate .hccapx file, output: \n{stdout}\n{stderr}')
 
         return hccapx_file
 
@@ -166,13 +167,12 @@ class HcxPcapngTool(Dependency):
         ]
 
         if show_command:
-            Color.pl('{+} {D}Running: {W}{P}%s{W}' % ' '.join(command))
+            Color.pl(f'{{+}} {{D}}Running: {{W}}{{P}}{" ".join(command)}{{W}}')
 
         process = Process(command)
         stdout, stderr = process.get_output()
         if not os.path.exists(john_file):
-            raise ValueError('Failed to generate .john file, output: \n%s\n%s' % (
-                stdout, stderr))
+            raise ValueError(f'Failed to generate .john file, output: \n{stdout}\n{stderr}')
 
         return john_file
 

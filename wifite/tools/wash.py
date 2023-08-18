@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+
+import json
 from .dependency import Dependency
 from ..model.target import WPSState
 from ..util.process import Process
-import json
 
 
 class Wash(Dependency):
@@ -14,7 +15,7 @@ class Wash(Dependency):
     dependency_url = 'https://github.com/t6x/reaver-wps-fork-t6x'
 
     def __init__(self):
-        pass
+        raise NotImplementedError()
 
     @staticmethod
     def check_for_wps_and_update_targets(capfile, targets):
@@ -67,9 +68,9 @@ class Wash(Dependency):
 
 
 if __name__ == '__main__':
-    test_file = './tests/files/contains_wps_network.cap'
+    test_file: str = './tests/files/contains_wps_network.cap'
 
-    target_bssid = 'A4:2B:8C:16:6B:3A'
+    target_bssid: str = 'A4:2B:8C:16:6B:3A'
     from ..model.target import Target
     fields = [
         'A4:2B:8C:16:6B:3A',  # BSSID

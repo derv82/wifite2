@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import re
-
 from .dependency import Dependency
 
 
@@ -18,7 +17,7 @@ class Ip(Dependency):
 
         (out, err) = Process.call(f'ip link set {interface} up')
         if len(err) > 0:
-            raise Exception('Error putting interface %s up:\n%s\n%s' % (interface, out, err))
+            raise Exception(f'Error putting interface {interface} up:\n{out}\n{err}')
 
     @classmethod
     def down(cls, interface):
@@ -27,7 +26,7 @@ class Ip(Dependency):
 
         (out, err) = Process.call(f'ip link set {interface} down')
         if len(err) > 0:
-            raise Exception('Error putting interface %s down:\n%s\n%s' % (interface, out, err))
+            raise Exception(f'Error putting interface {interface} down:\n{out}\n{err}')
 
     @classmethod
     def get_mac(cls, interface):

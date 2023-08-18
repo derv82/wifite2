@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from .util.color import Color
 
 import argparse
 import sys
+from .util.color import Color
 
 
-class Arguments(object):
+class Arguments:
     """ Holds arguments used by the Wifite """
 
     def __init__(self, configuration):
@@ -189,7 +189,7 @@ class Arguments(object):
                           metavar='[num]',
                           default=None,
                           help=self._verbose(
-                              'Number of deauth packets to send (default: {G}%d{W})' % self.config.num_deauths))
+                              f'Number of deauth packets to send (default: {{G}}{self.config.num_deauths:d}{{W}})'))
 
         glob.add_argument('--daemon',
                           action='store_true',
@@ -233,7 +233,7 @@ class Arguments(object):
                          metavar='[pps]',
                          type=int,
                          help=self._verbose(
-                             'Packets-per-second to replay (default: {G}%d pps{W})' % self.config.wep_pps))
+                             f'Packets-per-second to replay (default: {{G}}{self.config.wep_pps:d} pps{{W}})'))
         wep.add_argument('-pps', help=argparse.SUPPRESS, action='store', dest='wep_pps', type=int)
 
         wep.add_argument('--wept',
@@ -242,7 +242,7 @@ class Arguments(object):
                          metavar='[seconds]',
                          type=int,
                          help=self._verbose(
-                             'Seconds to wait before failing (default: {G}%d sec{W})' % self.config.wep_timeout))
+                             f'Seconds to wait before failing (default: {{G}}{self.config.wep_timeout:d} sec{{W}})'))
         wep.add_argument('-wept', help=argparse.SUPPRESS, action='store', dest='wep_timeout', type=int)
 
         wep.add_argument('--wepca',
@@ -250,8 +250,8 @@ class Arguments(object):
                          dest='wep_crack_at_ivs',
                          metavar='[ivs]',
                          type=int,
-                         help=self._verbose('Start cracking at this many IVs (default: {G}%d ivs{W})'
-                                            % self.config.wep_crack_at_ivs))
+                         help=self._verbose(
+                             f'Start cracking at this many IVs (default: {{G}}{self.config.wep_crack_at_ivs:d} ivs{{W}})'))
         wep.add_argument('-wepca', help=argparse.SUPPRESS, action='store', dest='wep_crack_at_ivs', type=int)
 
         wep.add_argument('--weprs',
@@ -259,8 +259,8 @@ class Arguments(object):
                          dest='wep_restart_stale_ivs',
                          metavar='[seconds]',
                          type=int,
-                         help=self._verbose('Restart aireplay if no new IVs appear (default: {G}%d sec{W})'
-                                            % self.config.wep_restart_stale_ivs))
+                         help=self._verbose(
+                             f'Restart aireplay if no new IVs appear (default: {{G}}{self.config.wep_restart_stale_ivs:d} sec{{W}})'))
         wep.add_argument('-weprs', help=argparse.SUPPRESS, action='store', dest='wep_restart_stale_ivs', type=int)
 
         wep.add_argument('--weprc',
@@ -268,8 +268,8 @@ class Arguments(object):
                          dest='wep_restart_aircrack',
                          metavar='[seconds]',
                          type=int,
-                         help=self._verbose('Restart aircrack after this delay (default: {G}%d sec{W})'
-                                            % self.config.wep_restart_aircrack))
+                         help=self._verbose(
+                             f'Restart aircrack after this delay (default: {{G}}{self.config.wep_restart_aircrack:d} sec{{W}})'))
         wep.add_argument('-weprc', help=argparse.SUPPRESS, action='store', dest='wep_restart_aircrack', type=int)
 
         wep.add_argument('--arpreplay',
@@ -321,7 +321,7 @@ class Arguments(object):
                          metavar='[dir]',
                          type=str,
                          help=self._verbose(
-                             'Directory to store handshake files (default: {G}%s{W})' % self.config.wpa_handshake_dir))
+                             f'Directory to store handshake files (default: {{G}}{self.config.wpa_handshake_dir}{{W}})'))
         wpa.add_argument('-hs-dir', help=argparse.SUPPRESS, action='store', dest='wpa_handshake_dir', type=str)
 
         wpa.add_argument('--new-hs',
@@ -343,8 +343,8 @@ class Arguments(object):
                          dest='wpa_deauth_timeout',
                          metavar='[seconds]',
                          type=int,
-                         help=self._verbose('Time to wait between sending Deauths (default: {G}%d sec{W})'
-                                            % self.config.wpa_deauth_timeout))
+                         help=self._verbose(
+                             f'Time to wait between sending Deauths (default: {{G}}{self.config.wpa_deauth_timeout:d} sec{{W}})'))
         wpa.add_argument('-wpadt', help=argparse.SUPPRESS, action='store', dest='wpa_deauth_timeout', type=int)
 
         wpa.add_argument('--wpat',
@@ -352,8 +352,8 @@ class Arguments(object):
                          dest='wpa_attack_timeout',
                          metavar='[seconds]',
                          type=int,
-                         help=self._verbose('Time to wait before failing WPA attack (default: {G}%d sec{W})'
-                                            % self.config.wpa_attack_timeout))
+                         help=self._verbose(
+                             f'Time to wait before failing WPA attack (default: {{G}}{self.config.wpa_attack_timeout:d} sec{{W}})'))
         wpa.add_argument('-wpat', help=argparse.SUPPRESS, action='store', dest='wpa_attack_timeout', type=int)
 
         # TODO: Uncomment the --strip option once it works
@@ -420,8 +420,8 @@ class Arguments(object):
                          dest='wps_pixie_timeout',
                          metavar='[sec]',
                          type=int,
-                         help=self._verbose('Total time to wait before failing PixieDust attack (default: {G}%d sec{W})'
-                                            % self.config.wps_pixie_timeout))
+                         help=self._verbose(
+                             f'Total time to wait before failing PixieDust attack (default: {{G}}{self.config.wps_pixie_timeout:d} sec{{W}})'))
         # Alias
         wps.add_argument('-wpst', help=argparse.SUPPRESS, action='store', dest='wps_pixie_timeout', type=int)
 
@@ -442,8 +442,8 @@ class Arguments(object):
                          dest='wps_timeout_threshold',
                          metavar='[num]',
                          type=int,
-                         help=self._verbose('Maximum number of Timeouts before failing (default: {G}%d{W})'
-                                            % self.config.wps_timeout_threshold))
+                         help=self._verbose(
+                             f'Maximum number of Timeouts before failing (default: {{G}}{self.config.wps_timeout_threshold:d}{{W}})'))
         # Alias
         wps.add_argument('-wpsto', help=argparse.SUPPRESS, action='store', dest='wps_timeout_threshold', type=int)
 
@@ -466,8 +466,8 @@ class Arguments(object):
                            dest='pmkid_timeout',
                            metavar='[sec]',
                            type=int,
-                           help=Color.s('Time to wait for PMKID capture (default: {G}%d{W} seconds)'
-                                        % self.config.pmkid_timeout))
+                           help=Color.s(
+                               f'Time to wait for PMKID capture (default: {{G}}{self.config.pmkid_timeout:d}{{W}} seconds)'))
 
     @staticmethod
     def _add_command_args(commands):
@@ -509,4 +509,4 @@ if __name__ == '__main__':
     a = Arguments(Configuration)
     args = a.args
     for (key, value) in sorted(args.__dict__.items()):
-        Color.pl('{C}%s: {G}%s{W}' % (key.ljust(21), value))
+        Color.pl(f'{{C}}{key.ljust(21)}: {{G}}{value}{{W}}')

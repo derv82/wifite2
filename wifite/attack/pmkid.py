@@ -1,6 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+
+from threading import Thread
+import os
+import time
+import re
+from shutil import copy
 from ..model.attack import Attack
 from ..config import Configuration
 from ..tools.hashcat import HcxDumpTool, HcxPcapngTool, Hashcat
@@ -9,17 +15,11 @@ from ..util.timer import Timer
 from ..model.pmkid_result import CrackResultPMKID
 from ..tools.airodump import Airodump
 
-from threading import Thread
-import os
-import time
-import re
-from shutil import copy
 
 
 class AttackPMKID(Attack):
-
     def __init__(self, target):
-        super(AttackPMKID, self).__init__(target)
+        super().__init__(target)
         self.crack_result = None
         self.do_airCRACK = False
         self.keep_capturing = None
@@ -79,7 +79,8 @@ class AttackPMKID(Attack):
             HcxPcapngTool.dependency_name
         ]
         if missing_deps := [dep for dep in dependencies if not Process.exists(dep)]:
-            Color.pl('{!} Skipping PMKID attack, missing required tools: {O}%s{W}' % ', '.join(missing_deps))
+            Color.pl(
+                f'{{!}} Skipping PMKID attack, missing required tools: {{O}}{", ".join(missing_deps)}{{W}}')
             return False
 
         pmkid_file = None
@@ -89,7 +90,7 @@ class AttackPMKID(Attack):
             pmkid_file = self.get_existing_pmkid_file(self.target.bssid)
             if pmkid_file is not None:
                 Color.pattack('PMKID', self.target, 'CAPTURE',
-                              'Loaded {C}existing{W} PMKID hash: {C}%s{W}\n' % pmkid_file)
+                              f'Loaded {{C}}existing{{W}} PMKID hash: {{C}}{pmkid_file}{{W}}\n')
 
         if pmkid_file is None:
             # Capture hash from live target.
@@ -113,8 +114,8 @@ class AttackPMKID(Attack):
                 )
         else:
             self.success = False
-            Color.pl('\n {O}[{R}!{O}] Note: PMKID attacks are not possible because you do not have {C}%s{O}.{W}'
-                     % Hashcat.dependency_name)
+            Color.pl(
+                f'\n {{O}}[{{R}}!{{O}}] Note: PMKID attacks are not possible because you do not have {{C}}{Hashcat.dependency_name}{{O}}.{{W}}')
 
         return True  # Even if we don't crack it, capturing a PMKID is 'successful'
 
@@ -159,7 +160,8 @@ class AttackPMKID(Attack):
                 Color.pattack('WPA',
                               airodump_target,
                               'Handshake capture',
-                              'Listening. (clients:{G}{W}, deauth:{O}{W}, timeout:{R}%s{W})' % timeout_timer)
+                              f'Listening. (clients:{{G}}{{W}}, +'
+                              f'deauth:{{O}}{{W}}, timeout:{{R}}{timeout_timer}{{W}})')
 
                 # Find .cap file
                 cap_files = airodump.find_files(endswith='.cap')
@@ -215,8 +217,8 @@ class AttackPMKID(Attack):
 
         if capture is None:
             # No handshake, attack failed.
-            Color.pl('\n{!} {O}WPA handshake capture {R}FAILED:{O} Timed out after %d seconds' % (
-                Configuration.wpa_attack_timeout))
+            Color.pl(
+                f'\n{{!}} {{O}}WPA handshake capture {{R}}FAILED:{{O}} Timed out after {Configuration.wpa_attack_timeout:d} seconds')
             self.success = False
         else:
             # Save copy of handshake to ./hs/
@@ -226,14 +228,15 @@ class AttackPMKID(Attack):
         return self.success
 
     def check_pmkid(self, filename):
-        """Returns tuple (BSSID,None) if aircrack thinks self.capfile contains a handshake / can be cracked"""
+        """Returns tuple (BSSID,None) if aircrack
+        thinks self.capfile contains a handshake / can be cracked"""
 
         from ..util.process import Process
 
         command = f'aircrack-ng  "{filename}"'
         (stdout, stderr) = Process.call(command)
-
-        return any('with PMKID' in line and self.target.bssid in line for line in stdout.split("\n"))
+        return any(
+            'with PMKID' in line and self.target.bssid in line for line in stdout.split("\n"))
 
     def capture_pmkid(self):
         """
@@ -256,7 +259,8 @@ class AttackPMKID(Attack):
             if pmkid_hash is not None:
                 break  # Got PMKID
 
-            Color.pattack('PMKID', self.target, 'CAPTURE', 'Waiting for PMKID ({C}%s{W})' % str(self.timer))
+            Color.pattack(
+                'PMKID', self.target, 'CAPTURE', f'Waiting for PMKID ({{C}}{str(self.timer)}{{W}})')
             time.sleep(1)
 
         self.keep_capturing = False
@@ -280,15 +284,18 @@ class AttackPMKID(Attack):
 
         # Check that wordlist exists before cracking.
         if Configuration.wordlist is None:
-            Color.pl('\n{!} {O}Not cracking PMKID because there is no {R}wordlist{O} (re-run with {C}--dict{O})')
+            Color.pl(
+                '\n{!} {O}Not cracking PMKID because there is no {R}wordlist{O} (re-run with {C}--dict{O})')
 
             # TODO: Uncomment once --crack is updated to support recracking PMKIDs.
-            # Color.pl('{!} {O}Run Wifite with the {R}--crack{O} and {R}--dict{O} options to try again.')
+            # Color.pl(
+            # '{!} {O}Run wifite with the {R}--crack{O} and {R}--dict{O} options to try again.')
 
             key = None
         else:
             Color.clear_entire_line()
-            Color.pattack('PMKID', self.target, 'CRACK', 'Cracking PMKID using {C}%s{W} ...\n' % Configuration.wordlist)
+            Color.pattack('PMKID', self.target, 'CRACK',
+                          f'Cracking PMKID using {{C}}{Configuration.wordlist}{{W}} ...\n')
             key = Hashcat.crack_pmkid(pmkid_file)
 
         if key is not None:
@@ -304,7 +311,7 @@ class AttackPMKID(Attack):
     def _extracted_from_crack_pmkid_file_31(self, key, pmkid_file):
         # Successfully cracked.
         Color.clear_entire_line()
-        Color.pattack('PMKID', self.target, 'CRACKED', '{C}Key: {G}%s{W}' % key)
+        Color.pattack('PMKID', self.target, 'CRACKED', f'{{C}}Key: {{G}}{key}{{W}}')
         self.crack_result = CrackResultPMKID(self.target.bssid, self.target.essid,
                                              pmkid_file, key)
         Color.pl('\n')
@@ -339,13 +346,14 @@ class AttackPMKID(Attack):
     # TODO Rename this here and in `save_pmkid`
     def _extracted_from_save_pmkid_21(self, arg0):
         # Generate filesystem-safe filename from bssid, essid and date
-        essid_safe = re.sub('[^a-zA-Z\d]', '', self.target.essid)
+        # essid_safe = re.sub(f'[^a-zA-Z\d]', '', self.target.essid)
+        essid_safe = re.sub('[^a-zA-Z0-9]', '', self.target.essid)
         bssid_safe = self.target.bssid.replace(':', '-')
         date = time.strftime('%Y-%m-%dT%H-%M-%S')
         result = f'pmkid_{essid_safe}_{bssid_safe}_{date}{arg0}'
         result = os.path.join(Configuration.wpa_handshake_dir, result)
 
-        Color.p('\n{+} Saving copy of {C}PMKID Hash{W} to {C}%s{W} ' % result)
+        Color.p(f'\n{{+}} Saving copy of {{C}}PMKID Hash{{W}} to {{C}}{result}{{W}} ')
         return result
 
     # TODO Rename this here and in `save_pmkid`

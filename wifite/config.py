@@ -3,17 +3,17 @@
 
 import os
 import re
-
+import sys
 from .util.color import Color
 from .tools.macchanger import Macchanger
 
 
-class Configuration(object):
+class Configuration:
     """ Stores configuration variables and functions for Wifite. """
 
     initialized = False  # Flag indicating config has been initialized
     verbose = 0
-    version = '2.7.0'
+    version = '2.7.2'
 
     all_bands = None
     attack_max = None
@@ -37,7 +37,7 @@ class Configuration(object):
     min_power = None
     no_deauth = None
     no_wps = None
-    no_nullpin = None
+    wps_no_nullpin = None
     num_deauths = None
     pmkid_timeout = None
     print_stack_traces = None
@@ -103,7 +103,7 @@ class Configuration(object):
 
         cls.tx_power = 0  # Wifi transmit power (0 is default)
         cls.interface = None
-        cls.min_power = 0  # Minimum power for an access point to be considered a target. Default is 0
+        cls.min_power = 0  # Minimum power for AP to be considered a target. Default is 0
         cls.attack_max = 0
         cls.skip_crack = False
         cls.target_channel = None  # User-defined channel to scan
@@ -265,11 +265,14 @@ class Configuration(object):
     @classmethod
     def validate(cls):
         if cls.use_pmkid_only and cls.wps_only:
-            Color.pl('{!} {R}Bad Configuration:{O} --pmkid and --wps-only are not compatible')
-            raise RuntimeError('Unable to attack networks: --pmkid and --wps-only are not compatible together')
+            Color.pl(
+                '{!} {R}Bad Configuration:{O} --pmkid and --wps-only are not compatible')
+            raise RuntimeError(
+                'Unable to attack networks: --pmkid and --wps-only are not compatible together')
         if cls.use_pmkid_only and cls.dont_use_pmkid:
             Color.pl('{!} {R}Bad Configuration:{O} --pmkid and --no-pmkid are not compatible')
-            raise RuntimeError('Unable to attack networks: --pmkid and --no-pmkid are not compatible together')
+            raise RuntimeError(
+                'Unable to attack networks: --pmkid and --no-pmkid are not compatible together')
 
     @classmethod
     def parse_settings_args(cls, args):
@@ -285,15 +288,15 @@ class Configuration(object):
                 raise ValueError("Invalid channel! The format must be 1,3-6,9")
 
             cls.target_channel = args.channel
-            Color.pl('{+} {C}option:{W} scanning for targets on channel {G}%s{W}' % args.channel)
+            Color.pl(f'{{+}} {{C}}option:{{W}} scanning for targets on channel {{G}}{args.channel}{{W}}')
 
         if args.interface:
             cls.interface = args.interface
-            Color.pl('{+} {C}option:{W} using wireless interface {G}%s{W}' % args.interface)
+            Color.pl(f'{{+}} {{C}}option:{{W}} using wireless interface {{G}}{args.interface}{{W}}')
 
         if args.target_bssid:
             cls.target_bssid = args.target_bssid
-            Color.pl('{+} {C}option:{W} targeting BSSID {G}%s{W}' % args.target_bssid)
+            Color.pl(f'{{+}} {{C}}option:{{W}} targeting BSSID {{G}}{args.target_bssid}{{W}}')
 
         if args.all_bands:
             cls.all_bands = True
@@ -325,7 +328,8 @@ class Configuration(object):
 
         if args.no_deauth:
             cls.no_deauth = True
-            Color.pl('{+} {C}option:{W} will {R}not{W} {O}deauth{W} clients during scans or captures')
+            Color.pl(
+                '{+} {C}option:{W} will {R}not{W} {O}deauth{W} clients during scans or captures')
 
         if args.daemon is True:
             cls.daemon = True
@@ -333,11 +337,13 @@ class Configuration(object):
 
         if args.num_deauths and args.num_deauths > 0:
             cls.num_deauths = args.num_deauths
-            Color.pl(f'{{+}} {{C}}option:{{W}} send {{G}}{cls.num_deauths:d}{{W}} deauth packets when deauthing')
+            Color.pl(
+                f'{{+}} {{C}}option:{{W}} send {{G}}{cls.num_deauths:d}{{W}} deauth packets when deauthing')
 
         if args.min_power and args.min_power > 0:
             cls.min_power = args.min_power
-            Color.pl(f'{{+}} {{C}}option:{{W}} Minimum power {{G}}{cls.min_power:d}{{W}} for target to be shown')
+            Color.pl(
+                f'{{+}} {{C}}option:{{W}} Minimum power {{G}}{cls.min_power:d}{{W}} for target to be shown')
 
         if args.skip_crack:
             cls.skip_crack = True
@@ -345,25 +351,27 @@ class Configuration(object):
 
         if args.attack_max and args.attack_max > 0:
             cls.attack_max = args.attack_max
-            Color.pl(f'{{+}} {{C}}option:{{W}} Attack first {{G}}{cls.attack_max:d}{{W}} targets from list')
+            Color.pl(
+                f'{{+}} {{C}}option:{{W}} Attack first {{G}}{cls.attack_max:d}{{W}} targets from list')
 
         if args.target_essid:
             cls.target_essid = args.target_essid
-            Color.pl('{+} {C}option:{W} targeting ESSID {G}%s{W}' % args.target_essid)
+            Color.pl(f'{{+}} {{C}}option:{{W}} targeting ESSID {{G}}{args.target_essid}{{W}}')
 
         if args.ignore_essids is not None:
             cls.ignore_essids = args.ignore_essids
-            Color.pl('{+} {C}option: {O}ignoring ESSID(s): {R}%s{W}' %
-                     ', '.join(args.ignore_essids))
+            Color.pl(f'{{+}} {{C}}option: {{O}}ignoring ESSID(s): {{R}}{", ".join(args.ignore_essids)}{{W}}')
 
         if args.ignore_cracked:
             from .model.result import CrackResult
             if cracked_targets := CrackResult.load_all():
                 cls.ignore_cracked = [item['bssid'] for item in cracked_targets]
-                Color.pl('{+} {C}option: {O}ignoring {R}%s{O} previously-cracked targets' % len(cls.ignore_cracked))
+                Color.pl(
+                    f'{{+}} {{C}}option: {{O}}ignoring {{R}}{len(cls.ignore_cracked)}{{O}} previously-cracked targets')
 
             else:
-                Color.pl('{!} {R}Previously-cracked access points not found in %s' % cls.cracked_file)
+                Color.pl(
+                    f'{{!}} {{R}}Previously-cracked access points not found in {cls.cracked_file}')
                 cls.ignore_cracked = False
         if args.clients_only:
             cls.clients_only = True
@@ -376,7 +384,7 @@ class Configuration(object):
 
         if args.verbose:
             cls.verbose = args.verbose
-            Color.pl('{+} {C}option:{W} verbosity level {G}%d{W}' % args.verbose)
+            Color.pl(f'{{+}} {{C}}option:{{W}} verbosity level {{G}}{args.verbose:d}{{W}}')
 
         if args.kill_conflicting_processes:
             cls.kill_conflicting_processes = True
@@ -390,11 +398,13 @@ class Configuration(object):
 
         if args.wep_pps:
             cls.wep_pps = args.wep_pps
-            Color.pl('{+} {C}option:{W} using {G}%d{W} packets/sec on WEP attacks' % args.wep_pps)
+            Color.pl(
+                f'{{+}} {{C}}option:{{W}} using {{G}}{args.wep_pps:d}{{W}} packets/sec on WEP attacks')
 
         if args.wep_timeout:
             cls.wep_timeout = args.wep_timeout
-            Color.pl('{+} {C}option:{W} WEP attack timeout set to {G}%d seconds{W}' % args.wep_timeout)
+            Color.pl(
+                f'{{+}} {{C}}option:{{W}} WEP attack timeout set to {{G}}{args.wep_timeout:d} seconds{{W}}')
 
         if args.require_fakeauth:
             cls.require_fakeauth = True
@@ -402,16 +412,18 @@ class Configuration(object):
 
         if args.wep_crack_at_ivs:
             cls.wep_crack_at_ivs = args.wep_crack_at_ivs
-            Color.pl('{+} {C}option:{W} will start cracking WEP keys at {G}%d IVs{W}' % args.wep_crack_at_ivs)
+            Color.pl(
+                f'{{+}} {{C}}option:{{W}} will start cracking WEP keys at {{G}}{args.wep_crack_at_ivs:d} IVs{{W}}')
 
         if args.wep_restart_stale_ivs:
             cls.wep_restart_stale_ivs = args.wep_restart_stale_ivs
-            Color.pl('{+} {C}option:{W} will restart aireplay after {G}%d seconds{W} of no new IVs'
-                     % args.wep_restart_stale_ivs)
+            Color.pl(
+                f'{{+}} {{C}}option:{{W}} will restart aireplay after {{G}}{args.wep_restart_stale_ivs:d} seconds{{W}} of no new IVs')
 
         if args.wep_restart_aircrack:
             cls.wep_restart_aircrack = args.wep_restart_aircrack
-            Color.pl('{+} {C}option:{W} will restart aircrack every {G}%d seconds{W}' % args.wep_restart_aircrack)
+            Color.pl(
+                f'{{+}} {{C}}option:{{W}} will restart aircrack every {{G}}{args.wep_restart_aircrack:d} seconds{{W}}')
 
         if args.wep_keep_ivs:
             cls.wep_keep_ivs = args.wep_keep_ivs
@@ -438,12 +450,13 @@ class Configuration(object):
 
         if args.wpa_deauth_timeout:
             cls.wpa_deauth_timeout = args.wpa_deauth_timeout
-            Color.pl('{+} {C}option:{W} will deauth WPA clients every {G}%d seconds{W}' % args.wpa_deauth_timeout)
+            Color.pl(
+                f'{{+}} {{C}}option:{{W}} will deauth WPA clients every {{G}}{args.wpa_deauth_timeout:d} seconds{{W}}')
 
         if args.wpa_attack_timeout:
             cls.wpa_attack_timeout = args.wpa_attack_timeout
             Color.pl(
-                '{+} {C}option:{W} will stop WPA handshake capture after {G}%d seconds{W}' % args.wpa_attack_timeout)
+                f'{{+}} {{C}}option:{{W}} will stop WPA handshake capture after {{G}}{args.wpa_attack_timeout:d} seconds{{W}}')
 
         if args.ignore_old_handshakes:
             cls.ignore_old_handshakes = True
@@ -451,7 +464,8 @@ class Configuration(object):
 
         if args.wpa_handshake_dir:
             cls.wpa_handshake_dir = args.wpa_handshake_dir
-            Color.pl('{+} {C}option:{W} will store handshakes to {G}%s{W}' % args.wpa_handshake_dir)
+            Color.pl(
+                f'{{+}} {{C}}option:{{W}} will store handshakes to {{G}}{args.wpa_handshake_dir}{{W}}')
 
         if args.wpa_strip_handshake:
             cls.wpa_strip_handshake = True
@@ -475,28 +489,32 @@ class Configuration(object):
             cls.wps_pixie = False
             cls.wps_no_nullpin = True
             cls.wps_pin = False
-            Color.pl('{+} {C}option:{W} will {O}never{W} use {C}WPS attacks{W} (Pixie-Dust/PIN) on targets')
+            Color.pl(
+                '{+} {C}option:{W} will {O}never{W} use {C}WPS attacks{W} (Pixie-Dust/PIN) on targets')
 
         elif args.wps_pixie:
             # WPS Pixie-Dust only
             cls.wps_pixie = True
             cls.wps_no_nullpin = True
             cls.wps_pin = False
-            Color.pl('{+} {C}option:{W} will {G}only{W} use {C}WPS Pixie-Dust attack{W} (no {O}PIN{W}) on targets')
+            Color.pl(
+                '{+} {C}option:{W} will {G}only{W} use {C}WPS Pixie-Dust attack{W} (no {O}PIN{W}) on targets')
 
         elif args.wps_no_nullpin:
             # WPS NULL PIN only
             cls.wps_pixie = True
             cls.wps_no_nullpin = False
             cls.wps_pin = True
-            Color.pl('{+} {C}option:{W} will {G}not{W} use {C}WPS NULL PIN attack{W} (no {O}PIN{W}) on targets')
+            Color.pl(
+                '{+} {C}option:{W} will {G}not{W} use {C}WPS NULL PIN attack{W} (no {O}PIN{W}) on targets')
 
         elif args.wps_no_pixie:
             # WPS PIN only
             cls.wps_pixie = False
             cls.wps_no_nullpin = True
             cls.wps_pin = True
-            Color.pl('{+} {C}option:{W} will {G}only{W} use {C}WPS PIN attack{W} (no {O}Pixie-Dust{W}) on targets')
+            Color.pl(
+                '{+} {C}option:{W} will {G}only{W} use {C}WPS PIN attack{W} (no {O}Pixie-Dust{W}) on targets')
 
         if args.use_bully:
             from .tools.bully import Bully
@@ -505,7 +523,8 @@ class Configuration(object):
                 cls.use_bully = False
             else:
                 cls.use_bully = args.use_bully
-                Color.pl('{+} {C}option:{W} use {C}bully{W} instead of {C}reaver{W} for WPS Attacks')
+                Color.pl(
+                    '{+} {C}option:{W} use {C}bully{W} instead of {C}reaver{W} for WPS Attacks')
 
         if args.use_reaver:
             from .tools.reaver import Reaver
@@ -514,20 +533,23 @@ class Configuration(object):
                 cls.use_reaver = False
             else:
                 cls.use_reaver = args.use_reaver
-                Color.pl('{+} {C}option:{W} use {C}reaver{W} instead of {C}bully{W} for WPS Attacks')
+                Color.pl(
+                    '{+} {C}option:{W} use {C}reaver{W} instead of {C}bully{W} for WPS Attacks')
 
         if args.wps_pixie_timeout:
             cls.wps_pixie_timeout = args.wps_pixie_timeout
             Color.pl(
-                '{+} {C}option:{W} WPS pixie-dust attack will fail after {O}%d seconds{W}' % args.wps_pixie_timeout)
+                f'{{+}} {{C}}option:{{W}} WPS pixie-dust attack will fail after {{O}}{args.wps_pixie_timeout:d} seconds{{W}}')
 
         if args.wps_fail_threshold:
             cls.wps_fail_threshold = args.wps_fail_threshold
-            Color.pl('{+} {C}option:{W} will stop WPS attack after {O}%d failures{W}' % args.wps_fail_threshold)
+            Color.pl(
+                f'{{+}} {{C}}option:{{W}} will stop WPS attack after {{O}}{args.wps_fail_threshold:d} failures{{W}}')
 
         if args.wps_timeout_threshold:
             cls.wps_timeout_threshold = args.wps_timeout_threshold
-            Color.pl('{+} {C}option:{W} will stop WPS attack after {O}%d timeouts{W}' % args.wps_timeout_threshold)
+            Color.pl(
+                f'{{+}} {{C}}option:{{W}} will stop WPS attack after {{O}}{args.wps_timeout_threshold:d} timeouts{{W}}')
 
         if args.wps_ignore_lock:
             cls.wps_ignore_lock = True
@@ -541,7 +563,8 @@ class Configuration(object):
 
         if args.pmkid_timeout:
             cls.pmkid_timeout = args.pmkid_timeout
-            Color.pl('{+} {C}option:{W} will wait {G}%d seconds{W} during {C}PMKID{W} capture' % args.pmkid_timeout)
+            Color.pl(
+                f'{{+}} {{C}}option:{{W}} will wait {{G}}{args.pmkid_timeout:d} seconds{{W}} during {{C}}PMKID{{W}} capture')
 
         if args.dont_use_pmkid:
             cls.dont_use_pmkid = True
@@ -564,7 +587,8 @@ class Configuration(object):
             # Default to scan all types
             cls.encryption_filter = ['WEP', 'WPA', 'WPS']
         else:
-            Color.pl('{+} {C}option:{W} targeting {G}%s-encrypted{W} networks' % '/'.join(cls.encryption_filter))
+            Color.pl(
+                f'{{+}} {{C}}option:{{W}} targeting {{G}}{"/".join(cls.encryption_filter)}-encrypted{{W}} networks')
 
     @classmethod
     def parse_wep_attacks(cls):
@@ -598,8 +622,8 @@ class Configuration(object):
                                'hirte']
 
         elif len(cls.wep_attacks) > 0:
-            Color.pl('{+} {C}option:{W} using {G}%s{W} WEP attacks'
-                     % '{W}, {G}'.join(cls.wep_attacks))
+            Color.pl(
+                f'{{+}} {{C}}option:{{W}} using {{G}}{"{W}, {G}".join(cls.wep_attacks)}{{W}} WEP attacks')
 
     @classmethod
     def temp(cls, subfile=''):
@@ -630,6 +654,7 @@ class Configuration(object):
     @classmethod
     def exit_gracefully(cls, code=0):
         """ Deletes temp and exist with the given code """
+        code = 0
         cls.delete_temp()
         Macchanger.reset_if_changed()
         from .tools.airmon import Airmon
@@ -637,9 +662,10 @@ class Configuration(object):
             if not cls.daemon:
                 Color.pl('{!} {O}Note:{W} Leaving interface in Monitor Mode!')
                 if Airmon.isdeprecated:
-                    Color.pl('{!} To disable Monitor Mode when finished: {C}iwconfig %s mode managed{W}' % cls.interface)
+                    Color.pl(
+                        f'{{!}} To disable Monitor Mode when finished: {{C}}iwconfig {cls.interface} mode managed{{W}}')
                 else:
-                    Color.pl('{!} To disable Monitor Mode when finished: {C}airmon-ng stop %s{W}' % cls.interface)
+                    Color.pl(f'{{!}} To disable Monitor Mode when finished: {{C}}airmon-ng stop {cls.interface}{{W}}')
             else:
                 # Stop monitor mode
                 Airmon.stop(cls.interface)
@@ -647,10 +673,11 @@ class Configuration(object):
                 Airmon.put_interface_up(Airmon.base_interface)
 
         if Airmon.killed_network_manager:
-            Color.pl('{!} You can restart NetworkManager when finished ({C}service NetworkManager start{W})')
+            Color.pl(
+                '{!} You can restart NetworkManager when finished ({C}service NetworkManager start{W})')
             # Airmon.start_network_manager()
 
-        exit(code)
+        sys.exit(code)
 
     @classmethod
     def dump(cls):
@@ -661,13 +688,13 @@ class Configuration(object):
         for key in list(cls.__dict__.keys()):
             max_len = max(max_len, len(key))
 
-        result = Color.s('{W}%s  Value{W}\n' % 'cls Key'.ljust(max_len))
-        result += Color.s('{W}%s------------------{W}\n' % ('-' * max_len))
+        result = Color.s(f'{{W}}{"cls Key".ljust(max_len)}  Value{{W}}\n')
+        result += Color.s(f'{{W}}{"-" * max_len}------------------{{W}}\n')
 
         for (key, val) in sorted(cls.__dict__.items()):
             if key.startswith('__') or type(val) in [classmethod, staticmethod] or val is None:
                 continue
-            result += Color.s('{G}%s {W} {C}%s{W}\n' % (key.ljust(max_len), val))
+            result += Color.s(f'{{G}}{key.ljust(max_len)} {{W}} {{C}}{val}{{W}}\n')
         return result
 
 

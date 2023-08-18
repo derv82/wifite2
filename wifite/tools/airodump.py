@@ -1,16 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+
+import os
+import time
 from .dependency import Dependency
 from .tshark import Tshark
-from .wash import Wash
+#from .wash import Wash
 from ..util.process import Process
 from ..config import Configuration
 from ..model.target import Target, WPSState
 from ..model.client import Client
-
-import os
-import time
 
 
 class Airodump(Dependency):
@@ -213,7 +213,7 @@ class Airodump(Dependency):
     @staticmethod
     def get_targets_from_csv(csv_filename):
         """Returns list of Target objects parsed from CSV file."""
-        targets = []
+        targets: list[Target] = []
         import chardet
         import csv
 
@@ -243,7 +243,7 @@ class Airodump(Dependency):
                     hit_clients = False
                     continue
 
-                elif row[0].strip() == 'Station MAC':
+                if row[0].strip() == 'Station MAC':
                     # This is the 'header' for the list of Clients
                     hit_clients = True
                     continue
@@ -269,7 +269,7 @@ class Airodump(Dependency):
                 else:
                     # The current row corresponds to a 'Target' (router)
                     try:
-                        target = Target(row)
+                        target: Target = Target(row)
                         targets.append(target)
                     except Exception:
                         continue
@@ -290,11 +290,24 @@ class Airodump(Dependency):
 
             if Configuration.clients_only and len(target.clients) == 0:
                 continue
-            if 'WEP' in Configuration.encryption_filter and 'WEP' in target.encryption:
-                result.append(target)
+            if 'WEP' in Configuration.encryption_filter:
+                if 'WPA' in Configuration.encryption_filter:
+                    if 'WPA' in target.encryption:
+                        result.append(target)
+                    elif ('WPS' in Configuration.encryption_filter and target.wps in
+                          [WPSState.UNLOCKED, WPSState.LOCKED]):
+                        result.append(target)
+                    elif skip_wps:
+                        result.append(target)
+                elif ('WPS' in Configuration.encryption_filter and target.wps in
+                      [WPSState.UNLOCKED, WPSState.LOCKED]):
+                    result.append(target)
+                elif skip_wps:
+                    result.append(target)
             elif 'WPA' in Configuration.encryption_filter and 'WPA' in target.encryption:
                 result.append(target)
-            elif 'WPS' in Configuration.encryption_filter and target.wps in [WPSState.UNLOCKED, WPSState.LOCKED]:
+            elif ('WPS' in Configuration.encryption_filter and target.wps in
+                  [WPSState.UNLOCKED, WPSState.LOCKED]):
                 result.append(target)
             elif skip_wps:
                 result.append(target)
@@ -304,13 +317,15 @@ class Airodump(Dependency):
         essid = Configuration.target_essid
         i = 0
         while i < len(result):
-            if result[i].essid is not None and\
-                    Configuration.ignore_essids is not None and\
-                    result[i].essid in Configuration.ignore_essids:
-                result.pop(i)
-            elif Configuration.ignore_cracked and \
-                    result[i].bssid in Configuration.ignore_cracked:
-                result.pop(i)
+            if Configuration.ignore_cracked:
+                if result[i].bssid in Configuration.ignore_cracked:
+                    result.pop(i)
+                elif bssid and result[i].bssid.lower() != bssid.lower():
+                    result.pop(i)
+                elif essid and result[i].essid and result[i].essid != essid:
+                    result.pop(i)
+                else:
+                    i += 1
             elif bssid and result[i].bssid.lower() != bssid.lower():
                 result.pop(i)
             elif essid and result[i].essid and result[i].essid != essid:
@@ -354,7 +369,9 @@ class Airodump(Dependency):
             self.decloaked_times[target.bssid] = now
             if Configuration.verbose > 1:
                 from ..util.color import Color
-                Color.pe('{C} [?] Deauthing %s (broadcast & %d clients){W}' % (target.bssid, len(target.clients)))
+                Color.pe(
+                    f'{{C}} [?] Deauthing {target.bssid} (broadcast &'
+                    f'{len(target.clients):d} clients){{W}}')
 
             # Deauth broadcast
             iface = Configuration.interface
@@ -366,7 +383,6 @@ class Airodump(Dependency):
 
 
 if __name__ == '__main__':
-    ''' Example usage. wlan0mon should be in Monitor Mode '''
     with Airodump() as airodump:
 
         from time import sleep
@@ -377,6 +393,6 @@ if __name__ == '__main__':
 
         targets = airodump.get_targets()
         for idx, target in enumerate(targets, start=1):
-            Color.pl('   {G}%s %s' % (str(idx).rjust(3), target.to_str()))
+            Color.pl(f'   {{G}}{str(idx).rjust(3)} {target.to_str()}')
 
     Configuration.delete_temp()

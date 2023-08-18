@@ -12,26 +12,26 @@ class CrackResultPMKID(CrackResult):
         self.essid = essid
         self.pmkid_file = pmkid_file
         self.key = key
-        super(CrackResultPMKID, self).__init__()
+        super().__init__()
 
     def dump(self):
         if self.essid:
             Color.pl(f'{{+}} {"Access Point Name".rjust(19)}: {{C}}{self.essid}{{W}}')
         if self.bssid:
             Color.pl(f'{{+}} {"Access Point BSSID".rjust(19)}: {{C}}{self.bssid}{{W}}')
-        Color.pl('{+} %s: {C}%s{W}' % ('Encryption'.rjust(19), self.result_type))
+        Color.pl(f'{{+}} {"Encryption".rjust(19)}: {{C}}{self.result_type}{{W}}')
         if self.pmkid_file:
-            Color.pl('{+} %s: {C}%s{W}' % ('PMKID File'.rjust(19), self.pmkid_file))
+            Color.pl(f'{{+}} {"PMKID File".rjust(19)}: {{C}}{self.pmkid_file}{{W}}')
         if self.key:
-            Color.pl('{+} %s: {G}%s{W}' % ('PSK (password)'.rjust(19), self.key))
+            Color.pl(f'{{+}} {"PSK (password)".rjust(19)}: {{G}}{self.key}{{W}}')
         else:
-            Color.pl('{!} %s  {O}key unknown{W}' % ''.rjust(19))
+            Color.pl(f'{{!}} {"".rjust(19)}  {{O}}key unknown{{W}}')
 
     def print_single_line(self, longest_essid):
         self.print_single_line_prefix(longest_essid)
-        Color.p('{G}%s{W}' % 'PMKID'.ljust(5))
+        Color.p(f'{{G}}{"PMKID".ljust(5)}{{W}}')
         Color.p('  ')
-        Color.p('Key: {G}%s{W}' % self.key)
+        Color.p(f'Key: {{G}}{self.key}{{W}}')
         Color.pl('')
 
     def to_dict(self):

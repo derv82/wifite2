@@ -1,6 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+
+import time
+import os
+import re
+from shutil import copy
 from ..model.attack import Attack
 from ..tools.aircrack import Aircrack
 from ..tools.airodump import Airodump
@@ -10,11 +15,6 @@ from ..util.color import Color
 from ..util.timer import Timer
 from ..model.handshake import Handshake
 from ..model.wpa_result import CrackResultWPA
-
-import time
-import os
-import re
-from shutil import copy
 
 
 class AttackWPA(Attack):
@@ -29,8 +29,8 @@ class AttackWPA(Attack):
 
         # Skip if target is not WPS
         if Configuration.wps_only and self.target.wps is False:
-            Color.pl('\r{!} {O}Skipping WPA-Handshake attack on {R}%s{O} because {R}--wps-only{O} is set{W}'
-                     % self.target.essid)
+            Color.pl(
+                f'\r{{!}} {{O}}Skipping WPA-Handshake attack on {{R}}{self.target.essid}{{O}} because {{R}}--wps-only{{O}} is set{{W}}')
             self.success = False
             return self.success
 
@@ -61,23 +61,25 @@ class AttackWPA(Attack):
             return self._extracted_from_run_30(
                 '{!} {O}Not cracking handshake because wordlist ({R}--dict{O}) is not set'
             )
-        elif not os.path.exists(Configuration.wordlist):
-            Color.pl('{!} {O}Not cracking handshake because wordlist {R}%s{O} was not found' % Configuration.wordlist)
+        if not os.path.exists(Configuration.wordlist):
+            Color.pl(
+                f'{{!}} {{O}}Not cracking handshake because wordlist {{R}}{Configuration.wordlist}{{O}} was not found')
             self.success = False
             return False
 
-        Color.pl('\n{+} {C}Cracking WPA Handshake:{W} Running {C}aircrack-ng{W} with '
-                 '{C}%s{W} wordlist' % os.path.split(Configuration.wordlist)[-1])
+        Color.pl(f'\n{{+}} {{C}}Cracking WPA Handshake:{{W}} Running {{C}}aircrack-ng{{W}} with '
+                 '{{C}}{}{{W}} wordlist'.format(os.path.split(Configuration.wordlist)[-1]))
 
         # Crack it
         key = Aircrack.crack_handshake(handshake, show_command=False)
         if key is None:
-            Color.pl('{!} {R}Failed to crack handshake: {O}%s{R} did not contain password{W}' %
-                     Configuration.wordlist.split(os.sep)[-1])
+            Color.pl(
+                f'{{!}} {{R}}Failed to crack handshake: {{O}}{Configuration.wordlist.split(os.sep)[-1]}{{R}} did not contain password{{W}}')
             self.success = False
         else:
-            Color.pl('{+} {G}Cracked WPA Handshake{W} PSK: {G}%s{W}\n' % key)
-            self.crack_result = CrackResultWPA(handshake.bssid, handshake.essid, handshake.capfile, key)
+            Color.pl(f'{{+}} {{G}}Cracked WPA Handshake{{W}} PSK: {{G}}{key}{{W}}\n')
+            self.crack_result = CrackResultWPA(
+                handshake.bssid, handshake.essid, handshake.capfile, key)
             self.crack_result.dump()
             self.success = True
         return self.success
@@ -99,7 +101,8 @@ class AttackWPA(Attack):
                       output_file_prefix='wpa') as airodump:
 
             Color.clear_entire_line()
-            Color.pattack('WPA', self.target, 'Handshake capture', 'Waiting for target to appear...')
+            Color.pattack(
+                'WPA', self.target, 'Handshake capture', 'Waiting for target to appear...')
             airodump_target = self.wait_for_target(airodump)
 
             self.clients = []
@@ -111,8 +114,9 @@ class AttackWPA(Attack):
                 handshake = self.load_handshake(bssid=bssid, essid=essid)
                 if handshake:
                     Color.pattack('WPA', self.target, 'Handshake capture',
-                                  'found {G}existing handshake{W} for {C}%s{W}' % handshake.essid)
-                    Color.pl('\n{+} Using handshake from {C}%s{W}' % handshake.capfile)
+                                  f'found {{G}}existing handshake{{W}} for '
+                                  f'{{C}}{handshake.essid}{{W}}')
+                    Color.pl(f'\n{{+}} Using handshake from {{C}}{handshake.capfile}{{W}}')
                     return handshake
 
             timeout_timer = Timer(Configuration.wpa_attack_timeout)
@@ -124,8 +128,7 @@ class AttackWPA(Attack):
                 Color.pattack('WPA',
                               airodump_target,
                               'Handshake capture',
-                              'Listening. (clients:{G}%d{W}, deauth:{O}%s{W}, timeout:{R}%s{W})' % (
-                                  len(self.clients), deauth_timer, timeout_timer))
+                              f'Listening. (clients:{{G}}{len(self.clients):d}{{W}}, deauth:{{O}}{deauth_timer}{{W}}, timeout:{{R}}{timeout_timer}{{W}})')
 
                 # Find .cap file
                 cap_files = airodump.find_files(endswith='.cap')
@@ -166,7 +169,7 @@ class AttackWPA(Attack):
                         Color.pattack('WPA',
                                       airodump_target,
                                       'Handshake capture',
-                                      'Discovered new client: {G}%s{W}' % client.station)
+                                      f'Discovered new client: {{G}}{client.station}{{W}}')
                         Color.pl('')
                         self.clients.append(client.station)
 
@@ -178,12 +181,12 @@ class AttackWPA(Attack):
 
                 # Sleep for at-most 1 second
                 time.sleep(step_timer.remaining())
-                continue  # Handshake listen+deauth loop
 
         if handshake is None:
             # No handshake, attack failed.
-            Color.pl('\n{!} {O}WPA handshake capture {R}FAILED:{O} Timed out after %d seconds' % (
-                Configuration.wpa_attack_timeout))
+            Color.pl(
+                f'\n{{!}} {{O}}WPA handshake capture {{R}}FAILED:{{O}} Timed out after'
+                f'{Configuration.wpa_attack_timeout:d} seconds')
         else:
             # Save copy of handshake to ./hs/
             self.save_handshake(handshake)
@@ -196,12 +199,12 @@ class AttackWPA(Attack):
             return None
 
         if essid:
-            essid_safe = re.escape(re.sub('[^a-zA-Z\d]', '', essid))
+            essid_safe = re.escape(re.sub('[^a-zA-Z0-9]', '', essid))
         else:
             essid_safe = '[a-zA-Z0-9]+'
         bssid_safe = re.escape(bssid.replace(':', '-'))
         date = r'\d{4}-\d{2}-\d{2}T\d{2}-\d{2}-\d{2}'
-        get_filename = re.compile(r'handshake_%s_%s_%s\.cap' % (essid_safe, bssid_safe, date))
+        get_filename = re.compile(fr'handshake_{essid_safe}_{bssid_safe}_{date}\.cap')
 
         for filename in os.listdir(Configuration.wpa_handshake_dir):
             cap_filename = os.path.join(Configuration.wpa_handshake_dir, filename)
@@ -223,7 +226,7 @@ class AttackWPA(Attack):
 
         # Generate filesystem-safe filename from bssid, essid and date
         if handshake.essid and type(handshake.essid) is str:
-            essid_safe = re.sub('[^a-zA-Z\d]', '', handshake.essid)
+            essid_safe = re.sub('[^a-zA-Z0-9]', '', handshake.essid)
         else:
             essid_safe = 'UnknownEssid'
         bssid_safe = handshake.bssid.replace(':', '-')
@@ -232,10 +235,11 @@ class AttackWPA(Attack):
         cap_filename = os.path.join(Configuration.wpa_handshake_dir, cap_filename)
 
         if Configuration.wpa_strip_handshake:
-            Color.p('{+} {C}stripping{W} non-handshake packets, saving to {G}%s{W}...' % cap_filename)
+            Color.p(
+                f'{{+}} {{C}}stripping{{W}} non-handshake packets, saving to {{G}}{cap_filename}{{W}}...')
             handshake.strip(outfile=cap_filename)
         else:
-            Color.p('{+} saving copy of {C}handshake{W} to {C}%s{W} ' % cap_filename)
+            Color.p(f'{{+}} saving copy of {{C}}handshake{{W}} to {{C}}{cap_filename}{{W}} ')
             copy(handshake.capfile, cap_filename)
         Color.pl('{G}saved{W}')
         # Update handshake to use the stored handshake file for future operations
@@ -256,7 +260,7 @@ class AttackWPA(Attack):
             Color.pattack('WPA',
                           target,
                           'Handshake capture',
-                          'Deauthing {O}%s{W}' % target_name)
+                          f'Deauthing {{O}}{target_name}{{W}}')
             Aireplay.deauth(target.bssid, client_mac=client, timeout=2)
 
 

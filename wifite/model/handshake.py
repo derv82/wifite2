@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+
+import re
+import os
 from ..util.process import Process
 from ..util.color import Color
 from ..tools.tshark import Tshark
 
-import re
-import os
 
-
-class Handshake(object):
+class Handshake:
 
     def __init__(self, capfile, bssid=None, essid=None):
         self.capfile = capfile
@@ -44,20 +44,21 @@ class Handshake(object):
             self.bssid = pairs[0][0]
             self.essid = pairs[0][1]
             Color.pl('{!} {O}Warning{W}: {O}Arbitrarily selected ' +
-                     '{R}bssid{O} {C}%s{O} and {R}essid{O} "{C}%s{O}"{W}' % (self.bssid, self.essid))
+                     f'{{R}}bssid{{O}} {{C}}{self.bssid}{{O}}'
+                     f'and {{R}}essid{{O}} "{{C}}{self.essid}{{O}}"{{W}}')
 
         if not self.bssid:
             # We already know essid
             for (bssid, essid) in pairs:
                 if self.essid == essid:
-                    Color.pl('\n{+} Discovered bssid {C}%s{W}' % bssid)
+                    Color.pl(f'\n{{+}} Discovered bssid {{C}}{bssid}{{W}}')
                     self.bssid = bssid
                     break
 
         if not self.essid and len(pairs) > 0:
             for (bssid, essid) in pairs:
                 if self.bssid.lower() == bssid.lower():
-                    Color.pl('\n{+} Discovered essid "{C}%s{W}"' % essid)
+                    Color.pl(f'\n{{+}} Discovered essid "{{C}}{essid}{{W}}"')
                     self.essid = essid
                     break
 
@@ -191,11 +192,12 @@ class Handshake(object):
             capfiles = [Configuration.check_handshake]
 
         for capfile in capfiles:
-            Color.pl('{+} checking for handshake in .cap file {C}%s{W}' % capfile)
+            Color.pl(f'{{+}} checking for handshake in .cap file {{C}}{capfile}{{W}}')
             if not os.path.exists(capfile):
-                Color.pl('{!} {O}.cap file {C}%s{O} not found{W}' % capfile)
+                Color.pl(f'{{!}} {{O}}.cap file {{C}}{capfile}{{O}} not found{{W}}')
                 return
-            hs = Handshake(capfile, bssid=Configuration.target_bssid, essid=Configuration.target_essid)
+            hs: Handshake = Handshake(
+                capfile, bssid=Configuration.target_bssid, essid=Configuration.target_essid)
             hs.analyze()
             Color.pl('')
 
@@ -203,15 +205,16 @@ class Handshake(object):
 if __name__ == '__main__':
     print("\n-------------------------------")
     print('With BSSID & ESSID specified:')
-    hs = Handshake('./tests/files/handshake_has_1234.cap', bssid='18:d6:c7:6d:6b:18', essid='YZWifi')
+    hs = Handshake(
+        './tests/files/handshake_has_1234.cap', bssid='18:d6:c7:6d:6b:18', essid='YZWifi')
     hs.analyze()
-    print(('has_hanshake() =', hs.has_handshake()))
+    print(('has_handshake() =', hs.has_handshake()))
 
     print("\n-------------------------------")
     print('\nWith BSSID, but no ESSID specified:')
     hs = Handshake('./tests/files/handshake_has_1234.cap', bssid='18:d6:c7:6d:6b:18')
     hs.analyze()
-    print(('has_hanshake() =', hs.has_handshake()))
+    print(('has_handshake() =', hs.has_handshake()))
 
     print("\n-------------------------------")
     print('\nWith ESSID, but no BSSID specified:')
@@ -224,6 +227,6 @@ if __name__ == '__main__':
     hs = Handshake('./tests/files/handshake_has_1234.cap')
     try:
         hs.analyze()
-        print(('has_hanshake() =', hs.has_handshake()))
+        print(('has_handshake() =', hs.has_handshake()))
     except Exception as e:
-        Color.pl('{O}Error during Handshake.analyze(): {R}%s{W}' % e)
+        Color.pl(f'{{O}}Error during Handshake.analyze(): {{R}}{e}{{W}}')

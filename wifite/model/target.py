@@ -1,17 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import re
 from ..util.color import Color
 from ..config import Configuration
-
-import re
 
 
 class WPSState:
     NONE, UNLOCKED, LOCKED, UNKNOWN = list(range(4))
 
 
-class ArchivedTarget(object):
+class ArchivedTarget:
     """
         Holds information between scans from a previously found target
     """
@@ -35,10 +34,10 @@ class ArchivedTarget(object):
             other.decloaked = self.decloaked
 
         if not other.essid_known:
-                other.decloaked = self.decloaked
-                other.essid = self.essid
-                other.essid_known = self.essid_known
-                other.essid_len = self.essid_len
+            other.decloaked = self.decloaked
+            other.essid = self.essid
+            other.essid_known = self.essid_known
+            other.essid_len = self.essid_len
 
     def __eq__(self, other):
         # Check if the other class type is either ArchivedTarget or Target
@@ -156,8 +155,9 @@ class Target(object):
         if bssid_multicast.match(self.bssid):
             raise Exception(f'Ignoring target with Multicast BSSID ({self.bssid})')
 
-    def to_str(self, show_bssid=False, show_manufacturer=False):
-        # sourcery no-metrics
+    def to_str(self,
+               show_bssid: bool = False,
+               show_manufacturer: bool = False) -> str:
         """
             *Colored* string representation of this Target.
             Specifically formatted for the 'scanning' table view.
@@ -173,25 +173,25 @@ class Target(object):
 
         if self.essid_known:
             # Known ESSID
-            essid = Color.s('{C}%s' % essid)
+            essid = Color.s(f'{{C}}{essid}')
         else:
             # Unknown ESSID
-            essid = Color.s('{O}%s' % essid)
+            essid = Color.s(f'{{O}}{essid}')
 
         # if self.power < self.max_power:
         #     var = self.max_power
 
         # Add a '*' if we decloaked the ESSID
         decloaked_char = '*' if self.decloaked else ' '
-        essid += Color.s('{P}%s' % decloaked_char)
+        essid += Color.s(f'{{P}}{decloaked_char}')
 
-        bssid = Color.s('{O}%s  ' % self.bssid) if show_bssid else ''
+        bssid = Color.s(f'{{O}}{self.bssid}  ') if show_bssid else ''
         if show_manufacturer:
             oui = ''.join(self.bssid.split(':')[:3])
             self.manufacturer = Configuration.manufacturers.get(oui, "")
 
             max_oui_len = 27
-            manufacturer = Color.s('{W}%s  ' % self.manufacturer)
+            manufacturer = Color.s(f'{{W}}{self.manufacturer}  ')
             # Trim manufacturer name if needed
             if len(manufacturer) > max_oui_len:
                 manufacturer = f'{manufacturer[:max_oui_len - 3]}...'
@@ -205,14 +205,14 @@ class Target(object):
 
         encryption = self.encryption.rjust(3)
         if 'WEP' in encryption:
-            encryption = Color.s('{G}%s' % encryption)
+            encryption = Color.s(f'{{G}}{encryption}')
         elif 'WPA' in encryption:
             if 'PSK' in self.authentication:
-                encryption = Color.s('{O}%s-P' % encryption)
+                encryption = Color.s(f'{{O}}{encryption}-P')
             elif 'MGT' in self.authentication:
-                encryption = Color.s('{R}%s-E' % encryption)
+                encryption = Color.s(f'{{R}}{encryption}-E')
             else:
-                encryption = Color.s('{O}%s  ' % encryption)
+                encryption = Color.s(f'{{O}}{encryption}  ')
 
         power = f'{str(self.power).rjust(3)}db'
         if self.power > 50:
@@ -221,7 +221,7 @@ class Target(object):
             color = 'O'
         else:
             color = 'R'
-        power = Color.s('{%s}%s' % (color, power))
+        power = Color.s(f'{{{color}}}{power}')
 
         if self.wps == WPSState.UNLOCKED:
             wps = Color.s('{G} yes')
