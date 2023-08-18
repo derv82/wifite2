@@ -5,7 +5,6 @@ import contextlib
 import os
 import re
 import signal
-
 from .dependency import Dependency
 from .ip import Ip
 from .iw import Iw

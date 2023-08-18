@@ -1,13 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import os
 from .dependency import Dependency
 from ..config import Configuration
 from ..util.color import Color
 from ..util.process import Process
 from ..tools.hashcat import HcxPcapngTool
-
-import os
 
 
 class John(Dependency):
@@ -33,16 +32,16 @@ class John(Dependency):
         # Crack john file
         command = ['john', f'--format={john_format}', f'--wordlist={Configuration.wordlist}', john_file]
         if show_command:
-            Color.pl('{+} {D}Running: {W}{P}%s{W}' % ' '.join(command))
+            Color.pl(f'{{+}} {{D}}Running: {{W}}{{P}}{" ".join(command)}{{W}}')
         process = Process(command)
         process.wait()
 
         # Run again with --show to consistently get the password
         command = ['john', '--show', john_file]
         if show_command:
-            Color.pl('{+} {D}Running: {W}{P}%s{W}' % ' '.join(command))
+            Color.pl(f'{{+}} {{D}}Running: {{W}}{{P}}{" ".join(command)}{{W}}')
         process = Process(command)
-        stdout, stderr = process.get_output()
+        stdout, _ = process.get_output()
 
         # Parse password (regex doesn't work for some reason)
         if '0 password hashes cracked' in stdout:

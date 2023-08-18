@@ -4,7 +4,7 @@
 import sys
 
 
-class Color(object):
+class Color:
     """ Helper object for easily printing colored text to the terminal. """
 
     # Basic console colors
@@ -47,7 +47,7 @@ class Color(object):
     @staticmethod
     def pl(text):
         """Prints text using colored format with trailing new line."""
-        Color.p('%s\n' % text)
+        Color.p(f'{text}\n')
         Color.last_sameline_length = 0
 
     @staticmethod
@@ -56,7 +56,7 @@ class Color(object):
         Prints text using colored format with
         leading and trailing new line to STDERR.
         """
-        sys.stderr.write(Color.s('%s\n' % text))
+        sys.stderr.write(Color.s(f'{text}\n'))
         Color.last_sameline_length = 0
 
     @staticmethod
@@ -66,13 +66,13 @@ class Color(object):
         for (key, value) in list(Color.replacements.items()):
             output = output.replace(key, value)
         for (key, value) in list(Color.colors.items()):
-            output = output.replace('{%s}' % key, value)
+            output = output.replace(f'{{{key}}}', value)
         return output
 
     @staticmethod
     def clear_line():
         spaces = ' ' * Color.last_sameline_length
-        sys.stdout.write('\r%s\r' % spaces)
+        sys.stdout.write(f'\r{spaces}\r')
         sys.stdout.flush()
         Color.last_sameline_length = 0
 
@@ -91,14 +91,14 @@ class Color(object):
         ESSID (Pwr) Attack_Type: Progress
         e.g.: Router2G (23db) WEP replay attack: 102 IVs
         """
-        essid = '{C}%s{W}' % target.essid if target.essid_known else '{O}unknown{W}'
-        Color.p('\r{+} {G}%s{W} ({C}%sdb{W}) {G}%s {C}%s{W}: %s ' % (
-            essid, target.power, attack_type, attack_name, progress))
+        essid = f'{{C}}{target.essid}{{W}}' if target.essid_known else '{O}unknown{W}'
+        Color.p(
+            f'\r{{+}} {{G}}{essid}{{W}} ({{C}}{target.power}db{{W}}) {{G}}{attack_type} {{C}}{attack_name}{{W}}: {progress} ')
 
     @staticmethod
     def pexception(exception):
         """Prints an exception. Includes stack trace if necessary."""
-        Color.pl('\n{!} {R}Error: {O}%s' % str(exception))
+        Color.pl(f'\n{{!}} {{R}}Error: {{O}}{str(exception)}')
 
         # Don't dump trace for the "no targets found" case.
         if 'No targets found' in str(exception):

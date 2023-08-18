@@ -2,13 +2,12 @@
 # -*- coding: utf-8 -*-
 
 from time import sleep, time
-
 from ..config import Configuration
 from ..tools.airodump import Airodump
 from ..util.color import Color
 
 
-class Scanner(object):
+class Scanner:
     """ Scans wifi networks & provides menu for selecting targets """
 
     # Console code for moving up one line
@@ -58,8 +57,8 @@ class Scanner(object):
                     if airodump.decloaking:
                         outline += ' & decloaking'
                     outline += '. Found'
-                    outline += ' {G}%d{W} target(s),' % target_count
-                    outline += ' {G}%d{W} client(s).' % client_count
+                    outline += f' {{G}}{target_count:d}{{W}} target(s),'
+                    outline += f' {{G}}{client_count:d}{{W}} client(s).'
                     outline += ' {O}Ctrl+C{W} when ready '
                     Color.clear_entire_line()
                     Color.p(outline)
@@ -70,18 +69,22 @@ class Scanner(object):
                     sleep(1)
 
         except KeyboardInterrupt:
-            if not Configuration.infinite_mode:
-                return True
+            return self._extracted_from_find_targets_50()
 
-            options = '({G}s{W}{D}, {W}{R}e{W})'
-            prompt = '{+} Do you want to {G}start attacking{W} or {R}exit{W}%s?' % options
+    # TODO Rename this here and in `find_targets`
+    def _extracted_from_find_targets_50(self):
+        if not Configuration.infinite_mode:
+            return True
 
-            self.print_targets()
-            Color.clear_entire_line()
-            Color.p(prompt)
-            answer = input().lower()
+        options = '({G}s{W}{D}, {W}{R}e{W})'
+        prompt = f'{{+}} Do you want to {{G}}start attacking{{W}} or {{R}}exit{{W}}{options}?'
 
-            return not answer.startswith('e')
+        self.print_targets()
+        Color.clear_entire_line()
+        Color.p(prompt)
+        answer = input().lower()
+
+        return not answer.startswith('e')
 
     def update_targets(self):
         """
@@ -124,7 +127,7 @@ class Scanner(object):
                 break
 
         if self.target:
-            Color.pl('\n{+} {C}found target{G} %s {W}({G}%s{W})' % (self.target.bssid, self.target.essid))
+            Color.pl(f'\n{{+}} {{C}}found target{{G}} {self.target.bssid} {{W}}({{G}}{self.target.essid}{{W}})')
             return True
 
         return False
@@ -187,7 +190,7 @@ class Scanner(object):
         # Remaining rows: targets
         for idx, target in enumerate(self.targets, start=1):
             Color.clear_entire_line()
-            Color.p('   {G}%s  ' % str(idx).rjust(3))
+            Color.p(f'   {{G}}{str(idx).rjust(3)}  ')
             Color.pl(target.to_str(
                 Configuration.show_bssids,
                 Configuration.show_manufacturers
@@ -226,9 +229,12 @@ class Scanner(object):
             # 1. Link to wireless drivers wiki,
             # 2. How to check if your device supports monitor mode,
             # 3. Provide airodump-ng command being executed.
-            raise Exception('No targets found.'
-                            + ' You may need to wait longer,'
-                            + ' or you may have issues with your wifi card')
+            raise Exception(
+                (
+                    ('No targets found.' + ' You may need to wait longer,')
+                    + ' or you may have issues with your wifi card'
+                )
+            )
 
         # Return all targets if user specified a wait time ('pillage').
         # A scan time is always set if run in infinite mode
@@ -243,7 +249,7 @@ class Scanner(object):
             Color.pl(self.err_msg)
 
         input_str = '{+} Select target(s)'
-        input_str += ' ({G}1-%d{W})' % len(self.targets)
+        input_str += f' ({{G}}1-{len(self.targets):d}{{W}})'
         input_str += ' separated by commas, dashes'
         input_str += ' or {G}all{W}: '
 
@@ -263,7 +269,7 @@ class Scanner(object):
             elif choice.isdigit():
                 choice = int(choice)
                 if choice > len(self.targets):
-                    Color.pl('    {!} {O}Invalid target index (%d)... ignoring' % choice)
+                    Color.pl(f'    {{!}} {{O}}Invalid target index ({choice:d})... ignoring')
                     continue
 
                 chosen_targets.append(self.targets[choice - 1])
@@ -280,8 +286,8 @@ if __name__ == '__main__':
         s.find_targets()
         targets = s.select_targets()
     except Exception as e:
-        Color.pl('\r {!} {R}Error{W}: %s' % str(e))
+        Color.pl(f'\r {{!}} {{R}}Error{{W}}: {str(e)}')
         Configuration.exit_gracefully(0)
     for t in targets:
-        Color.pl('    {W}Selected: %s' % t)
+        Color.pl(f'    {{W}}Selected: {t}')
     Configuration.exit_gracefully(0)

@@ -3,7 +3,6 @@
 
 import os
 from json import loads
-
 from ..config import Configuration
 from ..model.handshake import Handshake
 from ..model.pmkid_result import CrackResultPMKID
@@ -46,7 +45,7 @@ class CrackHelper:
             Color.p('{W}')
 
             if not os.path.exists(Configuration.wordlist):
-                Color.pl('{!} {R}Wordlist {O}%s{R} not found. Exiting.' % Configuration.wordlist)
+                Color.pl(f'{{!}} {{R}}Wordlist {{O}}{Configuration.wordlist}{{R}} not found. Exiting.')
                 return
             Color.pl('')
 
@@ -72,19 +71,19 @@ class CrackHelper:
             Color.pl('\n{!} {O}Unavailable tools (install to enable):{W}')
             for tool, deps in missing_tools:
                 dep_list = ', '.join([dep.dependency_name for dep in deps])
-                Color.pl('     {R}* {R}%s {W}({O}%s{W})' % (tool, dep_list))
+                Color.pl(f'     {{R}}* {{R}}{tool} {{W}}({{O}}{dep_list}{{W}})')
 
         if all_pmkid:
             Color.pl('{!} {O}Note: PMKID hashes can only be cracked using {C}hashcat{W}')
             tool_name = 'hashcat'
         else:
-            Color.p('\n{+} Enter the {C}cracking tool{W} to use ({C}%s{W}): {G}' % (
-                '{W}, {C}'.join(available_tools)))
+            Color.p(
+                f'\n{{+}} Enter the {{C}}cracking tool{{W}} to use ({{C}}{"{W}, {C}".join(available_tools)}{{W}}): {{G}}')
             tool_name = input()
             Color.p('{W}')
 
             if tool_name not in available_tools:
-                Color.pl('{!} {R}"%s"{O} tool not found, defaulting to {C}aircrack{W}' % tool_name)
+                Color.pl(f'{{!}} {{R}}"{tool_name}"{{O}} tool not found, defaulting to {{C}}aircrack{{W}}')
                 tool_name = 'aircrack'
 
         try:
@@ -119,10 +118,10 @@ class CrackHelper:
 
         hs_dir = Configuration.wpa_handshake_dir
         if not os.path.exists(hs_dir) or not os.path.isdir(hs_dir):
-            Color.pl('\n{!} {O}directory not found: {R}%s{W}' % hs_dir)
+            Color.pl(f'\n{{!}} {{O}}directory not found: {{R}}{hs_dir}{{W}}')
             return []
 
-        Color.pl('\n{+} Listing captured handshakes from {C}%s{W}:\n' % os.path.abspath(hs_dir))
+        Color.pl(f'\n{{+}} Listing captured handshakes from {{C}}{os.path.abspath(hs_dir)}{{W}}:\n')
         for hs_file in os.listdir(hs_dir):
             if hs_file.count('_') != 3:
                 continue
@@ -143,7 +142,7 @@ class CrackHelper:
             else:
                 continue
 
-            name, essid, bssid, date = hs_file.split('_')
+            _, essid, bssid, date = hs_file.split('_')
             date = date.rsplit('.', 1)[0]
             days, hours = date.split('T')
             hours = hours.replace('-', ':')
@@ -177,9 +176,9 @@ class CrackHelper:
 
         if skipped_pmkid_files > 0:
             Color.pl(
-                '{!} {O}Skipping %d {R}*.22000{O} files because {R}hashcat{O} is missing.{W}\n' % skipped_pmkid_files)
+                f'{{!}} {{O}}Skipping {skipped_pmkid_files:d} {{R}}*.22000{{O}} files because {{R}}hashcat{{O}} is missing.{{W}}\n')
         if skipped_cracked_files > 0:
-            Color.pl('{!} {O}Skipping %d already cracked files.{W}\n' % skipped_cracked_files)
+            Color.pl(f'{{!}} {{O}}Skipping {skipped_cracked_files:d} already cracked files.{{W}}\n')
 
         # Sort by Date (Descending)
         return sorted(handshakes, key=lambda x: x.get('date'), reverse=True)
@@ -200,11 +199,11 @@ class CrackHelper:
         Color.p('  ' + ('-' * 19) + '{W}\n')
         # Handshakes
         for index, handshake in enumerate(handshakes, start=1):
-            Color.p('  {G}%s{W}' % str(index).rjust(3))
-            Color.p('  {C}%s{W}' % handshake['essid'].ljust(max_essid_len))
-            Color.p('  {O}%s{W}' % handshake['bssid'].ljust(17))
-            Color.p('  {C}%s{W}' % handshake['type'].ljust(5))
-            Color.p('  {W}%s{W}\n' % handshake['date'])
+            Color.p(f'  {{G}}{str(index).rjust(3)}{{W}}')
+            Color.p(f'  {{C}}{handshake["essid"].ljust(max_essid_len)}{{W}}')
+            Color.p(f'  {{O}}{handshake["bssid"].ljust(17)}{{W}}')
+            Color.p(f'  {{C}}{handshake["type"].ljust(5)}{{W}}')
+            Color.p(f'  {{W}}{handshake["date"]}{{W}}\n')
 
     @classmethod
     def get_user_selection(cls, handshakes):
@@ -233,8 +232,7 @@ class CrackHelper:
 
     @classmethod
     def crack(cls, hs, tool):
-        Color.pl('\n{+} Cracking {G}%s {C}%s{W} ({C}%s{W})' % (
-            cls.TYPES[hs['type']], hs['essid'], hs['bssid']))
+        Color.pl(f'\n{{+}} Cracking {{G}}{cls.TYPES[hs["type"]]} {{C}}{hs["essid"]}{{W}} ({{C}}{hs["bssid"]}{{W}})')
 
         if hs['type'] == 'PMKID':
             crack_result = cls.crack_pmkid(hs, tool)
@@ -245,24 +243,25 @@ class CrackHelper:
 
         if crack_result is None:
             # Failed to crack
-            Color.pl('{!} {R}Failed to crack {O}%s{R} ({O}%s{R}): Passphrase not in dictionary' % (
-                hs['essid'], hs['bssid']))
+            Color.pl(
+                f'{{!}} {{R}}Failed to crack {{O}}{hs["essid"]}{{R}} ({{O}}{hs["bssid"]}{{R}}): Passphrase not in dictionary')
         else:
             # Cracked, replace existing entry (if any), or add to
-            Color.pl('{+} {G}Cracked{W} {C}%s{W} ({C}%s{W}). Key: "{G}%s{W}"' % (
-                hs['essid'], hs['bssid'], crack_result.key))
+            Color.pl(
+                f'{{+}} {{G}}Cracked{{W}} {{C}}{hs["essid"]}{{W}} ({{C}}{hs["bssid"]}{{W}}). Key: "{{G}}{crack_result.key}{{W}}"')
             crack_result.save()
 
     @classmethod
     def crack_4way(cls, hs, tool):
 
+        global key
         handshake = Handshake(hs['filename'],
                               bssid=hs['bssid'],
                               essid=hs['essid'])
         try:
             handshake.divine_bssid_and_essid()
         except ValueError as e:
-            Color.pl('{!} {R}Error: {O}%s{W}' % e)
+            Color.pl(f'{{!}} {{R}}Error: {{O}}{e}{{W}}')
             return None
 
         if tool == 'aircrack':
