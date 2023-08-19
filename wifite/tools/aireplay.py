@@ -5,11 +5,11 @@
 import os
 import time
 import re
-from threading import Thread
 from .dependency import Dependency
 from ..config import Configuration
 from ..util.process import Process
 from ..util.timer import Timer
+from threading import Thread
 
 
 

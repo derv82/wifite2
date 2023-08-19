@@ -2,11 +2,9 @@
 # -*- coding: utf-8 -*-
 
 
-from threading import Thread
 import os
 import time
 import re
-from shutil import copy
 from ..model.attack import Attack
 from ..config import Configuration
 from ..tools.hashcat import HcxDumpTool, HcxPcapngTool, Hashcat
@@ -14,6 +12,9 @@ from ..util.color import Color
 from ..util.timer import Timer
 from ..model.pmkid_result import CrackResultPMKID
 from ..tools.airodump import Airodump
+from threading import Thread
+from shutil import copy
+
 
 
 
