@@ -15,6 +15,8 @@ class Iw(Dependency):
 
         if mode_name == "monitor":
             return Process.call(f'iw {iface} set monitor control')
+        else:
+            return Process.call(f'iw {iface} type {mode_name}')
 
     @classmethod
     def get_interfaces(cls, mode=None):

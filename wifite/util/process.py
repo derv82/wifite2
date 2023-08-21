@@ -1,16 +1,17 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import contextlib
 import time
 import signal
 import os
+
 from subprocess import Popen, PIPE
+
 from ..util.color import Color
 from ..config import Configuration
 
 
-class Process:
+class Process(object):
     """ Represents a running/ran process """
 
     @staticmethod
@@ -28,11 +29,11 @@ class Process:
         if type(command) is not str or ' ' in command or shell:
             shell = True
             if Configuration.verbose > 1:
-                Color.pe(f'\n {{C}}[?] {{W}} Executing (Shell): {{B}}{command}{{W}}')
+                Color.pe('\n {C}[?] {W} Executing (Shell): {B}%s{W}' % command)
         else:
             shell = False
             if Configuration.verbose > 1:
-                Color.pe(f'\n {{C}}[?]{{W}} Executing: {{B}}{command}{{W}}')
+                Color.pe('\n {C}[?]{W} Executing: {B}%s{W}' % command)
 
         pid = Popen(command, cwd=cwd, stdout=PIPE, stderr=PIPE, shell=shell)
         pid.wait()
@@ -77,7 +78,7 @@ class Process:
         self.command = command
 
         if Configuration.verbose > 1:
-            Color.pe(f'\n {{C}}[?] {{W}} Executing: {{B}}{" ".join(command)}{{W}}')
+            Color.pe('\n {C}[?] {W} Executing: {B}%s{W}' % ' '.join(command))
 
         self.out = None
         self.err = None
@@ -96,9 +97,11 @@ class Process:
             Ran when object is GC'd.
             If process is still running at this point, it should die.
         """
-        with contextlib.suppress(AttributeError):
+        try:
             if self.pid and self.pid.poll() is None:
                 self.interrupt()
+        except AttributeError:
+            pass
 
     def stdout(self):
         """ Waits for process to finish, returns stdout output """
@@ -157,39 +160,36 @@ class Process:
             If process fails to exit within `wait_time` seconds, terminates it.
         """
         try:
-            self._extracted_from_interrupt_7(wait_time)
+            pid = self.pid.pid
+            cmd = self.command
+            if type(cmd) is list:
+                cmd = ' '.join(cmd)
+
+            if Configuration.verbose > 1:
+                Color.pe('\n {C}[?] {W} sending interrupt to PID %d (%s)' % (pid, cmd))
+
+            os.kill(pid, signal.SIGINT)
+
+            start_time = time.time()  # Time since Interrupt was sent
+            while self.pid.poll() is None:
+                # Process is still running
+                try:
+                    time.sleep(0.1)
+                    if time.time() - start_time > wait_time:
+                        # We waited too long for process to die, terminate it.
+                        if Configuration.verbose > 1:
+                            Color.pe('\n {C}[?] {W} Waited > %0.2f seconds for process to die, killing it' % wait_time)
+                        os.kill(pid, signal.SIGTERM)
+                        self.pid.terminate()
+                        break
+                except KeyboardInterrupt:
+                    # wait the cleanup
+                    continue
+
         except OSError as e:
             if 'No such process' in e.__str__():
                 return
             raise e  # process cannot be killed
-
-    # TODO Rename this here and in `interrupt`
-    def _extracted_from_interrupt_7(self, wait_time):
-        pid = self.pid.pid
-        cmd = self.command
-        if type(cmd) is list:
-            cmd = ' '.join(cmd)
-
-        if Configuration.verbose > 1:
-            Color.pe(f'\n {{C}}[?] {{W}} sending interrupt to PID {pid:d} ({cmd})')
-
-        os.kill(pid, signal.SIGINT)
-
-        start_time = time.time()  # Time since Interrupt was sent
-        while self.pid.poll() is None:
-            # Process is still running
-            try:
-                time.sleep(0.1)
-                if time.time() - start_time > wait_time:
-                    # We waited too long for process to die, terminate it.
-                    if Configuration.verbose > 1:
-                        Color.pe(f'\n {{C}}[?] {{W}} Waited > {wait_time:0.2f} seconds for process to die, killing it')
-                    os.kill(pid, signal.SIGTERM)
-                    self.pid.terminate()
-                    break
-            except KeyboardInterrupt:
-                # wait the cleanup
-                continue
 
 
 if __name__ == '__main__':

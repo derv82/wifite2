@@ -1,21 +1,22 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-
-import os
-import re
 from .dependency import Dependency
 from ..config import Configuration
 from ..util.color import Color
 from ..util.process import Process
 from ..tools.hashcat import HcxPcapngTool
 
+import os
+import re
+
 
 class Cowpatty(Dependency):
-    """ Wrapper for Cowpatty program. """
+    ''' Wrapper for Cowpatty program. '''
     dependency_required = False
     dependency_name = 'cowpatty'
     dependency_url = 'https://tools.kali.org/wireless-attacks/cowpatty'
+
 
     @staticmethod
     def crack_handshake(handshake, show_command=False):
@@ -27,9 +28,9 @@ class Cowpatty(Dependency):
             '-s', handshake.essid
         ]
         if show_command:
-            Color.pl(f'{{+}} {{D}}Running: {{W}}{{P}}{" ".join(command)}{{W}}')
+            Color.pl('{+} {D}Running: {W}{P}%s{W}' % ' '.join(command))
         process = Process(command)
-        stdout, _ = process.get_output()
+        stdout, stderr = process.get_output()
 
         key = None
         for line in stdout.split('\n'):

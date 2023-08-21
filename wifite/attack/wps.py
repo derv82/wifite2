@@ -15,7 +15,7 @@ class AttackWPS(Attack):
         return Reaver.exists() or Bully.exists()
 
     def __init__(self, target, pixie_dust=False, null_pin=False):
-        super().__init__(target)
+        super(AttackWPS, self).__init__(target)
         self.success = False
         self.crack_result = None
         self.pixie_dust = pixie_dust
@@ -49,24 +49,25 @@ class AttackWPS(Attack):
         if not Reaver.exists() and Bully.exists():
             # Use bully if reaver isn't available
             return self.run_bully()
-        if self.pixie_dust and not Reaver.is_pixiedust_supported() and Bully.exists():
+        elif self.pixie_dust and not Reaver.is_pixiedust_supported() and Bully.exists():
             # Use bully if reaver can't do pixie-dust
             return self.run_bully()
-        if Configuration.use_bully:
+        elif Configuration.use_bully:
             # Use bully if asked by user
             return self.run_bully()
-        if not Reaver.exists():
+        elif not Reaver.exists():
             # Print error if reaver isn't found (bully not available)
             if self.pixie_dust:
                 Color.pl('\r{!} {R}Skipping WPS Pixie-Dust attack: {O}reaver{R} not found.{W}')
             else:
                 Color.pl('\r{!} {R}Skipping WPS PIN attack: {O}reaver{R} not found.{W}')
             return False
-        if not self.pixie_dust or Reaver.is_pixiedust_supported():
+        elif self.pixie_dust and not Reaver.is_pixiedust_supported():
+            # Print error if reaver can't support pixie-dust (bully not available)
+            Color.pl('\r{!} {R}Skipping WPS attack: {O}reaver{R} does not support {O}--pixie-dust{W}')
+            return False
+        else:
             return self.run_reaver()
-        # Print error if reaver can't support pixie-dust (bully not available)
-        Color.pl('\r{!} {R}Skipping WPS attack: {O}reaver{R} does not support {O}--pixie-dust{W}')
-        return False
 
     # TODO Rename this here and in `run`
     def _extracted_from_run_14(self, arg0):

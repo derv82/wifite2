@@ -4,7 +4,7 @@
 import time
 
 
-class Timer:
+class Timer(object):
     def __init__(self, seconds):
         self.start_time = time.time()
         self.end_time = self.start_time + seconds
@@ -26,12 +26,15 @@ class Timer:
     def secs_to_str(seconds):
         """Human-readable seconds. 193 -> 3m13s"""
         if seconds < 0:
-            return f'-{seconds:d}s'
+            return '-%ds' % seconds
 
         rem = int(seconds)
         hours = rem // 3600
         mins = int((rem % 3600) / 60)
         secs = rem % 60
         if hours > 0:
-            return f'{hours:d}h{mins:d}m{secs:d}s'
-        return f'{mins:d}m{secs:d}s' if mins > 0 else f'{secs:d}s'
+            return '%dh%dm%ds' % (hours, mins, secs)
+        elif mins > 0:
+            return '%dm%ds' % (mins, secs)
+        else:
+            return '%ds' % secs

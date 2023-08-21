@@ -12,26 +12,26 @@ class CrackResultWPA(CrackResult):
         self.essid = essid
         self.handshake_file = handshake_file
         self.key = key
-        super().__init__()
+        super(CrackResultWPA, self).__init__()
 
     def dump(self):
         if self.essid:
             Color.pl(f'{{+}} {"Access Point Name".rjust(19)}: {{C}}{self.essid}{{W}}')
         if self.bssid:
             Color.pl(f'{{+}} {"Access Point BSSID".rjust(19)}: {{C}}{self.bssid}{{W}}')
-        Color.pl(f'{{+}} {"Encryption".rjust(19)}: {{C}}{self.result_type}{{W}}')
+        Color.pl('{+} %s: {C}%s{W}' % ('Encryption'.rjust(19), self.result_type))
         if self.handshake_file:
-            Color.pl(f'{{+}} {"Handshake File".rjust(19)}: {{C}}{self.handshake_file}{{W}}')
+            Color.pl('{+} %s: {C}%s{W}' % ('Handshake File'.rjust(19), self.handshake_file))
         if self.key:
-            Color.pl(f'{{+}} {"PSK (password)".rjust(19)}: {{G}}{self.key}{{W}}')
+            Color.pl('{+} %s: {G}%s{W}' % ('PSK (password)'.rjust(19), self.key))
         else:
-            Color.pl(f'{{!}} {"".rjust(19)}  {{O}}key unknown{{W}}')
+            Color.pl('{!} %s  {O}key unknown{W}' % ''.rjust(19))
 
     def print_single_line(self, longest_essid):
         self.print_single_line_prefix(longest_essid)
-        Color.p(f'{{G}}{"WPA".ljust(5)}{{W}}')
+        Color.p('{G}%s{W}' % 'WPA'.ljust(5))
         Color.p('  ')
-        Color.p(f'Key: {{G}}{self.key}{{W}}')
+        Color.p('Key: {G}%s{W}' % self.key)
         Color.pl('')
 
     def to_dict(self):

@@ -19,7 +19,7 @@ from ..model.wpa_result import CrackResultWPA
 
 class AttackWPA(Attack):
     def __init__(self, target):
-        super().__init__(target)
+        super(AttackWPA, self).__init__(target)
         self.clients = []
         self.crack_result = None
         self.success = False
@@ -225,7 +225,7 @@ class AttackWPA(Attack):
             os.makedirs(Configuration.wpa_handshake_dir)
 
         # Generate filesystem-safe filename from bssid, essid and date
-        if handshake.essid and isinstance(type, handshake.essid) is str:
+        if handshake.essid and type(handshake.essid) is str:
             essid_safe = re.sub('[^a-zA-Z0-9]', '', handshake.essid)
         else:
             essid_safe = 'UnknownEssid'

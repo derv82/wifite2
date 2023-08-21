@@ -6,7 +6,7 @@ import os
 import time
 from .dependency import Dependency
 from .tshark import Tshark
-from .wash import Wash
+#from .wash import Wash
 from ..util.process import Process
 from ..config import Configuration
 from ..model.target import Target, WPSState

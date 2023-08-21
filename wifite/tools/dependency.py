@@ -68,3 +68,10 @@ class Dependency:
             Color.p(f'{{!}} {{O}}Error: Required app {{R}}{cls.dependency_name}{{O}} was not found')
             Color.pl(f'. {{W}}install @ {{C}}{cls.dependency_url}{{W}}')
             return True
+
+        else:
+            Color.p(
+                f'{{!}} {{O}}Warning: Recommended app '
+                f'{{R}}{cls.dependency_name}{{O}} was not found')
+            Color.pl(f'. {{W}}install @ {{C}}{cls.dependency_url}{{W}}')
+            return False
