@@ -1,12 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-
-import re
 from .dependency import Dependency
 from ..model.target import WPSState
 from ..util.process import Process
-
+import re
 
 
 class Tshark(Dependency):
@@ -22,8 +20,7 @@ class Tshark(Dependency):
     def _extract_src_dst_index_total(line):
         # Extract BSSIDs, handshake # (1-4) and handshake 'total' (4)
         mac_regex = ('[a-zA-Z0-9]{2}:' * 6)[:-1]
-        match = re.search(
-            fr'({mac_regex})\s*.*\s*({mac_regex}).*Message.*(\d).*of.*(\d)', line)
+        match = re.search(r'(%s)\s*.*\s*(%s).*Message.*(\d).*of.*(\d)' % (mac_regex, mac_regex), line)
         if match is None:
             # Line doesn't contain src, dst, Message numbers
             return None, None, None, None
@@ -93,8 +90,7 @@ class Tshark(Dependency):
         ]
         tshark = Process(command, devnull=False)
 
-        target_client_msg_nums = Tshark._build_target_client_handshake_map(
-            tshark.stdout(), bssid=bssid)
+        target_client_msg_nums = Tshark._build_target_client_handshake_map(tshark.stdout(), bssid=bssid)
 
         bssids = set()
         # Check if we have all 4 messages for the handshake between the same MACs
@@ -199,9 +195,9 @@ class Tshark(Dependency):
 
 
 if __name__ == '__main__':
-    test_file: str = './tests/files/contains_wps_network.cap'
+    test_file = './tests/files/contains_wps_network.cap'
 
-    target_bssid: str = 'A4:2B:8C:16:6B:3A'
+    target_bssid = 'A4:2B:8C:16:6B:3A'
     from ..model.target import Target
     fields = [
         'A4:2B:8C:16:6B:3A',  # BSSID

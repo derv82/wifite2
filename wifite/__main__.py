@@ -7,17 +7,18 @@ except (ValueError, ImportError) as e:
     raise Exception("You may need to run wifite from the root directory (which includes README.md)", e) from e
 
 
-import os
-import subprocess
 from .util.color import Color
 
+import os
+import subprocess
 
 
-class Wifite:
+class Wifite(object):
+
     def __init__(self):
         """
         Initializes Wifite.
-        Checks that it runs *nix, with root permissions and ensures dependencies are installed.
+        Checks that its running under *nix, with root permissions and ensures dependencies are installed.
         """
 
         self.print_banner()
@@ -94,7 +95,7 @@ class Wifite:
             # Attack
             attacked_targets = AttackAll.attack_multiple(targets)
 
-        Color.pl(f'{{+}} Finished attacking {{C}}{attacked_targets:d}{{W}} target(s), exiting')
+        Color.pl('{+} Finished attacking {C}%d{W} target(s), exiting' % attacked_targets)
 
 
 def entry_point():

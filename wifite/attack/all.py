@@ -10,7 +10,8 @@ from ..model.target import WPSState
 from ..util.color import Color
 
 
-class AttackAll:
+class AttackAll(object):
+
     @classmethod
     def attack_multiple(cls, targets):
         """
@@ -19,15 +20,13 @@ class AttackAll:
         """
         if any(t.wps for t in targets) and not AttackWPS.can_attack_wps():
             # Warn that WPS attacks are not available.
-            Color.pl(
-                '{!} {O}Note: WPS attacks are not possible because you do not have {C}reaver{O} nor {C}bully{W}')
+            Color.pl('{!} {O}Note: WPS attacks are not possible because you do not have {C}reaver{O} nor {C}bully{W}')
 
         attacked_targets = 0
         targets_remaining = len(targets)
         for index, target in enumerate(targets, start=1):
             if Configuration.attack_max != 0 and index > Configuration.attack_max:
-                print((
-                    f"Attacked {Configuration.attack_max:d} targets, stopping because of the --first flag"))
+                print(("Attacked %d targets, stopping because of the --first flag" % Configuration.attack_max))
                 break
             attacked_targets += 1
             targets_remaining -= 1
@@ -35,9 +34,8 @@ class AttackAll:
             bssid = target.bssid
             essid = target.essid if target.essid_known else '{O}ESSID unknown{W}'
 
-            Color.pl(
-                f'\n{{+}} ({{G}}{index:d}{{W}}/{{G}}{len(targets):d}{{W}})' +
-                f' Starting attacks against {{C}}{bssid}{{W}} ({{C}}{essid}{{W}})')
+            Color.pl('\n{+} ({G}%d{W}/{G}%d{W})'
+                     % (index, len(targets)) + ' Starting attacks against {C}%s{W} ({C}%s{W})' % (bssid, essid))
 
             should_continue = cls.attack_single(target, targets_remaining)
             if not should_continue:
@@ -53,8 +51,7 @@ class AttackAll:
         """
         global attack
         if 'MGT' in target.authentication:
-            Color.pl(
-                "\n{!}{O}Skipping. Target is using {C}WPA-Enterprise {O}and can not be cracked.")
+            Color.pl("\n{!}{O}Skipping. Target is using {C}WPA-Enterprise {O}and can not be cracked.")
             return True
 
         attacks = []
@@ -106,7 +103,7 @@ class AttackAll:
             except Exception as e:
                 # TODO:kimocoder: below is a great way to handle Exception
                 # rather then running full traceback in run of parsing to console.
-                Color.pl(f'\r {{!}} {{R}}Error{{W}}: {str(e)}')
+                Color.pl('\r {!} {R}Error{W}: %s' % str(e))
                 #Color.pexception(e)         # This was the original one which parses full traceback
                 #Color.pl('\n{!} {R}Exiting{W}\n')      # Another great one for other uasages.
                 continue
@@ -115,7 +112,11 @@ class AttackAll:
                 answer = cls.user_wants_to_continue(targets_remaining, len(attacks))
                 if answer is True:
                     continue  # Keep attacking the same target (continue)
-                return answer is None
+                elif answer is None:
+                    return True  # Keep attacking other targets (skip)
+                else:
+                    return False  # Stop all attacks (exit)
+
         if attack.success:
             attack.crack_result.save()
 
@@ -131,15 +132,15 @@ class AttackAll:
             False if the user wants to stop the remaining attacks
         """
         if attacks_remaining == 0 and targets_remaining == 0:
-            return None # No targets or attacksleft, drop out
+            return  # No targets or attacksleft, drop out
 
         prompt_list = []
         if attacks_remaining > 0:
-            prompt_list.append(Color.s(f'{{C}}{attacks_remaining:d}{{W}} attack(s)'))
+            prompt_list.append(Color.s('{C}%d{W} attack(s)' % attacks_remaining))
         if targets_remaining > 0:
-            prompt_list.append(Color.s(f'{{C}}{targets_remaining:d}{{W}} target(s)'))
+            prompt_list.append(Color.s('{C}%d{W} target(s)' % targets_remaining))
         prompt = ' and '.join(prompt_list) + ' remain'
-        Color.pl(f'{{+}} {prompt}')
+        Color.pl('{+} %s' % prompt)
 
         prompt = '{+} Do you want to'
         options = '('
@@ -154,14 +155,17 @@ class AttackAll:
 
         if Configuration.infinite_mode:
             options += '{R}r{W})'
-            prompt += f' or {{R}}return{{W}} to scanning {options}? {{C}}'
+            prompt += ' or {R}return{W} to scanning %s? {C}' % options
         else:
             options += '{R}e{W})'
-            prompt += f' or {{R}}exit{{W}} {options}? {{C}}'
+            prompt += ' or {R}exit{W} %s? {C}' % options
 
         Color.p(prompt)
         answer = input().lower()
 
         if answer.startswith('s'):
             return None  # Skip
-        return not answer.startswith('e') and not answer.startswith('r')
+        elif answer.startswith('e') or answer.startswith('r'):
+            return False  # Exit/Return
+        else:
+            return True  # Continue

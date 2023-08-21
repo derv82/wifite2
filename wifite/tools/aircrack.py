@@ -27,7 +27,7 @@ class Aircrack(Dependency):
             '-a', '1',
             '-l', self.cracked_file,
         ]
-        if isinstance(self, ivs_file is str):
+        if type(ivs_file) is str:
             ivs_file = [ivs_file]
 
         command.extend(ivs_file)
@@ -79,7 +79,7 @@ class Aircrack(Dependency):
     def crack_handshake(handshake, show_command=False):
         from ..util.color import Color
         from ..util.timer import Timer
-        f'Tries to crack a handshake. Returns WPA key if found, otherwise None.'
+        '''Tries to crack a handshake. Returns WPA key if found, otherwise None.'''
 
         key_file = Configuration.temp('wpakey.txt')
         command = [
@@ -91,7 +91,7 @@ class Aircrack(Dependency):
             handshake.capfile
         ]
         if show_command:
-            Color.pl(f'{{+}} {{D}}Running: {{W}}{{P}}{" ".join(command)}{{W}}')
+            Color.pl('{+} {D}Running: {W}{P}%s{W}' % ' '.join(command))
         crack_proc = Process(command)
 
         # Report progress of cracking
@@ -117,11 +117,11 @@ class Aircrack(Dependency):
             else:
                 continue
 
-            status = f'\r{{+}} {{C}}Cracking WPA Handshake: {percent:0.2f}%{{W}}'
-            status += f' ETA: {{C}}{eta_str}{{W}}'
-            status += f' @ {{C}}{num_kps:0.1f}kps{{W}}'
+            status = '\r{+} {C}Cracking WPA Handshake: %0.2f%%{W}' % percent
+            status += ' ETA: {C}%s{W}' % eta_str
+            status += ' @ {C}%0.1fkps{W}' % num_kps
             # status += ' ({C}%d{W}/{C}%d{W} keys)' % (num_tried, num_total)
-            status += f' (current key: {{C}}{current_key}{{W}})'
+            status += ' (current key: {C}%s{W})' % current_key
             Color.clear_entire_line()
             Color.p(status)
 
@@ -153,7 +153,7 @@ if __name__ == '__main__':
 
     Configuration.initialize(False)
 
-    ivs_file: str = 'tests/files/wep-crackable.ivs'
+    ivs_file = 'tests/files/wep-crackable.ivs'
     print(f'Running aircrack on {ivs_file} ...')
 
     aircrack = Aircrack(ivs_file)

@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
-
 import sys
 import unittest
 from wifite.tools.airmon import Airmon

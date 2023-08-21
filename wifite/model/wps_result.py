@@ -1,11 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-
-from os import devnull
-from contextlib import contextmanager, redirect_stderr, redirect_stdout
 from ..util.color import Color
 from ..model.result import CrackResult
+from contextlib import contextmanager, redirect_stderr, redirect_stdout
+from os import devnull
 
 
 @contextmanager
@@ -23,24 +22,24 @@ class CrackResultWPS(CrackResult):
         self.essid = essid
         self.pin = pin
         self.psk = psk
-        super().__init__()
+        super(CrackResultWPS, self).__init__()
 
     def dump(self):
         if self.essid is not None:
             Color.pl(f'{{+}} {"ESSID".rjust(12)}: {{C}}{self.essid}{{W}}')
-        psk = f'{{G}}{self.psk}{{W}}' if self.psk is not None else '{O}N/A{W}'
-        Color.pl(f'{{+}} {"BSSID".rjust(12)}: {{C}}{self.bssid}{{W}}')
-        Color.pl(f'{{+}} {"Encryption".rjust(12)}: {{C}}WPA{{W}} ({{C}}WPS{{W}})')
-        Color.pl(f'{{+}} {"WPS PIN".rjust(12)}: {{G}}{self.pin}{{W}}')
-        Color.pl(f'{{+}} {"PSK/Password".rjust(12)}: {{G}}{psk}{{W}}')
+        psk = '{O}N/A{W}' if self.psk is None else '{G}%s{W}' % self.psk
+        Color.pl('{+} %s: {C}%s{W}' % ('BSSID'.rjust(12), self.bssid))
+        Color.pl('{+} %s: {C}WPA{W} ({C}WPS{W})' % 'Encryption'.rjust(12))
+        Color.pl('{+} %s: {G}%s{W}' % ('WPS PIN'.rjust(12), self.pin))
+        Color.pl('{+} %s: {G}%s{W}' % ('PSK/Password'.rjust(12), psk))
 
     def print_single_line(self, longest_essid):
         self.print_single_line_prefix(longest_essid)
-        Color.p(f'{{G}}{"WPS".ljust(5)}{{W}}')
+        Color.p('{G}%s{W}' % 'WPS'.ljust(5))
         Color.p('  ')
         if self.psk:
-            Color.p(f'Key: {{G}}{self.psk}{{W}} ')
-        Color.p(f'PIN: {{G}}{self.pin}{{W}}')
+            Color.p('Key: {G}%s{W} ' % self.psk)
+        Color.p('PIN: {G}%s{W}' % self.pin)
         Color.pl('')
 
     def to_dict(self):

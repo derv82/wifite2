@@ -1,19 +1,18 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-
-import os
-import time
-import re
-from threading import Thread
 from .dependency import Dependency
 from ..config import Configuration
 from ..util.process import Process
 from ..util.timer import Timer
 
+import os
+import time
+import re
+from threading import Thread
 
 
-class WEPAttackType:
+class WEPAttackType(object):
     """ Enumeration of different WEP attack types """
     fakeauth = 0
     replay = 1
@@ -33,21 +32,21 @@ class WEPAttackType:
         """
         self.value = None
         self.name = None
-        if isinstance(self, var) is int:
+        if type(var) is int:
             for (name, value) in list(WEPAttackType.__dict__.items()):
-                if isinstance(self, value) is int and value == var:
+                if type(value) is int and value == var:
                     self.name = name
                     self.value = value
                     return
-            raise Exception(f'Attack number {var:d} not found')
-        if isinstance(self, var) is str:
+            raise Exception('Attack number %d not found' % var)
+        elif type(var) is str:
             for (name, value) in list(WEPAttackType.__dict__.items()):
-                if isinstance(self, value) is int and name == var:
+                if type(value) is int and name == var:
                     self.name = name
                     self.value = value
                     return
             raise Exception(f'Attack name {var} not found')
-        if isinstance(self, var) == WEPAttackType:
+        elif type(var) == WEPAttackType:
             self.name = var.name
             self.value = var.value
         else:
@@ -70,7 +69,7 @@ class Aireplay(Thread, Dependency):
                 attack_type - str, e.g. 'fakeauth', 'arpreplay', etc.
                 client_mac - MAC address of an associated client.
         """
-        super().__init__()  # Init the parent Thread
+        super(Aireplay, self).__init__()  # Init the parent Thread
 
         self.error = None
         self.status = None
@@ -118,9 +117,7 @@ class Aireplay(Thread, Dependency):
 
             if Configuration.verbose > 1 and lines.strip() != '':
                 from ..util.color import Color
-                Color.pl(
-                    '\n{P} [?] aireplay output:\n     %s{W}' % lines.strip().replace(
-                        '\n', '\n     '))
+                Color.pl('\n{P} [?] aireplay output:\n     %s{W}' % lines.strip().replace('\n', '\n     '))
 
             for line in lines.split('\n'):
                 line = line.replace('\r', '').strip()
@@ -132,8 +129,7 @@ class Aireplay(Thread, Dependency):
                 if self.attack_type == WEPAttackType.fakeauth:
                     # Look for fakeauth status. Potential Output lines:
                     # (START): 00:54:58  Sending Authentication Request (Open System)
-                    if ('Sending Authentication Request ' in line or
-                            'Please specify an ESSID' in line):
+                    if 'Sending Authentication Request ' in line or 'Please specify an ESSID' in line:
                         self.status = None  # Reset
                     elif 'Got a deauthentication packet!' in line:
                         self.status = False
@@ -153,10 +149,9 @@ class Aireplay(Thread, Dependency):
                     # Sent 1912 packets, current guess: 70...
                     sent_re = re.compile(r'Sent (\d+) packets, current guess: (\w+)...')
                     if matches := sent_re.match(line):
-                        self.status = (f'Generating .xor ('
-                                       f'{self.xor_percent})... current guess: {matches[2]}')
+                        self.status = f'Generating .xor ({self.xor_percent})... current guess: {matches[2]}'
 
-                    # Offset   52 (54% done) | xor = DE | pt = E0 |  152 frames written in  2782ms
+                    # (DURING) Offset   52 (54% done) | xor = DE | pt = E0 |  152 frames written in  2782ms
                     offset_re = re.compile(r'Offset.*\(\s*(\d+%) done\)')
                     if matches := offset_re.match(line):
                         self.xor_percent = matches[1]
@@ -213,14 +208,12 @@ class Aireplay(Thread, Dependency):
                     saving_re = re.compile(r'Saving keystream in (.*\.xor)')
                     if matches := saving_re.match(line):
                         self.status = f'saving keystream to {matches[1]}'
-                        # XX:XX:XX  Now you can build a packet with
-                        # packetforge-ng out of that 1500 bytes keystream
+                        # XX:XX:XX  Now you can build a packet with packetforge-ng out of that 1500 bytes keystream
 
                 else:  # Replay, forged replay, etc.
                     # Parse Packets Sent & PacketsPerSecond. Possible output lines:
                     # Read 55 packets (got 0 ARP requests and 0 ACKs), sent 0 packets...(0 pps)
-                    # Read 4467 packets
-                    # (got 1425 ARP requests and 1417 ACKs), sent 1553 packets...(100 pps)
+                    # Read 4467 packets (got 1425 ARP requests and 1417 ACKs), sent 1553 packets...(100 pps)
                     read_re = re.compile(r'Read (\d+) packets \(got (\d+) ARP requests '
                                          r'and (\d+) ACKs\), sent (\d+) packets...\((\d+) pps\)')
                     if matches := read_re.match(line):
@@ -378,7 +371,7 @@ class Aireplay(Thread, Dependency):
             return forged_file
         from ..util.color import Color
         Color.pl('{!} {R}failed to forge packet from .xor file{W}')
-        Color.pl(f'output:\n"{out}"')
+        Color.pl('output:\n"%s"' % out)
         return None
 
     @staticmethod

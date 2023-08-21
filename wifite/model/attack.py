@@ -5,7 +5,7 @@ import time
 from ..config import Configuration
 
 
-class Attack:
+class Attack(object):
     """Contains functionality common to all attacks."""
 
     target_wait = min(60, Configuration.wpa_attack_timeout)
@@ -23,10 +23,10 @@ class Attack:
         while len(targets) == 0:
             # Wait for target to appear in airodump.
             if int(time.time() - start_time) > Attack.target_wait:
-                raise Exception(
-                    f'Target did not appear after {Attack.target_wait:d} seconds, stopping')
+                raise Exception(f'Target did not appear after {Attack.target_wait:d} seconds, stopping')
             time.sleep(1)
             targets = airodump.get_targets()
+            continue
 
         airodump_target = next((t for t in targets if t.bssid == self.target.bssid), None)
 

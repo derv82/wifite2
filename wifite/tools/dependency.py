@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 
-class Dependency:
+class Dependency(object):
     dependency_name = None
     dependency_required = None
     dependency_url = None
@@ -12,8 +12,7 @@ class Dependency:
     def __init_subclass__(cls):
         for attr_name in cls.required_attr_names:
             if attr_name not in cls.__dict__:
-                raise NotImplementedError(
-                    f'Attribute "{attr_name}" has not been overridden in class "{cls.__name__}"')
+                raise NotImplementedError(f'Attribute "{attr_name}" has not been overridden in class "{cls.__name__}"')
 
     @classmethod
     def exists(cls):
@@ -51,8 +50,7 @@ class Dependency:
         missing_required = any(app.fails_dependency_check() for app in apps)
 
         if missing_required:
-            Color.pl(
-                '{!} {O}At least 1 Required app is missing. Wifite needs Required apps to run{W}')
+            Color.pl('{!} {O}At least 1 Required app is missing. Wifite needs Required apps to run{W}')
             import sys
             sys.exit(-1)
 
@@ -65,13 +63,11 @@ class Dependency:
             return False
 
         if cls.dependency_required:
-            Color.p(f'{{!}} {{O}}Error: Required app {{R}}{cls.dependency_name}{{O}} was not found')
-            Color.pl(f'. {{W}}install @ {{C}}{cls.dependency_url}{{W}}')
+            Color.p('{!} {O}Error: Required app {R}%s{O} was not found' % cls.dependency_name)
+            Color.pl('. {W}install @ {C}%s{W}' % cls.dependency_url)
             return True
 
         else:
-            Color.p(
-                f'{{!}} {{O}}Warning: Recommended app '
-                f'{{R}}{cls.dependency_name}{{O}} was not found')
-            Color.pl(f'. {{W}}install @ {{C}}{cls.dependency_url}{{W}}')
+            Color.p('{!} {O}Warning: Recommended app {R}%s{O} was not found' % cls.dependency_name)
+            Color.pl('. {W}install @ {C}%s{W}' % cls.dependency_url)
             return False

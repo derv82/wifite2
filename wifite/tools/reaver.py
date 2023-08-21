@@ -1,10 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-
-import os
-import time
-import re
 import contextlib
 from .dependency import Dependency
 from .airodump import Airodump
@@ -16,6 +12,10 @@ from ..util.color import Color
 from ..util.process import Process
 from ..util.timer import Timer
 
+import os
+import time
+import re
+
 
 class Reaver(Attack, Dependency):
     dependency_required = False
@@ -23,7 +23,7 @@ class Reaver(Attack, Dependency):
     dependency_url = 'https://github.com/t6x/reaver-wps-fork-t6x'
 
     def __init__(self, target, pixie_dust=True, null_pin=False):
-        super().__init__(target)
+        super(Reaver, self).__init__(target)
 
         self.pixie_dust = pixie_dust
         self.null_pin = null_pin
@@ -76,7 +76,7 @@ class Reaver(Attack, Dependency):
             self._run()  # Run-loop
         except Exception as e:
             # Failed with error
-            self.pattack(f'{{R}}Failed:{{O}} {str(e)}', newline=True)
+            self.pattack('{R}Failed:{O} %s' % str(e), newline=True)
             return self.crack_result is not None
 
         # Stop reaver if it's still running
@@ -148,7 +148,7 @@ class Reaver(Attack, Dependency):
             main_status = ''
         else:
             # Include percentage
-            main_status = f'({{G}}{self.progress}{{W}}) '
+            main_status = '({G}%s{W}) ' % self.progress
 
         # Current state (set in parse_* methods)
         main_status += self.state
@@ -157,10 +157,10 @@ class Reaver(Attack, Dependency):
         meta_statuses = []
 
         if self.total_timeouts > 0:
-            meta_statuses.append(f'{{O}}Timeouts:{self.total_timeouts:d}{{W}}')
+            meta_statuses.append('{O}Timeouts:%d{W}' % self.total_timeouts)
 
         if self.total_wpsfails > 0:
-            meta_statuses.append(f'{{O}}Fails:{self.total_wpsfails:d}{{W}}')
+            meta_statuses.append('{O}Fails:%d{W}' % self.total_wpsfails)
 
         if self.locked:
             meta_statuses.append('{R}Locked{W}')
@@ -182,11 +182,9 @@ class Reaver(Attack, Dependency):
 
             if psk is not None:
                 # Reaver provided PSK
-                self.pattack(
-                    f'{{G}}Cracked WPS PIN: {{C}}{pin}{{W}} {{G}}PSK: {{C}}{psk}{{W}}',
-                    newline=True)
+                self.pattack('{G}Cracked WPS PIN: {C}%s{W} {G}PSK: {C}%s{W}' % (pin, psk), newline=True)
             else:
-                self.pattack(f'{{G}}Cracked WPS PIN: {{C}}{pin}', newline=True)
+                self.pattack('{G}Cracked WPS PIN: {C}%s' % pin, newline=True)
 
                 # Try to derive PSK from PIN using Bully
                 self.pattack('{W}Retrieving PSK using {C}bully{W}...')
@@ -197,7 +195,7 @@ class Reaver(Attack, Dependency):
                     Color.pl('')
                     self.pattack('{R}Failed {O}to get PSK using bully', newline=True)
                 else:
-                    self.pattack(f'{{G}}Cracked WPS PSK: {{C}}{psk}', newline=True)
+                    self.pattack('{G}Cracked WPS PSK: {C}%s' % psk, newline=True)
 
             crack_result = CrackResultWPS(self.target.bssid, ssid, pin, psk)
             crack_result.dump()
@@ -212,20 +210,20 @@ class Reaver(Attack, Dependency):
 
         # Running-time failure
         if self.pixie_dust and self.running_time() > Configuration.wps_pixie_timeout:
-            raise Exception(f'Timeout after {Configuration.wps_pixie_timeout:d} seconds')
+            raise Exception('Timeout after %d seconds' % Configuration.wps_pixie_timeout)
 
         if self.null_pin and self.running_time() > Configuration.wps_pixie_timeout:
-            raise Exception(f'Timeout after {Configuration.wps_pixie_timeout:d} seconds')
+            raise Exception('Timeout after %d seconds' % Configuration.wps_pixie_timeout)
 
         # WPSFail count
         self.total_wpsfails = stdout.count('WPS transaction failed')
         if self.total_wpsfails >= Configuration.wps_fail_threshold:
-            raise Exception(f'Too many failures ({self.total_wpsfails:d})')
+            raise Exception('Too many failures (%d)' % self.total_wpsfails)
 
         # Timeout count
         self.total_timeouts = stdout.count('Receive timeout occurred')
         if self.total_timeouts >= Configuration.wps_timeout_threshold:
-            raise Exception(f'Too many timeouts ({self.total_timeouts:d})')
+            raise Exception('Too many timeouts (%d)' % self.total_timeouts)
 
     def parse_state(self, stdout):
         state = self.state
@@ -297,22 +295,22 @@ class Reaver(Attack, Dependency):
         # Print message with attack information.
         if self.pixie_dust:
             time_left = Configuration.wps_pixie_timeout - self.running_time()
-            time_msg = f'{{O}}{Timer.secs_to_str(time_left)}{{W}}'
+            time_msg = '{O}%s{W}' % Timer.secs_to_str(time_left)
             attack_name = 'Pixie-Dust'
         elif self.null_pin:
             time_left = Configuration.wps_pixie_timeout - self.running_time()
-            time_msg = f'{{O}}{Timer.secs_to_str(time_left)}{{W}}'
+            time_msg = '{O}%s{W}' % Timer.secs_to_str(time_left)
             attack_name = 'NULL PIN'
         else:
             time_left = self.running_time()
-            time_msg = f'{{C}}{Timer.secs_to_str(time_left)}{{W}}'
+            time_msg = '{C}%s{W}' % Timer.secs_to_str(time_left)
             attack_name = 'PIN Attack'
 
         if self.total_attempts > 0 and not self.pixie_dust and not self.null_pin:
-            time_msg += f' {{D}}PINs:{{W}}{{C}}{self.total_attempts:d}{{W}}'
+            time_msg += ' {D}PINs:{W}{C}%d{W}' % self.total_attempts
 
         Color.clear_entire_line()
-        Color.pattack('WPS', self.target, attack_name, f'{{W}}[{time_msg}] {message}')
+        Color.pattack('WPS', self.target, attack_name, '{W}[%s] %s' % (time_msg, message))
         if newline:
             Color.pl('')
 
@@ -392,7 +390,7 @@ Cmd : reaver -i wlan0mon -b 08:86:3B:8C:FD:9C -c 11 -s y -vv -p 28097402
 '''
 
     # From vom513 in https://github.com/derv82/wifite2/issues/60
-    new_stdout: str = '''
+    new_stdout = '''
 [+] Switching wlan1mon to channel 5
 [+] Waiting for beacon from EC:1A:59:37:70:0E
 [+] Received beacon from EC:1A:59:37:70:0E
@@ -431,7 +429,7 @@ aca879469d5da5 -z c8a2ccc5fb6dc4f4d69b245091022dc7e998e42ec1d548d57c35a312ff63ef
 95243e33cb48c570458a539dcb523a4d4c4360e158c29b882f7f385821ea043705eb56538b45daa445157c84e60fc94ef48136eb4e9725b1349
 02b96c90b1ae54cbd42b29b52611903fdae5aa88bfc320f173d2bbe31df4996ebdb51342c6b8bd4e82ae5aa80b2a09a8bf8faa9a8332dc9819
 '''
-    pin_attack_stdout: str = '''
+    pin_attack_stdout = '''
 [+] Pin cracked in 16 seconds
 [+] WPS PIN: '01030365'
 [+] WPA PSK: 'password'

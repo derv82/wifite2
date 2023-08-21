@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-*
 
+from ..util.color import Color
+from ..config import Configuration
 
 import os
 import time
 from json import loads, dumps
-from ..util.color import Color
-from ..config import Configuration
 
 
-class CrackResult:
+class CrackResult(object):
     """ Abstract class containing results from a crack session """
 
     # File to save cracks to, in PWD
@@ -31,11 +31,11 @@ class CrackResult:
     def print_single_line_prefix(self, longest_essid):
         essid = self.essid or 'N/A'
         Color.p('{W} ')
-        Color.p(f'{{C}}{essid.ljust(longest_essid)}{{W}}')
+        Color.p('{C}%s{W}' % essid.ljust(longest_essid))
         Color.p('  ')
-        Color.p(f'{{GR}}{self.bssid.ljust(17)}{{W}}')
+        Color.p('{GR}%s{W}' % self.bssid.ljust(17))
         Color.p('  ')
-        Color.p(f'{{D}}{self.readable_date.ljust(19)}{{W}}')
+        Color.p('{D}%s{W}' % self.readable_date.ljust(19))
         Color.p('  ')
 
     def save(self):
@@ -48,7 +48,7 @@ class CrackResult:
             try:
                 saved_results = loads(text)
             except Exception as e:
-                Color.pl(f'{{!}} error while loading {name}: {str(e)}')
+                Color.pl('{!} error while loading %s: %s' % (name, str(e)))
 
         # Check for duplicates
         this_dict = self.to_dict()
@@ -57,33 +57,33 @@ class CrackResult:
             this_dict['date'] = entry.get('date')
             if entry == this_dict:
                 # Skip if we already saved this BSSID+ESSID+TYPE+KEY
-                Color.pl(
-                    f'{{+}} {{C}}{self.essid}{{O}} already exists in {{G}}{Configuration.cracked_file}{{O}}, skipping.')
+                Color.pl('{+} {C}%s{O} already exists in {G}%s{O}, skipping.' % (
+                    self.essid, Configuration.cracked_file))
                 return
 
         saved_results.append(self.to_dict())
         with open(name, 'w') as fid:
             fid.write(dumps(saved_results, indent=2))
-        Color.pl(
-            f'{{+}} saved crack result to {{C}}{name}{{W}} ({{G}}{len(saved_results):d} total{{W}})')
+        Color.pl('{+} saved crack result to {C}%s{W} ({G}%d total{W})'
+                 % (name, len(saved_results)))
 
     @classmethod
     def display(cls):
         """ Show cracked targets from cracked file """
         name = cls.cracked_file
         if not os.path.exists(name):
-            Color.pl(f'{{!}} {{O}}file {{C}}{name}{{O}} not found{{W}}')
+            Color.pl('{!} {O}file {C}%s{O} not found{W}' % name)
             return
 
         with open(name, 'r') as fid:
             cracked_targets = loads(fid.read())
 
         if len(cracked_targets) == 0:
-            Color.pl(f'{{!}} {{R}}no results found in {{O}}{name}{{W}}')
+            Color.pl('{!} {R}no results found in {O}%s{W}' % name)
             return
 
-        Color.pl(
-            f'\n{{+}} Displaying {{G}}{len(cracked_targets):d}{{W}} cracked target(s) from {{C}}{name}{{W}}\n')
+        Color.pl('\n{+} Displaying {G}%d{W} cracked target(s) from {C}%s{W}\n' % (
+            len(cracked_targets), name))
 
         results = sorted([cls.load(item) for item in cracked_targets], key=lambda x: x.date, reverse=True)
         longest_essid = max(len(result.essid or 'ESSID') for result in results)

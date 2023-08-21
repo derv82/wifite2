@@ -2,9 +2,8 @@
 # -*- coding: utf-8 -*-
 
 import sys
-import unittest
 from wifite.tools.airodump import Airodump
-
+import unittest
 
 sys.path.insert(0, '..')
 
