@@ -196,7 +196,7 @@ class AttackWPA(Attack):
             return None
 
         if essid:
-            essid_safe = re.escape(re.sub('[^a-zA-Z\d]', '', essid))
+            essid_safe = re.escape(re.sub('[^a-zA-Z0-9]', '', essid))
         else:
             essid_safe = '[a-zA-Z0-9]+'
         bssid_safe = re.escape(bssid.replace(':', '-'))
@@ -223,7 +223,7 @@ class AttackWPA(Attack):
 
         # Generate filesystem-safe filename from bssid, essid and date
         if handshake.essid and type(handshake.essid) is str:
-            essid_safe = re.sub('[^a-zA-Z\d]', '', handshake.essid)
+            essid_safe = re.sub('[^a-zA-Z0-9]', '', handshake.essid)
         else:
             essid_safe = 'UnknownEssid'
         bssid_safe = handshake.bssid.replace(':', '-')

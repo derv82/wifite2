@@ -339,7 +339,7 @@ class AttackPMKID(Attack):
     # TODO Rename this here and in `save_pmkid`
     def _extracted_from_save_pmkid_21(self, arg0):
         # Generate filesystem-safe filename from bssid, essid and date
-        essid_safe = re.sub('[^a-zA-Z\d]', '', self.target.essid)
+        essid_safe = re.sub('[^a-zA-Z0-9]', '', self.target.essid)
         bssid_safe = self.target.bssid.replace(':', '-')
         date = time.strftime('%Y-%m-%dT%H-%M-%S')
         result = f'pmkid_{essid_safe}_{bssid_safe}_{date}{arg0}'
