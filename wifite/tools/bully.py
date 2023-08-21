@@ -4,6 +4,7 @@
 
 import time
 import re
+from threading import Thread
 from .dependency import Dependency
 from .airodump import Airodump
 from ..model.attack import Attack
@@ -12,8 +13,6 @@ from ..util.color import Color
 from ..util.timer import Timer
 from ..util.process import Process
 from ..config import Configuration
-from threading import Thread
-
 
 
 class Bully(Attack, Dependency):
