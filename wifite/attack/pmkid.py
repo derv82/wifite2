@@ -8,7 +8,6 @@ from ..util.color import Color
 from ..util.timer import Timer
 from ..model.pmkid_result import CrackResultPMKID
 from ..tools.airodump import Airodump
-
 from threading import Thread
 import os
 import time
@@ -17,7 +16,6 @@ from shutil import copy
 
 
 class AttackPMKID(Attack):
-
     def __init__(self, target):
         super(AttackPMKID, self).__init__(target)
         self.crack_result = None

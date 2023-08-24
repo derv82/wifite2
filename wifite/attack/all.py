@@ -11,7 +11,6 @@ from ..util.color import Color
 
 
 class AttackAll(object):
-
     @classmethod
     def attack_multiple(cls, targets):
         """

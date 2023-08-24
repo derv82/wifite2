@@ -70,18 +70,22 @@ class Scanner(object):
                     sleep(1)
 
         except KeyboardInterrupt:
-            if not Configuration.infinite_mode:
-                return True
+            return self._extracted_from_find_targets_50()
 
-            options = '({G}s{W}{D}, {W}{R}e{W})'
-            prompt = '{+} Do you want to {G}start attacking{W} or {R}exit{W}%s?' % options
+    # TODO Rename this here and in `find_targets`
+    def _extracted_from_find_targets_50(self):
+        if not Configuration.infinite_mode:
+            return True
 
-            self.print_targets()
-            Color.clear_entire_line()
-            Color.p(prompt)
-            answer = input().lower()
+        options = '({G}s{W}{D}, {W}{R}e{W})'
+        prompt = '{+} Do you want to {G}start attacking{W} or {R}exit{W}%s?' % options
 
-            return not answer.startswith('e')
+        self.print_targets()
+        Color.clear_entire_line()
+        Color.p(prompt)
+        answer = input().lower()
+
+        return not answer.startswith('e')
 
     def update_targets(self):
         """

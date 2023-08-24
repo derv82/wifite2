@@ -3,7 +3,6 @@
 
 import os
 from json import loads
-
 from ..config import Configuration
 from ..model.handshake import Handshake
 from ..model.pmkid_result import CrackResultPMKID
@@ -256,6 +255,7 @@ class CrackHelper:
     @classmethod
     def crack_4way(cls, hs, tool):
 
+        global key
         handshake = Handshake(hs['filename'],
                               bssid=hs['bssid'],
                               essid=hs['essid'])

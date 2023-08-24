@@ -1,12 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import contextlib
 import time
 import signal
 import os
-
 from subprocess import Popen, PIPE
-
 from ..util.color import Color
 from ..config import Configuration
 
@@ -97,11 +96,9 @@ class Process(object):
             Ran when object is GC'd.
             If process is still running at this point, it should die.
         """
-        try:
+        with contextlib.suppress(AttributeError):
             if self.pid and self.pid.poll() is None:
                 self.interrupt()
-        except AttributeError:
-            pass
 
     def stdout(self):
         """ Waits for process to finish, returns stdout output """
@@ -160,36 +157,39 @@ class Process(object):
             If process fails to exit within `wait_time` seconds, terminates it.
         """
         try:
-            pid = self.pid.pid
-            cmd = self.command
-            if type(cmd) is list:
-                cmd = ' '.join(cmd)
-
-            if Configuration.verbose > 1:
-                Color.pe('\n {C}[?] {W} sending interrupt to PID %d (%s)' % (pid, cmd))
-
-            os.kill(pid, signal.SIGINT)
-
-            start_time = time.time()  # Time since Interrupt was sent
-            while self.pid.poll() is None:
-                # Process is still running
-                try:
-                    time.sleep(0.1)
-                    if time.time() - start_time > wait_time:
-                        # We waited too long for process to die, terminate it.
-                        if Configuration.verbose > 1:
-                            Color.pe('\n {C}[?] {W} Waited > %0.2f seconds for process to die, killing it' % wait_time)
-                        os.kill(pid, signal.SIGTERM)
-                        self.pid.terminate()
-                        break
-                except KeyboardInterrupt:
-                    # wait the cleanup
-                    continue
-
+            self._extracted_from_interrupt_7(wait_time)
         except OSError as e:
             if 'No such process' in e.__str__():
                 return
             raise e  # process cannot be killed
+
+    # TODO Rename this here and in `interrupt`
+    def _extracted_from_interrupt_7(self, wait_time):
+        pid = self.pid.pid
+        cmd = self.command
+        if type(cmd) is list:
+            cmd = ' '.join(cmd)
+
+        if Configuration.verbose > 1:
+            Color.pe('\n {C}[?] {W} sending interrupt to PID %d (%s)' % (pid, cmd))
+
+        os.kill(pid, signal.SIGINT)
+
+        start_time = time.time()  # Time since Interrupt was sent
+        while self.pid.poll() is None:
+            # Process is still running
+            try:
+                time.sleep(0.1)
+                if time.time() - start_time > wait_time:
+                    # We waited too long for process to die, terminate it.
+                    if Configuration.verbose > 1:
+                        Color.pe('\n {C}[?] {W} Waited > %0.2f seconds for process to die, killing it' % wait_time)
+                    os.kill(pid, signal.SIGTERM)
+                    self.pid.terminate()
+                    break
+            except KeyboardInterrupt:
+                # wait the cleanup
+                continue
 
 
 if __name__ == '__main__':

@@ -3,7 +3,6 @@
 
 import os
 import re
-
 from .util.color import Color
 from .tools.macchanger import Macchanger
 
@@ -37,7 +36,7 @@ class Configuration(object):
     min_power = None
     no_deauth = None
     no_wps = None
-    no_nullpin = None
+    wps_no_nullpin = None
     num_deauths = None
     pmkid_timeout = None
     print_stack_traces = None
@@ -630,6 +629,7 @@ class Configuration(object):
     @classmethod
     def exit_gracefully(cls, code=0):
         """ Deletes temp and exist with the given code """
+        code = 0
         cls.delete_temp()
         Macchanger.reset_if_changed()
         from .tools.airmon import Airmon

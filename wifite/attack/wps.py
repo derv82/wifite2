@@ -9,7 +9,6 @@ from ..tools.reaver import Reaver
 
 
 class AttackWPS(Attack):
-
     @staticmethod
     def can_attack_wps():
         return Reaver.exists() or Bully.exists()

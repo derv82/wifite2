@@ -10,7 +10,6 @@ from ..util.color import Color
 from ..util.timer import Timer
 from ..model.handshake import Handshake
 from ..model.wpa_result import CrackResultWPA
-
 import time
 import os
 import re
@@ -178,7 +177,6 @@ class AttackWPA(Attack):
 
                 # Sleep for at-most 1 second
                 time.sleep(step_timer.remaining())
-                continue  # Handshake listen+deauth loop
 
         if handshake is None:
             # No handshake, attack failed.
