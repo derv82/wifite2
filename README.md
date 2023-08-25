@@ -14,7 +14,7 @@ Wifite runs existing wireless-auditing tools for you. Stop memorizing command ar
 
 ## Install Python
 ```bash
-sudo apt update -y && sudo apt install aptitude -y && sudo aptitude install python3-pip python-pip-whl python-all-dev python3-wheel -y && pip install pysqlcipher3 && pip install psycopg2-binary
+sudo apt update -y && sudo apt install aptitude -y && sudo aptitude install python3-pip python-all-dev python3-wheel -y && pip install pysqlcipher3 && pip install psycopg2-binary
 ```
 
 Install Realtek / Alfa Cards:
