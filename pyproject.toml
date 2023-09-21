@@ -6,7 +6,7 @@ authors = ["kimocoder <christian@aircrack-ng.org>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.12"
+python = "^3.11"
 
 
 [build-system]
