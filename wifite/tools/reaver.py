@@ -52,11 +52,10 @@ class Reaver(Attack, Dependency):
             '--channel', self.target.channel,
             '-vv',
             '-N',
-            '-O', 'reaver_output.pcap'
         ]
 
         if pixie_dust:
-            self.reaver_cmd.extend(['--pixie-dust', '1'])
+            self.reaver_cmd.extend(['-K'])
 
         if null_pin:
             # self.reaver_cmd.extend(['-O', 'reaver_output.pcap'])  # This is for logging output
