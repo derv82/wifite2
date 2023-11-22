@@ -1,65 +1,58 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+
 class Dependency(object):
+    dependency_name = None
+    dependency_required = None
+    dependency_url = None
     required_attr_names = ['dependency_name', 'dependency_url', 'dependency_required']
 
     # https://stackoverflow.com/a/49024227
     def __init_subclass__(cls):
         for attr_name in cls.required_attr_names:
-            if not attr_name in cls.__dict__:
-                raise NotImplementedError(
-                    'Attribute "{}" has not been overridden in class "{}"' \
-                    .format(attr_name, cls.__name__)
-                )
-
+            if attr_name not in cls.__dict__:
+                raise NotImplementedError(f'Attribute "{attr_name}" has not been overridden in class "{cls.__name__}"')
 
     @classmethod
     def exists(cls):
         from ..util.process import Process
         return Process.exists(cls.dependency_name)
 
-
     @classmethod
     def run_dependency_check(cls):
         from ..util.color import Color
 
-        from .airmon import Airmon
-        from .airodump import Airodump
         from .aircrack import Aircrack
-        from .aireplay import Aireplay
-        from .ifconfig import Ifconfig
-        from .iwconfig import Iwconfig
+        from .ip import Ip
+        from .iw import Iw
         from .bully import Bully
         from .reaver import Reaver
-        from .wash import Wash
-        from .pyrit import Pyrit
         from .tshark import Tshark
         from .macchanger import Macchanger
-        from .hashcat import Hashcat, HcxDumpTool, HcxPcapTool
+        from .hashcat import Hashcat, HcxDumpTool, HcxPcapngTool
 
         apps = [
-                # Aircrack
-                Aircrack, #Airodump, Airmon, Aireplay,
-                # wireless/net tools
-                Iwconfig, Ifconfig,
-                # WPS
-                Reaver, Bully,
-                # Cracking/handshakes
-                Pyrit, Tshark,
-                # Hashcat
-                Hashcat, HcxDumpTool, HcxPcapTool,
-                # Misc
-                Macchanger
-            ]
+            # Aircrack
+            Aircrack,  # Airodump, Airmon, Aireplay,
+            # wireless/net tools
+            Iw, Ip,
+            # WPS
+            Reaver, Bully,
+            # Cracking/handshakes
+            Tshark,
+            # Hashcat
+            Hashcat, HcxDumpTool, HcxPcapngTool,
+            # Misc
+            Macchanger
+        ]
 
-        missing_required = any([app.fails_dependency_check() for app in apps])
+        missing_required = any(app.fails_dependency_check() for app in apps)
 
         if missing_required:
             Color.pl('{!} {O}At least 1 Required app is missing. Wifite needs Required apps to run{W}')
             import sys
             sys.exit(-1)
-
 
     @classmethod
     def fails_dependency_check(cls):
