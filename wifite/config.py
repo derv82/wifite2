@@ -53,6 +53,7 @@ class Configuration(object):
     temp_dir = None  # Temporary directory
     two_ghz = None
     use_bully = None
+    use_reaver = None
     use_eviltwin = None
     use_pmkid_only = None
     wep_attacks = None

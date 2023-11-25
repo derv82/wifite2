@@ -185,17 +185,6 @@ class Reaver(Attack, Dependency):
             else:
                 self.pattack('{G}Cracked WPS PIN: {C}%s' % pin, newline=True)
 
-                # Try to derive PSK from PIN using Bully
-                self.pattack('{W}Retrieving PSK using {C}bully{W}...')
-                psk = None
-                with contextlib.suppress(KeyboardInterrupt):
-                    psk = Bully.get_psk_from_pin(self.target, pin)
-                if psk is None:
-                    Color.pl('')
-                    self.pattack('{R}Failed {O}to get PSK using bully', newline=True)
-                else:
-                    self.pattack('{G}Cracked WPS PSK: {C}%s' % psk, newline=True)
-
             crack_result = CrackResultWPS(self.target.bssid, ssid, pin, psk)
             crack_result.dump()
             return crack_result
