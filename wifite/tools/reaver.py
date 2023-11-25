@@ -1,20 +1,15 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+import os
+import re
+import time
 
-import contextlib
-from .dependency import Dependency
 from .airodump import Airodump
-from .bully import Bully  # for PSK retrieval
-from ..model.attack import Attack
+from .dependency import Dependency
 from ..config import Configuration
+from ..model.attack import Attack
 from ..model.wps_result import CrackResultWPS
 from ..util.color import Color
 from ..util.process import Process
 from ..util.timer import Timer
-
-import os
-import time
-import re
 
 
 class Reaver(Attack, Dependency):
@@ -55,10 +50,9 @@ class Reaver(Attack, Dependency):
         ]
 
         if pixie_dust:
-            self.reaver_cmd.extend(['-K'])
+            self.reaver_cmd.extend(['-K']) # use Pixie-dust attack
 
         if null_pin:
-            # self.reaver_cmd.extend(['-O', 'reaver_output.pcap'])  # This is for logging output
             self.reaver_cmd.extend(['-p', ''])  # NULL PIN attack parameter
 
         self.reaver_proc = None
