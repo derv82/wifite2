@@ -4,14 +4,13 @@
 from ..util.color import Color
 from .result import CrackResult
 
-import time
 
 class CrackResultWEP(CrackResult):
     def __init__(self, bssid, essid, hex_key, ascii_key):
         self.result_type = 'WEP'
-        self.bssid     = bssid
-        self.essid     = essid
-        self.hex_key   = hex_key
+        self.bssid = bssid
+        self.essid = essid
+        self.hex_key = hex_key
         self.ascii_key = ascii_key
         super(CrackResultWEP, self).__init__()
 
@@ -35,16 +34,16 @@ class CrackResultWEP(CrackResult):
 
     def to_dict(self):
         return {
-            'type'      : self.result_type,
-            'date'      : self.date,
-            'essid'     : self.essid,
-            'bssid'     : self.bssid,
-            'hex_key'   : self.hex_key,
-            'ascii_key' : self.ascii_key
+            'type': self.result_type,
+            'date': self.date,
+            'essid': self.essid,
+            'bssid': self.bssid,
+            'hex_key': self.hex_key,
+            'ascii_key': self.ascii_key
         }
+
 
 if __name__ == '__main__':
     crw = CrackResultWEP('AA:BB:CC:DD:EE:FF', 'Test Router', '00:01:02:03:04', 'abcde')
     crw.dump()
     crw.save()
-

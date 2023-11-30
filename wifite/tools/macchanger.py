@@ -2,25 +2,26 @@
 # -*- coding: utf-8 -*-
 
 from .dependency import Dependency
-from ..tools.ifconfig import Ifconfig
+from ..tools.ip import Ip
 from ..util.color import Color
+
 
 class Macchanger(Dependency):
     dependency_required = False
     dependency_name = 'macchanger'
-    dependency_url = 'apt-get install macchanger'
+    dependency_url = 'apt install macchanger'
 
     is_changed = False
 
     @classmethod
     def down_macch_up(cls, iface, options):
-        '''Put interface down, run macchanger with options, put interface up'''
+        """Put interface down, run macchanger with options, put interface up"""
         from ..util.process import Process
 
         Color.clear_entire_line()
         Color.p('\r{+} {C}macchanger{W}: taking interface {C}%s{W} down...' % iface)
 
-        Ifconfig.down(iface)
+        Ip.down(iface)
 
         Color.clear_entire_line()
         Color.p('\r{+} {C}macchanger{W}: changing mac address of interface {C}%s{W}...' % iface)
@@ -38,10 +39,9 @@ class Macchanger(Dependency):
         Color.clear_entire_line()
         Color.p('\r{+} {C}macchanger{W}: bringing interface {C}%s{W} up...' % iface)
 
-        Ifconfig.up(iface)
+        Ip.up(iface)
 
         return True
-
 
     @classmethod
     def get_interface(cls):
@@ -49,18 +49,16 @@ class Macchanger(Dependency):
         from ..config import Configuration
         return Configuration.interface
 
-
     @classmethod
     def reset(cls):
         iface = cls.get_interface()
         Color.pl('\r{+} {C}macchanger{W}: resetting mac address on %s...' % iface)
         # -p to reset to permanent MAC address
         if cls.down_macch_up(iface, ['-p']):
-            new_mac = Ifconfig.get_mac(iface)
+            new_mac = Ip.get_mac(iface)
 
             Color.clear_entire_line()
             Color.pl('\r{+} {C}macchanger{W}: reset mac address back to {C}%s{W} on {C}%s{W}' % (new_mac, iface))
-
 
     @classmethod
     def random(cls):
@@ -76,14 +74,12 @@ class Macchanger(Dependency):
         # -e to keep vendor bytes the same
         if cls.down_macch_up(iface, ['-e']):
             cls.is_changed = True
-            new_mac = Ifconfig.get_mac(iface)
+            new_mac = Ip.get_mac(iface)
 
             Color.clear_entire_line()
             Color.pl('\r{+} {C}macchanger{W}: changed mac address to {C}%s{W} on {C}%s{W}' % (new_mac, iface))
-
 
     @classmethod
     def reset_if_changed(cls):
         if cls.is_changed:
             cls.reset()
-

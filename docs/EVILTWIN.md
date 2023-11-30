@@ -73,7 +73,7 @@ HOSTAPD
 -------
 * Starts access point.
 * Not included in Kali by-default.
-* Installable via `apt-get install hostapd`.
+* Installable via `aptinstall hostapd`.
 * [Docs](https://wireless.wiki.kernel.org/en/users/documentation/hostapd)
 
 Config file format (e.g. `~/hostapd.conf`):
@@ -96,7 +96,7 @@ DNSMASQ
 -------
 
 * Included in Kali.
-* Installable via `apt-get install dnsmasq`
+* Installable via `apt install dnsmasq`
 * Handles DNS and DHCP.
 * [Install & Overview](http://www.thekelleys.org.uk/dnsmasq/doc.html), [Manpage](http://www.thekelleys.org.uk/dnsmasq/docs/dnsmasq-man.html)
 
