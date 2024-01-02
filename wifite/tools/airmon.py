@@ -340,11 +340,11 @@ class Airmon(Dependency):
         airmon_output = Process(['airmon-ng', 'check']).stdout()
 
         # Checking for systemd, otherwise assume openrc
-        try:
-            if os.path.exists('/usr/lib/systemd/systemd'):
-                init_system = 'systemd'
-            else: 
-                init_system = 'openrc'
+        
+        if os.path.exists('/usr/lib/systemd/systemd'):
+            init_system = 'systemd'
+        else: 
+            init_system = 'openrc'
         # TODO: add support for other unorthodox init systems (maybe?)
 
         # Conflicting process IDs and names
