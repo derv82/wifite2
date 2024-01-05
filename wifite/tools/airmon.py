@@ -339,6 +339,14 @@ class Airmon(Dependency):
         """ Deletes conflicting processes reported by airmon-ng """
         airmon_output = Process(['airmon-ng', 'check']).stdout()
 
+        # Checking for systemd, otherwise assume openrc
+        
+        if os.path.exists('/usr/lib/systemd/systemd'):
+            init_system = 'systemd'
+        else: 
+            init_system = 'openrc'
+        # TODO: add support for other unorthodox init systems (maybe?)
+
         # Conflicting process IDs and names
         pid_pnames = []
 
@@ -369,17 +377,33 @@ class Airmon(Dependency):
             if pname == 'NetworkManager' and Process.exists('systemctl'):
                 Color.pl('{!} {O}stopping NetworkManager ({R}systemctl stop NetworkManager{O})')
                 # Can't just pkill NetworkManager; it's a service
-                Process(['systemctl', 'stop', 'NetworkManager']).wait()
+                if init_system == 'systemd':
+                    Process(['systemctl', 'stop', 'NetworkManager']).wait()
+                elif init_system == 'openrc':
+                    Process(['rc-service', 'NetworkManager', 'stop']).wait()
+                else:
+                    print(('Unsupported init system, cannot kill the process'))
                 Airmon.killed_network_manager = True
             elif pname == 'network-manager' and Process.exists('service'):
                 Color.pl('{!} {O}stopping network-manager ({R}service network-manager stop{O})')
                 # Can't just pkill network manager; it's a service
-                Process(['service', 'network-manager', 'stop']).wait()
+                if init_system == 'systemd':
+                    Process(['service', 'network-manager', 'stop']).wait()
+                elif init_system == 'openrc':
+                    Process(['rc-service', 'network-manager', 'stop']).wait()
+                else:
+                    print(('Unsupported init system, cannot kill the process'))
                 Airmon.killed_network_manager = True
             elif pname == 'avahi-daemon' and Process.exists('service'):
                 Color.pl('{!} {O}stopping avahi-daemon ({R}service avahi-daemon stop{O})')
                 # Can't just pkill avahi-daemon; it's a service
-                Process(['service', 'avahi-daemon', 'stop']).wait()
+                if init_system == 'systemd':
+                    Process(['service', 'avahi-daemon', 'stop']).wait()
+                elif init_system == 'openrc':
+                    Process(['rc-service', 'avahi-daemon', 'stop']).wait()
+                else:
+                    print(('Unsupported init system, cannot kill the process'))
+
             else:
                 Color.pl('{!} {R}Terminating {O}conflicting process {R}%s{O} (PID {R}%s{O})' % (pname, pid))
                 with contextlib.suppress(Exception):
