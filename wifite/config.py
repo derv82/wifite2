@@ -12,7 +12,7 @@ class Configuration(object):
 
     initialized = False  # Flag indicating config has been initialized
     verbose = 0
-    version = '2.7.0'
+    version = '2.7.1'
 
     all_bands = None
     attack_max = None
@@ -53,6 +53,7 @@ class Configuration(object):
     temp_dir = None  # Temporary directory
     two_ghz = None
     use_bully = None
+    use_reaver = None
     use_eviltwin = None
     use_pmkid_only = None
     wep_attacks = None
