@@ -124,30 +124,31 @@ class CrackResult(object):
         global result
         if json['type'] == 'WPA':
             from .wpa_result import CrackResultWPA
-            result = CrackResultWPA(json['bssid'],
-                                    json['essid'],
-                                    json['handshake_file'],
-                                    json['key'])
+            result = CrackResultWPA(bssid=json['bssid'],
+                                    essid=json['essid'],
+                                    handshake_file=json['handshake_file'],
+                                    key=json['key'])
         elif json['type'] == 'WEP':
             from .wep_result import CrackResultWEP
-            result = CrackResultWEP(json['bssid'],
-                                    json['essid'],
-                                    json['hex_key'],
-                                    json['ascii_key'])
+            result = CrackResultWEP(bssid=json['bssid'],
+                                    essid=json['essid'],
+                                    hex_key=json['hex_key'],
+                                    ascii_key=json['ascii_key'])
 
         elif json['type'] == 'WPS':
             from .wps_result import CrackResultWPS
-            result = CrackResultWPS(json['bssid'],
-                                    json['essid'],
-                                    json['pin'],
-                                    json['psk'])
+            result = CrackResultWPS(bssid=json['bssid'],
+                                    essid=json['essid'],
+                                    pin=json['pin'],
+                                    psk=json['psk'],
+                                    channel=json['channel'])
 
         elif json['type'] == 'PMKID':
             from .pmkid_result import CrackResultPMKID
-            result = CrackResultPMKID(json['bssid'],
-                                      json['essid'],
-                                      json['pmkid_file'],
-                                      json['key'])
+            result = CrackResultPMKID(bssid=json['bssid'],
+                                      essid=json['essid'],
+                                      pmkid_file=json['pmkid_file'],
+                                      key=json['key'])
         result.date = json['date']
         result.readable_date = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(result.date))
         return result

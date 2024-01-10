@@ -223,6 +223,7 @@ class Bully(Attack, Dependency):
 
                 self.state = '{G}Finding Key...{C}'
                 time.sleep(2)
+                print('Cracked line: ', line)
 
         if key_re := re.search(r"^\s*KEY\s*:\s*'(.*)'\s*$", line):
             self.cracked_key = key_re[1]
@@ -230,10 +231,11 @@ class Bully(Attack, Dependency):
         if not self.crack_result and self.cracked_pin and self.cracked_key:
             self.pattack('{G}Cracked Key: {C}%s{W}' % self.cracked_key, newline=True)
             self.crack_result = CrackResultWPS(
-                self.target.bssid,
-                self.target.essid,
-                self.cracked_pin,
-                self.cracked_key)
+                bssid=self.target.bssid,
+                essid=self.target.essid,
+                pin=self.cracked_pin,
+                psk=self.cracked_key,
+                channel=self.target.channel)
             Color.pl('')
             self.crack_result.dump()
 
