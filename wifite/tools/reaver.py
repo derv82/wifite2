@@ -1,20 +1,15 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+import os
+import re
+import time
 
-import contextlib
-from .dependency import Dependency
 from .airodump import Airodump
-from .bully import Bully  # for PSK retrieval
-from ..model.attack import Attack
+from .dependency import Dependency
 from ..config import Configuration
+from ..model.attack import Attack
 from ..model.wps_result import CrackResultWPS
 from ..util.color import Color
 from ..util.process import Process
 from ..util.timer import Timer
-
-import os
-import time
-import re
 
 
 class Reaver(Attack, Dependency):
@@ -52,14 +47,12 @@ class Reaver(Attack, Dependency):
             '--channel', self.target.channel,
             '-vv',
             '-N',
-            '-O', 'reaver_output.pcap'
         ]
 
         if pixie_dust:
-            self.reaver_cmd.extend(['--pixie-dust', '1'])
+            self.reaver_cmd.extend(['-K']) # Pixie-dust attack
 
         if null_pin:
-            # self.reaver_cmd.extend(['-O', 'reaver_output.pcap'])  # This is for logging output
             self.reaver_cmd.extend(['-p', ''])  # NULL PIN attack parameter
 
         self.reaver_proc = None
@@ -185,17 +178,6 @@ class Reaver(Attack, Dependency):
                 self.pattack('{G}Cracked WPS PIN: {C}%s{W} {G}PSK: {C}%s{W}' % (pin, psk), newline=True)
             else:
                 self.pattack('{G}Cracked WPS PIN: {C}%s' % pin, newline=True)
-
-                # Try to derive PSK from PIN using Bully
-                self.pattack('{W}Retrieving PSK using {C}bully{W}...')
-                psk = None
-                with contextlib.suppress(KeyboardInterrupt):
-                    psk = Bully.get_psk_from_pin(self.target, pin)
-                if psk is None:
-                    Color.pl('')
-                    self.pattack('{R}Failed {O}to get PSK using bully', newline=True)
-                else:
-                    self.pattack('{G}Cracked WPS PSK: {C}%s' % psk, newline=True)
 
             crack_result = CrackResultWPS(self.target.bssid, ssid, pin, psk)
             crack_result.dump()

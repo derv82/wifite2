@@ -96,11 +96,6 @@ class HcxDumpTool(Dependency):
     dependency_url = 'apt install hcxdumptool'
 
     def __init__(self, target, pcapng_file):
-        # Create filterlist
-        filterlist = Configuration.temp('pmkid.filterlist')
-        with open(filterlist, 'w') as filter_handle:
-            filter_handle.write(target.bssid.replace(':', ''))
-
         if os.path.exists(pcapng_file):
             os.remove(pcapng_file)
 
@@ -180,7 +175,7 @@ class HcxPcapngTool(Dependency):
         if os.path.exists(self.pmkid_file):
             os.remove(self.pmkid_file)
 
-        command = ['hcxpcapngtool', f'--pmkid={self.pmkid_file}', pcapng_file]
+        command = 'hcxpcapngtool -o ' + self.pmkid_file + " " + pcapng_file
         hcxpcap_proc = Process(command)
         hcxpcap_proc.wait()
 
@@ -197,7 +192,7 @@ class HcxPcapngTool(Dependency):
         matching_pmkid_hash = None
         for line in output.split('\n'):
             fields = line.split('*')
-            if len(fields) >= 3 and fields[1].lower() == self.bssid:
+            if len(fields) >= 3 and fields[3].lower() == self.bssid:
                 # Found it
                 matching_pmkid_hash = line
                 break
