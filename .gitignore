@@ -17,6 +17,7 @@ tools/reaver/
 tools/bully/
 tools/pixiewps/
 tools/hashcat/
+wordlists/
 **/__pycache__
 **/*.pyc
 *.cmd
