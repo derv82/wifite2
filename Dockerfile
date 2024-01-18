@@ -1,4 +1,4 @@
-FROM 3.12.0rc1
+FROM 3.13.0a2-slim
 
 ENV DEBIAN_FRONTEND noninteractive
 ENV HASHCAT_VERSION hashcat-6.2.6
