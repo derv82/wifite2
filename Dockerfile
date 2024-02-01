@@ -1,4 +1,4 @@
-FROM python:3.11-rc-slim@sha256:a7b7703e1479bce7e911341cac76c3cad4d1b7efa794f03fc2df17155152fef0
+FROM python:3.12-rc-slim@sha256:af8eb09a5019c7ec8fbf888c91a052ada2d95b747dd077c6ac2a87d39b4873a7
 
 ENV DEBIAN_FRONTEND noninteractive
 ENV HASHCAT_VERSION hashcat-3.6.0
