@@ -5170,7 +5170,6 @@ C08359A	SHANGHAI CHARMHOPE INFORMATION TECHNOLOGY CO.,LTD.
 9CF6DD1	Ithor IT Co.,Ltd.
 9CF6DD9	CAMA（Luoyang）Electronics Co.，Ltd
 C083598	ista International GmbH
-04C3E6E	Teleepoch Ltd
 04C3E6A	Sealed Unit Parts Co., Inc.
 C083593	PCH Engineering A/S
 C08359B	Suzhou Siheng Science and Technology Ltd.
@@ -5625,11 +5624,14 @@ D0A0119	Vastai Technologies(Shanghai)Inc
 78E996D	Lorch Schweisstechnik GmbH
 34C8D67	ZXCLAA Technology(Suzhou) Co.,Ltd
 34C8D61	Shenzhen Xmitech Electronic Co.,Ltd
-34C8D6C	Huizhou KDT Intelligent Display Technology Co. Ltd
 34C8D62	Guangzhou Linkpi Technology Co. Ltd
 34C8D64	Chengdu Decentest technology Co., Ltd.
+34C8D6C	Huizhou KDT Intelligent Display Technology Co. Ltd
 34C8D68	Illumina
 34C8D6E	Shenzhen C & D Electronics Co., Ltd.
+9015642	PIN GENIE, INC.DBA LOCKLY
+9015640	Fengzhushou Co., Ltd.
+04C3E6E	Great Talent Technology Limited
 B84C873	Shenzhen Link-all Technology Co., Ltd
 B84C87C	SOND
 B84C87B	Beijing Yunji Technology Co., Ltd.
@@ -5819,7 +5821,6 @@ DC36437	UKG
 1845B33	Ancsonic (chongqing) Electronic Science& Technology Co.,Ltd
 08F80D6	SEDA CHEMICAL PRODUCTS CO., LTD.
 08F80D9	Benelink Technology Inc.
-08F80DD	ZHEJIANG EV-TECH.,LTD
 1845B39	Teko Telecom Srl
 F4A454D	SAEL SRL
 F4A4541	PT Telkom Indonesia
@@ -6607,6 +6608,13 @@ D0A0112	Shanghai Hongqia Industry and Trade Co., LTD
 78E9966	Kilews
 78E9962	STIEBEL ELTRON GMBH & CO. KG
 34C8D6B	Yuanzhou Intelligent (Shenzhen) Co., Ltd.
+80A5797	Siemens Energy Global GmbH & Co. KG
+80A5791	Zhe Jiang EV-Tech Co.,Ltd
+08F80DD	Zhe Jiang EV-Tech Co.,Ltd
+80A5798	DI3 INFOTECH LLP
+80A5799	Yovil Ltd.
+9015646	final Inc.
+901564B	Shanghai AMP&MOONS'Automation Co.,Ltd.
 B84C87A	Altronix , Corp
 8CC8F47	TableSafe
 58E8760	Zhuhai Raysharp Technology Co.,Ltd
@@ -7322,7 +7330,6 @@ CC22379	E Ink Corp
 189BA5D	legendsky tech
 189BA5A	SHENZHEN FIONEXX TECHNOLOGIES LTD.
 189BA57	Beijing Xinertel Technology Co., Ltd.
-904E913	Teleepoch Ltd
 189BA50	Dectris Ltd.
 904E91B	Shanghai JaWay Information Technology Co., Ltd.
 CC1BE00	Microtech System,Inc
@@ -7367,7 +7374,6 @@ A411637	SHENZHEN YIWANJIA INFORMATION TECHNOLOGY CO.,LTD
 98AAFC0	Dalian Eastern Display Co., Ltd.
 144FD7E	Edan Instruments, Inc.
 144FD75	FLS FINLAND OY
-40F3858	Teleepoch Ltd
 40F3850	SubPac
 A411635	Carbon, Inc.
 A41163D	SHENZHEN ZHISHI TECHNOLOGY CO., LTD.
@@ -7665,6 +7671,8 @@ D0A0117	Shenzhen Liandian Communication Technology Co.LTD
 78E9960	SHENZHEN EEGUARD TECHNOLOGY CO.,LIMITED
 D0A0113	V-Count Teknoloji A.Ş.
 34C8D65	PRIZMA GROUP DISTRIBUTION & CONSULTING D.O.O - RUBISEC
+40F3858	Great Talent Technology Limited
+904E913	Great Talent Technology Limited
 D014111	P.B. Elettronica srl
 B84C876	HORIBA Precision Instruments (Beijing) Co.,Ltd
 C022F13	Spectra Technologies India Private Limited
@@ -8683,6 +8691,12 @@ D0A011E	Annapurna labs
 78E996A	Shenzhen Farben lnformation Technology CO.,Ltd.
 78E996B	CelAudio (Beijing) Technology Inc
 34C8D6A	Shenzhen Jooan Technology  Co., Ltd
+80A579A	ViewSonic Corp
+80A5796	Xiamen Pinnacle Electrical Co., Ltd
+80A579B	Ground Control Technologies UK Ltd.
+80A5790	Benano Inc.
+80A5793	Tool-Temp AG
+80A5792	Jiangsu wonder-working electric co., LTD
 B84C87E	Private
 C85CE20	Fela Management AG
 301F9A9	Deep Sentinel
@@ -9724,8 +9738,15 @@ D0A0114	SUMICO
 34C8D63	kratos network pte.ltd.
 34C8D6D	eight
 34C8D60	Shenzhen Zhangyue Technology Co., Ltd
+80A5795	Potron Technology Co.,Ltd.,
+80A579C	BluArmor
+80A5794	Hardened Networks
+80A579D	Guangdong Province Ivsuan technology co., ltd
+80A579E	Unplugged Technologies Ltd.
+9015647	Hangzhou System Technology Co.,Ltd
+9015648	Heliogen
 #
-# End of IEEE MAM registry data. 5140 entries.
+# End of IEEE MAM registry data. 5161 entries.
 #
 
 #
@@ -11701,7 +11722,6 @@ A41194	Lenovo
 90E710	New H3C Technologies Co., Ltd
 302952	Hillstone Networks Inc
 00B4F5	DongGuan Siyoto Electronics Co., Ltd
-BC3F4E	Teleepoch Ltd
 983B8F	Intel Corporate
 54278D	NXP (China) Management Ltd.
 0C4101	Ruichi Auto Technology (Guangzhou) Co., Ltd.
@@ -16737,10 +16757,30 @@ A0782D	Apple, Inc.
 D011E5	Apple, Inc.
 D84489	TP-LINK CORPORATION PTE. LTD.
 18188B	FCNT LLC
+6C6016	OnePlus Technology (Shenzhen) Co., Ltd
+64FE15	Flaircomm Microelectronics,Inc.
+D86BFC	zte corporation
 DC71D0	Apple, Inc.
 9CFA76	Apple, Inc.
 20FA85	Apple, Inc.
 9C1A25	Apple, Inc.
+E04824	Garmin International
+44F770	Beijing Xiaomi Mobile Software Co., Ltd
+A83162	Hangzhou Huacheng Network Technology Co.,Ltd
+CC641A	SHENZHEN BILIAN ELECTRONIC CO.，LTD
+68B41E	ZEASN TECHNOLOGY PRIVATE LIMITED
+08F0B6	Edifier International
+C0555C	Impulse Labs
+A89609	FN-LINK TECHNOLOGY Ltd.
+841571	TCT mobile ltd
+E8BFB8	Intel Corporate
+A8595F	Intel Corporate
+CC28AA	ASUSTek COMPUTER INC.
+3C9FCD	Shenzhen Neoway Technology Co.,Ltd.
+341453	Gantner Electronic GmbH
+DC4BA1	Wistron Neweb Corporation
+34A6EF	Shenzhen Phaten Tech. LTD
+BC3F4E	Great Talent Technology Limited
 000130	Extreme Networks Headquarters
 FC0A81	Extreme Networks Headquarters
 00749C	Ruijie Networks Co.,LTD
@@ -23680,7 +23720,25 @@ FC599F	Ruijie Networks Co.,LTD
 9C098B	Cisco Systems, Inc
 9C5884	Apple, Inc.
 24B339	Apple, Inc.
+E04E7A	Nanjing Qinheng Microelectronics Co., Ltd.
+D07602	Hui Zhou Gaoshengda Technology Co.,LTD
 6CEFBD	Cisco Meraki
+84821B	PROX SG Pte Ltd
+94BDBE	TPV Display Technology (Xiamen) Co.,Ltd.
+940BFA	EM Microelectronic
+80A579	IEEE Registration Authority
+743989	TP-LINK TECHNOLOGIES CO.,LTD.
+283984	Qidi Technology (shanghai) Co.,Ltd.
+5CFA5A	Sinepower Lda
+F49D8A	Fantasia Trading LLC
+7C992E	Shanghai Notion lnformatio Technology Co.,Ltd.
+8CEA88	Chengdu Yocto Communication Technology Co.Ltd.
+105FAD	Intel Corporate
+4CB04A	Intel Corporate
+40EEBE	NXP Semiconductor (Tianjin) LTD.
+FC9816	ALPSALPINE CO,.LTD
+E08F4C	Intel Corporate
+54726E	Daimler Truck AG
 6C8720	New H3C Technologies Co., Ltd
 0C8D7A	RADiflow
 FCA9F5	Xiaomi Communications Co Ltd
@@ -30677,12 +30735,22 @@ D413B3	Wu Qi Technologies,Inc.
 505C88	Cisco Systems, Inc
 0C4BEE	Texas Instruments
 30138B	HP Inc.
-E4D3AA	FCNT LLC
 606832	Guangdong Seneasy Intelligent Technology Co., Ltd.
+8433F2	Shenzhen Stellamore Technology Co.,Ltd
+28D043	AzureWave Technology Inc.
+E4D3AA	FCNT LLC
+B0D576	Apple, Inc.
 142876	Apple, Inc.
 147FCE	Apple, Inc.
-B0D576	Apple, Inc.
 6CC3B2	Cisco Meraki
+F8CE07	ZHEJIANG DAHUA TECHNOLOGYCO.,LTD
+2098ED	AltoBeam Inc.
+F88FC8	Chipsea Technologies (Shenzhen) Corp.
+4C10D5	TP-LINK TECHNOLOGIES CO.,LTD.
+983910	Kaon Group Co., Ltd.
+804C5D	NXP Semiconductor (Tianjin) LTD.
+289176	Indyme Solutions, LLC
+28A06B	Intel Corporate
 B00C9D	Quectel Wireless Solutions Co.,Ltd.
 F0AB1F	zte corporation
 7CB30A	zte corporation
@@ -35683,7 +35751,6 @@ A07332	Cashmaster International Limited
 001CA3	Terra
 001CA6	Win4NET
 001CA9	Audiomatica Srl
-001CA1	AKAMAI TECHNOLOGIES, INC.
 001CD2	King Champion (Hong Kong) Limited
 001CCE	By Techdesign
 001D03	Design Solutions Inc.
@@ -37712,6 +37779,17 @@ BCBB58	Apple, Inc.
 6CC41E	NEXSEC Incorporated
 CC6A33	Cisco Systems, Inc
 40D160	Apple, Inc.
+900371	Quectel Wireless Solutions Co.,Ltd.
+949F8B	zte corporation
+18EFC0	Sercomm Japan Corporation
+80283C	Sonova AG
+80AE54	TP-LINK TECHNOLOGIES CO.,LTD.
+F46ED6	EM Microelectronic
+3C0868	Power Plus Communications AG
+901564	IEEE Registration Authority
+001CA1	Akamai Technologies Inc.
+408F9A	KanEL Sweden AB
+48E9CA	creoline GmbH
 C85CE2	IEEE Registration Authority
 DCEE14	ADT Technology
 E84A54	Beijing Xiaomi Mobile Software Co., Ltd
@@ -38245,7 +38323,6 @@ CC2AAC	Yunjing lntelligent Technology(Dongguan).,Ltd
 CC79D7	Cisco Systems, Inc
 E4387E	Cisco Systems, Inc
 90AC3F	BrightSign LLC
-98348C	Teleepoch Ltd
 CCE686	Samsung Electronics Co.,Ltd
 74190A	Samsung Electronics Co.,Ltd
 C0C4F9	Qisda Corporation
@@ -42425,7 +42502,6 @@ E80B13	Akib Systems Taiwan, INC
 00248B	HYBUS CO., LTD.
 002492	Motorola, Broadband Solutions Group
 002484	Bang and Olufsen Medicom a/s
-002480	Meteocontrol GmbH
 0024D8	IlSung Precision
 0024CD	Willow Garage, Inc.
 0024D3	QUALICA Inc.
@@ -42534,7 +42610,6 @@ E80B13	Akib Systems Taiwan, INC
 0022A8	Ouman Oy
 002223	TimeKeeping Systems, Inc.
 00221A	Audio Precision
-002218	AKAMAI TECHNOLOGIES INC
 002213	PCI CORPORATION
 0021D8	Cisco Systems, Inc
 0021D7	Cisco Systems, Inc
@@ -44069,7 +44144,6 @@ E80B13	Akib Systems Taiwan, INC
 000629	IBM Corp
 0010A9	ADHOC TECHNOLOGIES
 001050	RION CO., LTD.
-00109C	M-SYSTEM CO., LTD.
 0010CE	VOLAMP, LTD.
 0010B2	COACTIVE AESTHETICS
 00106E	TADIRAN COM. LTD.
@@ -44680,7 +44754,6 @@ ECB878	Huawei Device Co., Ltd.
 74FECE	TP-LINK CORPORATION PTE. LTD.
 78F505	Murata Manufacturing Co., Ltd.
 588D39	MITSUBISHI ELECTRIC AUTOMATION (CHINA) LTD.
-94BE50	REMOTESOLUTION
 B8E28C	MOTOROLA SOLUTIONS MALAYSIA SDN. BHD.
 B8F774	Fiberhome Telecommunication Technologies Co.,LTD
 E0DAD7	zte corporation
@@ -44702,10 +44775,31 @@ C0A476	Ruijie Networks Co.,LTD
 DC6180	HUAWEI TECHNOLOGIES CO.,LTD
 B8D0F0	FCNT LLC
 28DE59	Domus NTW CORP.
+684216	Steplock Access AB
+6CF2D8	CANON INC.
+D44D9F	Shenzhen Skyworth Digital  Technology  CO., Ltd
+9CD4A6	SERVERCOM (INDIA) PRIVATE LIMITED
+ECC342	zte corporation
+94BE50	Remote Solution
 AC0775	Apple, Inc.
 842F57	Apple, Inc.
+50CF56	China Mobile Group Device Co.,Ltd.
+A427A5	Palo Alto Networks
+A86308	AVUTEC
+1881ED	TERACOM TELEMATICA S.A
+245A5F	TP-LINK TECHNOLOGIES CO.,LTD.
+00109C	MG Co., Ltd.
+F0FC65	SynaXG Technologies Pte. Ltd.
+002480	Meteocontrol GmbH
+989DB2	GOIP Global Services Pvt. Ltd.
+C4BD8D	SHENZHEN CHUANGWEI-RGB ELECTRONICS CO.,LTD
+944BF8	TOZO INC
+002218	Akamai Technologies Inc.
+683421	Intel Corporate
+985F41	Intel Corporate
+98348C	Great Talent Technology Limited
 #
-# End of IEEE OUI registry data. 34973 entries.
+# End of IEEE OUI registry data. 35046 entries.
 #
 
 #
@@ -45877,6 +45971,11 @@ AC0775	Apple, Inc.
 8C1F6448B	Monnit Corporation
 8C1F64ED6	PowTechnology Limited
 8C1F645B9	ViewSonic Corp
+8C1F64364	TILAK INTERNATIONAL
+8C1F641C9	Pneumax Spa
+8C1F64B18	Grossenbacher Systeme AG
+8C1F64BBE	AirScan, Inc. dba HemaTechnologies
+8C1F6400A	TaskUnite Inc. (dba AMPAworks)
 8C1F64A98	Jacobs Technology, Inc.
 8C1F644A9	Martec Marine S.p.a.
 8C1F64E80	Power Electronics Espana, S.L.
@@ -47044,7 +47143,14 @@ AC0775	Apple, Inc.
 8C1F6430E	Tangent Design Engineering
 8C1F646B0	O-Net Technologies(Shenzhen)Group Co.,Ltd.
 8C1F643B8	HUBRIS TECHNOLOGIES PRIVATE LIMITED
+8C1F64B47	LINEAGE POWER PVT LTD.,
+8C1F6467D	Ravi Teleinfomatics
 8C1F646F7	EddyWorks Co.,Ltd
+8C1F64FE5	Truenorth
+8C1F64393	GRE SYSTEM INC.
+8C1F64257	Four Bars Design
+8C1F64800	Shenzhen SDG Telecom Equipment Co.,Ltd.
+8C1F648E4	Cominfo, Inc.
 8C1F64E6F	Vision Systems Safety Tech
 70B3D5119	YPP Corporation
 70B3D5159	RCH SPA
@@ -48201,6 +48307,9 @@ AC0775	Apple, Inc.
 8C1F6455C	Schildknecht AG
 8C1F6495B	Qualitel Corporation
 8C1F64CD1	Flextronics International Kft
+8C1F64C62	GMI Ltd
+8C1F64E4F	Sabl Systems Pty Ltd
+8C1F642F1	DEUTA Werke GmbH
 8C1F6482B	Flow Power
 8C1F64049	NUANCES ORG
 8C1F644F6	Private
@@ -49371,6 +49480,11 @@ AC0775	Apple, Inc.
 8C1F6411E	Infosoft Digital Design and Services P L
 8C1F64035	RealWear
 8C1F648CB	CHROMAVISO A/S
+8C1F646BD	IoT Water Analytics S.L.
+8C1F64BB7	JIANGXI LV C-CHONG CHARGING TECHNOLOGY CO.LTD
+8C1F64858	SFERA srl
+8C1F647F4	G.M. International srl
+8C1F64C08	Triamec Motion AG
 8C1F64D63	Mobileye
 8C1F643C8	BTG Instruments AB
 70B3D590E	Maytronics Ltd.
@@ -50519,6 +50633,13 @@ AC0775	Apple, Inc.
 8C1F642B1	U -MEI-DAH INT'L ENTERPRISE CO.,LTD.
 8C1F6436B	ViewSonic Corp
 8C1F64D9E	Wagner Group GmbH
+8C1F64D5D	Genius Vision Digital Private Limited
+8C1F64CEC	Zhuhai Huaya machinery Technology Co., LTD
+8C1F6498B	Syscom Instruments SA
+8C1F64664	Thermoeye Inc
+8C1F64E33	Amiad Water Systems
+8C1F64375	DUEVI SRL
+8C1F64F08	ADVANTOR CORPORATION
 #
-# End of IEEE OUI36 registry data. 5808 entries.
+# End of IEEE OUI36 registry data. 5835 entries.
 #
