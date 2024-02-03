@@ -27,7 +27,7 @@ jobs:
         egress-policy: audit
 
     - name: Checkout repository
-      uses: actions/checkout@ee0669bd1cc54295c223e0bb666b733df41de1c5 # v2.7.0
+      uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
       with:
         # We must fetch at least the immediate parents so that if this is
         # a pull request then we can checkout the head.
@@ -55,6 +55,6 @@ jobs:
 
       # Upload results to the Security tab
     - name: Upload OSSAR results
-      uses: github/codeql-action/upload-sarif@231aa2c8a89117b126725a0e11897209b7118144 # v1.1.39
+      uses: github/codeql-action/upload-sarif@b7bf0a3ed3ecfa44160715d7c442788f65f0f923 # v3.23.2
       with:
         sarif_file: ${{ steps.ossar.outputs.sarifFile }}
