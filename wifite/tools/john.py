@@ -5,22 +5,22 @@ from .dependency import Dependency
 from ..config import Configuration
 from ..util.color import Color
 from ..util.process import Process
-from ..tools.hashcat import HcxPcapTool
+from ..tools.hashcat import HcxPcapngTool
 
 import os
 
 
 class John(Dependency):
-    ''' Wrapper for John program. '''
+    """ Wrapper for John program. """
     dependency_required = False
     dependency_name = 'john'
-    dependency_url = 'http://www.openwall.com/john/'
-
+    dependency_url = 'https://www.openwall.com/john/'
 
     @staticmethod
     def crack_handshake(handshake, show_command=False):
-        john_file = HcxPcapTool.generate_john_file(handshake, show_command=show_command)
+        john_file = HcxPcapngTool.generate_john_file(handshake, show_command=show_command)
 
+        key = None
         # Use `john --list=formats` to find if OpenCL or CUDA is supported.
         formats_stdout = Process(['john', '--list=formats']).stdout()
         if 'wpapsk-opencl' in formats_stdout:
@@ -31,13 +31,7 @@ class John(Dependency):
             john_format = 'wpapsk'
 
         # Crack john file
-        command = [
-            'john',
-            '--format=%s' % john_format,
-            '--wordlist', Configuration.wordlist,
-            john_file
-        ]
-
+        command = ['john', f'--format={john_format}', f'--wordlist={Configuration.wordlist}', john_file]
         if show_command:
             Color.pl('{+} {D}Running: {W}{P}%s{W}' % ' '.join(command))
         process = Process(command)

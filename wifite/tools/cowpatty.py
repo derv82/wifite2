@@ -5,7 +5,7 @@ from .dependency import Dependency
 from ..config import Configuration
 from ..util.color import Color
 from ..util.process import Process
-from ..tools.hashcat import HcxPcapTool
+from ..tools.hashcat import HcxPcapngTool
 
 import os
 import re

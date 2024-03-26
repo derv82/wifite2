@@ -8,6 +8,8 @@ from ..util.color import Color
 
 import os
 
+hccapx_autoremove = False  # change this to True if you want the hccapx files to be automatically removed
+
 
 class Hashcat(Dependency):
     dependency_required = False
@@ -18,13 +20,12 @@ class Hashcat(Dependency):
     def should_use_force():
         command = ['hashcat', '-I']
         stderr = Process(command).stderr()
-        return 'No devices found/left' in stderr
+        return 'No devices found/left' or 'Unstable OpenCL driver detected!' in stderr
 
     @staticmethod
     def crack_handshake(handshake, show_command=False):
         # Generate hccapx
-        hccapx_file = HcxPcapTool.generate_hccapx_file(
-                handshake, show_command=show_command)
+        hccapx_file = HcxPcapngTool.generate_hccapx_file(handshake, show_command=show_command)
 
         key = None
         # Crack hccapx
@@ -32,7 +33,7 @@ class Hashcat(Dependency):
             command = [
                 'hashcat',
                 '--quiet',
-                '-m', '2500',
+                '-m', '22000',
                 hccapx_file,
                 Configuration.wordlist
             ]
@@ -40,28 +41,23 @@ class Hashcat(Dependency):
                 command.append('--force')
             command.extend(additional_arg)
             if show_command:
-                Color.pl('{+} {D}Running: {W}{P}%s{W}' % ' '.join(command))
+                Color.pl(f'{{+}} {{D}}Running: {{W}}{{P}}{" ".join(command)}{{W}}')
             process = Process(command)
             stdout, stderr = process.get_output()
             if ':' not in stdout:
                 continue
-            else:
-                key = stdout.split(':', 5)[-1].strip()
-                break
-
-        if os.path.exists(hccapx_file):
-            os.remove(hccapx_file)
+            key = stdout.split(':', 5)[-1].strip()
+            break
 
         return key
 
-
     @staticmethod
     def crack_pmkid(pmkid_file, verbose=False):
-        '''
-        Cracks a given pmkid_file using the PMKID/WPA2 attack (-m 16800)
+        """
+        Cracks a given pmkid_file using the PMKID/WPA2 attack (-m 22000)
         Returns:
             Key (str) if found; `None` if not found.
-        '''
+        """
 
         # Run hashcat once normally, then with --show if it failed
         # To catch cases where the password is already in the pot file.
@@ -69,16 +65,17 @@ class Hashcat(Dependency):
             command = [
                 'hashcat',
                 '--quiet',      # Only output the password if found.
-                '-m', '16800',  # WPA-PMKID-PBKDF2
+                '-m', '22000',  # WPA-PMKID-PBKDF2
                 '-a', '0',      # Wordlist attack-mode
                 pmkid_file,
-                Configuration.wordlist
+                Configuration.wordlist,
+                '-w', '3'
             ]
             if Hashcat.should_use_force():
                 command.append('--force')
             command.extend(additional_arg)
             if verbose and additional_arg == []:
-                Color.pl('{+} {D}Running: {W}{P}%s{W}' % ' '.join(command))
+                Color.pl(f'{{+}} {{D}}Running: {{W}}{{P}}{" ".join(command)}{{W}}')
 
             # TODO: Check status of hashcat (%); it's impossible with --quiet
 
@@ -90,32 +87,23 @@ class Hashcat(Dependency):
                 # Failed
                 continue
             else:
-                # Cracked
-                key = stdout.strip().split(':', 1)[1]
-                return key
+                return stdout.strip().split(':', 1)[1]
 
 
 class HcxDumpTool(Dependency):
     dependency_required = False
     dependency_name = 'hcxdumptool'
-    dependency_url = 'https://github.com/ZerBea/hcxdumptool'
+    dependency_url = 'apt install hcxdumptool'
 
     def __init__(self, target, pcapng_file):
-        # Create filterlist
-        filterlist = Configuration.temp('pmkid.filterlist')
-        with open(filterlist, 'w') as filter_handle:
-            filter_handle.write(target.bssid.replace(':', ''))
-
         if os.path.exists(pcapng_file):
             os.remove(pcapng_file)
 
         command = [
             'hcxdumptool',
             '-i', Configuration.interface,
-            '--filterlist', filterlist,
-            '--filtermode', '2',
-            '-c', str(target.channel),
-            '-o', pcapng_file
+            '-c', str(target.channel) + 'a',
+            '-w', pcapng_file
         ]
 
         self.proc = Process(command)
@@ -127,15 +115,15 @@ class HcxDumpTool(Dependency):
         self.proc.interrupt()
 
 
-class HcxPcapTool(Dependency):
+class HcxPcapngTool(Dependency):
     dependency_required = False
-    dependency_name = 'hcxpcaptool'
-    dependency_url = 'https://github.com/ZerBea/hcxtools'
+    dependency_name = 'hcxpcapngtool'
+    dependency_url = 'apt install hcxtools'
 
     def __init__(self, target):
         self.target = target
         self.bssid = self.target.bssid.lower().replace(':', '')
-        self.pmkid_file = Configuration.temp('pmkid-%s.16800' % self.bssid)
+        self.pmkid_file = Configuration.temp(f'pmkid-{self.bssid}.22000')
 
     @staticmethod
     def generate_hccapx_file(handshake, show_command=False):
@@ -144,7 +132,7 @@ class HcxPcapTool(Dependency):
             os.remove(hccapx_file)
 
         command = [
-            'hcxpcaptool',
+            'hcxpcapngtool',
             '-o', hccapx_file,
             handshake.capfile
         ]
@@ -167,8 +155,8 @@ class HcxPcapTool(Dependency):
             os.remove(john_file)
 
         command = [
-            'hcxpcaptool',
-            '-j', john_file,
+            'hcxpcapngtool',
+            '--john', john_file,
             handshake.capfile
         ]
 
@@ -187,11 +175,7 @@ class HcxPcapTool(Dependency):
         if os.path.exists(self.pmkid_file):
             os.remove(self.pmkid_file)
 
-        command = [
-            'hcxpcaptool',
-            '-z', self.pmkid_file,
-            pcapng_file
-        ]
+        command = 'hcxpcapngtool -o ' + self.pmkid_file + " " + pcapng_file
         hcxpcap_proc = Process(command)
         hcxpcap_proc.wait()
 
@@ -208,7 +192,7 @@ class HcxPcapTool(Dependency):
         matching_pmkid_hash = None
         for line in output.split('\n'):
             fields = line.split('*')
-            if len(fields) >= 3 and fields[1].lower() == self.bssid:
+            if len(fields) >= 3 and fields[3].lower() == self.bssid:
                 # Found it
                 matching_pmkid_hash = line
                 break
