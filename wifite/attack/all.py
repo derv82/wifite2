@@ -44,6 +44,9 @@ class AttackAll(object):
         Attacks a single `target` (wifite.model.target).
         Returns: True if attacks should continue, False otherwise.
         '''
+        if 'MGT' in target.authentication:
+            Color.pl("\n{!}{O}Skipping. Target is using {C}WPA-Enterprise {O}and can not be cracked.")
+            return True
 
         attacks = []
 
@@ -63,6 +66,10 @@ class AttackAll(object):
                     # Pixie-Dust
                     if Configuration.wps_pixie:
                         attacks.append(AttackWPS(target, pixie_dust=True))
+
+                    # Null PIN zero-day attack
+                    if Configuration.wps_pin:
+                        attacks.append(AttackWPS(target, pixie_dust=False, null_pin=True))
 
                     # PIN attack
                     if Configuration.wps_pin:
@@ -110,7 +117,9 @@ class AttackAll(object):
         '''
         Asks user if attacks should continue onto other targets
         Returns:
-            True if user wants to continue, False otherwise.
+            None if the user wants to skip the current target
+            True if the user wants to continue to the next attack on the current target
+            False if the user wants to stop the remaining attacks
         '''
         if attacks_remaining == 0 and targets_remaining == 0:
             return  # No targets or attacksleft, drop out
@@ -138,7 +147,8 @@ class AttackAll(object):
         prompt += ' or {R}exit{W} %s? {C}' % options
 
         from ..util.input import raw_input
-        answer = raw_input(Color.s(prompt)).lower()
+        Color.p(prompt)
+        answer = raw_input().lower()
 
         if answer.startswith('s'):
             return None  # Skip
@@ -146,4 +156,3 @@ class AttackAll(object):
             return False  # Exit
         else:
             return True  # Continue
-

@@ -11,6 +11,7 @@ from ..model.client import Client
 
 import os, time
 
+
 class Airodump(Dependency):
     ''' Wrapper around airodump-ng program '''
     dependency_required = True
@@ -20,7 +21,7 @@ class Airodump(Dependency):
     def __init__(self, interface=None, channel=None, encryption=None,\
                        wps=WPSState.UNKNOWN, target_bssid=None,
                        output_file_prefix='airodump',\
-                       ivs_only=False, skip_wps=False, delete_existing_files=True):
+                       ivs_only=False, target_oui=False, skip_wps=False, delete_existing_files=True):
         '''Sets up airodump arguments, doesn't start process yet.'''
 
         Configuration.initialize()
@@ -40,6 +41,7 @@ class Airodump(Dependency):
 
         self.encryption = encryption
         self.wps = wps
+        self.target_oui = target_oui
 
         self.target_bssid = target_bssid
         self.output_file_prefix = output_file_prefix
@@ -269,14 +271,25 @@ class Airodump(Dependency):
         # Filter based on BSSID/ESSID
         bssid = Configuration.target_bssid
         essid = Configuration.target_essid
+        manufacturer = Configuration.target_manufacturer
+
         i = 0
         while i < len(result):
-            if result[i].essid is not None and Configuration.ignore_essid is not None and Configuration.ignore_essid.lower() in result[i].essid.lower():
+            if result[i].essid is not None and\
+                    Configuration.ignore_essids is not None and\
+                    result[i].essid in Configuration.ignore_essids:
                 result.pop(i)
             elif bssid and result[i].bssid.lower() != bssid.lower():
                 result.pop(i)
-            elif essid and result[i].essid and result[i].essid.lower() != essid.lower():
+            elif essid and result[i].essid and result[i].essid != essid:
                 result.pop(i)
+            elif manufacturer and result[i].bssid:
+                oui = ''.join(result[i].bssid.split(':')[:3])
+                man = Configuration.manufacturers.get(oui, '')
+                if manufacturer.lower() not in man.lower():
+                    result.pop(i)
+                else:
+                    i += 1
             else:
                 i += 1
         return result

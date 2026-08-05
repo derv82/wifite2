@@ -308,8 +308,8 @@ class Airmon(Dependency):
             choice = 1
         else:
             # Multiple interfaces found
-            question = Color.s('{+} Select wireless interface ({G}1-%d{W}): ' % (count))
-            choice = raw_input(question)
+            Color.p('{+} Select wireless interface ({G}1-%d{W}): ' % (count))
+            choice = raw_input()
 
         iface = a.get(choice)
 

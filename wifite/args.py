@@ -59,10 +59,10 @@ class Arguments(object):
             action='store',
             dest='channel',
             metavar='[channel]',
-            type=int,
-            help=Color.s('Wireless channel to scan (default: {G}all 2Ghz channels{W})'))
+            help=Color.s('Wireless channel to scan e.g. {C}1,3-6{W} ' +
+                '(default: {G}all 2Ghz channels{W})'))
         glob.add_argument('--channel', help=argparse.SUPPRESS, action='store',
-                dest='channel', type=int)
+            dest='channel')
 
         glob.add_argument('-5',
             '--5ghz',
@@ -105,6 +105,16 @@ class Arguments(object):
         glob.add_argument('--bssid', help=argparse.SUPPRESS, action='store',
                 dest='target_bssid', type=str)
 
+        glob.add_argument('-m',
+            action='store',
+            dest='target_manufacturer',
+            metavar='[manufacturer]',
+            type=str,
+            help=self._verbose('Manufacturer (e.g. {GR}D-Link{W}) of access ' +
+                'point to match'))
+        glob.add_argument('--manufacturer', help=argparse.SUPPRESS, action='store',
+                dest='target_manufacturer', type=str)
+
         glob.add_argument('-e',
             action='store',
             dest='target_essid',
@@ -115,14 +125,15 @@ class Arguments(object):
                 dest='target_essid', type=str)
 
         glob.add_argument('-E',
-            action='store',
-            dest='ignore_essid',
+            action='append',
+            dest='ignore_essids',
             metavar='[text]',
             type=str,
             default=None,
-            help=self._verbose('Hides targets with ESSIDs that match the given text'))
-        glob.add_argument('--ignore-essid', help=argparse.SUPPRESS, action='store',
-                dest='ignore_essid', type=str)
+            help=self._verbose('Hides targets with ESSIDs that match the given text. '
+                               'Can be used more than once.'))
+        glob.add_argument('--ignore-essid', help=argparse.SUPPRESS, action='append',
+                dest='ignore_essids', type=str)
 
         glob.add_argument('--clients-only',
             action='store_true',
@@ -134,6 +145,11 @@ class Arguments(object):
             action='store_true',
             dest='show_bssids',
             help=self._verbose('Show BSSIDs of targets while scanning'))
+
+        glob.add_argument('--showm',
+            action='store_true',
+            dest='show_manufacturers',
+            help=self._verbose('Show manufacturers of targets while scanning'))
 
         glob.add_argument('--nodeauths',
             action='store_true',
@@ -433,6 +449,11 @@ class Arguments(object):
                          dest='use_pmkid_only',
                          help=Color.s('{O}Only{W} use {C}PMKID capture{W}, avoids other WPS & ' +
                                       'WPA attacks (default: {G}off{W})'))
+        pmkid.add_argument('--no-pmkid',
+                         action='store_true',
+                         dest='dont_use_pmkid',
+                         help=Color.s('{O}Don\'t{W} use {C}PMKID capture{W} ' +
+                                      '(default: {G}off{W})'))
         # Alias
         pmkid.add_argument('-pmkid', help=argparse.SUPPRESS, action='store_true', dest='use_pmkid_only')
 
