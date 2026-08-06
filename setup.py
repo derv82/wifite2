@@ -20,7 +20,7 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'wifite = wifite.wifite:entry_point'
+            'wifite = wifite.__main__:entry_point'
         ]
     },
     license='GNU GPLv2',
