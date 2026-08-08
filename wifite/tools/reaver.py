@@ -18,10 +18,11 @@ class Reaver(Attack, Dependency):
     dependency_name = 'reaver'
     dependency_url = 'https://github.com/t6x/reaver-wps-fork-t6x'
 
-    def __init__(self, target, pixie_dust=True):
+    def __init__(self, target, pixie_dust=True, null_pin=False):
         super(Reaver, self).__init__(target)
 
         self.pixie_dust = pixie_dust
+        self.null_pin = null_pin
 
         self.progress = '0.00%'
         self.state = 'Initializing'
@@ -50,6 +51,9 @@ class Reaver(Attack, Dependency):
 
         if pixie_dust:
             self.reaver_cmd.extend(['--pixie-dust', '1'])
+
+        if null_pin:
+            self.reaver_cmd.extend(['-p', ''])
 
         self.reaver_proc = None
 
@@ -117,7 +121,7 @@ class Reaver(Attack, Dependency):
 
                 # Check if locked
                 if self.locked and not Configuration.wps_ignore_lock:
-                    raise Exception('{O}Access point is {R}Locked{W}')
+                    raise Exception('{O}Because access point is {R}Locked{W}')
 
                 time.sleep(0.5)
 
@@ -134,7 +138,7 @@ class Reaver(Attack, Dependency):
 
 
     def get_status(self):
-        if self.pixie_dust:
+        if self.pixie_dust or self.null_pin:
             main_status = ''
         else:
             # Include percentage
@@ -204,6 +208,9 @@ class Reaver(Attack, Dependency):
 
         # Running-time failure
         if self.pixie_dust and self.running_time() > Configuration.wps_pixie_timeout:
+            raise Exception('Timeout after %d seconds' % Configuration.wps_pixie_timeout)
+
+        if self.null_pin and self.running_time() > Configuration.wps_pixie_timeout:
             raise Exception('Timeout after %d seconds' % Configuration.wps_pixie_timeout)
 
         # WPSFail count
@@ -297,12 +304,16 @@ class Reaver(Attack, Dependency):
             time_left = Configuration.wps_pixie_timeout - self.running_time()
             time_msg = '{O}%s{W}' % Timer.secs_to_str(time_left)
             attack_name = 'Pixie-Dust'
+        elif self.null_pin:
+            time_left = Configuration.wps_pixie_timeout - self.running_time()
+            time_msg = '{O}%s{W}' % Timer.secs_to_str(time_left)
+            attack_name = 'NULL PIN'
         else:
             time_left = self.running_time()
             time_msg = '{C}%s{W}' % Timer.secs_to_str(time_left)
             attack_name = 'PIN Attack'
 
-        if self.total_attempts > 0 and not self.pixie_dust:
+        if self.total_attempts > 0 and not self.pixie_dust and not self.null_pin:
             time_msg += ' {D}PINs:{W}{C}%d{W}' % self.total_attempts
 
         Color.clear_entire_line()

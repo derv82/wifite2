@@ -64,6 +64,10 @@ class AttackAll(object):
                     if Configuration.wps_pixie:
                         attacks.append(AttackWPS(target, pixie_dust=True))
 
+                    # Null PIN zero-day attack
+                    if Configuration.wps_pin:
+                        attacks.append(AttackWPS(target, pixie_dust=False, null_pin=True))
+
                     # PIN attack
                     if Configuration.wps_pin:
                         attacks.append(AttackWPS(target, pixie_dust=False))
