@@ -121,7 +121,7 @@ class Handshake(object):
         command = 'echo "" | aircrack-ng -a 2 -w - -b %s "%s"' % (self.bssid, self.capfile)
         (stdout, stderr) = Process.call(command)
 
-        if 'passphrase not in dictionary' in stdout.lower():
+        if 'passphrase not in dictionary' in stdout.lower() or 'key not found' in stdout.lower():
             return [(self.bssid, None)]
         else:
             return []
