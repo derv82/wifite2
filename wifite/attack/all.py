@@ -44,6 +44,9 @@ class AttackAll(object):
         Attacks a single `target` (wifite.model.target).
         Returns: True if attacks should continue, False otherwise.
         '''
+        if 'MGT' in target.authentication:
+            Color.pl("\n{!}{O}Skipping. Target is using {C}WPA-Enterprise {O}and can not be cracked.")
+            return True
 
         attacks = []
 
