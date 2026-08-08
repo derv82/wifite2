@@ -59,10 +59,10 @@ class Arguments(object):
             action='store',
             dest='channel',
             metavar='[channel]',
-            type=int,
-            help=Color.s('Wireless channel to scan (default: {G}all 2Ghz channels{W})'))
+            help=Color.s('Wireless channel to scan e.g. {C}1,3-6{W} ' +
+                '(default: {G}all 2Ghz channels{W})'))
         glob.add_argument('--channel', help=argparse.SUPPRESS, action='store',
-                dest='channel', type=int)
+            dest='channel')
 
         glob.add_argument('-5',
             '--5ghz',
