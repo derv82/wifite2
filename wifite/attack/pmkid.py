@@ -65,7 +65,6 @@ class AttackPMKID(Attack):
         from ..util.process import Process
         # Check that we have all hashcat programs
         dependencies = [
-            Hashcat.dependency_name,
             HcxDumpTool.dependency_name,
             HcxPcapTool.dependency_name
         ]
@@ -91,12 +90,17 @@ class AttackPMKID(Attack):
             return False  # No hash found.
 
         # Crack it.
-        try:
-            self.success = self.crack_pmkid_file(pmkid_file)
-        except KeyboardInterrupt:
-            Color.pl('\n{!} {R}Failed to crack PMKID: {O}Cracking interrupted by user{W}')
+        if Process.exists(Hashcat.dependency_name):
+            try:
+                self.success = self.crack_pmkid_file(pmkid_file)
+            except KeyboardInterrupt:
+                Color.pl('\n{!} {R}Failed to crack PMKID: {O}Cracking interrupted by user{W}')
+                self.success = False
+                return True
+        else:
             self.success = False
-            return False
+            Color.pl('\n {O}[{R}!{O}] Note: PMKID attacks are not possible because you do not have {C}%s{O}.{W}'
+                     % Hashcat.dependency_name)
 
         return True  # Even if we don't crack it, capturing a PMKID is 'successful'
 
@@ -210,4 +214,3 @@ class AttackPMKID(Attack):
             pmkid_handle.write('\n')
 
         return pmkid_file
-
