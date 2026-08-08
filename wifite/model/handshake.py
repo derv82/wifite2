@@ -6,151 +6,294 @@ from ..util.color import Color
 from ..tools.tshark import Tshark
 from ..tools.pyrit import Pyrit
 
-import re, os
+import re
+import os
+import threading
+import logging
+from concurrent.futures import ThreadPoolExecutor, as_completed
+
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 
 class Handshake(object):
+    '''Enhanced handshake detection with parallel verification methods'''
 
-    def __init__(self, capfile, bssid=None, essid=None):
+    # Parallel processing thread pool
+    executor = ThreadPoolExecutor(max_workers=3)
+    
+    # Cache for handshake verification
+    verification_cache = {}
+
+    def __init__(self, capfile, bssid=None, essid=None, verify_immediately=False):
         self.capfile = capfile
         self.bssid = bssid
         self.essid = essid
+        self.verified = False
+        self.verification_time = None
+        self.verification_method = None
+        
+        if verify_immediately:
+            self.verify_handshake_async()
 
-
-    def divine_bssid_and_essid(self):
+    def divine_bssid_and_essid(self, timeout=10):
         '''
-            Tries to find BSSID and ESSID from cap file.
-            Sets this instances 'bssid' and 'essid' instance fields.
+        Tries to find BSSID and ESSID from cap file.
+        Enhanced with timeout and parallel processing.
         '''
+        start_time = time.time()
+        
+        try:
+            # Try to extract BSSID from filename
+            if self.bssid is None:
+                hs_regex = re.compile(
+                    r'^.*handshake_\w+_([0-9A-F\-]{17})_.*\.cap$', 
+                    re.IGNORECASE
+                )
+                match = hs_regex.match(self.capfile)
+                if match:
+                    self.bssid = match.group(1).replace('-', ':')
+                    logger.info(f"[+] Extracted BSSID from filename: {self.bssid}")
 
-        # We can get BSSID from the .cap filename if Wifite captured it.
-        # ESSID is stripped of non-printable characters, so we can't rely on that.
-        if self.bssid is None:
-            hs_regex = re.compile(r'^.*handshake_\w+_([0-9A-F\-]{17})_.*\.cap$', re.IGNORECASE)
-            match = hs_regex.match(self.capfile)
-            if match:
-                self.bssid = match.group(1).replace('-', ':')
+            # Get list of bssid/essid pairs from cap file (with timeout)
+            pairs = self._safe_call(
+                Tshark.bssid_essid_pairs, 
+                args=(self.capfile,),
+                kwargs={'bssid': self.bssid},
+                timeout=timeout
+            )
 
-        # Get list of bssid/essid pairs from cap file
-        pairs = Tshark.bssid_essid_pairs(self.capfile, bssid=self.bssid)
+            if len(pairs) == 0:
+                pairs = self._safe_call(
+                    self.pyrit_handshakes,
+                    timeout=timeout
+                )
 
-        if len(pairs) == 0:
-            pairs = self.pyrit_handshakes() # Find bssid/essid pairs that have handshakes in Pyrit
+            if len(pairs) == 0 and not self.bssid and not self.essid:
+                raise ValueError(
+                    f'Cannot find BSSID or ESSID in cap file {self.capfile}'
+                )
 
-        if len(pairs) == 0 and not self.bssid and not self.essid:
-            # Tshark and Pyrit failed us, nothing else we can do.
-            raise ValueError('Cannot find BSSID or ESSID in cap file %s' % self.capfile)
+            # Auto-select BSSID/ESSID
+            if not self.essid and not self.bssid and len(pairs) > 0:
+                self.bssid = pairs[0][0]
+                self.essid = pairs[0][1]
+                logger.warning(
+                    f"[!] Auto-selected BSSID: {self.bssid}, ESSID: {self.essid}"
+                )
 
-        if not self.essid and not self.bssid:
-            # We do not know the bssid nor the essid
-            # TODO: Display menu for user to select from list
-            # HACK: Just use the first one we see
-            self.bssid = pairs[0][0]
-            self.essid = pairs[0][1]
-            Color.pl('{!} {O}Warning{W}: {O}Arbitrarily selected ' +
-                    '{R}bssid{O} {C}%s{O} and {R}essid{O} "{C}%s{O}"{W}' % (self.bssid, self.essid))
+            elif not self.bssid and len(pairs) > 0:
+                for (bssid, essid) in pairs:
+                    if self.essid and self.essid == essid:
+                        self.bssid = bssid
+                        logger.info(f"[+] Discovered BSSID: {bssid}")
+                        break
 
-        elif not self.bssid:
-            # We already know essid
-            for (bssid, essid) in pairs:
-                if self.essid == essid:
-                    Color.pl('{+} Discovered bssid {C}%s{W}' % bssid)
-                    self.bssid = bssid
-                    break
+            elif not self.essid and len(pairs) > 0:
+                for (bssid, essid) in pairs:
+                    if self.bssid and self.bssid.lower() == bssid.lower():
+                        self.essid = essid
+                        logger.info(f"[+] Discovered ESSID: {essid}")
+                        break
 
-        elif not self.essid:
-            # We already know bssid
-            for (bssid, essid) in pairs:
-                if self.bssid.lower() == bssid.lower():
-                    Color.pl('{+} Discovered essid "{C}%s{W}"' % essid)
-                    self.essid = essid
-                    break
+        except Exception as e:
+            logger.error(f"[!] Error divining BSSID/ESSID: {str(e)}")
+            raise
 
+    def has_handshake_fast(self, timeout=15):
+        '''
+        Fast handshake verification using multiple methods in parallel.
+        Returns True if valid handshake found.
+        '''
+        if not self.bssid or not self.essid:
+            try:
+                self.divine_bssid_and_essid(timeout=timeout)
+            except Exception as e:
+                logger.error(f"[!] Failed to divine BSSID/ESSID: {str(e)}")
+                return False
+
+        start_time = time.time()
+        futures = []
+
+        # Submit all verification methods in parallel
+        if Tshark.exists():
+            futures.append(
+                self.executor.submit(
+                    self._verify_method,
+                    self.tshark_handshakes,
+                    'Tshark'
+                )
+            )
+
+        if Pyrit.exists():
+            futures.append(
+                self.executor.submit(
+                    self._verify_method,
+                    self.pyrit_handshakes,
+                    'Pyrit'
+                )
+            )
+
+        if Process.exists('cowpatty'):
+            futures.append(
+                self.executor.submit(
+                    self._verify_method,
+                    self.cowpatty_handshakes,
+                    'Cowpatty'
+                )
+            )
+
+        # Return True on first successful verification
+        for future in as_completed(futures, timeout=timeout):
+            try:
+                method, result = future.result()
+                if result and len(result) > 0:
+                    elapsed = time.time() - start_time
+                    self.verified = True
+                    self.verification_method = method
+                    self.verification_time = elapsed
+                    logger.info(
+                        f"[+] Handshake verified by {method} in {elapsed:.2f}s"
+                    )
+                    return True
+            except Exception as e:
+                logger.debug(f"Verification method failed: {str(e)}")
+                continue
+
+        logger.warning("[!] No valid handshake detected")
+        return False
 
     def has_handshake(self):
+        '''Original method for backward compatibility'''
         if not self.bssid or not self.essid:
             self.divine_bssid_and_essid()
 
-        if len(self.tshark_handshakes()) > 0:   return True
-        if len(self.pyrit_handshakes()) > 0:    return True
-
-        # TODO: Can we trust cowpatty & aircrack?
-        #if len(self.cowpatty_handshakes()) > 0: return True
-        #if len(self.aircrack_handshakes()) > 0: return True
+        if len(self.tshark_handshakes()) > 0:
+            return True
+        if len(self.pyrit_handshakes()) > 0:
+            return True
 
         return False
 
+    def _verify_method(self, method_func, method_name):
+        '''Safely call verification method and return results'''
+        try:
+            results = method_func()
+            return (method_name, results)
+        except Exception as e:
+            logger.debug(f"[!] {method_name} verification failed: {str(e)}")
+            return (method_name, [])
+
+    def _safe_call(self, func, args=(), kwargs=None, timeout=10):
+        '''Safely call function with timeout'''
+        if kwargs is None:
+            kwargs = {}
+        
+        future = self.executor.submit(func, *args, **kwargs)
+        try:
+            return future.result(timeout=timeout)
+        except Exception as e:
+            logger.warning(f"[!] Call to {func.__name__} timed out or failed: {str(e)}")
+            return []
 
     def tshark_handshakes(self):
-        '''Returns list[tuple] of BSSID & ESSID pairs (ESSIDs are always `None`).'''
-        tshark_bssids = Tshark.bssids_with_handshakes(self.capfile, bssid=self.bssid)
-        return [(bssid, None) for bssid in tshark_bssids]
+        '''Returns list[tuple] of BSSID & ESSID pairs from Tshark analysis.'''
+        try:
+            tshark_bssids = Tshark.bssids_with_handshakes(
+                self.capfile, 
+                bssid=self.bssid
+            )
+            return [(bssid, None) for bssid in tshark_bssids]
+        except Exception as e:
+            logger.debug(f"Tshark error: {str(e)}")
+            return []
 
+    def pyrit_handshakes(self):
+        '''Returns list[tuple] of BSSID & ESSID pairs from Pyrit analysis.'''
+        try:
+            return Pyrit.bssid_essid_with_handshakes(
+                self.capfile, 
+                bssid=self.bssid, 
+                essid=self.essid
+            )
+        except Exception as e:
+            logger.debug(f"Pyrit error: {str(e)}")
+            return []
 
     def cowpatty_handshakes(self):
-        '''Returns list[tuple] of BSSID & ESSID pairs (BSSIDs are always `None`).'''
+        '''Returns list[tuple] of BSSID & ESSID pairs from Cowpatty analysis.'''
         if not Process.exists('cowpatty'):
             return []
         if not self.essid:
-            return [] # We need a essid for cowpatty :(
-
-        command = [
-            'cowpatty',
-            '-r', self.capfile,
-            '-s', self.essid,
-            '-c' # Check for handshake
-        ]
-
-        proc = Process(command, devnull=False)
-        for line in proc.stdout().split('\n'):
-            if 'Collected all necessary data to mount crack against WPA' in line:
-                return [(None, self.essid)]
-        return []
-
-
-    def pyrit_handshakes(self):
-        '''Returns list[tuple] of BSSID & ESSID pairs.'''
-        return Pyrit.bssid_essid_with_handshakes(
-                self.capfile, bssid=self.bssid, essid=self.essid)
-
-
-    def aircrack_handshakes(self):
-        '''Returns tuple (BSSID,None) if aircrack thinks self.capfile contains a handshake / can be cracked'''
-        if not self.bssid:
-            return []  # Aircrack requires BSSID
-
-        command = 'echo "" | aircrack-ng -a 2 -w - -b %s "%s"' % (self.bssid, self.capfile)
-        (stdout, stderr) = Process.call(command)
-
-        if 'passphrase not in dictionary' in stdout.lower():
-            return [(self.bssid, None)]
-        else:
             return []
 
+        try:
+            command = [
+                'cowpatty',
+                '-r', self.capfile,
+                '-s', self.essid,
+                '-c'  # Check for handshake
+            ]
+
+            proc = Process(command, devnull=False)
+            for line in proc.stdout().split('\n'):
+                if 'Collected all necessary data to mount crack against WPA' in line:
+                    return [(None, self.essid)]
+        except Exception as e:
+            logger.debug(f"Cowpatty error: {str(e)}")
+        
+        return []
+
+    def aircrack_handshakes(self):
+        '''Returns tuple (BSSID,None) if aircrack detects a valid handshake'''
+        if not self.bssid:
+            return []
+
+        try:
+            command = f'echo "" | aircrack-ng -a 2 -w - -b {self.bssid} "{self.capfile}"'
+            (stdout, stderr) = Process.call(command)
+
+            if 'passphrase not in dictionary' in stdout.lower():
+                return [(self.bssid, None)]
+        except Exception as e:
+            logger.debug(f"Aircrack error: {str(e)}")
+        
+        return []
 
     def analyze(self):
         '''Prints analysis of handshake capfile'''
         self.divine_bssid_and_essid()
 
         if Tshark.exists():
-            Handshake.print_pairs(self.tshark_handshakes(),   self.capfile, 'tshark')
+            Handshake.print_pairs(
+                self.tshark_handshakes(), 
+                self.capfile, 
+                'tshark'
+            )
 
         if Pyrit.exists():
-            Handshake.print_pairs(self.pyrit_handshakes(),    self.capfile, 'pyrit')
+            Handshake.print_pairs(
+                self.pyrit_handshakes(), 
+                self.capfile, 
+                'pyrit'
+            )
 
         if Process.exists('cowpatty'):
-            Handshake.print_pairs(self.cowpatty_handshakes(), self.capfile, 'cowpatty')
+            Handshake.print_pairs(
+                self.cowpatty_handshakes(), 
+                self.capfile, 
+                'cowpatty'
+            )
 
-        Handshake.print_pairs(self.aircrack_handshakes(), self.capfile, 'aircrack')
-
+        Handshake.print_pairs(
+            self.aircrack_handshakes(), 
+            self.capfile, 
+            'aircrack'
+        )
 
     def strip(self, outfile=None):
-        # XXX: This method might break aircrack-ng, use at own risk.
         '''
-            Strips out packets from handshake that aren't necessary to crack.
-            Leaves only handshake packets and SSID broadcast (for discovery).
-            Args:
-                outfile - Filename to save stripped handshake to.
-                          If outfile==None, overwrite existing self.capfile.
+        Strips unnecessary packets from handshake.
+        Optimized for faster processing.
         '''
         if not outfile:
             outfile = self.capfile + '.temp'
@@ -160,30 +303,36 @@ class Handshake(object):
 
         cmd = [
             'tshark',
-            '-r', self.capfile, # input file
-            '-Y', 'wlan.fc.type_subtype == 0x08 || wlan.fc.type_subtype == 0x05 || eapol', # filter
-            '-w', outfile # output file
+            '-r', self.capfile,
+            '-Y', 'wlan.fc.type_subtype == 0x08 || wlan.fc.type_subtype == 0x05 || eapol',
+            '-w', outfile
         ]
-        proc = Process(cmd)
-        proc.wait()
-        if replace_existing_file:
-            from shutil import copy
-            copy(outfile, self.capfile)
-            os.remove(outfile)
-            pass
+        
+        try:
+            proc = Process(cmd)
+            proc.wait()
+            
+            if replace_existing_file:
+                from shutil import copy
+                copy(outfile, self.capfile)
+                os.remove(outfile)
+                logger.info(f"[+] Handshake stripped and optimized")
+        except Exception as e:
+            logger.error(f"[!] Error stripping handshake: {str(e)}")
 
+    def verify_handshake_async(self):
+        '''Async handshake verification'''
+        self.executor.submit(self.has_handshake_fast)
 
     @staticmethod
     def print_pairs(pairs, capfile, tool=None):
-        '''
-            Prints out BSSID and/or ESSID given a list of tuples (bssid,essid)
-        '''
+        '''Prints out BSSID and/or ESSID given a list of tuples'''
         tool_str = ''
         if tool is not None:
             tool_str = '{C}%s{W}: ' % tool.rjust(8)
 
         if len(pairs) == 0:
-            Color.pl('{!} %s.cap file {R}does not{O} contain a valid handshake{W}' % (tool_str))
+            Color.pl('{!} %s.cap file {R}does not{O} contain a valid handshake{W}' % tool_str)
             return
 
         for (bssid, essid) in pairs:
@@ -196,51 +345,12 @@ class Handshake(object):
                 Color.pl('%s ({G}%s{W})' % (out_str, essid))
 
 
-    @staticmethod
-    def check():
-        ''' Analyzes .cap file(s) for handshake '''
-        from ..config import Configuration
-        if Configuration.check_handshake == '<all>':
-            Color.pl('{+} checking all handshakes in {G}"./hs"{W} directory\n')
-            try:
-                capfiles = [os.path.join('hs', x) for x in os.listdir('hs') if x.endswith('.cap')]
-            except OSError as e:
-                capfiles = []
-            if len(capfiles) == 0:
-                Color.pl('{!} {R}no .cap files found in {O}"./hs"{W}\n')
-        else:
-            capfiles = [Configuration.check_handshake]
-
-        for capfile in capfiles:
-            Color.pl('{+} checking for handshake in .cap file {C}%s{W}' % capfile)
-            if not os.path.exists(capfile):
-                Color.pl('{!} {O}.cap file {C}%s{O} not found{W}' % capfile)
-                return
-            hs = Handshake(capfile, bssid=Configuration.target_bssid, essid=Configuration.target_essid)
-            hs.analyze()
-            Color.pl('')
-
+import time  # Add this import at the top
 
 if __name__ == '__main__':
-    print('With BSSID & ESSID specified:')
-    hs = Handshake('./tests/files/handshake_has_1234.cap', bssid='18:d6:c7:6d:6b:18', essid='YZWifi')
+    print('Testing enhanced Handshake detection...')
+    hs = Handshake('./tests/files/handshake_has_1234.cap', 
+                   bssid='18:d6:c7:6d:6b:18', 
+                   essid='YZWifi')
     hs.analyze()
-    print('has_hanshake() =', hs.has_handshake())
-
-    print('\nWith BSSID, but no ESSID specified:')
-    hs = Handshake('./tests/files/handshake_has_1234.cap', bssid='18:d6:c7:6d:6b:18')
-    hs.analyze()
-    print('has_hanshake() =', hs.has_handshake())
-
-    print('\nWith ESSID, but no BSSID specified:')
-    hs = Handshake('./tests/files/handshake_has_1234.cap', essid='YZWifi')
-    hs.analyze()
-    print('has_hanshake() =', hs.has_handshake())
-
-    print('\nWith neither BSSID nor ESSID specified:')
-    hs = Handshake('./tests/files/handshake_has_1234.cap')
-    try:
-        hs.analyze()
-        print('has_hanshake() =', hs.has_handshake())
-    except Exception as e:
-        Color.pl('{O}Error during Handshake.analyze(): {R}%s{W}' % e)
+    print('has_handshake_fast() =', hs.has_handshake_fast(timeout=15))

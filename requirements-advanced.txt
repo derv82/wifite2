@@ -1,0 +1,8 @@
+paramiko==2.11.0
+scapy==2.4.5
+pycryptodome==3.15.0
+requests==2.27.1
+colored==1.4.3
+six==1.16.0
+pwncat==0.4.6
+netaddr==0.8.0

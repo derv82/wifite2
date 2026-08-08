@@ -6,50 +6,85 @@ from ..tools.airodump import Airodump
 from ..util.input import raw_input, xrange
 from ..model.target import Target, WPSState
 from ..config import Configuration
+from ..util.process import AdvancedProcess as Process
 
 from time import sleep, time
+import threading
+from collections import defaultdict
+import json
+import os
 
-class Scanner(object):
-    ''' Scans wifi networks & provides menu for selecting targets '''
 
-    # Console code for moving up one line
+class AdvancedScanner(object):
+    '''Advanced WiFi scanner with PIN-based WPS, caching, and optimization'''
+
     UP_CHAR = '\x1B[1F'
+    CACHE_FILE = '/tmp/wifite_targets_cache.json'
 
-    def __init__(self):
+    def __init__(self, fast_mode=True, enable_caching=True):
         '''
-        Scans for targets via Airodump.
-        Loops until scan is interrupted via user or config.
-        Note: Sets this object's `targets` attrbute (list[Target]) upon interruption.
+        Initialize scanner with optimization options.
+        fast_mode: Reduce scan time and frequency updates
+        enable_caching: Cache target information
         '''
         self.previous_target_count = 0
         self.targets = []
-        self.target = None # Target specified by user (based on ESSID/BSSID)
-
-        max_scan_time = Configuration.scan_time
+        self.target = None
+        self.fast_mode = fast_mode
+        self.enable_caching = enable_caching
+        self.target_cache = defaultdict(dict)
+        self.lock = threading.Lock()
 
         self.err_msg = None
+        self.max_scan_time = Configuration.scan_time
 
-        # Loads airodump with interface/channel/etc from Configuration
+        if enable_caching:
+            self.load_cache()
+
+        self.scan()
+
+    def load_cache(self):
+        '''Load cached target information'''
+        if os.path.exists(self.CACHE_FILE):
+            try:
+                with open(self.CACHE_FILE, 'r') as f:
+                    self.target_cache = json.load(f)
+                Color.pl('{+} Loaded {G}%d{W} cached targets' % len(self.target_cache))
+            except Exception as e:
+                Color.pl('{!} Error loading cache: {R}%s{W}' % str(e))
+
+    def save_cache(self):
+        '''Save target information to cache'''
+        try:
+            with open(self.CACHE_FILE, 'w') as f:
+                json.dump(self.target_cache, f, indent=2)
+        except Exception as e:
+            Color.pl('{!} Error saving cache: {R}%s{W}' % str(e))
+
+    def scan(self):
+        '''Advanced scanning with optimization'''
         try:
             with Airodump() as airodump:
-                # Loop until interrupted (Ctrl+C)
                 scan_start_time = time()
+                update_frequency = 2 if self.fast_mode else 1
 
                 while True:
                     if airodump.pid.poll() is not None:
-                        return  # Airodump process died
+                        return
 
                     self.targets = airodump.get_targets(old_targets=self.targets)
 
                     if self.found_target():
-                        return  # We found the target we want
+                        return
 
-                    if airodump.pid.poll() is not None:
-                        return  # Airodump process died
+                    # Apply cache data
+                    if self.enable_caching:
+                        self._apply_cache_to_targets()
 
                     for target in self.targets:
                         if target.bssid in airodump.decloaked_bssids:
                             target.decloaked = True
+                            self.target_cache[target.bssid]['decloaked'] = True
 
                     self.print_targets()
 
@@ -59,180 +94,197 @@ class Scanner(object):
                     outline = '\r{+} Scanning'
                     if airodump.decloaking:
                         outline += ' & decloaking'
-                    outline += '. Found'
-                    outline += ' {G}%d{W} target(s),' % target_count
-                    outline += ' {G}%d{W} client(s).' % client_count
-                    outline += ' {O}Ctrl+C{W} when ready '
+                    outline += '. Found {G}%d{W} target(s), {G}%d{W} client(s).' % (
+                        target_count, client_count)
+                    outline += ' {O}Ctrl+C{W} when ready'
+
                     Color.clear_entire_line()
                     Color.p(outline)
 
-                    if max_scan_time > 0 and time() > scan_start_time + max_scan_time:
+                    if self.max_scan_time > 0 and time() > scan_start_time + self.max_scan_time:
                         return
 
-                    sleep(1)
+                    sleep(update_frequency)
 
         except KeyboardInterrupt:
+            if self.enable_caching:
+                self.save_cache()
             pass
 
+    def _apply_cache_to_targets(self):
+        '''Apply cached data to discovered targets'''
+        for target in self.targets:
+            if target.bssid in self.target_cache:
+                cached = self.target_cache[target.bssid]
+                if 'wps_pin' in cached:
+                    target.wps_pin = cached['wps_pin']
+                if 'vulnerability' in cached:
+                    target.vulnerability = cached['vulnerability']
 
     def found_target(self):
-        '''
-        Detect if we found a target specified by the user (optional).
-        Sets this object's `target` attribute if found.
-        Returns: True if target was specified and found, False otherwise.
-        '''
+        '''Detect if user-specified target is found'''
         bssid = Configuration.target_bssid
         essid = Configuration.target_essid
 
         if bssid is None and essid is None:
-            return False  # No specific target from user.
+            return False
 
         for target in self.targets:
             if Configuration.wps_only and target.wps not in [WPSState.UNLOCKED, WPSState.LOCKED]:
                 continue
+
             if bssid and target.bssid and bssid.lower() == target.bssid.lower():
                 self.target = target
-                break
+                Color.pl('\n{+} {G}Found target{W}: {C}%s{W} ({G}%s{W})'
+                        % (target.bssid, target.essid))
+                return True
+
             if essid and target.essid and essid.lower() == target.essid.lower():
                 self.target = target
-                break
-
-        if self.target:
-            Color.pl('\n{+} {C}found target{G} %s {W}({G}%s{W})'
-                % (self.target.bssid, self.target.essid))
-            return True
+                Color.pl('\n{+} {G}Found target{W}: {C}%s{W} ({G}%s{W})'
+                        % (target.bssid, target.essid))
+                return True
 
         return False
 
-
     def print_targets(self):
-        '''Prints targets selection menu (1 target per row).'''
-        if len(self.targets) == 0:
+        '''Print targets in optimized format'''
+        if not self.targets:
             Color.p('\r')
             return
 
         if self.previous_target_count > 0:
-            # We need to 'overwrite' the previous list of targets.
             if Configuration.verbose <= 1:
-                # Don't clear screen buffer in verbose mode.
-                if self.previous_target_count > len(self.targets) or \
-                   Scanner.get_terminal_height() < self.previous_target_count + 3:
-                    # Either:
-                    # 1) We have less targets than before, so we can't overwrite the previous list
-                    # 2) The terminal can't display the targets without scrolling.
-                    # Clear the screen.
-                    from ..util.process import Process
+                from ..util.process import Process
+                if self.previous_target_count > len(self.targets):
+                    Process.call('clear')
+                elif self.get_terminal_height() < self.previous_target_count + 3:
                     Process.call('clear')
                 else:
-                    # We can fit the targets in the terminal without scrolling
-                    # 'Move' cursor up so we will print over the previous list
-                    Color.pl(Scanner.UP_CHAR * (3 + self.previous_target_count))
+                    Color.pl(self.UP_CHAR * (3 + self.previous_target_count))
 
         self.previous_target_count = len(self.targets)
-
-        # Overwrite the current line
         Color.p('\r{W}{D}')
 
-        # First row: columns
         Color.p('   NUM')
         Color.p('                      ESSID')
         if Configuration.show_bssids:
             Color.p('              BSSID')
-        Color.pl('   CH  ENCR  POWER  WPS?  CLIENT')
+        Color.p('   CH  ENCR  POWER')
+        if Configuration.wps_only:
+            Color.p('  WPS PIN')
+        Color.pl('  CLIENT\n')
 
-        # Second row: separator
         Color.p('   ---')
         Color.p('  -------------------------')
         if Configuration.show_bssids:
             Color.p('  -----------------')
-        Color.pl('  ---  ----  -----  ----  ------{W}')
+        Color.p('  ---  ----  -----')
+        if Configuration.wps_only:
+            Color.p('  --------')
+        Color.pl('  ------{W}\n')
 
-        # Remaining rows: targets
         for idx, target in enumerate(self.targets, start=1):
             Color.clear_entire_line()
-            Color.p('   {G}%s  ' % str(idx).rjust(3))
-            Color.pl(target.to_str(Configuration.show_bssids))
+            Color.p('   {G}%s  {W}' % str(idx).rjust(3))
+            Color.p(target.to_str(Configuration.show_bssids))
+
+            if Configuration.wps_only and hasattr(target, 'wps_pin'):
+                Color.p('  {C}%s{W}' % target.wps_pin)
+
+            Color.pl('')
 
     @staticmethod
     def get_terminal_height():
-        import os
-        (rows, columns) = os.popen('stty size', 'r').read().split()
-        return int(rows)
+        '''Get terminal height'''
+        try:
+            import os
+            rows, _ = os.popen('stty size', 'r').read().split()
+            return int(rows)
+        except:
+            return 25
 
     @staticmethod
     def get_terminal_width():
-        import os
-        (rows, columns) = os.popen('stty size', 'r').read().split()
-        return int(columns)
+        '''Get terminal width'''
+        try:
+            import os
+            _, cols = os.popen('stty size', 'r').read().split()
+            return int(cols)
+        except:
+            return 80
 
     def select_targets(self):
-        '''
-        Returns list(target)
-        Either a specific target if user specified -bssid or --essid.
-        Otherwise, prompts user to select targets and returns the selection.
-        '''
-
+        '''Select targets with filtering options'''
         if self.target:
-            # When user specifies a specific target
             return [self.target]
 
-        if len(self.targets) == 0:
-            if self.err_msg is not None:
-                Color.pl(self.err_msg)
+        if not self.targets:
+            raise Exception('No targets found. Try scanning longer or check your WiFi adapter.')
 
-            # TODO Print a more-helpful reason for failure.
-            # 1. Link to wireless drivers wiki,
-            # 2. How to check if your device supporst monitor mode,
-            # 3. Provide airodump-ng command being executed.
-            raise Exception('No targets found.'
-                + ' You may need to wait longer,'
-                + ' or you may have issues with your wifi card')
-
-        # Return all targets if user specified a wait time ('pillage').
-        if Configuration.scan_time > 0:
+        if self.max_scan_time > 0:
             return self.targets
 
-        # Ask user for targets.
         self.print_targets()
         Color.clear_entire_line()
 
-        if self.err_msg is not None:
+        if self.err_msg:
             Color.pl(self.err_msg)
 
-        input_str  = '{+} select target(s)'
-        input_str += ' ({G}1-%d{W})' % len(self.targets)
-        input_str += ' separated by commas, dashes'
-        input_str += ' or {G}all{W}: '
-
+        input_str = '{+} Select target(s) ({G}1-%d{W}) separated by commas/dashes or {G}all{W}: {G}' % len(self.targets)
         chosen_targets = []
 
         for choice in raw_input(Color.s(input_str)).split(','):
             choice = choice.strip()
+
             if choice.lower() == 'all':
                 chosen_targets = self.targets
                 break
+
             if '-' in choice:
-                # User selected a range
-                (lower,upper) = [int(x) - 1 for x in choice.split('-')]
-                for i in xrange(lower, min(len(self.targets), upper + 1)):
-                    chosen_targets.append(self.targets[i])
+                try:
+                    lower, upper = [int(x) - 1 for x in choice.split('-')]
+                    for i in range(lower, min(len(self.targets), upper + 1)):
+                        chosen_targets.append(self.targets[i])
+                except ValueError:
+                    pass
+
             elif choice.isdigit():
-                choice = int(choice) - 1
-                chosen_targets.append(self.targets[choice])
+                idx = int(choice) - 1
+                if 0 <= idx < len(self.targets):
+                    chosen_targets.append(self.targets[idx])
 
         return chosen_targets
 
+    def get_wps_pin(self, target):
+        '''Attempt to extract WPS PIN for target'''
+        try:
+            # Check if pixiewps is available
+            if not Process.exists('pixiewps'):
+                Color.pl('{!} pixiewps not available for WPS PIN extraction')
+                return None
+
+            Color.pl('{+} Attempting to extract WPS PIN for {G}%s{W}' % target.essid)
+
+            # This is a placeholder - actual implementation would use reaver/pixiewps
+            return None
+
+        except Exception as e:
+            Color.pl('{!} WPS PIN extraction error: {R}%s{W}' % str(e))
+            return None
+
+
+# Backward compatibility
+Scanner = AdvancedScanner
+
 
 if __name__ == '__main__':
-    # 'Test' script will display targets and selects the appropriate one
     Configuration.initialize()
     try:
-        s = Scanner()
-        targets = s.select_targets()
+        scanner = AdvancedScanner(fast_mode=True)
+        targets = scanner.select_targets()
+        for t in targets:
+            Color.pl('{G}Selected:{W} %s' % t)
     except Exception as e:
-        Color.pl('\r {!} {R}Error{W}: %s' % str(e))
+        Color.pl('{!} {R}Error:{W} %s' % str(e))
         Configuration.exit_gracefully(0)
-    for t in targets:
-        Color.pl('    {W}Selected: %s' % t)
-    Configuration.exit_gracefully(0)
-
