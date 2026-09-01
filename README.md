@@ -5,6 +5,7 @@ Wifite
 
 [wifit3](https://github.com/derv82/wifit3) talks to USB Wi-Fi adapters directly from userland with its own drivers, so it runs on Linux **and Windows**. Supports [certain USB adapters only](https://github.com/derv82/wifit3#supported-hardware).
 
+
 ---
 
 #### If you are looking for wifite2, check out https://github.com/kimocoder/wifite2 for the most-supported version of wifite2
