@@ -3,7 +3,7 @@
 chardet>=7.4.3
 requests>=2.34.2
 rich>=15.0.0
-scapy>=2.7.1rc1; python_version < '4'
+scapy>=2.8.0; python_version < '4'
 setuptools>=82.0.1
 
 #urllib3>=2.7.0 # not directly required, pinned by Snyk to avoid a vulnerability
