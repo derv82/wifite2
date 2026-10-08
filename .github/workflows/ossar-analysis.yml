@@ -24,7 +24,7 @@ jobs:
     steps:
       # Checkout your code repository to scan
     - name: Harden Runner
-      uses: step-security/harden-runner@v2.21.1
+      uses: step-security/harden-runner@v2.22.0
       with:
         egress-policy: audit
 
