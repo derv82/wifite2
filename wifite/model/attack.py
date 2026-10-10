@@ -2,11 +2,19 @@
 # -*- coding: utf-8 -*-
 
 import time
+from ..config import Configuration
 
-class Attack(object):
-    '''Contains functionality common to all attacks.'''
 
-    target_wait = 60
+class Attack:
+    """Contains functionality common to all attacks."""
+
+    @staticmethod
+    def _get_target_wait():
+        """Get target wait time, safely handling uninitialized Configuration."""
+        timeout = Configuration.wpa_attack_timeout
+        if timeout is None:
+            return 60
+        return min(60, timeout)
 
     def __init__(self, target):
         self.target = target
@@ -15,27 +23,21 @@ class Attack(object):
         raise Exception('Unimplemented method: run')
 
     def wait_for_target(self, airodump):
-        '''Waits for target to appear in airodump.'''
+        """Waits for target to appear in airodump."""
+        target_wait = Attack._get_target_wait()
         start_time = time.time()
         targets = airodump.get_targets(apply_filter=False)
         while len(targets) == 0:
             # Wait for target to appear in airodump.
-            if int(time.time() - start_time) > Attack.target_wait:
-                raise Exception('Target did not appear after %d seconds, stopping' % Attack.target_wait)
+            if int(time.time() - start_time) > target_wait:
+                raise Exception(f'Target did not appear after {target_wait:d} seconds, target may be out of range or turned off')
             time.sleep(1)
             targets = airodump.get_targets()
             continue
 
-        # Ensure this target was seen by airodump
-        airodump_target = None
-        for t in targets:
-            if t.bssid == self.target.bssid:
-                airodump_target = t
-                break
+        airodump_target = next((t for t in targets if t.bssid == self.target.bssid), None)
 
         if airodump_target is None:
-            raise Exception(
-                'Could not find target (%s) in airodump' % self.target.bssid)
+            raise Exception(f'Could not find target ({self.target.bssid}) in airodump')
 
         return airodump_target
-

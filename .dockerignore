@@ -1,0 +1,34 @@
+# Version control
+.git/
+.github/
+
+# IDE files
+.idea/
+*.bak
+
+# Python build artifacts
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+MANIFEST
+
+# Testing
+.pytest_cache/
+tests/
+
+# Documentation
+docs/
+
+# Wifite runtime artifacts
+hs/
+cracked.json
+*.wpc
+
+# Tool build directories
+tools/hcxdumptool/
+tools/hcxtools/
+tools/iw/
+

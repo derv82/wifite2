@@ -1,2 +1,8 @@
 #!/bin/sh
-python2.7 -m unittest discover tests -v
+
+clear
+
+echo "** Starting pytest .."
+sleep 2
+pytest tests/ -v
+echo "** runtests.sh test script at the end"

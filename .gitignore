@@ -1,11 +1,41 @@
-*.swp
-*.pyc
-py/hs/
-hs/
-*.bak
-.idea/
-cracked.txt
-MANIFEST
+# Python
+venv/
 dist/
 build/
+wifite.egg-info/
+**/__pycache__
+**/*.pyc
+MANIFEST
+
+# IDEs
+*.bak
+.idea/
+
+# Wifite
+hs/
+cracked.json
+*.wpc
+tools/hcxdumptool/
+tools/hcxtools/
+tools/iw/
+tools/reaver/
+tools/bully/
+tools/pixiewps/
+tools/hashcat/
 files.txt
+*.swp
+*.cmd
+*.ko
+*.mod
+*.mod.c
+*.mod.o
+modules.order
+*.o
+built-in.a
+Module.symvers
+*.pcap
+*.cap
+*.log
+
+# kimocoder
+.claude/

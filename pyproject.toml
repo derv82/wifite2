@@ -1,0 +1,63 @@
+[project]
+name = "wifite2"
+version = "2.9.9-beta"
+description = "Wireless Network Auditor for Linux & Android"
+authors = [
+    {name = "kimocoder", email = "christian@aircrack-ng.org"}
+]
+readme = "README.md"
+license = "GPL-2.0-only"
+requires-python = ">=3.10"
+keywords = ["wireless", "security", "auditing", "penetration-testing", "wifi"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Operating System :: POSIX :: Linux",
+    "Topic :: Security",
+]
+dependencies = [
+    "chardet>=7.6.0",
+    "requests>=2.34.2",
+    "rich>=15.0.0",
+    "scapy>=2.7.1rc1; python_version < '4'",
+    "setuptools>=84.0.0",
+    #"urllib3>=2.7.0",  # pinned by Snyk to avoid a vulnerability
+]
+
+[project.urls]
+Homepage = "https://github.com/kimocoder/wifite2"
+Repository = "https://github.com/kimocoder/wifite2"
+Issues = "https://github.com/kimocoder/wifite2/issues"
+
+[project.scripts]
+wifite = "wifite.wifite:main"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=9.1.1",
+    "pytest-cov>=7.1.0",
+    "pytest-timeout>=2.4.0",
+]
+
+[tool.poetry]
+packages = [
+    { include = "wifite" }
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-v --tb=short"
+markers = [
+    "timeout(seconds): set a timeout for the test (requires pytest-timeout)",
+]
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

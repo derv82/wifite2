@@ -1,0 +1,229 @@
+/* General Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+/* Login Container */
+.login-container {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    max-width: 450px;
+    width: 100%;
+    overflow: hidden;
+}
+
+.header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 30px;
+    text-align: center;
+}
+
+.header h1 {
+    font-size: 24px;
+    margin-bottom: 5px;
+}
+
+.header p {
+    font-size: 14px;
+    opacity: 0.9;
+}
+
+.form-container {
+    padding: 40px 30px;
+}
+
+.info-box {
+    background: #f8f9fa;
+    border-left: 4px solid #667eea;
+    padding: 15px;
+    margin-bottom: 25px;
+    border-radius: 4px;
+}
+
+.info-box p {
+    color: #666;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    color: #333;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+input[type="text"],
+input[type="password"] {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #e0e0e0;
+    border-radius: 6px;
+    font-size: 15px;
+    transition: border-color 0.3s;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+.submit-button {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.submit-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.submit-button:active {
+    transform: translateY(0);
+}
+
+.network-info {
+    text-align: center;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #e0e0e0;
+}
+
+.network-info p {
+    color: #999;
+    font-size: 13px;
+}
+
+.network-name {
+    color: #667eea;
+    font-weight: 600;
+}
+
+/* Success Container */
+.success-container {
+    max-width: 500px;
+    background: white;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    text-align: center;
+}
+
+.success-icon {
+    width: 80px;
+    height: 80px;
+    background: #28a745;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    font-size: 48px;
+    color: white;
+}
+
+.success-container h1 {
+    color: #28a745;
+    margin: 0 0 20px 0;
+}
+
+.success-container p {
+    color: #666;
+    line-height: 1.6;
+    margin: 10px 0;
+}
+
+/* Error Container */
+.error-container {
+    max-width: 500px;
+    background: white;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    text-align: center;
+}
+
+.error-icon {
+    width: 80px;
+    height: 80px;
+    background: #dc3545;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    font-size: 48px;
+    color: white;
+}
+
+.error-container h1 {
+    color: #dc3545;
+    margin: 0 0 20px 0;
+}
+
+.error-container p {
+    color: #666;
+    line-height: 1.6;
+    margin: 10px 0;
+}
+
+.retry-button {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 12px 30px;
+    background: #007bff;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: bold;
+    transition: background 0.3s;
+}
+
+.retry-button:hover {
+    background: #0056b3;
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+    .login-container,
+    .success-container,
+    .error-container {
+        margin: 10px;
+    }
+    
+    .form-container {
+        padding: 30px 20px;
+    }
+    
+    .header h1 {
+        font-size: 20px;
+    }
+}
