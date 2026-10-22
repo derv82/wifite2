@@ -5,6 +5,7 @@ from .wep import AttackWEP
 from .wpa import AttackWPA
 from .wps import AttackWPS
 from .pmkid import AttackPMKID
+from .eviltwin import EvilTwinAttack  # Imported the new attack class
 from ..config import Configuration
 from ..util.color import Color
 
@@ -48,8 +49,8 @@ class AttackAll(object):
         attacks = []
 
         if Configuration.use_eviltwin:
-            # TODO: EvilTwin attack
-            pass
+            # Populates the evil twin attack vector into the orchestration sequence
+            attacks.append(EvilTwinAttack(target))
 
         elif 'WEP' in target.encryption:
             attacks.append(AttackWEP(target))
@@ -113,7 +114,7 @@ class AttackAll(object):
             True if user wants to continue, False otherwise.
         '''
         if attacks_remaining == 0 and targets_remaining == 0:
-            return  # No targets or attacksleft, drop out
+            return  # No targets or attacks left, drop out
 
         prompt_list = []
         if attacks_remaining > 0:
@@ -146,4 +147,3 @@ class AttackAll(object):
             return False  # Exit
         else:
             return True  # Continue
-
